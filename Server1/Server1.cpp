@@ -3,9 +3,9 @@
 
 #include "stdafx.h"
 
-#define ListenPort	8011
+#define ListenPort	80
 #define ListenIP	_T("127.0.0.1")
-#define MaxListenNum	1000
+#define ClientCount	3
 
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -21,7 +21,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		addr.sin_family = AF_INET;
 		addr.sin_port = htons(ListenPort);
 		addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);//绑定本地任意IP地址
-		//addr.sin_addr.S_un.S_addr = htonl(inet_addr(ListenIP));//绑定指定IP地址
+		//addr.sin_addr.S_un.S_addr = inet_addr(ListenIP);//绑定指定IP地址
 
 		//绑定socket和监听地址
 		int rec = bind(soc, (SOCKADDR *)&addr, sizeof(SOCKADDR_IN));
@@ -30,24 +30,37 @@ int _tmain(int argc, _TCHAR* argv[])
 			_tprintf(_T("绑定Socket成功\n"));
 
 			//开始监听
-			int rec1 = listen(soc, MaxListenNum);
+			int rec1 = listen(soc, 0);
 			if (rec != SOCKET_ERROR)
 			{
 				_tprintf(_T("监听成功: %s:%d\n"), ListenIP, ListenPort);
+				_tprintf(_T("客户端连接满%d个,服务端将自动关闭Socket\n"), ClientCount);
 
-				SOCKADDR_IN addrClient;
+				SOCKADDR_IN addrClientList[ClientCount];
+				SOCKET socClientList[ClientCount];
+				int i = 0;
 				int len = sizeof(SOCKADDR);
 				while (true)
 				{
 					//等待客户端连接
-					SOCKET socClient = accept(soc, (SOCKADDR *)&addrClient, &len);
-					_tprintf(_T("收到客户端连接: %s:%d\n"), inet_ntoa(addrClient.sin_addr), (int)addrClient.sin_port);
-					
-					Sleep(2 * 1000);
-					_tprintf(_T("断开客户端Socket\n"));
-					closesocket(socClient);
+					SOCKET socClient = accept(soc, (SOCKADDR *)&addrClientList[i], &len);
+					_tprintf(_T("收到新客户端连接: %s:%d\n"), inet_ntoa(addrClientList[i].sin_addr), (int)addrClientList[i].sin_port);
+					socClientList[i] = socClient;
+
+					if (i == ClientCount - 1)
+					{
+						_tprintf(_T("服务端已满%d个客户端连接!\n"), ClientCount);
+						break;
+					}
+					i++;
 				}
+				for (int i = 0; i < ClientCount; i++)
+				{
+					closesocket(socClientList[i]);
+				}
+				_tprintf(_T("已关闭客户端所有Socket\n"));
 				closesocket(soc);
+				_tprintf(_T("已关闭服务端Socket\n"));
 				WSACleanup();
 			}
 			else
@@ -68,6 +81,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		_tprintf(_T("Socket模块启动失败!\n"));
 	}
+
+	system("pause");
 	return 0;
 }
 
