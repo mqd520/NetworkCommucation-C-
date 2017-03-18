@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server1", "Server1\Server1.vcxproj", "{AF423D2D-3D50-4654-8053-0038AA14CD31}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client1", "Client1\Client1.vcxproj", "{04BBCFB7-197A-4593-A2F7-8A2E14925BD0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "客户端", "客户端", "{BA9E35E0-A82E-4EA4-8823-52D6F2A9DA79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "服务端", "服务端", "{22F89A00-0340-40A4-A313-E0CB390D7E9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF423D2D-3D50-4654-8053-0038AA14CD31}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AF423D2D-3D50-4654-8053-0038AA14CD31}.Debug|Win32.Build.0 = Debug|Win32
+		{AF423D2D-3D50-4654-8053-0038AA14CD31}.Release|Win32.ActiveCfg = Release|Win32
+		{AF423D2D-3D50-4654-8053-0038AA14CD31}.Release|Win32.Build.0 = Release|Win32
+		{04BBCFB7-197A-4593-A2F7-8A2E14925BD0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{04BBCFB7-197A-4593-A2F7-8A2E14925BD0}.Debug|Win32.Build.0 = Debug|Win32
+		{04BBCFB7-197A-4593-A2F7-8A2E14925BD0}.Release|Win32.ActiveCfg = Release|Win32
+		{04BBCFB7-197A-4593-A2F7-8A2E14925BD0}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AF423D2D-3D50-4654-8053-0038AA14CD31} = {22F89A00-0340-40A4-A313-E0CB390D7E9D}
+		{04BBCFB7-197A-4593-A2F7-8A2E14925BD0} = {BA9E35E0-A82E-4EA4-8823-52D6F2A9DA79}
+	EndGlobalSection
+EndGlobal
