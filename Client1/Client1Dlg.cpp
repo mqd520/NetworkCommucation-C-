@@ -47,6 +47,7 @@ BOOL CClient1Dlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化代码
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+
 }
 
 // 如果向对话框添加最小化按钮，则需要下面的代码

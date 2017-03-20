@@ -45,6 +45,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
+    <IncludePath>D:\Test\17 NetworkCommucation\Lib1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
