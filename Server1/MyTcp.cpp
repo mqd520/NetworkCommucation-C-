@@ -10,15 +10,23 @@
 
 #define ClientCount 2
 
+struct SocketInfo
+{
+	SOCKET socket;
+	bool connected;
+	SOCKADDR_IN addr;
+};
+
 //线程句柄
 HANDLE hThread = 0;
 //线程ID
 DWORD threadID = 0;
 SOCKET socketListen;
-SOCKADDR_IN addrClientList[ClientCount];
-SOCKET socClientList[ClientCount];
-
+vector<SocketInfo> socClientList;
 DWORD WINAPI WaitConnect(LPVOID lpParam);
+DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam);
+bool SendData(SOCKET socket, TCHAR* data);
+
 
 void StartListen(TCHAR* ip, int port)
 {
@@ -56,6 +64,7 @@ void StartListen(TCHAR* ip, int port)
 			{
 				_tprintf(_T("监听成功\n"), showIP, port);
 				hThread = ::CreateThread(NULL, 0, WaitConnect, NULL, NULL, &threadID);
+				::CreateThread(NULL, 0, ListenClientSocketStatus, NULL, NULL, &threadID);
 			}
 			else
 			{
@@ -81,7 +90,7 @@ void CleanSocket()
 {
 	for (int i = 0; i < ClientCount; i++)
 	{
-		closesocket(socClientList[i]);
+		closesocket(socClientList[i].socket);
 	}
 	_tprintf(_T("已关闭客户端所有Socket\n"));
 	closesocket(socketListen);
@@ -89,31 +98,66 @@ void CleanSocket()
 	WSACleanup();
 }
 
-
+//监听客户端连接线程
 DWORD WINAPI WaitConnect(LPVOID lpParam)
 {
-	int i = 0;
 	int len = sizeof(SOCKADDR);
 	while (true)
 	{
+		int socketLen = socClientList.size();
 		//客户端连接已满,不接受新客户端连接
-		if (i == ClientCount - 1)
+		if (socketLen == ClientCount)
 		{
 			continue;
 		}
 
+		SocketInfo info = {};
+
 		//等待客户端连接
-		SOCKET socClient = accept(socketListen, (SOCKADDR *)&addrClientList[i], &len);
-		_tprintf(_T("收到新客户端连接: %s:%d\n"), inet_ntoa(addrClientList[i].sin_addr), (int)addrClientList[i].sin_port);
-		socClientList[i] = socClient;
-		if (i == ClientCount - 1)
+		SOCKET socClient = accept(socketListen, (SOCKADDR *)&info.addr, &len);
+		_tprintf(_T("收到新客户端连接: %s:%d\n"), inet_ntoa(info.addr.sin_addr), (int)info.addr.sin_port);
+
+		info.connected = true;
+		info.socket = socClient;
+		socClientList.push_back(info);
+
+		if (socketLen == ClientCount - 1)
 		{
 			_tprintf(_T("服务端已满%d个客户端连接!,不再接受新客户端连接!\n"), ClientCount);
-			break;
 		}
-		i++;
 	}
-	CleanSocket();
 	return 0;
+}
+
+//监听客户端Socket状态
+DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam)
+{
+	while (true)
+	{
+		Sleep(3 * 1000);
+		for (vector<SocketInfo>::iterator it = socClientList.begin(); it != socClientList.end(); ++it)
+		{
+			if (it->connected)
+			{
+				if (!SendData(it->socket, _T("OK")))
+				{
+					closesocket(it->socket);
+					socClientList.erase(it);
+					_tprintf(_T("失去一个客户端连接\n"));
+				}
+			}
+		}
+	}
+}
+
+bool SendData(SOCKET socket, TCHAR* data)
+{
+	int len = sizeof(data);
+	int val = send(socket, data, len, 0);
+	if (val == SOCKET_ERROR)
+	{
+		return false;
+	}
+	return true;
 }
 
