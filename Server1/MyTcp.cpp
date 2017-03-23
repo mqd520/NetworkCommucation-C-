@@ -1,10 +1,11 @@
 #pragma once
 
+
 #include "stdafx.h"
 #include "MyTcp.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+#define new new(__FILE__, __LINE__)
 #endif
 
 #define ClientCount 2
@@ -32,7 +33,7 @@ void StartListen(TCHAR* ip, int port)
 		addr.sin_family = AF_INET;
 		addr.sin_port = htons(port);
 		TCHAR* showIP;//显示IP
-		if (ip == NULL || ip == "")
+		if (ip == NULL)
 		{
 			addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);//绑定本地任意IP地址
 			showIP = _T("127.0.0.1");
@@ -91,24 +92,28 @@ void CleanSocket()
 
 DWORD WINAPI WaitConnect(LPVOID lpParam)
 {
-	_tprintf(_T("开启新线程:ID=%d,Handle=%d\n"), threadID, hThread);
 	int i = 0;
 	int len = sizeof(SOCKADDR);
 	while (true)
 	{
+		//客户端连接已满,不接受新客户端连接
+		if (i == ClientCount - 1)
+		{
+			continue;
+		}
+
 		//等待客户端连接
 		SOCKET socClient = accept(socketListen, (SOCKADDR *)&addrClientList[i], &len);
 		_tprintf(_T("收到新客户端连接: %s:%d\n"), inet_ntoa(addrClientList[i].sin_addr), (int)addrClientList[i].sin_port);
 		socClientList[i] = socClient;
 		if (i == ClientCount - 1)
 		{
-			_tprintf(_T("服务端已满%d个客户端连接!\n"), ClientCount);
+			_tprintf(_T("服务端已满%d个客户端连接!,不再接受新客户端连接!\n"), ClientCount);
 			break;
 		}
 		i++;
 	}
 	CleanSocket();
-	_tprintf(_T("线程(ID=%d,Handle=%d)结束!\n"), threadID, hThread);
 	return 0;
 }
 

@@ -5,8 +5,7 @@
 #include <WinSock2.h>
 
 #pragma comment(lib, "ws2_32.lib")
-
-#define _CRT_SECURE_NO_WARNINGS
+#pragma warning(disable:4996)
 
 //¿ªÊ¼TCP¼àÌý
 void StartListen(TCHAR* ip, int port);
