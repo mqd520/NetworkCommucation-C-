@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "stdafx.h"
 #include "MyTcp.h"
 
@@ -10,6 +9,7 @@
 
 #define ClientCount 2
 
+//Socket信息
 struct SocketInfo
 {
 	SOCKET socket;
@@ -17,16 +17,20 @@ struct SocketInfo
 	SOCKADDR_IN addr;
 };
 
-//线程句柄
-HANDLE hThread = 0;
-//线程ID
-DWORD threadID = 0;
-SOCKET socketListen;
-vector<SocketInfo> socClientList;
+//线程信息
+struct ThreadInfo
+{
+	HANDLE hThread;
+	DWORD nThread;
+};
+
 DWORD WINAPI WaitConnect(LPVOID lpParam);
 DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam);
-bool SendData(SOCKET socket, TCHAR* data);
+DWORD WINAPI Recv(LPVOID lpParam);
 
+SOCKET socketListen;
+vector<SocketInfo> socClientList;
+vector<ThreadInfo> vecThread;
 
 void StartListen(TCHAR* ip, int port)
 {
@@ -63,8 +67,11 @@ void StartListen(TCHAR* ip, int port)
 			if (rec != SOCKET_ERROR)
 			{
 				_tprintf(_T("监听成功\n"), showIP, port);
-				hThread = ::CreateThread(NULL, 0, WaitConnect, NULL, NULL, &threadID);
-				::CreateThread(NULL, 0, ListenClientSocketStatus, NULL, NULL, &threadID);
+				ThreadInfo info1 = {}, info2 = {};
+				info1.hThread = ::CreateThread(NULL, 0, WaitConnect, NULL, NULL, &info1.nThread);
+				vecThread.push_back(info1);
+				info2.hThread = ::CreateThread(NULL, 0, ListenClientSocketStatus, NULL, NULL, &info2.nThread);
+				vecThread.push_back(info2);
 			}
 			else
 			{
@@ -121,6 +128,10 @@ DWORD WINAPI WaitConnect(LPVOID lpParam)
 		info.socket = socClient;
 		socClientList.push_back(info);
 
+		ThreadInfo info1 = {};
+		info1.hThread = ::CreateThread(NULL, 0, Recv, (LPVOID)socClient, NULL, &info1.nThread);
+		vecThread.push_back(info1);
+
 		if (socketLen == ClientCount - 1)
 		{
 			_tprintf(_T("服务端已满%d个客户端连接!,不再接受新客户端连接!\n"), ClientCount);
@@ -134,17 +145,18 @@ DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam)
 {
 	while (true)
 	{
-		Sleep(3 * 1000);
-		for (vector<SocketInfo>::iterator it = socClientList.begin(); it != socClientList.end(); ++it)
+		Sleep(2 * 1000);
+		for (int i = 0; i < (int)socClientList.size();)
 		{
-			if (it->connected)
+			if (!SendData(socClientList[i].socket, _T("OK")))
 			{
-				if (!SendData(it->socket, _T("OK")))
-				{
-					closesocket(it->socket);
-					socClientList.erase(it);
-					_tprintf(_T("失去一个客户端连接\n"));
-				}
+				closesocket(socClientList[i].socket);
+				socClientList.erase(socClientList.begin() + i);
+				_tprintf(_T("失去一个客户端连接\n"));
+			}
+			else
+			{
+				i++;
 			}
 		}
 	}
@@ -161,3 +173,17 @@ bool SendData(SOCKET socket, TCHAR* data)
 	return true;
 }
 
+//接收数据
+DWORD WINAPI Recv(LPVOID lpParam)
+{
+	SOCKET socket = (SOCKET)lpParam;
+	while (true)
+	{
+		TCHAR buf[1024] = { '\0' };
+		int len = recv(socket, buf, 1024, 0);
+		if (len > 0)
+		{
+			_tprintf(_T("收到数据：%s\n"), buf);
+		}
+	}
+}
