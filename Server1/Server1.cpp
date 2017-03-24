@@ -26,8 +26,6 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	}
 	Clean();
-
-	system(_T("pause"));
 	return 0;
 }
 

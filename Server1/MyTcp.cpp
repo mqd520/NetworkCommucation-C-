@@ -158,7 +158,7 @@ DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam)
 {
 	while (true)
 	{
-		Sleep(2 * 1000);
+		Sleep(1 * 1000);
 		for (int i = 0; i < (int)vecSocketList.size();)
 		{
 			if (!SendData(vecSocketList[i].socket, _T("OK")))
@@ -177,7 +177,7 @@ DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam)
 
 bool SendData(SOCKET socket, TCHAR* data)
 {
-	int len = sizeof(data);
+	int len = _tcslen(data);
 	int val = send(socket, data, len, 0);
 	if (val == SOCKET_ERROR)
 	{
