@@ -14,5 +14,5 @@ void StartListen(TCHAR* ip, int port);
 //发送数据
 bool SendData(SOCKET socket, TCHAR* data);
 //清理
-void CleanSocket();
+void Clean();
 

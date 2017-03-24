@@ -10,27 +10,39 @@
 #define ClientCount 2
 
 //Socket信息
-struct SocketInfo
+typedef struct tagSocketInfo
 {
 	SOCKET socket;
 	bool connected;
 	SOCKADDR_IN addr;
-};
+}SocketInfo;
 
 //线程信息
-struct ThreadInfo
+typedef struct tagThreadInfo
 {
 	HANDLE hThread;
 	DWORD nThread;
-};
+}ThreadInfo;
+
+//线程管理
+typedef struct tagThreadMgr
+{
+	ThreadInfo wait;
+	ThreadInfo status;
+	vector<ThreadInfo> recv;
+}ThreadMgr;
 
 DWORD WINAPI WaitConnect(LPVOID lpParam);
 DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam);
 DWORD WINAPI Recv(LPVOID lpParam);
+void CleanSocket();
 
+//服务端对象
 SOCKET socketListen;
-vector<SocketInfo> socClientList;
-vector<ThreadInfo> vecThread;
+//客户端Socket集合
+vector<SocketInfo> vecSocketList;
+//线程管理对象
+ThreadMgr trdMgr = {};
 
 void StartListen(TCHAR* ip, int port)
 {
@@ -67,11 +79,8 @@ void StartListen(TCHAR* ip, int port)
 			if (rec != SOCKET_ERROR)
 			{
 				_tprintf(_T("监听成功\n"), showIP, port);
-				ThreadInfo info1 = {}, info2 = {};
-				info1.hThread = ::CreateThread(NULL, 0, WaitConnect, NULL, NULL, &info1.nThread);
-				vecThread.push_back(info1);
-				info2.hThread = ::CreateThread(NULL, 0, ListenClientSocketStatus, NULL, NULL, &info2.nThread);
-				vecThread.push_back(info2);
+				trdMgr.wait.hThread = ::CreateThread(NULL, 0, WaitConnect, NULL, NULL, &trdMgr.wait.nThread);
+				trdMgr.status.hThread = ::CreateThread(NULL, 0, ListenClientSocketStatus, NULL, NULL, &trdMgr.status.nThread);
 			}
 			else
 			{
@@ -93,13 +102,17 @@ void StartListen(TCHAR* ip, int port)
 	}
 }
 
+//清理Socket
 void CleanSocket()
 {
-	for (int i = 0; i < ClientCount; i++)
+	if (vecSocketList.size() > 0)
 	{
-		closesocket(socClientList[i].socket);
+		for (int i = 0; i < (int)vecSocketList.size(); i++)
+		{
+			closesocket(vecSocketList[i].socket);
+		}
+		_tprintf(_T("已关闭客户端所有Socket\n"));
 	}
-	_tprintf(_T("已关闭客户端所有Socket\n"));
 	closesocket(socketListen);
 	_tprintf(_T("已关闭服务端Socket\n"));
 	WSACleanup();
@@ -111,7 +124,7 @@ DWORD WINAPI WaitConnect(LPVOID lpParam)
 	int len = sizeof(SOCKADDR);
 	while (true)
 	{
-		int socketLen = socClientList.size();
+		int socketLen = vecSocketList.size();
 		//客户端连接已满,不接受新客户端连接
 		if (socketLen == ClientCount)
 		{
@@ -126,11 +139,11 @@ DWORD WINAPI WaitConnect(LPVOID lpParam)
 
 		info.connected = true;
 		info.socket = socClient;
-		socClientList.push_back(info);
+		vecSocketList.push_back(info);
 
 		ThreadInfo info1 = {};
 		info1.hThread = ::CreateThread(NULL, 0, Recv, (LPVOID)socClient, NULL, &info1.nThread);
-		vecThread.push_back(info1);
+		trdMgr.recv.push_back(info1);
 
 		if (socketLen == ClientCount - 1)
 		{
@@ -146,12 +159,12 @@ DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam)
 	while (true)
 	{
 		Sleep(2 * 1000);
-		for (int i = 0; i < (int)socClientList.size();)
+		for (int i = 0; i < (int)vecSocketList.size();)
 		{
-			if (!SendData(socClientList[i].socket, _T("OK")))
+			if (!SendData(vecSocketList[i].socket, _T("OK")))
 			{
-				closesocket(socClientList[i].socket);
-				socClientList.erase(socClientList.begin() + i);
+				closesocket(vecSocketList[i].socket);
+				vecSocketList.erase(vecSocketList.begin() + i);
 				_tprintf(_T("失去一个客户端连接\n"));
 			}
 			else
@@ -185,5 +198,22 @@ DWORD WINAPI Recv(LPVOID lpParam)
 		{
 			_tprintf(_T("收到数据：%s\n"), buf);
 		}
+	}
+}
+
+void Clean()
+{
+	CleanSocket();
+	if (trdMgr.wait.hThread != 0)
+	{
+		TerminateThread(trdMgr.wait.hThread, 0);
+	}
+	if (trdMgr.status.hThread != 0)
+	{
+		TerminateThread(trdMgr.status.hThread, 0);
+	}
+	for (int i = 0; i < (int)trdMgr.recv.size(); i++)
+	{
+		TerminateThread(trdMgr.recv[i].hThread, 0);
 	}
 }

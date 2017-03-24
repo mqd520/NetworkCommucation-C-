@@ -25,7 +25,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			_tprintf(_T("无法识别命令!\n"));
 		}
 	}
-	CleanSocket();
+	Clean();
+
+	system(_T("pause"));
 	return 0;
 }
 
