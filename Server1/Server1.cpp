@@ -1,6 +1,5 @@
 // Server1.cpp : 定义控制台应用程序的入口点。
 //
-#pragma once
 
 #include "stdafx.h"
 #include "MyTcp.h"
