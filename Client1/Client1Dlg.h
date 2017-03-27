@@ -33,12 +33,16 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	//TCPClientRecvMsgœ˚œ¢œÏ”¶
 	afx_msg LRESULT OnTCPClientRecvMsg(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
 protected:
 	CListCtrl m_lc1;
-public:
 	CButton m_btn1;
+	CEdit m_edit1;
+	CButton m_btn2;
+	afx_msg void OnBnClickedButton2();
+	CString m_str1;
 };

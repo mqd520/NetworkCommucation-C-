@@ -37,6 +37,9 @@ void CClient1Dlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST4, m_lc1);
 	DDX_Control(pDX, IDC_BUTTON1, m_btn1);
+	DDX_Control(pDX, IDC_EDIT1, m_edit1);
+	DDX_Control(pDX, IDC_BUTTON2, m_btn2);
+	DDX_Text(pDX, IDC_EDIT1, m_str1);
 }
 
 BEGIN_MESSAGE_MAP(CClient1Dlg, CDialogEx)
@@ -44,6 +47,7 @@ BEGIN_MESSAGE_MAP(CClient1Dlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_MESSAGE(TCPClientRecvMsg, OnTCPClientRecvMsg)
 	ON_BN_CLICKED(IDC_BUTTON1, &CClient1Dlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CClient1Dlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -59,7 +63,7 @@ BOOL CClient1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
-	m_tcpClient = new CTcpClient(this->m_hWnd, _T("192.168.0.15"), 8011);
+	m_tcpClient = new CTcpClient(this->m_hWnd, _T("192.168.0.16"), 8011);
 	m_lc1.InsertColumn(0, _T("Col1"), 0, 100);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -118,15 +122,23 @@ void CClient1Dlg::OnBnClickedButton1()
 	}
 }
 
+//TCPClientRecvMsg消息响应
 afx_msg LRESULT CClient1Dlg::OnTCPClientRecvMsg(WPARAM wParam, LPARAM lParam)
 {
-	char* str1 = (char*)wParam;
-	char ch[3] = { '\0' };
-	strncpy(ch, str1, 2);
-	wchar_t* str = MultiByteToUTF8(ch);
-	MessageBox(str);
-	//int i = m_lc1.GetItemCount();
-	//m_lc1.InsertItem(i, str);
+	char* str = ReadMultiByte((char*)wParam, lParam);
+	wchar_t* str1 = MultiByteToUTF8(str);
 	//delete str;
+	int i = m_lc1.GetItemCount();
+	m_lc1.InsertItem(i, str1);
+	delete str1;
 	return 0;
+}
+
+
+void CClient1Dlg::OnBnClickedButton2()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	UpdateData(true);
+	char str[5] = "abcd";
+	m_tcpClient->SendData(str, sizeof(m_str1));
 }

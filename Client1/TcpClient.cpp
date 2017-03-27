@@ -135,19 +135,20 @@ DWORD WINAPI StartReadData(LPVOID lpParam)
 		int len = recv(pTCPClient->GetServerSocket(), buf, 1024, 0);
 		if (len > 0)
 		{
-			pTCPClient->OnRecvData(buf);
+			pTCPClient->OnRecvData(buf, len);
 		}
 	}
-	TRACE("线程结束!\n");
 	return 0;
 }
 
 //接收数据
-void CTcpClient::OnRecvData(char* buf)
+void CTcpClient::OnRecvData(char buf[], int len)
 {
 	//string s = buf;
 	//WriteLine(s);
-	::PostMessage(m_hwnd, TCPClientRecvMsg, (WPARAM)buf, NULL);
+	char* buf1 = new char[len];
+	memcpy(buf1, buf, len);
+	::PostMessage(m_hwnd, TCPClientRecvMsg, (WPARAM)buf1, len);
 }
 
 //清理线程
@@ -164,4 +165,29 @@ void CTcpClient::Dispose()
 {
 	CleanSocket();
 	CleanSocket();
+}
+
+//发送数据
+bool CTcpClient::SendData(char* buf, int len)
+{
+	bool b = false;
+	int sended = 0;
+	while (true)
+	{
+		if (sended == len)
+		{
+			b = true;
+			break;
+		}
+		int result = send(m_socket, buf, len - sended, 0);
+		if (result == SOCKET_ERROR)
+		{
+			break;
+		}
+		else
+		{
+			sended += result;
+		}
+	}
+	return b;
 }

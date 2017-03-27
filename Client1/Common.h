@@ -9,3 +9,5 @@ using namespace std;
 wchar_t* MultiByteToUTF8(const char* str);
 //UTF-8转多字节
 char* UTF8ToMultiByte(const wchar_t* str);
+//从字节流中读取多字节字符串
+char* ReadMultiByte(char* buf, int len);

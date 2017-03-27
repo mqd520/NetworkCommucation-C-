@@ -34,9 +34,11 @@ public:
 	//获取Socket
 	SOCKET GetServerSocket();
 	//接收数据
-	void OnRecvData(char* buf);
+	void OnRecvData(char buf[], int len);
 	//主动释放资源
 	void Dispose();
+	//发送数据
+	bool SendData(char* buf, int len);
 protected:
 	HWND m_hwnd;//关联的窗口句柄
 	const TCHAR* m_strIP;//IP

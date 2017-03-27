@@ -18,3 +18,15 @@ char* UTF8ToMultiByte(const wchar_t* str)
 	WideCharToMultiByte(CP_ACP, 0, str, -1, strMultiByte, nlen, NULL, NULL);
 	return strMultiByte;
 }
+
+//从字节流中读取多字节字符串
+char* ReadMultiByte(char* buf, int len)
+{
+	char str[1024] = { 0 };
+	if (len < 1024)
+	{
+		memcpy(str, buf, len);
+	}
+	delete buf;
+	return str;
+}
