@@ -5,26 +5,35 @@
 #pragma once
 
 #ifndef __AFXWIN_H__
-	#error "在包含此文件之前包含“stdafx.h”以生成 PCH 文件"
+#error "在包含此文件之前包含“stdafx.h”以生成 PCH 文件"
 #endif
 
 #include "resource.h"		// 主符号
+#include "TcpClient.h"
 
 
 // CClient1App: 
 // 有关此类的实现，请参阅 Client1.cpp
 //
 
+//接收数据
+void OnRecvData(BYTE buf[], int len);
+
 class CClient1App : public CWinApp
 {
 public:
 	CClient1App();
+	CTcpClient m_tcpClient;//TCPClient客户端对象
+	//发送数据
+	bool SendData(BYTE buf[], int len);
+	//连接服务端
+	bool ConnectServer(TCHAR* ip, int port);
 
-// 重写
+	// 重写
 public:
 	virtual BOOL InitInstance();
 
-// 实现
+	// 实现
 
 	DECLARE_MESSAGE_MAP()
 };

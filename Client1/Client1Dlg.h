@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "TcpClient.h"
 #include "afxcmn.h"
 #include "afxwin.h"
 
@@ -18,7 +17,7 @@ public:
 
 	// 对话框数据
 	enum { IDD = IDD_CLIENT1_DIALOG };
-
+	void OnRecvData(TCHAR* str);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
@@ -26,17 +25,13 @@ protected:
 	// 实现
 protected:
 	HICON m_hIcon;
-
-	CTcpClient* m_tcpClient;
-
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	//TCPClientRecvMsg消息响应
-	afx_msg LRESULT OnTCPClientRecvMsg(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
-public:
+protected:
 	afx_msg void OnBnClickedButton1();
 protected:
 	CListCtrl m_lc1;
@@ -45,4 +40,11 @@ protected:
 	CButton m_btn2;
 	afx_msg void OnBnClickedButton2();
 	CString m_str1;
+	CString m_strServerIP;
+	int m_nServerPort;
+	CIPAddressCtrl m_ipServerIP;
+	CEdit m_edServerPort;
+	afx_msg void OnBnClickedButton3();
+	CEdit m_editResult;
+	CString m_strResult;
 };

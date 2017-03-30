@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "Client1.h"
 #include "Client1Dlg.h"
+#include "NetTool.h"
+#include "Common.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -93,5 +95,31 @@ BOOL CClient1App::InitInstance()
 	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
 	//  而不是启动应用程序的消息泵。
 	return FALSE;
+}
+
+void OnRecvData(BYTE buf[], int len)
+{
+	string str = ReadMultiByteStr(buf, len);
+	wstring wstr = MultiByteToUTF8(str.c_str());
+	((CClient1Dlg*)theApp.m_pMainWnd)->OnRecvData((TCHAR*)wstr.c_str());
+}
+
+//发送数据
+bool CClient1App::SendData(BYTE buf[], int len)
+{
+	bool b = false;
+	if (m_tcpClient.IsInited())
+	{
+		b = m_tcpClient.SendData(buf, len);
+		delete buf;
+	}
+	return b;
+}
+
+//连接服务端
+bool CClient1App::ConnectServer(TCHAR* ip, int port)
+{
+	m_tcpClient.Init(ip, port, (LPOnRecvData)OnRecvData);
+	return m_tcpClient.StartConnect();
 }
 

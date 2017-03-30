@@ -9,22 +9,25 @@
 
 using namespace std;
 
-#define TCPClientRecvMsg	(WM_USER+1000)
-
-//线程信息
-typedef struct tagThreadInfo
-{
-	HANDLE hThread;
-	DWORD nThreadID;
-}ThreadInfo;
+//数据回调指针
+typedef void(*LPOnRecvData)(BYTE buf[], int len);
 
 //TcpClient客户端类
 class CTcpClient
 {
+private:
+	typedef struct tagThreadInfo
+	{
+		HANDLE hThread;
+		DWORD nThreadID;
+	}ThreadInfo;
+
 public:
-	CTcpClient(HWND hwnd, const TCHAR* ip, int port);
+	CTcpClient();
 	~CTcpClient();
 
+	//初始化
+	void Init(const TCHAR* ip, int port, LPOnRecvData lpfn = NULL);
 	//连接到服务端
 	bool StartConnect();
 	//关闭与服务端连接
@@ -33,14 +36,15 @@ public:
 	TCHAR* GetLastError();
 	//获取Socket
 	SOCKET GetServerSocket();
-	//接收数据
-	void OnRecvData(char buf[], int len);
+	//接收数据事件
+	void OnRecvData(BYTE buf[], int len);
 	//主动释放资源
 	void Dispose();
 	//发送数据
-	bool SendData(char* buf, int len);
+	bool SendData(BYTE buf[], int len);
+	//是否已初始化
+	bool IsInited();
 protected:
-	HWND m_hwnd;//关联的窗口句柄
 	const TCHAR* m_strIP;//IP
 	int m_nPort;//端口
 	bool m_bIsCleaned;//是否已清理
@@ -49,10 +53,11 @@ protected:
 	SOCKADDR_IN m_addrSrv;//服务端地址
 	SOCKET m_socket;//客户端Socket
 	ThreadInfo m_readThreadInfo;//数据读取线程信息
-
+	bool m_bInited;//初始化
+	LPOnRecvData m_lpOnRecvData;//数据回调指针
 
 	//初始化
-	bool Init();
+	bool InitSocket();
 	//清理Socket
 	void CleanSocket();
 	//写入一行日志

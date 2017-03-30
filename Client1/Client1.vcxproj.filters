@@ -40,6 +40,9 @@
       <Filter>TcpClient</Filter>
     </ClInclude>
     <ClInclude Include="Common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="NetTool.h">
       <Filter>TcpClient</Filter>
     </ClInclude>
   </ItemGroup>
@@ -57,6 +60,9 @@
       <Filter>TcpClient</Filter>
     </ClCompile>
     <ClCompile Include="Common.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NetTool.cpp">
       <Filter>TcpClient</Filter>
     </ClCompile>
   </ItemGroup>

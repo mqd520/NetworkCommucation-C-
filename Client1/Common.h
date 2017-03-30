@@ -1,13 +1,17 @@
 #pragma once
+#pragma comment(lib, "ws2_32.lib")
+#pragma warning(disable:4996)
 
 //#include <tchar.h>
 #include <Stringapiset.h>
+#include <WinSock2.h>
+#include <string>
 
 using namespace std;
 
 //多字节转UTF-8
-wchar_t* MultiByteToUTF8(const char* str);
+wstring MultiByteToUTF8(const char* str);
 //UTF-8转多字节
-char* UTF8ToMultiByte(const wchar_t* str);
-//从字节流中读取多字节字符串
-char* ReadMultiByte(char* buf, int len);
+string UTF8ToMultiByte(const wchar_t* str);
+//获取本地IP
+bool GetLocalIP(TCHAR* ip);

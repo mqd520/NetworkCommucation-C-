@@ -9,11 +9,10 @@
 //开始读取数据
 DWORD WINAPI StartReadData(LPVOID lpParam);
 
-CTcpClient::CTcpClient(HWND hwnd, const TCHAR* ip, int port)
+CTcpClient::CTcpClient()
 {
-	m_hwnd = hwnd;
-	m_strIP = ip;
-	m_nPort = port;
+	m_strIP = NULL;
+	m_nPort = NULL;
 	m_bIsCleaned = false;
 	m_bIsConnected = false;
 	m_strLastError = NULL;
@@ -26,8 +25,17 @@ CTcpClient::~CTcpClient()
 	Dispose();
 }
 
-//Socket初始化
-bool CTcpClient::Init()
+//初始化
+void CTcpClient::Init(const TCHAR* ip, int port, LPOnRecvData lpfn)
+{
+	m_bInited = true;
+	m_strIP = ip;
+	m_nPort = port;
+	m_lpOnRecvData = lpfn;
+}
+
+//初始化Socket
+bool CTcpClient::InitSocket()
 {
 	WSADATA wsaData;
 
@@ -41,9 +49,8 @@ bool CTcpClient::Init()
 	m_addrSrv.sin_family = AF_INET;
 	m_addrSrv.sin_port = htons(m_nPort);
 #ifdef _UNICODE
-	char* strTmp = UTF8ToMultiByte(m_strIP);
-	m_addrSrv.sin_addr.S_un.S_addr = inet_addr(strTmp);
-	delete strTmp;
+	string strTmp = UTF8ToMultiByte(m_strIP);
+	m_addrSrv.sin_addr.S_un.S_addr = inet_addr(strTmp.c_str());
 #else
 	m_addrSrv.sin_addr.S_un.S_addr = inet_addr(m_strIP);
 #endif
@@ -77,7 +84,7 @@ void CTcpClient::CleanSocket()
 //连接到服务端
 bool CTcpClient::StartConnect()
 {
-	if (Init())
+	if (InitSocket())
 	{
 		int result = connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
 		if (result == SOCKET_ERROR)
@@ -86,7 +93,7 @@ bool CTcpClient::StartConnect()
 			CleanSocket();
 			return false;
 		}
-		::CreateThread(NULL, 0, StartReadData, this, NULL, &m_readThreadInfo.nThreadID);
+		m_readThreadInfo.hThread = ::CreateThread(NULL, 0, StartReadData, this, NULL, &m_readThreadInfo.nThreadID);
 		return true;
 	}
 	return false;
@@ -135,20 +142,22 @@ DWORD WINAPI StartReadData(LPVOID lpParam)
 		int len = recv(pTCPClient->GetServerSocket(), buf, 1024, 0);
 		if (len > 0)
 		{
-			pTCPClient->OnRecvData(buf, len);
+			pTCPClient->OnRecvData((BYTE*)buf, len);
 		}
 	}
 	return 0;
 }
 
-//接收数据
-void CTcpClient::OnRecvData(char buf[], int len)
+//接收数据事件
+void CTcpClient::OnRecvData(BYTE buf[], int len)
 {
-	//string s = buf;
-	//WriteLine(s);
-	char* buf1 = new char[len];
-	memcpy(buf1, buf, len);
-	::PostMessage(m_hwnd, TCPClientRecvMsg, (WPARAM)buf1, len);
+	if (m_lpOnRecvData)
+	{
+		BYTE* buf1 = new BYTE[len];
+		memcpy(buf1, buf, len);
+		m_lpOnRecvData(buf, len);
+		delete buf1;
+	}
 }
 
 //清理线程
@@ -157,6 +166,8 @@ void CTcpClient::CleanThread()
 	if (m_readThreadInfo.hThread > 0)
 	{
 		::TerminateThread(m_readThreadInfo.hThread, 0);
+		::CloseHandle(m_readThreadInfo.hThread);
+		m_readThreadInfo = { 0 };
 	}
 }
 
@@ -164,11 +175,11 @@ void CTcpClient::CleanThread()
 void CTcpClient::Dispose()
 {
 	CleanSocket();
-	CleanSocket();
+	CleanThread();
 }
 
 //发送数据
-bool CTcpClient::SendData(char* buf, int len)
+bool CTcpClient::SendData(BYTE buf[], int len)
 {
 	bool b = false;
 	int sended = 0;
@@ -179,7 +190,7 @@ bool CTcpClient::SendData(char* buf, int len)
 			b = true;
 			break;
 		}
-		int result = send(m_socket, buf, len - sended, 0);
+		int result = send(m_socket, (char*)buf, len - sended, 0);
 		if (result == SOCKET_ERROR)
 		{
 			break;
@@ -190,4 +201,10 @@ bool CTcpClient::SendData(char* buf, int len)
 		}
 	}
 	return b;
+}
+
+//是否已初始化
+bool CTcpClient::IsInited()
+{
+	return m_bInited;
 }

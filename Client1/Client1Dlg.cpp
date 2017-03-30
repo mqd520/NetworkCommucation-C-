@@ -6,13 +6,12 @@
 #include "Client1.h"
 #include "Client1Dlg.h"
 #include "afxdialogex.h"
-#include "TcpClient.h"
+#include "NetTool.h"
 #include "Common.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 
 // CClient1Dlg 对话框
 
@@ -26,28 +25,30 @@ CClient1Dlg::CClient1Dlg(CWnd* pParent /*=NULL*/)
 
 CClient1Dlg::~CClient1Dlg()
 {
-	if (m_tcpClient)
-	{
-		delete m_tcpClient;
-	}
+
 }
 
 void CClient1Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST4, m_lc1);
 	DDX_Control(pDX, IDC_BUTTON1, m_btn1);
 	DDX_Control(pDX, IDC_EDIT1, m_edit1);
 	DDX_Control(pDX, IDC_BUTTON2, m_btn2);
 	DDX_Text(pDX, IDC_EDIT1, m_str1);
+	DDX_Control(pDX, IDC_IPADDRESS1, m_ipServerIP);
+	DDX_Control(pDX, IDC_EDIT2, m_edServerPort);
+	DDX_Text(pDX, IDC_IPADDRESS1, m_strServerIP);
+	DDX_Text(pDX, IDC_EDIT2, m_nServerPort);
+	DDX_Control(pDX, IDC_EDIT3, m_editResult);
+	DDX_Text(pDX, IDC_EDIT3, m_strResult);
 }
 
 BEGIN_MESSAGE_MAP(CClient1Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_MESSAGE(TCPClientRecvMsg, OnTCPClientRecvMsg)
 	ON_BN_CLICKED(IDC_BUTTON1, &CClient1Dlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CClient1Dlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CClient1Dlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -63,8 +64,12 @@ BOOL CClient1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
-	m_tcpClient = new CTcpClient(this->m_hWnd, _T("192.168.0.16"), 8011);
-	m_lc1.InsertColumn(0, _T("Col1"), 0, 100);
+	TCHAR ip[20] = { '\0' };
+	if (GetLocalIP(ip))
+	{
+		m_ipServerIP.SetWindowText(ip);
+	}
+	m_edServerPort.SetWindowText(_T("8080"));
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 
@@ -106,39 +111,39 @@ HCURSOR CClient1Dlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-
-
 void CClient1Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	if (m_tcpClient->StartConnect())
+	UpdateData(TRUE);
+	if (theApp.ConnectServer(m_strServerIP.GetBuffer(), m_nServerPort))
 	{
-		//MessageBox(_T("连接成功!"));
 		m_btn1.EnableWindow(false);
-	}
-	else
-	{
-		//MessageBox(_T("连接失败!"));
+		m_ipServerIP.EnableWindow(FALSE);
+		m_edServerPort.EnableWindow(FALSE);
 	}
 }
-
-//TCPClientRecvMsg消息响应
-afx_msg LRESULT CClient1Dlg::OnTCPClientRecvMsg(WPARAM wParam, LPARAM lParam)
-{
-	char* str = ReadMultiByte((char*)wParam, lParam);
-	wchar_t* str1 = MultiByteToUTF8(str);
-	//delete str;
-	int i = m_lc1.GetItemCount();
-	m_lc1.InsertItem(i, str1);
-	delete str1;
-	return 0;
-}
-
 
 void CClient1Dlg::OnBnClickedButton2()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(true);
-	char str[5] = "abcd";
-	m_tcpClient->SendData(str, sizeof(m_str1));
+	int len = 0;
+	BYTE* buf = WriteUTF8Str(m_str1.GetBuffer(), &len);
+	if (!theApp.SendData(buf, len))
+	{
+		OnRecvData(_T("发送失败!"));
+	}
+}
+
+void CClient1Dlg::OnBnClickedButton3()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+void CClient1Dlg::OnRecvData(TCHAR* str)
+{
+	m_editResult.GetWindowText(m_strResult);
+	m_strResult = _T("\r\n") + m_strResult;
+	m_strResult = str + m_strResult;
+	m_editResult.SetWindowTextW(m_strResult);
 }
