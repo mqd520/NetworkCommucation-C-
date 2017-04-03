@@ -9,6 +9,16 @@
 
 using namespace std;
 
+#ifndef SAFE_DELETE
+#define SAFE_DELETE(p)	{if(p){delete p;p=NULL;}}
+#endif // !SAFE_DELETE
+
+#ifndef SAFE_DELETE_ARRAY
+#define SAFE_DELETE_ARRAY(p) { if(p){delete[] p;  p=NULL;} }
+#endif // !SAFE_DELETE_ARRAY
+
+
+
 //数据回调指针
 typedef void(*LPOnRecvData)(BYTE buf[], int len);
 

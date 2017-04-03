@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "TcpClient.h"
+#include "NetTool.h"
 #include "Common.h"
 
-#ifdef _DEBUG
-#define new new(__FILE__, __LINE__)
-#endif
+using namespace Common;
 
 //开始读取数据
 DWORD WINAPI StartReadData(LPVOID lpParam);
@@ -155,8 +154,18 @@ void CTcpClient::OnRecvData(BYTE buf[], int len)
 	{
 		BYTE* buf1 = new BYTE[len];
 		memcpy(buf1, buf, len);
-		m_lpOnRecvData(buf, len);
-		delete buf1;
+		try
+		{
+			m_lpOnRecvData(buf, len);
+			if (buf1)
+			{
+				delete buf1;
+			}
+		}
+		catch (int)
+		{
+			delete buf1;
+		}
 	}
 }
 

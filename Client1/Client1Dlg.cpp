@@ -9,6 +9,8 @@
 #include "NetTool.h"
 #include "Common.h"
 
+using namespace NetTool;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif

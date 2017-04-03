@@ -18,10 +18,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Client1.h">
+    <ClInclude Include="Client2.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Client1Dlg.h">
+    <ClInclude Include="Client2Dlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -33,36 +33,30 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Client1.cpp">
+    <ClCompile Include="Client2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Client1Dlg.cpp">
+    <ClCompile Include="Client2Dlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Common.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Client1.rc">
+    <ResourceCompile Include="Client2.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\Client1.rc2">
+    <None Include="res\Client2.rc2">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\Client1.ico">
+    <Image Include="res\Client2.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
