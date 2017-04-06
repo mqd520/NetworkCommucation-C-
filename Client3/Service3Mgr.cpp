@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "Server3.h"
-#include "Protocol3Handle.h"
+#include "Service3Mgr.h"
+#include "ProtocolMgr.h"
 
 void OnServer3RecvData(BYTE buf[], int len);
-CServer3Mgr* pServer3Mgr;
+CService3Mgr* pServer3Mgr;
 
-CServer3Mgr::CServer3Mgr()
+CService3Mgr::CService3Mgr()
 {
 	m_stream = new CByteStream(1024);
 	m_streamCatch = NULL;
 	m_lpfn = NULL;
 }
 
-CServer3Mgr::~CServer3Mgr()
+CService3Mgr::~CService3Mgr()
 {
 	if (m_stream)
 	{
@@ -27,17 +27,17 @@ CServer3Mgr::~CServer3Mgr()
 	m_tcp.Dispose();
 }
 
-bool CServer3Mgr::Init(TCHAR* ip, int port, LPOnServer3RecvData lpfn)
+bool CService3Mgr::Init(TCHAR* ip, int port, LPOnServer3RecvData lpfn)
 {
 	pServer3Mgr = this;
 	m_lpfn = lpfn;
-	CProtocol3Handle::Init();
+	m_protocol.Init();
 	m_tcp.Init(ip, port, OnServer3RecvData);
 	m_tcp.StartConnect();
 	return true;
 }
 
-void CServer3Mgr::OnRecvData(BYTE buf[], int len)
+void CService3Mgr::OnRecvData(BYTE buf[], int len)
 {
 	if (m_streamCatch)
 	{
@@ -74,29 +74,43 @@ void CServer3Mgr::OnRecvData(BYTE buf[], int len)
 	}
 }
 
-void CServer3Mgr::Unpacket()
+void CService3Mgr::Unpacket()
 {
-	int headlen = CProtocol3Handle::GetHeadLen();
+	int headlen = m_protocol.GetHeadLen();
 	if (m_stream->GetDataLen() > headlen)
 	{
 		int len = 0;
-		Package3Type type = CProtocol3Handle::GetPackageType(m_stream->GetBuf(), headlen);//获取包类型
+		Package3Type type = m_protocol.GetPackageType(m_stream->GetBuf(), headlen);//获取包类型
 		if (type != Package3Type::invalid)
 		{
-			int datalen = CProtocol3Handle::GetDataLen(m_stream->GetBuf(), headlen);//获取包体数据长度
+			int datalen = m_protocol.GetDataLen(m_stream->GetBuf(), headlen);//获取包体数据长度
 			int packgetlen = datalen + headlen;//计算包总长度
 			BYTE* buf = m_stream->Read(packgetlen);//从字节流对象中读取一个完整包数据
 			if (buf != NULL)
 			{
-				void* data = CProtocol3Handle::Unpacket(buf, packgetlen);//解包
+				void* data = m_protocol.Unpacket(buf, packgetlen);//解包
 				delete buf;
-				if (m_lpfn)
+				if (AnalyticsPackage(type, (LPPackage3Base)data) && m_lpfn)
 				{
 					m_lpfn(type, data);
+				}
+				else
+				{
+					ReleasePackage(type, (LPPackage3Base)data);
 				}
 			}
 		}
 	}
+}
+
+bool CService3Mgr::AnalyticsPackage(Package3Type type, LPPackage3Base data)
+{
+	if (type == Package3Type::type4)//心跳包
+	{
+		LPKeepAlivePackage pack = (LPKeepAlivePackage)data;
+		return pack->n == 0 ? true : false;
+	}
+	return true;
 }
 
 void OnServer3RecvData(BYTE buf[], int len)
@@ -107,26 +121,26 @@ void OnServer3RecvData(BYTE buf[], int len)
 	}
 }
 
-void CServer3Mgr::ReleasePackage(Package3Type type, LPPackage3Base data)
+void CService3Mgr::ReleasePackage(Package3Type type, LPPackage3Base data)
 {
-	ParserInfo parser = CProtocol3Handle::GetPacketParser(type);
+	ParserInfo parser = m_protocol.GetPacketParser(type);
 	if (parser.release)
 	{
 		parser.release(data);
 	}
 }
 
-bool CServer3Mgr::Send(Package3Type type, LPPackage3Base data)
+bool CService3Mgr::Send(Package3Type type, LPPackage3Base data)
 {
 	int len = 0;
-	BYTE* buf = CProtocol3Handle::Packet(type, data, &len);
+	BYTE* buf = m_protocol.Packet(type, data, &len);
 	return m_tcp.SendData(buf, len);
 }
 
-void CServer3Mgr::SimulateServer3Data(Package3Type type, Package3Base* data)
+void CService3Mgr::SimulateServer3Data(Package3Type type, Package3Base* data)
 {
 	int len = 0;
-	BYTE* buf = CProtocol3Handle::Packet(type, data, &len);
+	BYTE* buf = m_protocol.Packet(type, data, &len);
 	m_tcp.OnRecvData(buf, len);
 	delete buf;
 }

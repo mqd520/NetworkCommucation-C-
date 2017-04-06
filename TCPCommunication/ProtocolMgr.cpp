@@ -1,14 +1,12 @@
 #include "stdafx.h"
-#include "Protocol3Handle.h"
+#include "ProtocolMgr.h"
 #include "ProtocolTool.h"
 
 using namespace ProtocolTool;
 
 namespace Protocol3
 {
-	vector<CProtocol3Handle::Package3ParseInfo> CProtocol3Handle::m_vecParserList;
-
-	void CProtocol3Handle::Init()
+	void CProtocolMgr::Init()
 	{
 		m_vecParserList.push_back({ Package3Type::type1, {
 			(LPPackage3Unparse)CPackage3Mgr::Package31Unparse,
@@ -25,9 +23,14 @@ namespace Protocol3
 			(LPPackage3Parse)CPackage3Mgr::CommonParse<Package33>,
 			CPackage3Mgr::CommonRelease } }
 		);
+		m_vecParserList.push_back({ Package3Type::type4, {
+			(LPPackage3Unparse)CPackage3Mgr::CommonUnparse<KeepAlivePackage>,
+			(LPPackage3Parse)CPackage3Mgr::CommonParse<KeepAlivePackage>,
+			CPackage3Mgr::CommonRelease } }
+		);
 	}
 
-	BYTE* CProtocol3Handle::Packet(Package3Type type, BYTE buf[], int bodyLen, int* packetLen)
+	BYTE* CProtocolMgr::Packet(Package3Type type, BYTE buf[], int bodyLen, int* packetLen)
 	{
 		*packetLen = Protocol3_HeadLen + bodyLen;
 		BYTE* data = new BYTE[*packetLen];
@@ -41,7 +44,7 @@ namespace Protocol3
 		return data;
 	}
 
-	BYTE* CProtocol3Handle::Packet(Package3Type type, LPPackage3Base data, int* packetLen)
+	BYTE* CProtocolMgr::Packet(Package3Type type, LPPackage3Base data, int* packetLen)
 	{
 		ParserInfo parser = GetPacketParser(type);
 		if (parser.parse)
@@ -58,7 +61,7 @@ namespace Protocol3
 		return NULL;
 	}
 
-	void* CProtocol3Handle::Unpacket(BYTE buf[], int len)
+	void* CProtocolMgr::Unpacket(BYTE buf[], int len)
 	{
 		void* p = NULL;
 		if (len > Protocol3_HeadLen)
@@ -70,12 +73,12 @@ namespace Protocol3
 		return p;
 	}
 
-	int CProtocol3Handle::GetHeadLen()
+	int CProtocolMgr::GetHeadLen()
 	{
 		return Protocol3_HeadLen;
 	}
 
-	int CProtocol3Handle::GetDataLen(BYTE buf[], int len)
+	int CProtocolMgr::GetDataLen(BYTE buf[], int len)
 	{
 		if (len + 1 > Protocol3_HeadLen)
 		{
@@ -87,7 +90,7 @@ namespace Protocol3
 		}
 	}
 
-	Package3Type CProtocol3Handle::GetPackageType(BYTE buf[], int len)
+	Package3Type CProtocolMgr::GetPackageType(BYTE buf[], int len)
 	{
 		if (len + 1 > Protocol3_HeadLen)
 		{
@@ -100,7 +103,7 @@ namespace Protocol3
 		}
 	}
 
-	ParserInfo CProtocol3Handle::GetPacketParser(Package3Type type)
+	ParserInfo CProtocolMgr::GetPacketParser(Package3Type type)
 	{
 		ParserInfo p = { 0 };
 		for (vector<Package3ParseInfo>::iterator it = m_vecParserList.begin(); it < m_vecParserList.end(); ++it)
@@ -114,7 +117,7 @@ namespace Protocol3
 		return p;
 	}
 
-	BYTE* CProtocol3Handle::GetDataBuf(BYTE* buf, int len)
+	BYTE* CProtocolMgr::GetDataBuf(BYTE* buf, int len)
 	{
 		int datalen = GetDataLen(buf, len);
 		int headlen = GetHeadLen();

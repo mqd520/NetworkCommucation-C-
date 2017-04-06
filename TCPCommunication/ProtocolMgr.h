@@ -16,11 +16,12 @@ namespace Protocol3
 		LPPackage3Release	release;//释放器
 	}ParserInfo, *LPParserInfo;
 
-	class CProtocol3Handle
+	//协议管理
+	class CProtocolMgr
 	{
 	public:
-		CProtocol3Handle(){};
-		~CProtocol3Handle(){};
+		CProtocolMgr(){};
+		~CProtocolMgr(){};
 
 		//************************************
 		// Method:    初始化
@@ -29,7 +30,7 @@ namespace Protocol3
 		// Returns:   void
 		// Qualifier:
 		//************************************
-		static void Init();
+		void Init();
 
 		//************************************
 		// Method:    封包(调用方释放缓冲区指针)
@@ -42,7 +43,7 @@ namespace Protocol3
 		// Parameter: 包体数据缓冲区长度
 		// Parameter: 包缓冲区长度(输出)
 		//************************************
-		static BYTE* Packet(Package3Type type, BYTE buf[], int bodyLen, int* packetLen);
+		BYTE* Packet(Package3Type type, BYTE buf[], int bodyLen, int* packetLen);
 
 		//************************************
 		// Method:    封包(调用方释放缓冲区指针)
@@ -54,7 +55,7 @@ namespace Protocol3
 		// Parameter: 包体结构体指针
 		// Parameter: 包缓冲区长度(输出)
 		//************************************
-		static BYTE* Packet(Package3Type type, LPPackage3Base data, int* packetLen);
+		BYTE* Packet(Package3Type type, LPPackage3Base data, int* packetLen);
 
 		//************************************
 		// Method:    从一个完整包缓冲区中解析一个包体数据
@@ -65,7 +66,7 @@ namespace Protocol3
 		// Parameter: 完整包缓冲区指针
 		// Parameter: 缓冲区长度
 		//************************************
-		static void* Unpacket(BYTE buf[], int len);
+		void* Unpacket(BYTE buf[], int len);
 
 		//************************************
 		// Method:    获取包头长度
@@ -74,7 +75,7 @@ namespace Protocol3
 		// Returns:   包头长度
 		// Qualifier:
 		//************************************
-		static int GetHeadLen();
+		int GetHeadLen();
 
 		//************************************
 		// Method:    从缓冲区中获取包体数据长度
@@ -85,7 +86,7 @@ namespace Protocol3
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区长度
 		//************************************
-		static int GetDataLen(BYTE buf[], int len);
+		int GetDataLen(BYTE buf[], int len);
 
 		//************************************
 		// Method:    从缓冲区中获取包类型
@@ -96,7 +97,7 @@ namespace Protocol3
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区长度
 		//************************************
-		static Package3Type GetPackageType(BYTE buf[], int len);
+		Package3Type GetPackageType(BYTE buf[], int len);
 
 		//************************************
 		// Method:    获取包解析器(调用方无需释放指针)
@@ -106,7 +107,7 @@ namespace Protocol3
 		// Qualifier:
 		// Parameter: 包类型
 		//************************************
-		static ParserInfo GetPacketParser(Package3Type type);
+		ParserInfo GetPacketParser(Package3Type type);
 
 		//************************************
 		// Method:    获取包体缓冲区指针
@@ -117,7 +118,7 @@ namespace Protocol3
 		// Parameter: 包缓冲区指针 
 		// Parameter: 包缓冲区长度
 		//************************************
-		static BYTE* GetDataBuf(BYTE* buf, int len);
+		BYTE* GetDataBuf(BYTE* buf, int len);
 
 	protected:
 		//Package3包解析信息
@@ -127,6 +128,6 @@ namespace Protocol3
 			ParserInfo	parser;//解析器信息
 		}Package3ParseInfo, *LPPackage3ParseInfo;
 
-		static vector<Package3ParseInfo> m_vecParserList;//包解析器集合
+		vector<Package3ParseInfo> m_vecParserList;//包解析器集合
 	};
 }

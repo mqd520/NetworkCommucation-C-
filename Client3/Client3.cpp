@@ -70,7 +70,7 @@ BOOL CClient3App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	m_server3Mgr = new CServer3Mgr();
+	m_server3Mgr = new CService3Mgr();
 	m_server3Mgr->Init((TCHAR*)_T("192.168.0.15"), 8080, OnServer3RecvData);
 
 	CClient3Dlg dlg;

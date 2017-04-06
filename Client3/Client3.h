@@ -9,7 +9,7 @@
 #endif
 
 #include "resource.h"		// 主符号
-#include "Server3.h"
+#include "Service3Mgr.h"
 
 // CClient3App: 
 // 有关此类的实现，请参阅 Client3.cpp
@@ -23,7 +23,7 @@ public:
 	// 重写
 public:
 	virtual BOOL InitInstance();
-	CServer3Mgr* m_server3Mgr;
+	CService3Mgr* m_server3Mgr;
 
 	// 实现
 

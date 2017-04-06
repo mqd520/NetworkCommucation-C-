@@ -36,7 +36,7 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Server3.h">
+    <ClInclude Include="Service3Mgr.h">
       <Filter>服务管理</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,7 +50,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Server3.cpp">
+    <ClCompile Include="Service3Mgr.cpp">
       <Filter>服务管理</Filter>
     </ClCompile>
   </ItemGroup>

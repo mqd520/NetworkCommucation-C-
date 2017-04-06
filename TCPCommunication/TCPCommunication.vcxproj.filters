@@ -7,29 +7,14 @@
     <Filter Include="02 Socket">
       <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03 通信协议">
-      <UniqueIdentifier>{311cddd5-6596-48f2-9b74-2a1e97957bae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03 通信协议\方式1">
-      <UniqueIdentifier>{d2d3f2fa-c076-4726-aecf-b0bf0a95a19e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03 通信协议\方式1\Protocol1">
-      <UniqueIdentifier>{94dae1fd-73e9-42c9-9ba6-be1618e7d15c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03 通信协议\方式1\Protocol2">
-      <UniqueIdentifier>{cb15fbfe-cbc6-4c02-a192-f4912179dab1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03 通信协议\方式2">
-      <UniqueIdentifier>{e9c4afc9-e1a0-4350-a1b9-0f86659003a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04 其它">
+    <Filter Include="05 其它">
       <UniqueIdentifier>{386534d3-12d0-48f5-b9f7-5d159a020830}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03 通信协议\方式2\Protocol3">
-      <UniqueIdentifier>{faa4756b-e112-498f-b447-ad9a85116f2e}</UniqueIdentifier>
+    <Filter Include="04 包管理">
+      <UniqueIdentifier>{5afd592d-4ef9-491e-bf58-91f6535a006e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03 通信协议\方式2\Protocol4">
-      <UniqueIdentifier>{0f483e40-e9a3-444f-b5e9-e033bfdd9e06}</UniqueIdentifier>
+    <Filter Include="03 协议管理">
+      <UniqueIdentifier>{311cddd5-6596-48f2-9b74-2a1e97957bae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,10 +28,10 @@
       <Filter>02 Socket</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>04 其它</Filter>
+      <Filter>05 其它</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>04 其它</Filter>
+      <Filter>05 其它</Filter>
     </ClInclude>
     <ClInclude Include="ProtocolTool.h">
       <Filter>01 工具</Filter>
@@ -54,23 +39,17 @@
     <ClInclude Include="MemoryTool.h">
       <Filter>01 工具</Filter>
     </ClInclude>
-    <ClInclude Include="Package1.h">
-      <Filter>03 通信协议\方式1\Protocol1</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol1Handle.h">
-      <Filter>03 通信协议\方式1\Protocol1</Filter>
-    </ClInclude>
-    <ClInclude Include="Package3.h">
-      <Filter>03 通信协议\方式2\Protocol3</Filter>
-    </ClInclude>
     <ClInclude Include="Common.h">
       <Filter>01 工具</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol3Handle.h">
-      <Filter>03 通信协议\方式2\Protocol3</Filter>
+    <ClInclude Include="ProtocolMgr.h">
+      <Filter>03 协议管理</Filter>
+    </ClInclude>
+    <ClInclude Include="Package3.h">
+      <Filter>04 包管理</Filter>
     </ClInclude>
     <ClInclude Include="Package3Mgr.h">
-      <Filter>03 通信协议\方式2\Protocol3</Filter>
+      <Filter>04 包管理</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -81,7 +60,7 @@
       <Filter>02 Socket</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>04 其它</Filter>
+      <Filter>05 其它</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolTool.cpp">
       <Filter>01 工具</Filter>
@@ -89,17 +68,14 @@
     <ClCompile Include="MemoryTool.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
-    <ClCompile Include="Protocol1Handle.cpp">
-      <Filter>03 通信协议\方式1\Protocol1</Filter>
-    </ClCompile>
     <ClCompile Include="Common.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
-    <ClCompile Include="Protocol3Handle.cpp">
-      <Filter>03 通信协议\方式2\Protocol3</Filter>
+    <ClCompile Include="ProtocolMgr.cpp">
+      <Filter>03 协议管理</Filter>
     </ClCompile>
     <ClCompile Include="Package3Mgr.cpp">
-      <Filter>03 通信协议\方式2\Protocol3</Filter>
+      <Filter>04 包管理</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

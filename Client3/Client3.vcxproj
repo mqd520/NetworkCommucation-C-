@@ -110,14 +110,14 @@
     <ClInclude Include="Client3.h" />
     <ClInclude Include="Client3Dlg.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Server3.h" />
+    <ClInclude Include="Service3Mgr.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client3.cpp" />
     <ClCompile Include="Client3Dlg.cpp" />
-    <ClCompile Include="Server3.cpp" />
+    <ClCompile Include="Service3Mgr.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

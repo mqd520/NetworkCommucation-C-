@@ -1,9 +1,10 @@
 #pragma once
 
 #include <tchar.h>
-#include "TcpClient.h"
 #include "MemoryTool.h"
 #include "Package3.h"
+#include "ProtocolMgr.h"
+#include "TcpClient.h"
 
 using namespace Protocol3;
 using namespace MemoryTool;
@@ -11,16 +12,17 @@ using namespace MemoryTool;
 //数据回调指针
 typedef void(*LPOnServer3RecvData)(Package3Type type, void* data);
 
-class CServer3Mgr
+class CService3Mgr
 {
 private:
-	CTcpClient m_tcp;
+	CTcpClient m_tcp;//tcp客户端管理对象
+	CProtocolMgr m_protocol;//协议管理对象
 	CByteStream* m_stream;//字节流对象
 	CByteStream* m_streamCatch;//字节流缓存对象
 	LPOnServer3RecvData m_lpfn;//数据回调指针
 public:
-	CServer3Mgr();
-	~CServer3Mgr();
+	CService3Mgr();
+	~CService3Mgr();
 
 	//************************************
 	// Method:    初始化
@@ -52,6 +54,17 @@ public:
 	// Qualifier:
 	//************************************
 	void Unpacket();
+
+	//************************************
+	// Method:    分析包,表示是否需要继续处理
+	// FullName:  CServer3Mgr::AnalyticsPackage
+	// Access:    public 
+	// Returns:   否需要继续处理
+	// Qualifier:
+	// Parameter: 包类型
+	// Parameter: 包体结构体指针
+	//************************************
+	bool AnalyticsPackage(Package3Type type, LPPackage3Base data);
 
 	//************************************
 	// Method:    释放包体结构体

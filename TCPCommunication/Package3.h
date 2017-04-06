@@ -36,6 +36,7 @@ namespace Protocol3
 		type1 = 1,//Package31
 		type2 = 2,//Package32
 		type3 = 3,//Package33
+		type4 = 4,//KeepAlivePackage
 		invalid = 0//ÎÞÐ§
 	};
 
@@ -67,4 +68,9 @@ namespace Protocol3
 		int n2;
 		char str2[20];
 	}Package33, *LPPackage33;
+
+	typedef	struct tagKeepAlivePackage :public Package3Base
+	{
+		BYTE n = 0;
+	}KeepAlivePackage, *LPKeepAlivePackage;
 }
