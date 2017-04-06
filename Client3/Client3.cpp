@@ -7,7 +7,7 @@
 #include "Client3Dlg.h"
 #include "Package3.h"
 
-using namespace Protocol3;
+using namespace ProtocolMgr;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -115,14 +115,14 @@ void OnServer3RecvData(Package3Type type, void* data)
 	LPPackage3Base packet = NULL;
 	switch (type)
 	{
-	case Protocol3::type1:
+	case Package3Type::type1:
 		//SendMessage(NULL, UINT, 0, 0);
 		break;
-	case Protocol3::type2:
+	case Package3Type::type2:
 		break;
-	case Protocol3::type3:
+	case Package3Type::type3:
 		break;
-	case Protocol3::invalid:
+	case Package3Type::invalid:
 		break;
 	default:
 		break;

@@ -6,7 +6,7 @@
 using namespace ProtocolTool;
 using namespace Common;
 
-namespace Protocol3
+namespace PackageMgr
 {
 	BYTE* CPackage3Mgr::Package31Unparse(LPPackage3Base data, int* len)
 	{

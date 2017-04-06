@@ -6,7 +6,8 @@
 #include "ProtocolMgr.h"
 #include "TcpClient.h"
 
-using namespace Protocol3;
+using namespace ProtocolMgr;
+using namespace PackageMgr;
 using namespace MemoryTool;
 
 //数据回调指针

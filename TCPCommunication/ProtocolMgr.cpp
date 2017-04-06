@@ -4,7 +4,7 @@
 
 using namespace ProtocolTool;
 
-namespace Protocol3
+namespace ProtocolMgr
 {
 	void CProtocolMgr::Init()
 	{

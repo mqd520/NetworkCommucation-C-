@@ -8,7 +8,8 @@
 #include "afxdialogex.h"
 #include "Package3.h"
 
-using namespace Protocol3;
+using namespace ProtocolMgr;
+using namespace PackageMgr;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

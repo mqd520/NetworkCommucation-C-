@@ -16,7 +16,7 @@
 	7:数据长度(低位)
 	*/
 
-namespace Protocol3
+namespace PackageMgr
 {
 	//包头定义
 	typedef struct tagPackage3Head

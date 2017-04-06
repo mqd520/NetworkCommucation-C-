@@ -5,8 +5,9 @@
 #include "Package3Mgr.h"
 
 using namespace std;
+using namespace PackageMgr;
 
-namespace Protocol3
+namespace ProtocolMgr
 {
 	//½âÎöÆ÷ĞÅÏ¢
 	typedef struct tagParserInfo

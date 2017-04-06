@@ -2,7 +2,7 @@
 
 #include "Package3.h"
 
-namespace Protocol3
+namespace PackageMgr
 {
 	//Package3包反解析指针
 	typedef BYTE* (*LPPackage3Unparse)(LPPackage3Base data, int* len);
