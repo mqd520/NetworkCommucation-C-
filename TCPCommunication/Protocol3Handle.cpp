@@ -6,44 +6,68 @@ using namespace ProtocolTool;
 
 namespace Protocol3
 {
-	CProtocol3Handle::CProtocol3Handle()
-	{
+	vector<CProtocol3Handle::Package3ParseInfo> CProtocol3Handle::m_vecParserList;
 
+	void CProtocol3Handle::Init()
+	{
+		m_vecParserList.push_back({ Package3Type::type1, {
+			(LPPackage3Unparse)CPackage3Mgr::Package31Unparse,
+			(LPPackage3Parse)CPackage3Mgr::Package31Parse,
+			CPackage3Mgr::Package31Release } }
+		);
+		m_vecParserList.push_back({ Package3Type::type2, {
+			(LPPackage3Unparse)CPackage3Mgr::CommonUnparse<Package32>,
+			(LPPackage3Parse)CPackage3Mgr::CommonParse<Package32>,
+			CPackage3Mgr::CommonRelease } }
+		);
+		m_vecParserList.push_back({ Package3Type::type3, {
+			(LPPackage3Unparse)CPackage3Mgr::CommonUnparse<Package33>,
+			(LPPackage3Parse)CPackage3Mgr::CommonParse<Package33>,
+			CPackage3Mgr::CommonRelease } }
+		);
 	}
 
-	CProtocol3Handle::~CProtocol3Handle()
+	BYTE* CProtocol3Handle::Packet(Package3Type type, BYTE buf[], int bodyLen, int* packetLen)
 	{
-
-	}
-
-	BYTE* CProtocol3Handle::Packet(Package3Type type, BYTE buf[], int len)
-	{
-		BYTE* data = new BYTE[Protocol3_HeadLen + len];
+		*packetLen = Protocol3_HeadLen + bodyLen;
+		BYTE* data = new BYTE[*packetLen];
 		Package3Head head;
-		head.highDataLen = GetTrdByteFromInt(len);
-		head.lowDataLen = GetFouthByteFromInt(len);
+		head.highDataLen = GetTrdByteFromInt(bodyLen);
+		head.lowDataLen = GetFouthByteFromInt(bodyLen);
 		head.highPackageType = GetTrdByteFromInt(type);
 		head.lowPackageType = GetFouthByteFromInt(type);
 		memcpy(data, &head, Protocol3_HeadLen);
-		memcpy(data + Protocol3_HeadLen, buf, len);
+		memcpy(data + Protocol3_HeadLen, buf, bodyLen);
 		return data;
 	}
 
-	void* CProtocol3Handle::Unpacket(BYTE buf[], int len, Package3Type type)
+	BYTE* CProtocol3Handle::Packet(Package3Type type, LPPackage3Base data, int* packetLen)
 	{
-		switch (type)
+		ParserInfo parser = GetPacketParser(type);
+		if (parser.parse)
 		{
-		case Protocol3::type1:
-			return (void*)Parse<Package31>(buf, len);
-			break;
-		case Protocol3::type2:
-			return (void*)Parse<Package32>(buf, len);
-			break;
-		default:
-			type = Package3Type::invalid;
-			break;
+			int len = 0;
+			BYTE* buf = parser.unparse(data, &len);
+			if (len > 0)
+			{
+				BYTE* result = Packet(type, buf, len, packetLen);
+				delete buf;
+				return result;
+			}
 		}
 		return NULL;
+	}
+
+	void* CProtocol3Handle::Unpacket(BYTE buf[], int len)
+	{
+		void* p = NULL;
+		if (len > Protocol3_HeadLen)
+		{
+			Package3Type type = GetPackageType(buf, len);
+			ParserInfo parser = GetPacketParser(type);
+			p = (void*)parser.parse(buf + Protocol3_HeadLen, len - Protocol3_HeadLen);
+		}
+		return p;
 	}
 
 	int CProtocol3Handle::GetHeadLen()
@@ -53,9 +77,9 @@ namespace Protocol3
 
 	int CProtocol3Handle::GetDataLen(BYTE buf[], int len)
 	{
-		if (len > Protocol3_HeadLen)
+		if (len + 1 > Protocol3_HeadLen)
 		{
-			return MergeByte(buf[5], buf[6]);
+			return MergeByte(buf[6], buf[5]);
 		}
 		else
 		{
@@ -65,9 +89,9 @@ namespace Protocol3
 
 	Package3Type CProtocol3Handle::GetPackageType(BYTE buf[], int len)
 	{
-		if (len > Protocol3_HeadLen)
+		if (len + 1 > Protocol3_HeadLen)
 		{
-			int type = MergeByte(buf[3], buf[4]);
+			int type = MergeByte(buf[4], buf[3]);
 			return (Package3Type)type;
 		}
 		else
@@ -76,16 +100,26 @@ namespace Protocol3
 		}
 	}
 
-	template<typename T>
-	T* CProtocol3Handle::Parse(BYTE buf[], int len)
+	ParserInfo CProtocol3Handle::GetPacketParser(Package3Type type)
 	{
-		if (len > Protocol3_HeadLen)
+		ParserInfo p = { 0 };
+		for (vector<Package3ParseInfo>::iterator it = m_vecParserList.begin(); it < m_vecParserList.end(); ++it)
 		{
-			int size = sizeof(T);
-			T* p = new T[size];
-			memcpy(p, buf + Protocol3_HeadLen, len - Protocol3_HeadLen);
-			return p;
+			if (it->type == type)
+			{
+				p = it->parser;
+				break;
+			}
 		}
-		return NULL;
+		return p;
+	}
+
+	BYTE* CProtocol3Handle::GetDataBuf(BYTE* buf, int len)
+	{
+		int datalen = GetDataLen(buf, len);
+		int headlen = GetHeadLen();
+		BYTE* result = new BYTE[datalen];
+		memcpy(result, buf + headlen, datalen);
+		return result;
 	}
 }

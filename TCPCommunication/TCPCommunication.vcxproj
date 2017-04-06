@@ -86,6 +86,7 @@
     <ClInclude Include="NetTool.h" />
     <ClInclude Include="Package1.h" />
     <ClInclude Include="Package3.h" />
+    <ClInclude Include="Package3Mgr.h" />
     <ClInclude Include="Protocol1Handle.h" />
     <ClInclude Include="Protocol3Handle.h" />
     <ClInclude Include="ProtocolTool.h" />
@@ -97,6 +98,7 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="NetTool.cpp" />
+    <ClCompile Include="Package3Mgr.cpp" />
     <ClCompile Include="Protocol1Handle.cpp" />
     <ClCompile Include="Protocol3Handle.cpp" />
     <ClCompile Include="ProtocolTool.cpp" />

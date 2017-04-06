@@ -1,16 +1,31 @@
 #pragma once
 
-#include <Stringapiset.h>
 #include <string>
 
 using namespace std;
 
 namespace Common
 {
-	//多字节转UTF-8
+	
+	//************************************
+	// Method:    多字节字符串转UTF8字符串
+	// FullName:  Common::MultiByteToUTF8
+	// Access:    public 
+	// Returns:   std::wstring
+	// Qualifier:
+	// Parameter: const char * str
+	//************************************
 	wstring MultiByteToUTF8(const char* str);
 
-	//UTF-8转多字节
+	
+	//************************************
+	// Method:    UTF8字符串转多字节字符串
+	// FullName:  Common::UTF8ToMultiByte
+	// Access:    public 
+	// Returns:   std::string
+	// Qualifier:
+	// Parameter: const wchar_t * str
+	//************************************
 	string UTF8ToMultiByte(const wchar_t* str);
 
 	//************************************
@@ -33,10 +48,13 @@ namespace Common
 	//************************************
 	int GetWStrByteCount(wchar_t* str);
 
-#ifdef _UNICODE
-	//获取字符串字节数
-#define	GetStrByteCount	GetWStrByteCount
-#else
-#define GetStrByteCount	GetAStrByteCount
-#endif
+	//************************************
+	// Method:    获取字符串字节数
+	// FullName:  Common::GetStrByteCount
+	// Access:    public 
+	// Returns:   int
+	// Qualifier:
+	// Parameter: TCHAR * str
+	//************************************
+	int GetStrByteCount(TCHAR* str);
 }

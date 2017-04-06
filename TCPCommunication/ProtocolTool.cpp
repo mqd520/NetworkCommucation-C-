@@ -23,8 +23,34 @@ namespace ProtocolTool
 		return (BYTE)((n << 24) >> 24);
 	}
 
-	int MergeByte(BYTE high, BYTE low)
+	int MergeByte(BYTE fouth, BYTE trd, BYTE sec, BYTE fst)
 	{
-		return (((int)high) << 8) + (int)low;
+		int result = 0;
+		if (fst != 0)
+		{
+			result += (int)(fst << 24);
+		}
+		if (sec != 0)
+		{
+			result += (int)(sec << 16);
+		}
+		if (trd != 0)
+		{
+			result += (int)(trd << 8);
+		}
+		if (fouth != 0)
+		{
+			result += (int)fouth;
+		}
+		return result;
+	}
+
+	int GetLenFromMultiByteBuf(BYTE* buf, int start, int end)
+	{
+		char* buf1 = new char[end - start];
+		memcpy(buf1, buf + start, end - start);
+		int len = strlen(buf1) + 1;
+		delete buf1;
+		return len;
 	}
 }

@@ -3,7 +3,6 @@
 
 namespace Common
 {
-	//多字节转UTF-8
 	wstring MultiByteToUTF8(const char* str)
 	{
 		int nlen = MultiByteToWideChar(CP_ACP, 0, str, -1, NULL, 0);
@@ -14,7 +13,6 @@ namespace Common
 		return result;
 	}
 
-	//UTF-8转多字节
 	string UTF8ToMultiByte(const wchar_t* str)
 	{
 		int nlen = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
@@ -35,5 +33,17 @@ namespace Common
 	int GetWStrByteCount(wchar_t* str)
 	{
 		return (wcslen(str) + 1) * 2;
+	}
+
+	int GetStrByteCount(TCHAR* str)
+	{
+		if (sizeof(TCHAR) == 1)
+		{
+			return	GetAStrByteCount((char*)str);
+		}
+		else
+		{
+			return GetWStrByteCount((wchar_t*)str);
+		}
 	}
 }

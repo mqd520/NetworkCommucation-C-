@@ -63,11 +63,14 @@
     <ClInclude Include="Package3.h">
       <Filter>03 通信协议\方式2\Protocol3</Filter>
     </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>01 工具</Filter>
+    </ClInclude>
     <ClInclude Include="Protocol3Handle.h">
       <Filter>03 通信协议\方式2\Protocol3</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>01 工具</Filter>
+    <ClInclude Include="Package3Mgr.h">
+      <Filter>03 通信协议\方式2\Protocol3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -89,11 +92,14 @@
     <ClCompile Include="Protocol1Handle.cpp">
       <Filter>03 通信协议\方式1\Protocol1</Filter>
     </ClCompile>
+    <ClCompile Include="Common.cpp">
+      <Filter>01 工具</Filter>
+    </ClCompile>
     <ClCompile Include="Protocol3Handle.cpp">
       <Filter>03 通信协议\方式2\Protocol3</Filter>
     </ClCompile>
-    <ClCompile Include="Common.cpp">
-      <Filter>01 工具</Filter>
+    <ClCompile Include="Package3Mgr.cpp">
+      <Filter>03 通信协议\方式2\Protocol3</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

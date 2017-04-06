@@ -4,22 +4,39 @@
 
 #pragma once
 
+#include <vector>
+
+using namespace std;
+
+class MyClass
+{
+public:
+	MyClass(){};
+	~MyClass(){};
+
+	static vector<int> m_vec;
+
+	static void Init()
+	{
+		m_vec.push_back(1);
+	};
+};
 
 // CClient3Dlg 对话框
 class CClient3Dlg : public CDialogEx
 {
-// 构造
+	// 构造
 public:
 	CClient3Dlg(CWnd* pParent = NULL);	// 标准构造函数
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_CLIENT3_DIALOG };
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
 
-// 实现
+	// 实现
 protected:
 	HICON m_hIcon;
 
@@ -30,4 +47,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
 };

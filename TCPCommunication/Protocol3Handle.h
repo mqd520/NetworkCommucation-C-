@@ -1,28 +1,71 @@
 #pragma once
 
+#include <vector>
 #include "Package3.h"
+#include "Package3Mgr.h"
+
+using namespace std;
 
 namespace Protocol3
 {
+	//解析器信息
+	typedef struct tagParserInfo
+	{
+		LPPackage3Unparse	unparse;//反解析器
+		LPPackage3Parse		parse;//解析器
+		LPPackage3Release	release;//释放器
+	}ParserInfo, *LPParserInfo;
+
 	class CProtocol3Handle
 	{
 	public:
-		CProtocol3Handle();
-		~CProtocol3Handle();
+		CProtocol3Handle(){};
+		~CProtocol3Handle(){};
 
 		//************************************
-		// Method:    封包,调用者释放内存
+		// Method:    初始化
+		// FullName:  Protocol3::CProtocol3Handle::Init
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		static void Init();
+
+		//************************************
+		// Method:    封包(调用方释放缓冲区指针)
 		// FullName:  Protocol3::CProtocol3Handle::Packet
 		// Access:    public 
-		// Returns:   BYTE*
+		// Returns:   包缓冲区指针
 		// Qualifier:
-		// Parameter: 包类类型
+		// Parameter: 包类型
 		// Parameter: 包体数据缓冲区指针
+		// Parameter: 包体数据缓冲区长度
+		// Parameter: 包缓冲区长度(输出)
+		//************************************
+		static BYTE* Packet(Package3Type type, BYTE buf[], int bodyLen, int* packetLen);
+
+		//************************************
+		// Method:    封包(调用方释放缓冲区指针)
+		// FullName:  Protocol3::CProtocol3Handle::Packet
+		// Access:    public static 
+		// Returns:   包缓冲区指针
+		// Qualifier:
+		// Parameter: 包类型
+		// Parameter: 包体结构体指针
+		// Parameter: 包缓冲区长度(输出)
+		//************************************
+		static BYTE* Packet(Package3Type type, LPPackage3Base data, int* packetLen);
+
+		//************************************
+		// Method:    从一个完整包缓冲区中解析一个包体数据
+		// FullName:  Protocol3::CProtocol3Handle::Unpacket
+		// Access:    public 
+		// Returns:   包体结构体指针
+		// Qualifier:
+		// Parameter: 完整包缓冲区指针
 		// Parameter: 缓冲区长度
 		//************************************
-		BYTE* Packet(Package3Type type, BYTE buf[], int len);
-
-		void* Unpacket(BYTE buf[], int len, Package3Type type);
+		static void* Unpacket(BYTE buf[], int len);
 
 		//************************************
 		// Method:    获取包头长度
@@ -31,41 +74,59 @@ namespace Protocol3
 		// Returns:   包头长度
 		// Qualifier:
 		//************************************
-		int GetHeadLen();
+		static int GetHeadLen();
 
 		//************************************
-		// Method:    从一个完整包缓冲区中获取包体数据长度
+		// Method:    从缓冲区中获取包体数据长度
 		// FullName:  Protocol3::CProtocol3Handle::GetDataLen
 		// Access:    public 
 		// Returns:   int
 		// Qualifier:
-		// Parameter: 一个完整包的字节数组
-		// Parameter: 字节数组长度
+		// Parameter: 缓冲区指针
+		// Parameter: 缓冲区长度
 		//************************************
-		int GetDataLen(BYTE buf[], int len);
+		static int GetDataLen(BYTE buf[], int len);
 
 		//************************************
-		// Method:    从一个完整包缓冲区中获取包类型
+		// Method:    从缓冲区中获取包类型
 		// FullName:  Protocol3::CProtocol3Handle::GetPackageType
 		// Access:    public 
 		// Returns:   包类型
 		// Qualifier:
-		// Parameter: 一个完整包的字节数组
-		// Parameter: 字节数组长度
+		// Parameter: 缓冲区指针
+		// Parameter: 缓冲区长度
 		//************************************
-		Package3Type GetPackageType(BYTE buf[], int len);
+		static Package3Type GetPackageType(BYTE buf[], int len);
+
+		//************************************
+		// Method:    获取包解析器(调用方无需释放指针)
+		// FullName:  Protocol3::CProtocol3Handle::GetMgr
+		// Access:    protected static 
+		// Returns:   Protocol3::Package3Mgr*
+		// Qualifier:
+		// Parameter: 包类型
+		//************************************
+		static ParserInfo GetPacketParser(Package3Type type);
+
+		//************************************
+		// Method:    获取包体缓冲区指针
+		// FullName:  Protocol3::CProtocol3Handle::GetDataBuf
+		// Access:    public static 
+		// Returns:   包体缓冲区指针
+		// Qualifier:
+		// Parameter: 包缓冲区指针 
+		// Parameter: 包缓冲区长度
+		//************************************
+		static BYTE* GetDataBuf(BYTE* buf, int len);
 
 	protected:
-		//************************************
-		// Method:    解析数据,用于连续内存的包体数据结构
-		// FullName:  Protocol3::CProtocol3Handle::Parse
-		// Access:    protected 
-		// Returns:   包体数据结构指针(需要调用者释放)
-		// Qualifier:
-		// Parameter: 一个完整包的字节数组
-		// Parameter: 字节数组长度
-		//************************************
-		template<typename T>
-		T* Parse(BYTE buf[], int len);
+		//Package3包解析信息
+		typedef struct tagPackage3ParseInfo
+		{
+			Package3Type type;//包类型
+			ParserInfo	parser;//解析器信息
+		}Package3ParseInfo, *LPPackage3ParseInfo;
+
+		static vector<Package3ParseInfo> m_vecParserList;//包解析器集合
 	};
 }

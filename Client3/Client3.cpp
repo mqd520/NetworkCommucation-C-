@@ -5,6 +5,9 @@
 #include "stdafx.h"
 #include "Client3.h"
 #include "Client3Dlg.h"
+#include "Package3.h"
+
+using namespace Protocol3;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,6 +34,8 @@ CClient3App::CClient3App()
 
 CClient3App theApp;
 
+//数据回调
+void OnServer3RecvData(Package3Type type, void* data);
 
 // CClient3App 初始化
 
@@ -65,6 +70,9 @@ BOOL CClient3App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
+	m_server3Mgr = new CServer3Mgr();
+	m_server3Mgr->Init((TCHAR*)_T("192.168.0.15"), 8080, OnServer3RecvData);
+
 	CClient3Dlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
@@ -95,3 +103,29 @@ BOOL CClient3App::InitInstance()
 	return FALSE;
 }
 
+int CClient3App::ExitInstance()
+{
+	// TODO:  在此添加专用代码和/或调用基类
+	delete m_server3Mgr;
+	return CWinApp::ExitInstance();
+}
+
+void OnServer3RecvData(Package3Type type, void* data)
+{
+	LPPackage3Base packet = NULL;
+	switch (type)
+	{
+	case Protocol3::type1:
+		//SendMessage(NULL, UINT, 0, 0);
+		break;
+	case Protocol3::type2:
+		break;
+	case Protocol3::type3:
+		break;
+	case Protocol3::invalid:
+		break;
+	default:
+		break;
+	}
+	theApp.m_server3Mgr->ReleasePackage(type, (LPPackage3Base)data);
+}

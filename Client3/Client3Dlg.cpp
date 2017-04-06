@@ -7,9 +7,6 @@
 #include "Client3Dlg.h"
 #include "afxdialogex.h"
 #include "Package3.h"
-#include "Protocol3Handle.h"
-#include "NetTool.h"
-#include "Common.h"
 
 using namespace Protocol3;
 
@@ -19,8 +16,6 @@ using namespace Protocol3;
 
 
 // CClient3Dlg 对话框
-
-
 
 CClient3Dlg::CClient3Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CClient3Dlg::IDD, pParent)
@@ -37,6 +32,7 @@ BEGIN_MESSAGE_MAP(CClient3Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CClient3Dlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CClient3Dlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -95,26 +91,18 @@ HCURSOR CClient3Dlg::OnQueryDragIcon()
 void CClient3Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	//int n = 16843009;
-	//BYTE fst = ProtocolTool::GetFstByteFromInt(n);
-	//BYTE sec = ProtocolTool::GetSecByteFromInt(n);
-	//BYTE trd = ProtocolTool::GetTrdByteFromInt(n);
-	//BYTE fouth = ProtocolTool::GetFouthByteFromInt(n);
+	Package31 packet1;
+	packet1.strUsername = _T("eguser001");
+	packet1.strPwd = _T("123456");
+	theApp.m_server3Mgr->SimulateServer3Data(Package3Type::type1, &packet1);
+}
 
-	//BYTE high = 1;
-	//BYTE low = 1;
-	//int n = ProtocolTool::MergeByte(high, low);
 
-	CProtocol3Handle handler;
-	Package31 package;
-	package.strUsername = _T("eguser001汉字");
-	package.strPwd = _T("123456");
-	int len = Common::GetWStrByteCount(L"eguser001汉字");
-	BYTE* data1 = new BYTE[len];
-	memcpy(data1, package.strUsername, len);
-	BYTE* buf1 = new BYTE[sizeof(package.strUsername) + sizeof(package.strPwd)];
-
-	//BYTE* buf1 = handler.Packet(Package3Type::type1, );
-	delete buf1;
-	delete data1;
+void CClient3Dlg::OnBnClickedButton2()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	Package31 packet1;
+	packet1.strUsername = _T("eguser001");
+	packet1.strPwd = _T("123456");
+	theApp.m_server3Mgr->Send(Package3Type::type1, &packet1);
 }

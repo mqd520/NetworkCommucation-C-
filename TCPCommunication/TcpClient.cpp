@@ -17,6 +17,7 @@ CTcpClient::CTcpClient()
 	m_strLastError = NULL;
 	m_socket = NULL;
 	memset(&m_addrSrv, 0, sizeof(SOCKADDR_IN));
+	memset(&m_readThreadInfo, 0, sizeof(ThreadInfo));
 }
 
 CTcpClient::~CTcpClient()
@@ -152,19 +153,19 @@ void CTcpClient::OnRecvData(BYTE buf[], int len)
 {
 	if (m_lpOnRecvData)
 	{
-		BYTE* buf1 = new BYTE[len];
-		memcpy(buf1, buf, len);
+		//BYTE* buf1 = new BYTE[len];
+		//memcpy(buf1, buf, len);
 		try
 		{
 			m_lpOnRecvData(buf, len);
-			if (buf1)
-			{
-				delete buf1;
-			}
+			//if (buf1)
+			//{
+			//	delete buf1;
+			//}
 		}
 		catch (int)
 		{
-			delete buf1;
+			//delete buf1;
 		}
 	}
 }

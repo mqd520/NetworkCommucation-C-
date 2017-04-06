@@ -1,7 +1,5 @@
 #pragma once
 
-#include <minwindef.h>
-
 namespace ProtocolTool
 {
 	//************************************
@@ -45,13 +43,27 @@ namespace ProtocolTool
 	BYTE GetFouthByteFromInt(int n);
 
 	//************************************
-	// Method:    合并2个字节到int
+	// Method:    合并字节到int
 	// FullName:  ProtocolTool::MergeByte
 	// Access:    public 
 	// Returns:   int
 	// Qualifier:
-	// Parameter: 高位字节
-	// Parameter: 低位字节
+	// Parameter: BYTE fouth
+	// Parameter: BYTE trd
+	// Parameter: BYTE sec
+	// Parameter: BYTE fst
 	//************************************
-	int MergeByte(BYTE high, BYTE low);
+	int MergeByte(BYTE fouth = 0, BYTE trd = 0, BYTE sec = 0, BYTE fst = 0);
+
+	//************************************
+	// Method:    从多字节字符串缓冲区中获取字符个数
+	// FullName:  ProtocolTool::GetLenFromMultiByteBuf
+	// Access:    public 
+	// Returns:   int
+	// Qualifier:
+	// Parameter: 多字节字符串缓冲区
+	// Parameter: 起始位置
+	// Parameter: 结束位置
+	//************************************
+	int GetLenFromMultiByteBuf(BYTE* buf, int start, int end);
 }

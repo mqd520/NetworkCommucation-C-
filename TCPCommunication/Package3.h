@@ -33,22 +33,38 @@ namespace Protocol3
 	//包类型
 	enum Package3Type
 	{
-		invalid = 0,//无效
 		type1 = 1,//Package31
-		type2 = 2//Package32
+		type2 = 2,//Package32
+		type3 = 3,//Package33
+		invalid = 0//无效
 	};
 
-	//登陆请求包
-	typedef struct tagPackage31
+	//包体基类
+	typedef	struct tagPackage3Base
+	{
+
+	}Package3Base, *LPPackage3Base;
+
+	//包体1
+	typedef struct tagPackage31 :public Package3Base
 	{
 		wchar_t* strUsername;
 		wchar_t* strPwd;
 	}Package31, *LPPackage31;
 
-	//登陆应答包
-	typedef struct tagPackage32
+	//包体2
+	typedef	struct tagPackage32 :public Package3Base
 	{
-		bool bSuccess;//是否成功登陆
-		wchar_t* strMsg;//错误信息
+		int n1;
+		int n2;
 	}Package32, *LPPackage32;
+
+	//包体3
+	typedef	struct tagPackage33 :public Package3Base
+	{
+		int n1;
+		char str1[10];
+		int n2;
+		char str2[20];
+	}Package33, *LPPackage33;
 }
