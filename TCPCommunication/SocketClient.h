@@ -14,10 +14,6 @@ namespace TCPCommunication
 	//函数指针:收到tcp数据
 	typedef void(*LPOnRecvTCPData)(BYTE buf[], int len);
 
-	//成员函数
-	//template<typename T>
-	//typedef void(T::*LPOnMemRecvData)(BYTE buf[], int len);
-
 	//TcpClient客户端类
 	class CSocketClient
 	{
