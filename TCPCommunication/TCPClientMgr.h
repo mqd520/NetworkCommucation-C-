@@ -25,7 +25,7 @@ namespace TCPCLientMgr
 
 
 	protected:
-		CSocketClient m_tcp;//tcp客户端管理对象
+		CSocketClient m_socket;//socket客户端管理对象
 		TProtocolMgr m_protocol;//协议管理对象
 		CByteStream* m_stream;//字节流对象
 		CByteStream* m_streamCatch;//字节流缓存对象
@@ -53,7 +53,7 @@ namespace TCPCLientMgr
 				delete m_streamCatch;
 				m_streamCatch = NULL;
 			}
-			m_tcp.Dispose();
+			m_socket.Dispose();
 		};
 
 		//************************************
@@ -70,8 +70,8 @@ namespace TCPCLientMgr
 			m_lpfn = lpfn;
 			m_lpfnTcp = lpfnTcp;
 			m_protocol.Init();
-			m_tcp.Init(ip, port, m_lpfnTcp);
-			m_tcp.StartConnect();
+			m_socket.Init(ip, port, m_lpfnTcp);
+			m_socket.StartConnect();
 			return true;
 		};
 
@@ -211,7 +211,7 @@ namespace TCPCLientMgr
 		{
 			int len = 0;
 			BYTE* buf = m_protocol.PacketFromData(type, data, &len);
-			return m_tcp.SendData(buf, len);
+			return m_socket.SendData(buf, len);
 		};
 
 		//************************************
@@ -227,7 +227,7 @@ namespace TCPCLientMgr
 		{
 			int len = 0;
 			BYTE* buf = m_protocol.PacketFromData(type, data, &len);
-			m_tcp.OnRecvData(buf, len);
+			m_socket.OnRecvData(buf, len);
 			delete buf;
 		};
 	};

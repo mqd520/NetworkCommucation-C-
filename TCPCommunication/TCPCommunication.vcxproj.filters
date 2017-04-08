@@ -60,9 +60,6 @@
     <ClInclude Include="DemoPackageMgr.h">
       <Filter>05 客户端</Filter>
     </ClInclude>
-    <ClInclude Include="DemoTCPClientMgr.h">
-      <Filter>05 客户端</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetTool.cpp">
@@ -90,9 +87,6 @@
       <Filter>05 客户端</Filter>
     </ClCompile>
     <ClCompile Include="DemoPackageMgr.cpp">
-      <Filter>05 客户端</Filter>
-    </ClCompile>
-    <ClCompile Include="DemoTCPClientMgr.cpp">
       <Filter>05 客户端</Filter>
     </ClCompile>
   </ItemGroup>

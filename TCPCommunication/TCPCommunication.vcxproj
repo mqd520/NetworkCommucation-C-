@@ -83,7 +83,6 @@
   <ItemGroup>
     <ClInclude Include="Common.h" />
     <ClInclude Include="DemoProtocolMgr.h" />
-    <ClInclude Include="DemoTCPClientMgr.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="NetTool.h" />
     <ClInclude Include="DemoPackage.h" />
@@ -98,7 +97,6 @@
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="DemoProtocolMgr.cpp" />
-    <ClCompile Include="DemoTCPClientMgr.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="NetTool.cpp" />
     <ClCompile Include="DemoPackageMgr.cpp" />
