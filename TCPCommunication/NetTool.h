@@ -1,6 +1,8 @@
 #pragma once
+#pragma warning(disable:4996)
 
 #include <string>
+#include <WinSock2.h>
 
 using namespace std;
 
@@ -17,7 +19,6 @@ namespace TCPCommunication
 	//************************************
 	string ReadMultiByteStr(BYTE buf[], int len);
 
-	
 	//************************************
 	// Method:    从字节数组中读取UTF8字符串
 	// FullName:  NetTool::ReadUTF8Str
@@ -29,7 +30,6 @@ namespace TCPCommunication
 	//************************************
 	wstring ReadUTF8Str(BYTE buf[], int len);
 
-	
 	//************************************
 	// Method:    写入多字节字符串到字节数组
 	// FullName:  NetTool::WriteMultiByteStr
@@ -41,7 +41,6 @@ namespace TCPCommunication
 	//************************************
 	BYTE* WriteMultiByteStr(char* str, int* size);
 
-	
 	//************************************
 	// Method:    写入UTF8字符串到字节数组
 	// FullName:  NetTool::WriteUTF8Str
@@ -52,4 +51,15 @@ namespace TCPCommunication
 	// Parameter: 字节数组长度(输出)
 	//************************************
 	BYTE* WriteUTF8Str(wchar_t* str, int* size);
+
+
+	//************************************
+	// Method:    获取本地IP
+	// FullName:  TCPCommunication::GetLocalIP
+	// Access:    public 
+	// Returns:   bool
+	// Qualifier:
+	// Parameter: TCHAR * ip
+	//************************************
+	bool GetLocalIP(TCHAR* ip);
 }

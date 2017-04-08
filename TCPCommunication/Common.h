@@ -6,7 +6,6 @@ using namespace std;
 
 namespace TCPCommunication
 {
-	
 	//************************************
 	// Method:    ¶à×Ö½Ú×Ö·û´®×ªUTF8×Ö·û´®
 	// FullName:  Common::MultiByteToUTF8
@@ -17,7 +16,6 @@ namespace TCPCommunication
 	//************************************
 	wstring MultiByteToUTF8(const char* str);
 
-	
 	//************************************
 	// Method:    UTF8×Ö·û´®×ª¶à×Ö½Ú×Ö·û´®
 	// FullName:  Common::UTF8ToMultiByte

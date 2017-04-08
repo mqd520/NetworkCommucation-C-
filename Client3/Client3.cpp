@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "Client3.h"
 #include "Client3Dlg.h"
+#include "DemoPackageMgr.h"
+#include "NetTool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -67,7 +69,11 @@ BOOL CClient3App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	m_tcp.Init((TCHAR*)_T("192.168.0.17"), 8080, OnRecvBusinessData, OnRecvTcpData);
+	TCHAR ip[20];
+	if (GetLocalIP(ip))
+	{
+		m_tcp.Init(ip, 8080, OnRecvBusinessData, OnRecvTcpData);
+	}
 
 	CClient3Dlg dlg;
 	m_pMainWnd = &dlg;

@@ -14,12 +14,9 @@ namespace TCPCommunication
 	//第3个模板参数:	CProtocolMgr类型或者CProtocolMgr的派生类
 	class CTCPClientMgr
 	{
-	public:
+	protected:
 		//函数指针:收到业务数据
 		typedef void(*LPOnRecvBusinessData)(TPackageType type, void* data);
-
-	protected:
-
 
 	protected:
 		CSocketClient m_socket;//socket客户端管理对象
@@ -188,10 +185,10 @@ namespace TCPCommunication
 		//************************************
 		virtual void ReleasePackage(TPackageType type, TPackageBase* data)
 		{
-			CProtocolMgr<TPackageType, TPackageBase>::ParserInfo parser = m_protocol.GetPacketParser(type);
-			if (parser.release)
+			IPackageMgr* mgr = m_protocol.GetPackageMgr(type);
+			if (mgr)
 			{
-				parser.release(data);
+				mgr->Release((void*)data);
 			}
 		};
 
@@ -207,7 +204,7 @@ namespace TCPCommunication
 		virtual bool Send(TPackageType type, TPackageBase* data)
 		{
 			int len = 0;
-			BYTE* buf = m_protocol.PacketFromData(type, data, &len);
+			BYTE* buf = m_protocol.Packet(type, data, &len);
 			return m_socket.SendData(buf, len);
 		};
 
@@ -220,10 +217,10 @@ namespace TCPCommunication
 		// Parameter: 包类型
 		// Parameter: 包体结构体指针
 		//************************************
-		virtual void SimulateServer3Data(TPackageType type, TPackageBase* data)
+		virtual void SimulateServerData(TPackageType type, TPackageBase* data)
 		{
 			int len = 0;
-			BYTE* buf = m_protocol.PacketFromData(type, data, &len);
+			BYTE* buf = m_protocol.Packet(type, data, &len);
 			m_socket.OnRecvData(buf, len);
 			delete buf;
 		};

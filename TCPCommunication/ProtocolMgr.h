@@ -14,35 +14,18 @@ namespace TCPCommunication
 	class CProtocolMgr
 	{
 	protected:
-		//包反解析指针
-		typedef BYTE* (*LPPackageUnparse)(TPackageBase* data, int* len);
-		//包解析指针
-		typedef TPackageBase* (*LPPackageParse)(BYTE* buf, int len);
-		//包释放指针
-		typedef void(*LPPackageRelease)(TPackageBase* data);
-
-	public:
-		//解析器信息
-		typedef struct tagParserInfo
-		{
-			LPPackageUnparse	unparse;//反解析器
-			LPPackageParse		parse;//解析器
-			LPPackageRelease	release;//释放器
-		}ParserInfo, *LPParserInfo;
-
-	protected:
-		//包解析信息
-		typedef struct tagPackageParseInfo
+		//包管理信息
+		typedef struct tagPackageMgrInfo
 		{
 			TPackageType type;//包类型
-			ParserInfo	parser;//解析器信息
-		}PackageParseInfo, *LPPackageParseInfo;
+			IPackageMgr* mgr;//包管理器
+		}PackageMgrInfo, *LPPackageMgrInfo;
 
 	protected:
 		int m_nPackageHeadLen;//包头长度
 		int m_nInvalidPackage;//无效包
 		int m_nKeepAlive;//心跳包
-		vector<PackageParseInfo> m_vecParserList;//包解析器集合
+		vector<PackageMgrInfo> m_vecPackageMgr;//包管理器集合
 
 	public:
 		CProtocolMgr()
@@ -51,7 +34,17 @@ namespace TCPCommunication
 			m_nInvalidPackage = 0;
 			m_nKeepAlive = 0;
 		};
-		~CProtocolMgr(){};
+
+		~CProtocolMgr()
+		{
+			for (vector<PackageMgrInfo>::iterator it = m_vecPackageMgr.begin(); it < m_vecPackageMgr.end(); ++it)
+			{
+				if (it->mgr)
+				{
+					delete it->mgr;
+				}
+			}
+		};
 
 		//************************************
 		// Method:    初始化
@@ -89,13 +82,13 @@ namespace TCPCommunication
 		// Parameter: 包体结构体指针
 		// Parameter: 包缓冲区长度(输出)
 		//************************************
-		virtual BYTE* PacketFromData(TPackageType type, TPackageBase* data, int* packetLen)
+		virtual BYTE* Packet(TPackageType type, TPackageBase* data, int* packetLen)
 		{
-			CProtocolMgr<TPackageType, TPackageBase>::ParserInfo parser = GetPacketParser(type);
-			if (parser.parse)
+			IPackageMgr* mgr = GetPackageMgr(type);
+			if (mgr)
 			{
 				int len = 0;
-				BYTE* buf = parser.unparse(data, &len);
+				BYTE* buf = mgr->Unparse((void*)data, &len);
 				if (len > 0)
 				{
 					BYTE* result = PacketFromBuf(type, buf, len, packetLen);
@@ -121,8 +114,8 @@ namespace TCPCommunication
 			if (len > m_nPackageHeadLen)
 			{
 				TPackageType type = GetPackageType(buf, len);
-				CProtocolMgr<TPackageType, TPackageBase>::ParserInfo parser = GetPacketParser(type);
-				p = (TPackageBase*)parser.parse(buf + m_nPackageHeadLen, len - m_nPackageHeadLen);
+				IPackageMgr* mgr = GetPackageMgr(type);
+				p = (TPackageBase*)mgr->Parse(buf + m_nPackageHeadLen, len - m_nPackageHeadLen);
 			}
 			return p;
 		};
@@ -183,25 +176,25 @@ namespace TCPCommunication
 		};
 
 		//************************************
-		// Method:    获取包解析器(调用方无需释放指针)
+		// Method:    获取包管理器(调用方无需释放指针)
 		// FullName:  Protocol3::CProtocol3Handle::GetMgr
 		// Access:    protected static 
 		// Returns:   Protocol3::Package3Mgr*
 		// Qualifier:
 		// Parameter: 包类型
 		//************************************
-		virtual ParserInfo GetPacketParser(TPackageType type)
+		virtual IPackageMgr* GetPackageMgr(TPackageType type)
 		{
-			CProtocolMgr<TPackageType, TPackageBase>::ParserInfo p = { 0 };
-			for (vector<PackageParseInfo>::iterator it = m_vecParserList.begin(); it < m_vecParserList.end(); ++it)
+			IPackageMgr* mgr = NULL;
+			for (vector<PackageMgrInfo>::iterator it = m_vecPackageMgr.begin(); it < m_vecPackageMgr.end(); ++it)
 			{
 				if (it->type == type)
 				{
-					p = it->parser;
+					mgr = it->mgr;
 					break;
 				}
 			}
-			return p;
+			return mgr;
 		};
 
 		//************************************

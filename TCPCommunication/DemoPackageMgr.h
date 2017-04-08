@@ -4,78 +4,15 @@
 
 namespace TCPCommunication
 {
-	class CDemoPackageMgr
-	{
-	private:
-		CDemoPackageMgr(){};
-	public:
-		~CDemoPackageMgr(){};
-
-		//************************************
-		// Method:    package3通用反解析
-		// FullName:  Protocol3::CPackage3Mgr::CommonUnparse
-		// Access:    public static 
-		// Returns:   包体缓冲区指针
-		// Qualifier:
-		// Parameter: 包体结构体指针
-		// Parameter: 包体缓冲区长度(输出)
-		//************************************
-		template<typename T>
-		static BYTE* CommonUnparse(LPDemoPackageBase data, int* len)
-		{
-			*len = sizeof(T);
-			BYTE* buf = new BYTE[*len];
-			memcpy(buf, data, *len);
-			return buf;
-		};
-
-		//************************************
-		// Method:    package3通用解析
-		// FullName:  Protocol3::CPackage3Mgr::CommonParse
-		// Access:    public static 
-		// Returns:   包体结构体指针
-		// Qualifier:
-		// Parameter: 包体缓冲区指针
-		// Parameter: 包体缓冲区长度
-		//************************************
-		template<typename T>
-		static LPDemoPackageBase CommonParse(BYTE* buf, int len)
-		{
-			T* p = new T();
-			memcpy(p, buf, len);
-			return p;
-		};
-
-		//************************************
-		// Method:    package3通用包释放
-		// FullName:  Protocol3::CPackage3Mgr::CommonRelease
-		// Access:    public static 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: 包体结构体指针
-		//************************************
-		static void CommonRelease(LPDemoPackageBase data)
-		{
-			if (data)
-			{
-				delete data;
-			}
-		};
-
-		static BYTE* DemoPackage1Unparse(LPDemoPackageBase data, int* len);
-		static LPDemoPackageBase DemoPackage1Parse(BYTE* buf, int len);
-		static void DemoPackage1Release(LPDemoPackageBase data);
-	};
-
 	template<typename T>
 	//DemoPackage管理基类
-	class CDemoPackageMgr1
+	class CDemoPackageMgr :public IPackageMgr
 	{
 	public:
-		CDemoPackageMgr1(){};
-		~CDemoPackageMgr1(){};
+		CDemoPackageMgr(){};
+		~CDemoPackageMgr(){};
 
-		virtual BYTE* Unparse(LPDemoPackageBase data, int* len)
+		virtual BYTE* Unparse(void* data, int* len)
 		{
 			*len = sizeof(T);
 			BYTE* buf = new BYTE[*len];
@@ -83,14 +20,14 @@ namespace TCPCommunication
 			return buf;
 		};
 
-		virtual LPDemoPackageBase Parse(BYTE* buf, int len)
+		virtual void* Parse(BYTE* buf, int len)
 		{
 			T* p = new T();
 			memcpy(p, buf, len);
 			return p;
 		};
 
-		virtual void Release(LPDemoPackageBase data)
+		virtual void Release(void* data)
 		{
 			if (data)
 			{
@@ -100,10 +37,10 @@ namespace TCPCommunication
 	};
 
 	//DemoPackage1包管理
-	class CDemoPackage1Mgr :public CDemoPackageMgr1 < DemoPackage1 >
+	class CDemoPackage1Mgr :public CDemoPackageMgr < DemoPackage1 >
 	{
-		virtual BYTE* Unparse(LPDemoPackageBase data, int* len);
-		virtual LPDemoPackageBase Parse(BYTE* buf, int len);
-		virtual void Release(LPDemoPackageBase data);
+		BYTE* Unparse(void* data, int* len);
+		void* Parse(BYTE* buf, int len);
+		void Release(void* data);
 	};
 }

@@ -91,7 +91,7 @@ void CClient3Dlg::OnBnClickedButton1()
 	DemoPackage1 packet1;
 	packet1.strUsername = _T("eguser001");
 	packet1.strPwd = _T("123456");
-	theApp.m_tcp.SimulateServer3Data(DemoPackageType::type1, &packet1);
+	theApp.m_tcp.SimulateServerData(DemoPackageType::type1, &packet1);
 }
 
 

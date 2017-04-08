@@ -2,34 +2,8 @@
 
 #include <minwindef.h>
 
-#define DemoProtocol_MainVer	1
-#define DemoProtocol_SecVer		0
-#define DemoProtocol_HeadLen	7
-
-/*	包头定义
-	1:主版本号
-	2:次版本号
-	3:包头长度
-	4:包类型(高位)
-	5:包类型(低位)
-	6:数据长度(高位)
-	7:数据长度(低位)
-	*/
-
 namespace TCPCommunication
 {
-	//包头定义
-	typedef struct tagDemoPackageHead
-	{
-		const BYTE mainVer = DemoProtocol_MainVer;//主版本号
-		const BYTE secVer = DemoProtocol_SecVer;//次版本号
-		const BYTE headlen = DemoProtocol_HeadLen;//包头长度
-		BYTE highPackageType;//包类型(高位)
-		BYTE lowPackageType;//包类型(低位)
-		BYTE highDataLen;//数据长度(高位)
-		BYTE lowDataLen;//数据长度(低位)
-	}DemoPackageHead, *LPDemoPackageHead;
-
 	//包类型
 	enum DemoPackageType
 	{

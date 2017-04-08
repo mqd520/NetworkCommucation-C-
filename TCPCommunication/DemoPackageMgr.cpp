@@ -5,7 +5,7 @@
 
 namespace TCPCommunication
 {
-	BYTE* CDemoPackage1Mgr::Unparse(LPDemoPackageBase data, int* len)
+	BYTE* CDemoPackage1Mgr::Unparse(void* data, int* len)
 	{
 		LPDemoPackage1 data1 = (LPDemoPackage1)data;
 		int usernameByteLen = GetStrByteCount(data1->strUsername);
@@ -21,7 +21,7 @@ namespace TCPCommunication
 		return buf;
 	}
 
-	LPDemoPackageBase CDemoPackage1Mgr::Parse(BYTE* buf, int len)
+	void* CDemoPackage1Mgr::Parse(BYTE* buf, int len)
 	{
 		LPDemoPackage1 p = new DemoPackage1;
 		if (len > 2)
@@ -44,7 +44,7 @@ namespace TCPCommunication
 		return p;
 	}
 
-	void CDemoPackage1Mgr::Release(LPDemoPackageBase data)
+	void CDemoPackage1Mgr::Release(void* data)
 	{
 		LPDemoPackage1 data1 = (LPDemoPackage1)data;
 		if (data1)
