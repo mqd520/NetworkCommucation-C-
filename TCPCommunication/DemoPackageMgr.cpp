@@ -1,16 +1,17 @@
 #include "stdafx.h"
-#include "Package3Mgr.h"
 #include "ProtocolTool.h"
 #include "Common.h"
+#include "DemoPackageMgr.h"
 
 using namespace ProtocolTool;
 using namespace Common;
+using namespace PackageMgr;
 
 namespace PackageMgr
 {
-	BYTE* CPackage3Mgr::Package31Unparse(LPPackage3Base data, int* len)
+	BYTE* CDemoPackageMgr::DemoPackage1Unparse(LPDemoPackageBase data, int* len)
 	{
-		LPPackage31 data1 = (LPPackage31)data;
+		LPDemoPackage1 data1 = (LPDemoPackage1)data;
 		int usernameByteLen = GetStrByteCount(data1->strUsername);
 		int pwdByteLen = GetStrByteCount(data1->strPwd);
 		*len = 2 + usernameByteLen + 2 + pwdByteLen;
@@ -24,9 +25,9 @@ namespace PackageMgr
 		return buf;
 	}
 
-	LPPackage3Base CPackage3Mgr::Package31Parse(BYTE* buf, int len)
+	LPDemoPackageBase CDemoPackageMgr::DemoPackage1Parse(BYTE* buf, int len)
 	{
-		LPPackage31 p = new Package31;
+		LPDemoPackage1 p = new DemoPackage1;
 		if (len > 2)
 		{
 			int usernameByteLen = MergeByte(buf[1], buf[0]);
@@ -47,9 +48,9 @@ namespace PackageMgr
 		return p;
 	}
 
-	void CPackage3Mgr::Package31Release(LPPackage3Base data)
+	void CDemoPackageMgr::DemoPackage1Release(LPDemoPackageBase data)
 	{
-		LPPackage31 data1 = (LPPackage31)data;
+		LPDemoPackage1 data1 = (LPDemoPackage1)data;
 		if (data1)
 		{
 			if (data1->strUsername)

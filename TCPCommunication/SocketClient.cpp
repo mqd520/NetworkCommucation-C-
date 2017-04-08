@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "TcpClient.h"
+#include "SocketClient.h"
 #include "NetTool.h"
 #include "Common.h"
 
@@ -8,10 +8,10 @@ using namespace Common;
 //开始读取数据
 DWORD WINAPI StartReadData(LPVOID lpParam);
 
-CTcpClient::CTcpClient()
+CSocketClient::CSocketClient()
 {
-	m_strIP = NULL;
-	m_nPort = NULL;
+	m_strServerIP = NULL;
+	m_nServerPort = 0;
 	m_bIsCleaned = false;
 	m_bIsConnected = false;
 	m_strLastError = NULL;
@@ -20,22 +20,24 @@ CTcpClient::CTcpClient()
 	memset(&m_readThreadInfo, 0, sizeof(ThreadInfo));
 }
 
-CTcpClient::~CTcpClient()
+CSocketClient::~CSocketClient()
 {
 	Dispose();
 }
 
 //初始化
-void CTcpClient::Init(const TCHAR* ip, int port, LPOnRecvData lpfn)
+void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvTCPData lpfn)
 {
 	m_bInited = true;
-	m_strIP = ip;
-	m_nPort = port;
+	m_strServerIP = ip;
+	m_nServerPort = port;
+	m_strClientIP = NULL;
+	m_nClientPort = 0;
 	m_lpOnRecvData = lpfn;
 }
 
 //初始化Socket
-bool CTcpClient::InitSocket()
+bool CSocketClient::InitSocket()
 {
 	WSADATA wsaData;
 
@@ -47,16 +49,17 @@ bool CTcpClient::InitSocket()
 
 	//创建服务端地址
 	m_addrSrv.sin_family = AF_INET;
-	m_addrSrv.sin_port = htons(m_nPort);
+	m_addrSrv.sin_port = htons(m_nServerPort);
 #ifdef _UNICODE
-	string strTmp = UTF8ToMultiByte(m_strIP);
+	string strTmp = UTF8ToMultiByte(m_strServerIP);
 	m_addrSrv.sin_addr.S_un.S_addr = inet_addr(strTmp.c_str());
 #else
-	m_addrSrv.sin_addr.S_un.S_addr = inet_addr(m_strIP);
+	m_addrSrv.sin_addr.S_un.S_addr = inet_addr(m_strServerIP);
 #endif
 
 	//创建客户端Socket
 	m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	SetAddressBySocket(m_socket);
 	if (m_socket == INVALID_SOCKET)
 	{
 		_tprintf(_T("创建Socket失败: %d\n"), WSAGetLastError());
@@ -68,7 +71,7 @@ bool CTcpClient::InitSocket()
 }
 
 //清理资源
-void CTcpClient::CleanSocket()
+void CSocketClient::CleanSocket()
 {
 	if (!m_bIsCleaned)
 	{
@@ -82,14 +85,14 @@ void CTcpClient::CleanSocket()
 }
 
 //连接到服务端
-bool CTcpClient::StartConnect()
+bool CSocketClient::StartConnect()
 {
 	if (InitSocket())
 	{
 		int result = connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
 		if (result == SOCKET_ERROR)
 		{
-			_tprintf(_T("连接服务端失败: %s:%d\n"), m_strIP, m_nPort);
+			_tprintf(_T("连接服务端失败: %s:%d\n"), m_strServerIP, m_nServerPort);
 			CleanSocket();
 			return false;
 		}
@@ -100,18 +103,18 @@ bool CTcpClient::StartConnect()
 }
 
 //获取最后一次错误信息
-TCHAR* CTcpClient::GetLastError()
+TCHAR* CSocketClient::GetLastError()
 {
 	return m_strLastError;
 }
 
 //关闭与服务端连接
-void CTcpClient::CloseConnect()
+void CSocketClient::CloseConnect()
 {
 	closesocket(m_socket);
 }
 
-void CTcpClient::WriteLine(string log)
+void CSocketClient::WriteLine(string log)
 {
 #ifdef _DEBUG
 #ifdef _CONSOLE
@@ -126,7 +129,7 @@ void CTcpClient::WriteLine(string log)
 }
 
 //获取Socket
-SOCKET CTcpClient::GetServerSocket()
+SOCKET CSocketClient::GetServerSocket()
 {
 	return m_socket;
 }
@@ -134,7 +137,7 @@ SOCKET CTcpClient::GetServerSocket()
 //开始读取数据
 DWORD WINAPI StartReadData(LPVOID lpParam)
 {
-	CTcpClient* pTCPClient = (CTcpClient*)lpParam;
+	CSocketClient* pTCPClient = (CSocketClient*)lpParam;
 	char buf[1024];
 	while (true)
 	{
@@ -149,7 +152,7 @@ DWORD WINAPI StartReadData(LPVOID lpParam)
 }
 
 //接收数据事件
-void CTcpClient::OnRecvData(BYTE buf[], int len)
+void CSocketClient::OnRecvData(BYTE buf[], int len)
 {
 	if (m_lpOnRecvData)
 	{
@@ -157,6 +160,7 @@ void CTcpClient::OnRecvData(BYTE buf[], int len)
 		//memcpy(buf1, buf, len);
 		try
 		{
+			//m_lpOnRecvData(buf, len, m_strClientIP, m_nClientPort);
 			m_lpOnRecvData(buf, len);
 			//if (buf1)
 			//{
@@ -171,7 +175,7 @@ void CTcpClient::OnRecvData(BYTE buf[], int len)
 }
 
 //清理线程
-void CTcpClient::CleanThread()
+void CSocketClient::CleanThread()
 {
 	if (m_readThreadInfo.hThread > 0)
 	{
@@ -182,14 +186,14 @@ void CTcpClient::CleanThread()
 }
 
 //主动释放资源
-void CTcpClient::Dispose()
+void CSocketClient::Dispose()
 {
 	CleanSocket();
 	CleanThread();
 }
 
 //发送数据
-bool CTcpClient::SendData(BYTE buf[], int len)
+bool CSocketClient::SendData(BYTE buf[], int len)
 {
 	bool b = false;
 	int sended = 0;
@@ -214,7 +218,32 @@ bool CTcpClient::SendData(BYTE buf[], int len)
 }
 
 //是否已初始化
-bool CTcpClient::IsInited()
+bool CSocketClient::IsInited()
 {
 	return m_bInited;
+}
+
+bool CSocketClient::SetAddressBySocket(SOCKET socket)
+{
+	SOCKADDR_IN address;
+	memset(&address, 0, sizeof(address));
+	int nAddrLen = sizeof(address);
+
+	if (::getpeername(socket, (SOCKADDR*)&address, &nAddrLen) != 0)
+	{
+		return false;
+	}
+
+#ifdef _UNICODE
+	char* tmp = inet_ntoa(address.sin_addr);
+	wstring str = MultiByteToUTF8(tmp);
+	m_strClientIP = (TCHAR*)str.c_str();
+	delete tmp;
+#else
+	m_strClientIP = (TCHAR*)inet_ntoa(address.sin_addr);
+#endif // _UNICODE
+
+	m_nClientPort = (int)ntohs(address.sin_port);
+
+	return true;
 }

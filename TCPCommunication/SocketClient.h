@@ -18,12 +18,15 @@ using namespace std;
 #endif // !SAFE_DELETE_ARRAY
 
 
+//函数指针:收到tcp数据
+typedef void(*LPOnRecvTCPData)(BYTE buf[], int len);
 
-//数据回调指针
-typedef void(*LPOnRecvData)(BYTE buf[], int len);
+//成员函数
+//template<typename T>
+//typedef void(T::*LPOnMemRecvData)(BYTE buf[], int len);
 
 //TcpClient客户端类
-class CTcpClient
+class CSocketClient
 {
 private:
 	typedef struct tagThreadInfo
@@ -33,11 +36,11 @@ private:
 	}ThreadInfo;
 
 public:
-	CTcpClient();
-	~CTcpClient();
+	CSocketClient();
+	~CSocketClient();
 
 	//初始化
-	void Init(const TCHAR* ip, int port, LPOnRecvData lpfn = NULL);
+	void Init(const TCHAR* ip, int port, LPOnRecvTCPData lpfn = NULL);
 	//连接到服务端
 	bool StartConnect();
 	//关闭与服务端连接
@@ -54,9 +57,10 @@ public:
 	bool SendData(BYTE buf[], int len);
 	//是否已初始化
 	bool IsInited();
+
 protected:
-	const TCHAR* m_strIP;//IP
-	int m_nPort;//端口
+	const TCHAR* m_strServerIP;//服务端IP
+	int m_nServerPort;//服务端端口
 	bool m_bIsCleaned;//是否已清理
 	bool m_bIsConnected;//是否已经连接上服务端
 	TCHAR* m_strLastError;//最后一次错误信息
@@ -64,8 +68,11 @@ protected:
 	SOCKET m_socket;//客户端Socket
 	ThreadInfo m_readThreadInfo;//数据读取线程信息
 	bool m_bInited;//初始化
-	LPOnRecvData m_lpOnRecvData;//数据回调指针
+	LPOnRecvTCPData m_lpOnRecvData;//数据回调指针
+	TCHAR* m_strClientIP;//客户端IP
+	int m_nClientPort;//客户端端口
 
+protected:
 	//初始化
 	bool InitSocket();
 	//清理Socket
@@ -74,4 +81,13 @@ protected:
 	void WriteLine(string log);
 	//清理线程
 	void CleanThread();
+	//************************************
+	// Method:    设置客户端IP和端口
+	// FullName:  CSocketClient::SetAddressBySocket
+	// Access:    protected 
+	// Returns:   bool
+	// Qualifier:
+	// Parameter: SOCKET socket
+	//************************************
+	bool SetAddressBySocket(SOCKET socket);
 };

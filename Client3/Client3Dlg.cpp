@@ -6,9 +6,7 @@
 #include "Client3.h"
 #include "Client3Dlg.h"
 #include "afxdialogex.h"
-#include "Package3.h"
 
-using namespace ProtocolMgr;
 using namespace PackageMgr;
 
 #ifdef _DEBUG
@@ -92,18 +90,18 @@ HCURSOR CClient3Dlg::OnQueryDragIcon()
 void CClient3Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	Package31 packet1;
+	DemoPackage1 packet1;
 	packet1.strUsername = _T("eguser001");
 	packet1.strPwd = _T("123456");
-	theApp.m_server3Mgr->SimulateServer3Data(Package3Type::type1, &packet1);
+	theApp.m_tcp.SimulateServer3Data(DemoPackageType::type1, &packet1);
 }
 
 
 void CClient3Dlg::OnBnClickedButton2()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	Package31 packet1;
+	DemoPackage1 packet1;
 	packet1.strUsername = _T("eguser001");
 	packet1.strPwd = _T("123456");
-	theApp.m_server3Mgr->Send(Package3Type::type1, &packet1);
+	theApp.m_tcp.Send(DemoPackageType::type1, &packet1);
 }

@@ -5,14 +5,13 @@
 #include "stdafx.h"
 #include "Client3.h"
 #include "Client3Dlg.h"
-#include "Package3.h"
-
-using namespace ProtocolMgr;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+void OnRecvBusinessData(DemoPackageType type, void* data);
+void OnRecvTcpData(BYTE buf[], int len);
 
 // CClient3App
 
@@ -34,8 +33,6 @@ CClient3App::CClient3App()
 
 CClient3App theApp;
 
-//数据回调
-void OnServer3RecvData(Package3Type type, void* data);
 
 // CClient3App 初始化
 
@@ -70,8 +67,7 @@ BOOL CClient3App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	m_server3Mgr = new CService3Mgr();
-	m_server3Mgr->Init((TCHAR*)_T("192.168.0.15"), 8080, OnServer3RecvData);
+	m_tcp.Init((TCHAR*)_T("192.168.0.17"), 8080, OnRecvBusinessData, OnRecvTcpData);
 
 	CClient3Dlg dlg;
 	m_pMainWnd = &dlg;
@@ -106,26 +102,30 @@ BOOL CClient3App::InitInstance()
 int CClient3App::ExitInstance()
 {
 	// TODO:  在此添加专用代码和/或调用基类
-	delete m_server3Mgr;
 	return CWinApp::ExitInstance();
 }
 
-void OnServer3RecvData(Package3Type type, void* data)
+void OnRecvBusinessData(DemoPackageType type, void* data)
 {
-	LPPackage3Base packet = NULL;
+	LPDemoPackageBase packet = NULL;
 	switch (type)
 	{
-	case Package3Type::type1:
+	case DemoPackageType::type1:
 		//SendMessage(NULL, UINT, 0, 0);
 		break;
-	case Package3Type::type2:
+	case DemoPackageType::type2:
 		break;
-	case Package3Type::type3:
+	case DemoPackageType::type3:
 		break;
-	case Package3Type::invalid:
+	case DemoPackageType::invalid:
 		break;
 	default:
 		break;
 	}
-	theApp.m_server3Mgr->ReleasePackage(type, (LPPackage3Base)data);
+	theApp.m_tcp.ReleasePackage(type, (LPDemoPackageBase)data);
+}
+
+void OnRecvTcpData(BYTE buf[], int len)
+{
+	theApp.m_tcp.OnRecvData(buf, len);
 }

@@ -82,30 +82,40 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
+    <ClInclude Include="DemoProtocolMgr.h" />
+    <ClInclude Include="DemoTCPClientMgr.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="NetTool.h" />
-    <ClInclude Include="Package3.h" />
-    <ClInclude Include="Package3Mgr.h" />
+    <ClInclude Include="DemoPackage.h" />
+    <ClInclude Include="DemoPackageMgr.h" />
     <ClInclude Include="ProtocolMgr.h" />
     <ClInclude Include="ProtocolTool.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TcpClient.h" />
+    <ClInclude Include="SocketClient.h" />
+    <ClInclude Include="TCPClientMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="DemoProtocolMgr.cpp" />
+    <ClCompile Include="DemoTCPClientMgr.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="NetTool.cpp" />
-    <ClCompile Include="Package3Mgr.cpp" />
-    <ClCompile Include="ProtocolMgr.cpp" />
+    <ClCompile Include="DemoPackageMgr.cpp" />
     <ClCompile Include="ProtocolTool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TcpClient.cpp" />
+    <ClCompile Include="SocketClient.cpp" />
+    <ClCompile Include="TCPClientMgr.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="\Test\17 NetworkCommucation\Client2\Client2.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

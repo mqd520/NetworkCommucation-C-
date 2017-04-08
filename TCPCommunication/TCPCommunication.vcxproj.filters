@@ -4,17 +4,20 @@
     <Filter Include="01 工具">
       <UniqueIdentifier>{43f7a872-35aa-4517-b49f-994aa00f3b79}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02 Socket">
-      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05 其它">
-      <UniqueIdentifier>{386534d3-12d0-48f5-b9f7-5d159a020830}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04 包管理">
-      <UniqueIdentifier>{5afd592d-4ef9-491e-bf58-91f6535a006e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03 协议管理">
       <UniqueIdentifier>{311cddd5-6596-48f2-9b74-2a1e97957bae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 其它">
+      <UniqueIdentifier>{386534d3-12d0-48f5-b9f7-5d159a020830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05 客户端">
+      <UniqueIdentifier>{4f6957ea-8ed9-43ff-8f1e-7bd0cea9bfa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 Socket管理">
+      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 TCP管理">
+      <UniqueIdentifier>{4dd5811a-4d9c-4c43-b2ce-ce2cc38b0e4a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -24,14 +27,11 @@
     <ClInclude Include="NetTool.h">
       <Filter>01 工具</Filter>
     </ClInclude>
-    <ClInclude Include="TcpClient.h">
-      <Filter>02 Socket</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>05 其它</Filter>
+      <Filter>06 其它</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>05 其它</Filter>
+      <Filter>06 其它</Filter>
     </ClInclude>
     <ClInclude Include="ProtocolTool.h">
       <Filter>01 工具</Filter>
@@ -45,22 +45,31 @@
     <ClInclude Include="ProtocolMgr.h">
       <Filter>03 协议管理</Filter>
     </ClInclude>
-    <ClInclude Include="Package3.h">
-      <Filter>04 包管理</Filter>
+    <ClInclude Include="TCPClientMgr.h">
+      <Filter>04 TCP管理</Filter>
     </ClInclude>
-    <ClInclude Include="Package3Mgr.h">
-      <Filter>04 包管理</Filter>
+    <ClInclude Include="SocketClient.h">
+      <Filter>02 Socket管理</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoProtocolMgr.h">
+      <Filter>05 客户端</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoPackage.h">
+      <Filter>05 客户端</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoPackageMgr.h">
+      <Filter>05 客户端</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoTCPClientMgr.h">
+      <Filter>05 客户端</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetTool.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
-    <ClCompile Include="TcpClient.cpp">
-      <Filter>02 Socket</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>05 其它</Filter>
+      <Filter>06 其它</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolTool.cpp">
       <Filter>01 工具</Filter>
@@ -71,11 +80,20 @@
     <ClCompile Include="Common.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
-    <ClCompile Include="ProtocolMgr.cpp">
-      <Filter>03 协议管理</Filter>
+    <ClCompile Include="TCPClientMgr.cpp">
+      <Filter>04 TCP管理</Filter>
     </ClCompile>
-    <ClCompile Include="Package3Mgr.cpp">
-      <Filter>04 包管理</Filter>
+    <ClCompile Include="SocketClient.cpp">
+      <Filter>02 Socket管理</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoProtocolMgr.cpp">
+      <Filter>05 客户端</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoPackageMgr.cpp">
+      <Filter>05 客户端</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoTCPClientMgr.cpp">
+      <Filter>05 客户端</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

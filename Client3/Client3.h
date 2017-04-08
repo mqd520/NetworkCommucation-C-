@@ -9,7 +9,7 @@
 #endif
 
 #include "resource.h"		// 主符号
-#include "Service3Mgr.h"
+#include "DemoTCPClientMgr.h"
 
 // CClient3App: 
 // 有关此类的实现，请参阅 Client3.cpp
@@ -23,7 +23,8 @@ public:
 	// 重写
 public:
 	virtual BOOL InitInstance();
-	CService3Mgr* m_server3Mgr;
+	//CDemoTCPClientMgr m_tcp;//TCP客户端管理对象
+	CTCPClientMgr<DemoPackageType, DemoPackageBase, CDemoProtocolMgr> m_tcp;//TCP客户端管理对象
 
 	// 实现
 
