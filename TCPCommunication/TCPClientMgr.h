@@ -6,10 +6,7 @@
 #include "ProtocolMgr.h"
 #include "SocketClient.h"
 
-using namespace ProtocolMgr;
-using namespace MemoryTool;
-
-namespace TCPCLientMgr
+namespace TCPCommunication
 {
 	template<typename TPackageType, typename TPackageBase, typename TProtocolMgr>
 	//第1个模板参数:	包类型定义

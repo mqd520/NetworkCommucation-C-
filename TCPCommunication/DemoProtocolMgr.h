@@ -3,21 +3,21 @@
 #include "ProtocolMgr.h"
 #include "DemoPackage.h"
 
-using namespace ProtocolMgr;
-using namespace PackageMgr;
-
-//CDemoProtocolMgr的基类
-typedef CProtocolMgr < DemoPackageType, DemoPackageBase >	CDemoProtocolMgrBase;
-
-class CDemoProtocolMgr :public CDemoProtocolMgrBase
+namespace TCPCommunication
 {
-public:
-	CDemoProtocolMgr();
-	~CDemoProtocolMgr(){};
+	//CDemoProtocolMgr的基类
+	typedef CProtocolMgr < DemoPackageType, DemoPackageBase >	CDemoProtocolMgrBase;
 
-	void Init();
-	BYTE* PacketFromBuf(DemoPackageType type, BYTE buf[], int bodyLen, int* packetLen);
-	bool ValidateKeepAlivePackage(DemoPackageBase* data);
-private:
+	class CDemoProtocolMgr :public CDemoProtocolMgrBase
+	{
+	public:
+		CDemoProtocolMgr();
+		~CDemoProtocolMgr(){};
 
-};
+		void Init();
+		BYTE* PacketFromBuf(DemoPackageType type, BYTE buf[], int bodyLen, int* packetLen);
+		bool ValidateKeepAlivePackage(DemoPackageBase* data);
+	private:
+
+	};
+}

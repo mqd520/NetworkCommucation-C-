@@ -2,9 +2,7 @@
 #include "NetTool.h"
 #include "Common.h"
 
-using namespace Common;
-
-namespace NetTool
+namespace TCPCommunication
 {
 	string ReadMultiByteStr(BYTE buf[], int len)
 	{

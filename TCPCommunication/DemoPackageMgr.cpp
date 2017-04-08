@@ -3,13 +3,9 @@
 #include "Common.h"
 #include "DemoPackageMgr.h"
 
-using namespace ProtocolTool;
-using namespace Common;
-using namespace PackageMgr;
-
-namespace PackageMgr
+namespace TCPCommunication
 {
-	BYTE* CDemoPackageMgr::DemoPackage1Unparse(LPDemoPackageBase data, int* len)
+	BYTE* CDemoPackage1Mgr::Unparse(LPDemoPackageBase data, int* len)
 	{
 		LPDemoPackage1 data1 = (LPDemoPackage1)data;
 		int usernameByteLen = GetStrByteCount(data1->strUsername);
@@ -25,7 +21,7 @@ namespace PackageMgr
 		return buf;
 	}
 
-	LPDemoPackageBase CDemoPackageMgr::DemoPackage1Parse(BYTE* buf, int len)
+	LPDemoPackageBase CDemoPackage1Mgr::Parse(BYTE* buf, int len)
 	{
 		LPDemoPackage1 p = new DemoPackage1;
 		if (len > 2)
@@ -48,7 +44,7 @@ namespace PackageMgr
 		return p;
 	}
 
-	void CDemoPackageMgr::DemoPackage1Release(LPDemoPackageBase data)
+	void CDemoPackage1Mgr::Release(LPDemoPackageBase data)
 	{
 		LPDemoPackage1 data1 = (LPDemoPackage1)data;
 		if (data1)

@@ -9,7 +9,11 @@
 #endif
 
 #include "resource.h"		// 主符号
-#include "DemoTCPClientMgr.h"
+#include "TCPClientMgr.h"
+#include "DemoPackage.h"
+#include "DemoProtocolMgr.h"
+
+using namespace TCPCommunication;
 
 // CClient3App: 
 // 有关此类的实现，请参阅 Client3.cpp
@@ -23,7 +27,6 @@ public:
 	// 重写
 public:
 	virtual BOOL InitInstance();
-	//CDemoTCPClientMgr m_tcp;//TCP客户端管理对象
 	CTCPClientMgr<DemoPackageType, DemoPackageBase, CDemoProtocolMgr> m_tcp;//TCP客户端管理对象
 
 	// 实现

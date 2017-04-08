@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ProtocolTool.h"
 
-namespace ProtocolTool
+namespace TCPCommunication
 {
 	BYTE GetFstByteFromInt(int n)
 	{

@@ -2,7 +2,7 @@
 
 #include "DemoPackage.h"
 
-namespace PackageMgr
+namespace TCPCommunication
 {
 	class CDemoPackageMgr
 	{
@@ -65,5 +65,45 @@ namespace PackageMgr
 		static BYTE* DemoPackage1Unparse(LPDemoPackageBase data, int* len);
 		static LPDemoPackageBase DemoPackage1Parse(BYTE* buf, int len);
 		static void DemoPackage1Release(LPDemoPackageBase data);
+	};
+
+	template<typename T>
+	//DemoPackage管理基类
+	class CDemoPackageMgr1
+	{
+	public:
+		CDemoPackageMgr1(){};
+		~CDemoPackageMgr1(){};
+
+		virtual BYTE* Unparse(LPDemoPackageBase data, int* len)
+		{
+			*len = sizeof(T);
+			BYTE* buf = new BYTE[*len];
+			memcpy(buf, data, *len);
+			return buf;
+		};
+
+		virtual LPDemoPackageBase Parse(BYTE* buf, int len)
+		{
+			T* p = new T();
+			memcpy(p, buf, len);
+			return p;
+		};
+
+		virtual void Release(LPDemoPackageBase data)
+		{
+			if (data)
+			{
+				delete data;
+			}
+		};
+	};
+
+	//DemoPackage1包管理
+	class CDemoPackage1Mgr :public CDemoPackageMgr1 < DemoPackage1 >
+	{
+		virtual BYTE* Unparse(LPDemoPackageBase data, int* len);
+		virtual LPDemoPackageBase Parse(BYTE* buf, int len);
+		virtual void Release(LPDemoPackageBase data);
 	};
 }

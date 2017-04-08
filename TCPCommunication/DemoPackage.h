@@ -16,7 +16,7 @@
 	7:数据长度(低位)
 	*/
 
-namespace PackageMgr
+namespace TCPCommunication
 {
 	//包头定义
 	typedef struct tagDemoPackageHead
@@ -41,7 +41,6 @@ namespace PackageMgr
 	};
 
 	//包体基类
-
 	typedef	struct tagDemoPackageBase
 	{
 

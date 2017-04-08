@@ -4,9 +4,8 @@
 
 using namespace std;
 
-namespace NetTool
+namespace TCPCommunication
 {
-	
 	//************************************
 	// Method:    从字节数组中读取多字节字符串
 	// FullName:  NetTool::ReadMultiByteStr

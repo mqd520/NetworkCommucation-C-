@@ -7,8 +7,6 @@
 #include "Client3Dlg.h"
 #include "afxdialogex.h"
 
-using namespace PackageMgr;
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif

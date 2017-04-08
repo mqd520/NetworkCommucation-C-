@@ -4,9 +4,8 @@
 #include "ProtocolTool.h"
 
 using namespace std;
-using namespace ProtocolTool;
 
-namespace ProtocolMgr
+namespace TCPCommunication
 {
 	//协议管理
 	template<typename TPackageType, typename TPackageBase>

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace MemoryTool
+namespace TCPCommunication
 {
 	class CByteStream
 	{

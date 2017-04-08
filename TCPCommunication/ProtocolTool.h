@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ProtocolTool
+namespace TCPCommunication
 {
 	//************************************
 	// Method:    获取指定值的第一个字节
