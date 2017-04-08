@@ -41,6 +41,7 @@ namespace PackageMgr
 	};
 
 	//包体基类
+
 	typedef	struct tagDemoPackageBase
 	{
 
