@@ -31,6 +31,7 @@ public:
 public:
 	virtual BOOL InitInstance();
 	CTCPClientMgr<DemoPackageType, DemoPackageBase, CDemoProtocolMgr> m_tcp;//TCP客户端管理对象
+	CSocketClient client;
 
 	// 实现
 

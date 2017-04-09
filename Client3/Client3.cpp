@@ -16,6 +16,8 @@
 //收到DemoPackage事件处理
 void OnRecvDemoPackage(DemoPackageType type, void* data);
 
+bool OnRecvMsg(SocketClientMsgType type, TCHAR* msg);
+
 // CClient3App
 
 BEGIN_MESSAGE_MAP(CClient3App, CWinApp)
@@ -73,7 +75,9 @@ BOOL CClient3App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		m_tcp.Init(ip, 8080, OnRecvDemoPackage);
+		//m_tcp.Init(ip, 8080, OnRecvDemoPackage);
+		client.Init(ip, 8080, NULL, OnRecvMsg);
+		client.StartConnect();
 	}
 
 	CClient3Dlg dlg;
@@ -130,4 +134,13 @@ void OnRecvDemoPackage(DemoPackageType type, void* data)
 		break;
 	}
 	theApp.m_tcp.ReleasePackage(type, (LPDemoPackageBase)data);
+}
+
+bool OnRecvMsg(SocketClientMsgType type, TCHAR* msg)
+{
+	if (type == SocketClientMsgType::info)
+	{
+		TRACE(msg);
+	}
+	return true;
 }

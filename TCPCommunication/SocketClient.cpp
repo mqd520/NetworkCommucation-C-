@@ -26,7 +26,9 @@ namespace TCPCommunication
 		memset(&m_addrSrv, 0, sizeof(SOCKADDR_IN));
 		m_readThreadInfo = { 0 };
 		m_notifyThreadInfo = { 0 };
-		m_msg.msg = NULL;
+		TCHAR* p = new TCHAR[1024];
+		memset(p, 0, sizeof(TCHAR) * 1024);
+		m_msg.msg = p;
 		m_msg.haveMsg = false;
 		m_lpfnNotifyMsg = NULL;
 	}
@@ -37,6 +39,10 @@ namespace TCPCommunication
 		{
 			delete m_pRecvBuf;
 			m_pRecvBuf = NULL;
+		}
+		if (m_msg.msg)
+		{
+			delete m_msg.msg;
 		}
 		Dispose();
 	}
@@ -52,17 +58,28 @@ namespace TCPCommunication
 			m_nServerPort = port;
 			m_lpOnRecvData = lpfn;
 			m_lpfnNotifyMsg = lpfnMsg;
+			if (m_lpfnNotifyMsg)
+			{
+				m_notifyThreadInfo.hThread = ::CreateThread(NULL, 0, NotifyCallerMsg, this, NULL, &m_notifyThreadInfo.nThreadID);
+			}
 		}
 	}
 
 	bool CSocketClient::InitSocket()
 	{
+		//SetNotifyMsg(SocketClientMsgType::error, _T("Socket初始化!\n"));
+
+		TCHAR str[1024];
+		wsprintf(str, _T("str: %s\n"), _T("str"));
+		SetNotifyMsg(SocketClientMsgType::info, str);
+
+		SetNotifyMsg(SocketClientMsgType::info, _T("sdddddddddddddddd\n"));
+
 		WSADATA wsaData;
 
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
 			//_tprintf(_T("Socket初始化失败!\n"));
-			SetNotifyMsg(SocketClientMsgType::error, _T("Socket初始化失败!\n"));
 			return false;
 		}
 
@@ -114,10 +131,6 @@ namespace TCPCommunication
 				return false;
 			}
 			m_readThreadInfo.hThread = ::CreateThread(NULL, 0, StartReadData, this, NULL, &m_readThreadInfo.nThreadID);
-			if (m_lpfnNotifyMsg)
-			{
-				m_notifyThreadInfo.hThread = ::CreateThread(NULL, 0, NotifyCallerMsg, this, NULL, &m_notifyThreadInfo.nThreadID);
-			}
 			return true;
 		}
 		return false;
@@ -289,8 +302,9 @@ namespace TCPCommunication
 		{
 			bool b = m_lpfnNotifyMsg(m_msg.type, m_msg.msg);
 			m_msg.haveMsg = false;
-			if (!b&&m_msg.msg != NULL)
+			if (b == false && m_msg.msg != NULL)
 			{
+				int n = 0;
 				//WriteLine(m_msg.msg);
 			}
 		}
@@ -299,7 +313,12 @@ namespace TCPCommunication
 	void CSocketClient::SetNotifyMsg(SocketClientMsgType type, TCHAR* msg)
 	{
 		m_msg.type = type;
-		m_msg.msg = msg;
+		memset(m_msg.msg, 0, sizeof(TCHAR) * 1024);
+		if (msg != NULL)
+		{
+			int n = GetStrByteCount(msg);
+			memcpy(m_msg.msg, msg, n);
+		}
 		m_msg.haveMsg = true;
 	}
 }
