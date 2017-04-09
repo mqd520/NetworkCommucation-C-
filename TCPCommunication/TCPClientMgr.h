@@ -4,7 +4,7 @@
 #include <vector>
 #include "MemoryTool.h"
 #include "ProtocolMgr.h"
-#include "SocketClient.h"
+#include "SocketClientPlus.h"
 
 namespace TCPCommunication
 {
@@ -14,22 +14,24 @@ namespace TCPCommunication
 	//第3个模板参数:	CProtocolMgr类型或者CProtocolMgr的派生类
 	class CTCPClientMgr
 	{
-	protected:
-		//函数指针:收到业务数据
-		typedef void(*LPOnRecvBusinessData)(TPackageType type, void* data);
+	private:
+		//CTCPClientMgr重定义
+		typedef CTCPClientMgr<TPackageType, TPackageBase, TProtocolMgr>	CTCPClientMgrSelf;
 
 	protected:
-		CSocketClient m_socket;//socket客户端管理对象
+		//函数指针:收到业务包
+		typedef void(*LPOnRecvBusinessPackage)(TPackageType type, void* data);
+
+	protected:
+		CSocketClientPlus<CTCPClientMgrSelf> m_socket;//socket客户端管理对象
 		TProtocolMgr m_protocol;//协议管理对象
 		CByteStream* m_stream;//字节流对象
 		CByteStream* m_streamCatch;//字节流缓存对象
-		LPOnRecvBusinessData m_lpfn;//业务数据函数指针
-		LPOnRecvTCPData m_lpfnTcp;//tcp数据函数指针 
+		LPOnRecvBusinessPackage m_lpfn;//业务数据函数指针
 
 	public:
 		CTCPClientMgr()
 		{
-			m_lpfnTcp = NULL;
 			m_streamCatch = NULL;
 			m_lpfn = NULL;
 			m_stream = new CByteStream(1024);
@@ -59,12 +61,11 @@ namespace TCPCommunication
 		// Parameter: TCHAR * ip
 		// Parameter: int port
 		//************************************
-		virtual bool Init(TCHAR* ip, int port, LPOnRecvBusinessData lpfn, LPOnRecvTCPData lpfnTcp)
+		virtual bool Init(TCHAR* ip, int port, LPOnRecvBusinessPackage lpfn)
 		{
 			m_lpfn = lpfn;
-			m_lpfnTcp = lpfnTcp;
 			m_protocol.Init();
-			m_socket.Init(ip, port, m_lpfnTcp);
+			m_socket.Init(ip, port, &CTCPClientMgrSelf::OnRecvData, this);
 			m_socket.StartConnect();
 			return true;
 		};

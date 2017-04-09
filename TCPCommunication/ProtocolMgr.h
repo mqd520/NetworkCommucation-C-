@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "ProtocolTool.h"
+#include "Interface.h"
 
 using namespace std;
 
@@ -66,9 +66,9 @@ namespace TCPCommunication
 		// Parameter: 包体数据缓冲区长度
 		// Parameter: 包缓冲区长度(输出)
 		//************************************
-		virtual BYTE* PacketFromBuf(TPackageType type, BYTE buf[], int bodyLen, int* packetLen)
+		virtual BYTE* PacketFromBuf(TPackageType type, BYTE buf[], int bufLen, int* packetLen)
 		{
-			*packetLen = bodyLen;
+			*packetLen = bufLen;
 			return buf;
 		};
 
@@ -115,7 +115,10 @@ namespace TCPCommunication
 			{
 				TPackageType type = GetPackageType(buf, len);
 				IPackageMgr* mgr = GetPackageMgr(type);
-				p = (TPackageBase*)mgr->Parse(buf + m_nPackageHeadLen, len - m_nPackageHeadLen);
+				if (mgr)
+				{
+					p = (TPackageBase*)mgr->Parse(buf + m_nPackageHeadLen, len - m_nPackageHeadLen);
+				}
 			}
 			return p;
 		};
@@ -143,14 +146,7 @@ namespace TCPCommunication
 		//************************************
 		virtual int GetDataLen(BYTE buf[], int len)
 		{
-			if (len + 1 > m_nPackageHeadLen)
-			{
-				return MergeByte(buf[6], buf[5]);
-			}
-			else
-			{
-				return 0;
-			}
+			return m_nPackageHeadLen;
 		};
 
 		//************************************
@@ -164,15 +160,7 @@ namespace TCPCommunication
 		//************************************
 		virtual TPackageType GetPackageType(BYTE buf[], int len)
 		{
-			if (len + 1 > m_nPackageHeadLen)
-			{
-				int type = MergeByte(buf[4], buf[3]);
-				return TPackageType(type);
-			}
-			else
-			{
-				return TPackageType(m_nPackageHeadLen);
-			}
+			return TPackageType(m_nInvalidPackage);
 		};
 
 		//************************************

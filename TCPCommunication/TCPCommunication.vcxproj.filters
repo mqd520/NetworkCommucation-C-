@@ -60,6 +60,12 @@
     <ClInclude Include="DemoPackageMgr.h">
       <Filter>05 客户端</Filter>
     </ClInclude>
+    <ClInclude Include="SocketClientPlus.h">
+      <Filter>02 Socket管理</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface.h">
+      <Filter>03 协议管理</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetTool.cpp">
@@ -76,9 +82,6 @@
     </ClCompile>
     <ClCompile Include="Common.cpp">
       <Filter>01 工具</Filter>
-    </ClCompile>
-    <ClCompile Include="TCPClientMgr.cpp">
-      <Filter>04 TCP管理</Filter>
     </ClCompile>
     <ClCompile Include="SocketClient.cpp">
       <Filter>02 Socket管理</Filter>

@@ -12,8 +12,8 @@
 #define new DEBUG_NEW
 #endif
 
-void OnRecvBusinessData(DemoPackageType type, void* data);
-void OnRecvTcpData(BYTE buf[], int len);
+//收到DemoPackage事件处理
+void OnRecvDemoPackage(DemoPackageType type, void* data);
 
 // CClient3App
 
@@ -72,7 +72,7 @@ BOOL CClient3App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		m_tcp.Init(ip, 8080, OnRecvBusinessData, OnRecvTcpData);
+		m_tcp.Init(ip, 8080, OnRecvDemoPackage);
 	}
 
 	CClient3Dlg dlg;
@@ -111,7 +111,7 @@ int CClient3App::ExitInstance()
 	return CWinApp::ExitInstance();
 }
 
-void OnRecvBusinessData(DemoPackageType type, void* data)
+void OnRecvDemoPackage(DemoPackageType type, void* data)
 {
 	LPDemoPackageBase packet = NULL;
 	switch (type)
@@ -129,9 +129,4 @@ void OnRecvBusinessData(DemoPackageType type, void* data)
 		break;
 	}
 	theApp.m_tcp.ReleasePackage(type, (LPDemoPackageBase)data);
-}
-
-void OnRecvTcpData(BYTE buf[], int len)
-{
-	theApp.m_tcp.OnRecvData(buf, len);
 }

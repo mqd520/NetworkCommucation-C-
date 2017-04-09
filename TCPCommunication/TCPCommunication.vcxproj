@@ -83,12 +83,14 @@
   <ItemGroup>
     <ClInclude Include="Common.h" />
     <ClInclude Include="DemoProtocolMgr.h" />
+    <ClInclude Include="Interface.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="NetTool.h" />
     <ClInclude Include="DemoPackage.h" />
     <ClInclude Include="DemoPackageMgr.h" />
     <ClInclude Include="ProtocolMgr.h" />
     <ClInclude Include="ProtocolTool.h" />
+    <ClInclude Include="SocketClientPlus.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="SocketClient.h" />
@@ -106,7 +108,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SocketClient.cpp" />
-    <ClCompile Include="TCPClientMgr.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -12,40 +12,18 @@ using namespace std;
 namespace TCPCommunication
 {
 	//函数指针:收到tcp数据
-	typedef void(*LPOnRecvTCPData)(BYTE buf[], int len);
+	typedef void(*LPOnRecvSocketData)(BYTE buf[], int len);
 
 	//TcpClient客户端类
 	class CSocketClient
 	{
 	private:
+		//线程信息
 		typedef struct tagThreadInfo
 		{
 			HANDLE hThread;
 			DWORD nThreadID;
 		}ThreadInfo;
-
-	public:
-		CSocketClient();
-		~CSocketClient();
-
-		//初始化
-		void Init(const TCHAR* ip, int port, LPOnRecvTCPData lpfn = NULL);
-		//连接到服务端
-		bool StartConnect();
-		//关闭与服务端连接
-		void CloseConnect();
-		//获取最后一次错误信息
-		TCHAR* GetLastError();
-		//获取Socket
-		SOCKET GetServerSocket();
-		//接收数据事件
-		void OnRecvData(BYTE buf[], int len);
-		//主动释放资源
-		void Dispose();
-		//发送数据
-		bool SendData(BYTE buf[], int len);
-		//是否已初始化
-		bool IsInited();
 
 	protected:
 		const TCHAR* m_strServerIP;//服务端IP
@@ -57,19 +35,64 @@ namespace TCPCommunication
 		SOCKET m_socket;//客户端Socket
 		ThreadInfo m_readThreadInfo;//数据读取线程信息
 		bool m_bInited;//初始化
-		LPOnRecvTCPData m_lpOnRecvData;//数据回调指针
+		LPOnRecvSocketData m_lpOnRecvData;//数据回调指针
 		TCHAR* m_strClientIP;//客户端IP
 		int m_nClientPort;//客户端端口
 
 	protected:
-		//初始化
-		bool InitSocket();
-		//清理Socket
-		void CleanSocket();
-		//写入一行日志
-		void WriteLine(string log);
-		//清理线程
-		void CleanThread();
+		//************************************
+		// Method:    初始化客户端socket
+		// FullName:  TCPCommunication::CSocketClient::InitSocket
+		// Access:    protected 
+		// Returns:   bool
+		// Qualifier:
+		//************************************
+		virtual bool InitSocket();
+
+		//************************************
+		// Method:    清理Socket
+		// FullName:  TCPCommunication::CSocketClient::CleanSocket
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void CleanSocket();
+
+		//************************************
+		// Method:    写入一行日志
+		// FullName:  TCPCommunication::CSocketClient::WriteLine
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: string log
+		//************************************
+		virtual void WriteLine(string log);
+
+		//************************************
+		// Method:    清理线程
+		// FullName:  TCPCommunication::CSocketClient::CleanThread
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void CleanThread();
+
+	public:
+		CSocketClient();
+		~CSocketClient();
+
+		//************************************
+		// Method:    初始化
+		// FullName:  TCPCommunication::CSocketClient::Init
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 服务端IP
+		// Parameter: 服务端端口
+		// Parameter: 回调函数指针
+		//************************************
+		virtual void Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn = NULL);
+
 		//************************************
 		// Method:    设置客户端IP和端口
 		// FullName:  CSocketClient::SetAddressBySocket
@@ -78,6 +101,82 @@ namespace TCPCommunication
 		// Qualifier:
 		// Parameter: SOCKET socket
 		//************************************
-		bool SetAddressBySocket(SOCKET socket);
+		virtual bool SetAddressBySocket(SOCKET socket);
+
+		//************************************
+		// Method:    开始连接服务端
+		// FullName:  TCPCommunication::CSocketClient::StartConnect
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier:
+		//************************************
+		virtual bool StartConnect();
+
+		//************************************
+		// Method:    关闭与服务端连接
+		// FullName:  TCPCommunication::CSocketClient::CloseConnect
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void CloseConnect();
+
+		//************************************
+		// Method:    获取最后一次错误信息
+		// FullName:  TCPCommunication::CSocketClient::GetLastError
+		// Access:    public 
+		// Returns:   TCHAR*
+		// Qualifier:
+		//************************************
+		virtual TCHAR* GetLastError();
+
+		//************************************
+		// Method:    获取服务端Socket
+		// FullName:  TCPCommunication::CSocketClient::GetServerSocket
+		// Access:    public 
+		// Returns:   SOCKET
+		// Qualifier:
+		//************************************
+		virtual SOCKET GetServerSocket();
+
+		//************************************
+		// Method:    socket数据接收处理
+		// FullName:  TCPCommunication::CSocketClient::OnRecvData
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 字节数组
+		// Parameter: 字节数组长度
+		//************************************
+		virtual void OnRecvData(BYTE buf[], int len);
+
+		//************************************
+		// Method:    主动释放资源
+		// FullName:  TCPCommunication::CSocketClient::Dispose
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void Dispose();
+
+		//************************************
+		// Method:    发送数据
+		// FullName:  TCPCommunication::CSocketClient::SendData
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier:
+		// Parameter: 字节数组
+		// Parameter: 字节数组长度
+		//************************************
+		virtual bool SendData(BYTE buf[], int len);
+
+		//************************************
+		// Method:    是否已初始化
+		// FullName:  TCPCommunication::CSocketClient::IsInited
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier:
+		//************************************
+		virtual bool IsInited();
 	};
 }

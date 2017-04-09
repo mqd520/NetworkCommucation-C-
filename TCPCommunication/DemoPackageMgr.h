@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DemoPackage.h"
+#include "Interface.h"
 
 namespace TCPCommunication
 {

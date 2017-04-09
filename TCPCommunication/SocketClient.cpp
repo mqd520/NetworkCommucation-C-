@@ -16,6 +16,8 @@ namespace TCPCommunication
 		m_bIsConnected = false;
 		m_strLastError = NULL;
 		m_socket = NULL;
+		m_strClientIP = NULL;
+		m_nClientPort = 0;
 		memset(&m_addrSrv, 0, sizeof(SOCKADDR_IN));
 		memset(&m_readThreadInfo, 0, sizeof(ThreadInfo));
 	}
@@ -25,18 +27,14 @@ namespace TCPCommunication
 		Dispose();
 	}
 
-	//初始化
-	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvTCPData lpfn)
+	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn)
 	{
 		m_bInited = true;
 		m_strServerIP = ip;
 		m_nServerPort = port;
-		m_strClientIP = NULL;
-		m_nClientPort = 0;
 		m_lpOnRecvData = lpfn;
 	}
 
-	//初始化Socket
 	bool CSocketClient::InitSocket()
 	{
 		WSADATA wsaData;
@@ -70,7 +68,6 @@ namespace TCPCommunication
 		return true;
 	}
 
-	//清理资源
 	void CSocketClient::CleanSocket()
 	{
 		if (!m_bIsCleaned)
@@ -84,7 +81,6 @@ namespace TCPCommunication
 		}
 	}
 
-	//连接到服务端
 	bool CSocketClient::StartConnect()
 	{
 		if (InitSocket())
@@ -102,13 +98,11 @@ namespace TCPCommunication
 		return false;
 	}
 
-	//获取最后一次错误信息
 	TCHAR* CSocketClient::GetLastError()
 	{
 		return m_strLastError;
 	}
 
-	//关闭与服务端连接
 	void CSocketClient::CloseConnect()
 	{
 		closesocket(m_socket);
@@ -128,13 +122,11 @@ namespace TCPCommunication
 #endif
 	}
 
-	//获取Socket
 	SOCKET CSocketClient::GetServerSocket()
 	{
 		return m_socket;
 	}
 
-	//开始读取数据
 	DWORD WINAPI StartReadData(LPVOID lpParam)
 	{
 		CSocketClient* pTCPClient = (CSocketClient*)lpParam;
@@ -151,7 +143,6 @@ namespace TCPCommunication
 		return 0;
 	}
 
-	//接收数据事件
 	void CSocketClient::OnRecvData(BYTE buf[], int len)
 	{
 		if (m_lpOnRecvData)
@@ -174,7 +165,6 @@ namespace TCPCommunication
 		}
 	}
 
-	//清理线程
 	void CSocketClient::CleanThread()
 	{
 		if (m_readThreadInfo.hThread > 0)
@@ -185,14 +175,12 @@ namespace TCPCommunication
 		}
 	}
 
-	//主动释放资源
 	void CSocketClient::Dispose()
 	{
 		CleanSocket();
 		CleanThread();
 	}
 
-	//发送数据
 	bool CSocketClient::SendData(BYTE buf[], int len)
 	{
 		bool b = false;
@@ -217,7 +205,6 @@ namespace TCPCommunication
 		return b;
 	}
 
-	//是否已初始化
 	bool CSocketClient::IsInited()
 	{
 		return m_bInited;

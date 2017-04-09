@@ -21,6 +21,9 @@ using namespace TCPCommunication;
 
 class CClient3App : public CWinApp
 {
+protected:
+	void OnRecvData(BYTE buf[], int len);
+
 public:
 	CClient3App();
 

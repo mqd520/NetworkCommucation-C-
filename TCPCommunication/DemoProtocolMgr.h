@@ -15,9 +15,9 @@ namespace TCPCommunication
 		~CDemoProtocolMgr(){};
 
 		void Init();
-		BYTE* PacketFromBuf(DemoPackageType type, BYTE buf[], int bodyLen, int* packetLen);
+		BYTE* PacketFromBuf(DemoPackageType type, BYTE buf[], int bufLen, int* packetLen);
 		bool ValidateKeepAlivePackage(DemoPackageBase* data);
-	private:
-
+		int GetDataLen(BYTE buf[], int len);
+		DemoPackageType GetPackageType(BYTE buf[], int len);
 	};
 }
