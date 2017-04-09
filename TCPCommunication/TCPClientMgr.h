@@ -65,7 +65,7 @@ namespace TCPCommunication
 		//************************************
 		virtual bool Init(TCHAR* ip, int port, LPOnRecvBusinessPackage lpfn, int recvBufLen = 1024, int socketRecvBufLen = 1024)
 		{
-			if (m_stream)//只初始化一次
+			if (m_stream == NULL)//只初始化一次
 			{
 				m_stream = new CByteStream(recvBufLen);
 				m_lpfn = lpfn;

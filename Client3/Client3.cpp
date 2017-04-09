@@ -7,6 +7,7 @@
 #include "Client3Dlg.h"
 #include "DemoPackageMgr.h"
 #include "NetTool.h"
+#include "SocketClient.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -6,6 +6,7 @@
 #include <tchar.h>
 #include <WinSock2.h>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -13,6 +14,25 @@ namespace TCPCommunication
 {
 	//函数指针:收到tcp数据
 	typedef void(*LPOnRecvSocketData)(BYTE buf[], int len);
+
+	//通知消息类型
+	enum SocketClientMsgType
+	{
+		info,//消息
+		error,//错误
+		other//其它
+	};
+
+	//消息通知结构体
+	typedef struct tagNotifyMsg
+	{
+		bool haveMsg;//是否有消息
+		SocketClientMsgType type;//消息类型
+		TCHAR* msg;//消息
+	}NotifyMsg, *LPNotifyMsg;
+
+	//收到socket客户端消息函数指针
+	typedef bool(*LPOnRecvNotifyMsg)(SocketClientMsgType type, TCHAR* msg);
 
 	//TcpClient客户端类
 	class CSocketClient
@@ -23,7 +43,7 @@ namespace TCPCommunication
 		{
 			HANDLE hThread;
 			DWORD nThreadID;
-		}ThreadInfo;
+		}ThreadInfo, *LPThreadInfo;
 
 	protected:
 		const TCHAR* m_strServerIP;//服务端IP
@@ -40,6 +60,9 @@ namespace TCPCommunication
 		int m_nClientPort;//客户端端口
 		int m_nSocketBufLen;//接收缓冲区大小
 		char* m_pRecvBuf;//接收缓冲区
+		NotifyMsg m_msg;//消息
+		ThreadInfo m_notifyThreadInfo;//消息通知线程信息
+		LPOnRecvNotifyMsg m_lpfnNotifyMsg;//消息通知回调函数
 
 	protected:
 		//************************************
@@ -79,6 +102,18 @@ namespace TCPCommunication
 		//************************************
 		virtual void CleanThread();
 
+		//************************************
+		// Method:    设置通知消息
+		// FullName:  TCPCommunication::CSocketClient::SetNotifyMsg
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		// type: 消息类型
+		// format: 格式化字符串
+		// ...: 参数
+		//************************************
+		virtual void SetNotifyMsg(SocketClientMsgType type, TCHAR* msg);
+
 	public:
 		CSocketClient();
 		~CSocketClient();
@@ -93,7 +128,7 @@ namespace TCPCommunication
 		// Parameter: 服务端端口
 		// Parameter: 回调函数指针
 		//************************************
-		virtual void Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn, int socketBufLen = 1024);
+		virtual void Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn, LPOnRecvNotifyMsg lpfnMsg = NULL, int socketBufLen = 1024);
 
 		//************************************
 		// Method:    设置客户端IP和端口
@@ -190,5 +225,14 @@ namespace TCPCommunication
 		// Parameter: 缓冲区大小(输出)
 		//************************************
 		virtual char* GetRecvBuf(int *len);
+
+		//************************************
+		// Method:    向调用者发送消息
+		// FullName:  TCPCommunication::CSocketClient::NotifyMsg
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void NotifyMsg();
 	};
 }

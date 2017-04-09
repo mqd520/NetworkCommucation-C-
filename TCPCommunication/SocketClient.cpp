@@ -8,6 +8,9 @@ namespace TCPCommunication
 	//开始读取数据
 	DWORD WINAPI StartReadData(LPVOID lpParam);
 
+	//通知调用者消息
+	DWORD WINAPI NotifyCallerMsg(LPVOID lpParam);
+
 	CSocketClient::CSocketClient()
 	{
 		m_nSocketBufLen = 0;
@@ -21,7 +24,11 @@ namespace TCPCommunication
 		m_strClientIP = NULL;
 		m_nClientPort = 0;
 		memset(&m_addrSrv, 0, sizeof(SOCKADDR_IN));
-		memset(&m_readThreadInfo, 0, sizeof(ThreadInfo));
+		m_readThreadInfo = { 0 };
+		m_notifyThreadInfo = { 0 };
+		m_msg.msg = NULL;
+		m_msg.haveMsg = false;
+		m_lpfnNotifyMsg = NULL;
 	}
 
 	CSocketClient::~CSocketClient()
@@ -34,7 +41,7 @@ namespace TCPCommunication
 		Dispose();
 	}
 
-	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn, int socketBufLen)
+	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn, LPOnRecvNotifyMsg lpfnMsg, int socketBufLen)
 	{
 		if (!m_bInited)
 		{
@@ -44,6 +51,7 @@ namespace TCPCommunication
 			m_strServerIP = ip;
 			m_nServerPort = port;
 			m_lpOnRecvData = lpfn;
+			m_lpfnNotifyMsg = lpfnMsg;
 		}
 	}
 
@@ -53,7 +61,8 @@ namespace TCPCommunication
 
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
-			_tprintf(_T("Socket初始化失败!\n"));
+			//_tprintf(_T("Socket初始化失败!\n"));
+			SetNotifyMsg(SocketClientMsgType::error, _T("Socket初始化失败!\n"));
 			return false;
 		}
 
@@ -105,6 +114,10 @@ namespace TCPCommunication
 				return false;
 			}
 			m_readThreadInfo.hThread = ::CreateThread(NULL, 0, StartReadData, this, NULL, &m_readThreadInfo.nThreadID);
+			if (m_lpfnNotifyMsg)
+			{
+				m_notifyThreadInfo.hThread = ::CreateThread(NULL, 0, NotifyCallerMsg, this, NULL, &m_notifyThreadInfo.nThreadID);
+			}
 			return true;
 		}
 		return false;
@@ -186,6 +199,12 @@ namespace TCPCommunication
 			::CloseHandle(m_readThreadInfo.hThread);
 			m_readThreadInfo = { 0 };
 		}
+		if (m_notifyThreadInfo.hThread > 0)
+		{
+			::TerminateThread(m_notifyThreadInfo.hThread, 0);
+			::CloseHandle(m_notifyThreadInfo.hThread);
+			m_notifyThreadInfo = { 0 };
+		}
 	}
 
 	void CSocketClient::Dispose()
@@ -252,5 +271,35 @@ namespace TCPCommunication
 		m_nClientPort = (int)ntohs(address.sin_port);
 
 		return true;
+	}
+
+	DWORD WINAPI NotifyCallerMsg(LPVOID lpParam)
+	{
+		CSocketClient* p = (CSocketClient*)lpParam;
+		while (true)
+		{
+			p->NotifyMsg();
+		}
+		return 0;
+	}
+
+	void CSocketClient::NotifyMsg()
+	{
+		if (m_msg.haveMsg)
+		{
+			bool b = m_lpfnNotifyMsg(m_msg.type, m_msg.msg);
+			m_msg.haveMsg = false;
+			if (!b&&m_msg.msg != NULL)
+			{
+				//WriteLine(m_msg.msg);
+			}
+		}
+	}
+
+	void CSocketClient::SetNotifyMsg(SocketClientMsgType type, TCHAR* msg)
+	{
+		m_msg.type = type;
+		m_msg.msg = msg;
+		m_msg.haveMsg = true;
 	}
 }
