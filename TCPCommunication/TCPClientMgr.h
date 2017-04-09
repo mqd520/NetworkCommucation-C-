@@ -34,7 +34,7 @@ namespace TCPCommunication
 		{
 			m_streamCatch = NULL;
 			m_lpfn = NULL;
-			m_stream = new CByteStream(1024);
+			m_stream = NULL;
 		};
 
 		~CTCPClientMgr()
@@ -54,19 +54,25 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    初始化
-		// FullName:  CServer3Mgr::Init
-		// Access:    public static 
+		// FullName:  TCPCommunication::CTCPClientMgr<TPackageType, TPackageBase, TProtocolMgr>::Init
+		// Access:    virtual public 
 		// Returns:   bool
 		// Qualifier:
-		// Parameter: TCHAR * ip
-		// Parameter: int port
+		// ip: 服务端IP
+		// port: 服务端端口
+		// lpfn: 客户端收包回调函数指针
+		// recvBufLen: 收包缓冲区大小
 		//************************************
-		virtual bool Init(TCHAR* ip, int port, LPOnRecvBusinessPackage lpfn)
+		virtual bool Init(TCHAR* ip, int port, LPOnRecvBusinessPackage lpfn, int recvBufLen = 1024, int socketRecvBufLen = 1024)
 		{
-			m_lpfn = lpfn;
-			m_protocol.Init();
-			m_socket.Init(ip, port, &CTCPClientMgrSelf::OnRecvData, this);
-			m_socket.StartConnect();
+			if (m_stream)//只初始化一次
+			{
+				m_stream = new CByteStream(recvBufLen);
+				m_lpfn = lpfn;
+				m_protocol.Init();
+				m_socket.Init(ip, port, &CTCPClientMgrSelf::OnRecvData, this, socketRecvBufLen);
+				return m_socket.StartConnect();
+			}
 			return true;
 		};
 

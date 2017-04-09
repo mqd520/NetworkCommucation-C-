@@ -10,6 +10,8 @@ namespace TCPCommunication
 
 	CSocketClient::CSocketClient()
 	{
+		m_nSocketBufLen = 0;
+		m_pRecvBuf = NULL;
 		m_strServerIP = NULL;
 		m_nServerPort = 0;
 		m_bIsCleaned = false;
@@ -24,15 +26,25 @@ namespace TCPCommunication
 
 	CSocketClient::~CSocketClient()
 	{
+		if (m_pRecvBuf)
+		{
+			delete m_pRecvBuf;
+			m_pRecvBuf = NULL;
+		}
 		Dispose();
 	}
 
-	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn)
+	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn, int socketBufLen)
 	{
-		m_bInited = true;
-		m_strServerIP = ip;
-		m_nServerPort = port;
-		m_lpOnRecvData = lpfn;
+		if (!m_bInited)
+		{
+			m_bInited = true;
+			m_nSocketBufLen = socketBufLen;
+			m_pRecvBuf = new char[socketBufLen];
+			m_strServerIP = ip;
+			m_nServerPort = port;
+			m_lpOnRecvData = lpfn;
+		}
 	}
 
 	bool CSocketClient::InitSocket()
@@ -129,15 +141,16 @@ namespace TCPCommunication
 
 	DWORD WINAPI StartReadData(LPVOID lpParam)
 	{
-		CSocketClient* pTCPClient = (CSocketClient*)lpParam;
-		char buf[1024];
+		CSocketClient* p = (CSocketClient*)lpParam;
+		int len = 0;
+		char* buf = p->GetRecvBuf(&len);
 		while (true)
 		{
-			memset(buf, 0, sizeof(buf));
-			int len = recv(pTCPClient->GetServerSocket(), buf, 1024, 0);
-			if (len > 0)
+			memset(buf, 0, len);
+			int recvLen = recv(p->GetServerSocket(), buf, len, 0);
+			if (recvLen > 0)
 			{
-				pTCPClient->OnRecvData((BYTE*)buf, len);
+				p->OnRecvData((BYTE*)buf, recvLen);
 			}
 		}
 		return 0;
@@ -208,6 +221,12 @@ namespace TCPCommunication
 	bool CSocketClient::IsInited()
 	{
 		return m_bInited;
+	}
+
+	char* CSocketClient::GetRecvBuf(int *len)
+	{
+		*len = m_nSocketBufLen;
+		return m_pRecvBuf;
 	}
 
 	bool CSocketClient::SetAddressBySocket(SOCKET socket)

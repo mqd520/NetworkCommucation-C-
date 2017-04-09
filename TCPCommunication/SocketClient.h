@@ -38,6 +38,8 @@ namespace TCPCommunication
 		LPOnRecvSocketData m_lpOnRecvData;//数据回调指针
 		TCHAR* m_strClientIP;//客户端IP
 		int m_nClientPort;//客户端端口
+		int m_nSocketBufLen;//接收缓冲区大小
+		char* m_pRecvBuf;//接收缓冲区
 
 	protected:
 		//************************************
@@ -91,7 +93,7 @@ namespace TCPCommunication
 		// Parameter: 服务端端口
 		// Parameter: 回调函数指针
 		//************************************
-		virtual void Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn = NULL);
+		virtual void Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn, int socketBufLen = 1024);
 
 		//************************************
 		// Method:    设置客户端IP和端口
@@ -178,5 +180,15 @@ namespace TCPCommunication
 		// Qualifier:
 		//************************************
 		virtual bool IsInited();
+
+		//************************************
+		// Method:    获取接收缓冲区
+		// FullName:  TCPCommunication::CSocketClient::GetRecvBuf
+		// Access:    virtual public 
+		// Returns:   缓冲区
+		// Qualifier:
+		// Parameter: 缓冲区大小(输出)
+		//************************************
+		virtual char* GetRecvBuf(int *len);
 	};
 }

@@ -4,6 +4,12 @@ namespace TCPCommunication
 {
 	class CByteStream
 	{
+	private:
+		int m_streamLen;//字节流长度
+		BYTE* m_buf;//缓冲区指针
+		int m_nPosition;//数据结尾位置,索引,0开始
+		int m_dataLen;//数据长度
+
 	public:
 		CByteStream(int len);
 		~CByteStream();
@@ -110,11 +116,5 @@ namespace TCPCommunication
 		// Parameter: 平移长度
 		//************************************
 		void Left(int start, int size, int len);
-
-	private:
-		int m_streamLen;//字节流大小
-		BYTE* m_buf;//缓冲区指针
-		int m_nPosition;//数据结尾位置,索引,0开始
-		int m_dataLen;//数据长度
 	};
 }
