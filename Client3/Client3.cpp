@@ -16,7 +16,7 @@
 //收到DemoPackage事件处理
 void OnRecvDemoPackage(DemoPackageType type, void* data);
 
-bool OnRecvMsg(SocketClientMsgType type, TCHAR* msg);
+void OnRecvMsg(SocketClientMsgType type, TCHAR* msg);
 
 // CClient3App
 
@@ -136,11 +136,7 @@ void OnRecvDemoPackage(DemoPackageType type, void* data)
 	theApp.m_tcp.ReleasePackage(type, (LPDemoPackageBase)data);
 }
 
-bool OnRecvMsg(SocketClientMsgType type, TCHAR* msg)
+void OnRecvMsg(SocketClientMsgType type, TCHAR* msg)
 {
-	if (type == SocketClientMsgType::info)
-	{
-		TRACE(msg);
-	}
-	return true;
+	
 }

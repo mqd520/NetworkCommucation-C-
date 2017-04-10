@@ -32,7 +32,7 @@ namespace TCPCommunication
 	}NotifyMsg, *LPNotifyMsg;
 
 	//收到socket客户端消息函数指针
-	typedef bool(*LPOnRecvNotifyMsg)(SocketClientMsgType type, TCHAR* msg);
+	typedef void(*LPOnRecvNotifyMsg)(SocketClientMsgType type, TCHAR* msg);
 
 	//TcpClient客户端类
 	class CSocketClient
@@ -63,6 +63,7 @@ namespace TCPCommunication
 		NotifyMsg m_msg;//消息
 		ThreadInfo m_notifyThreadInfo;//消息通知线程信息
 		LPOnRecvNotifyMsg m_lpfnNotifyMsg;//消息通知回调函数
+		const int m_msgbufsize = 1024;//消息缓冲区大小
 
 	protected:
 		//************************************
@@ -82,16 +83,6 @@ namespace TCPCommunication
 		// Qualifier:
 		//************************************
 		virtual void CleanSocket();
-
-		//************************************
-		// Method:    写入一行日志
-		// FullName:  TCPCommunication::CSocketClient::WriteLine
-		// Access:    protected 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: string log
-		//************************************
-		virtual void WriteLine(string log);
 
 		//************************************
 		// Method:    清理线程

@@ -26,8 +26,8 @@ namespace TCPCommunication
 		memset(&m_addrSrv, 0, sizeof(SOCKADDR_IN));
 		m_readThreadInfo = { 0 };
 		m_notifyThreadInfo = { 0 };
-		TCHAR* p = new TCHAR[1024];
-		memset(p, 0, sizeof(TCHAR) * 1024);
+		TCHAR* p = new TCHAR[m_msgbufsize];
+		memset(p, 0, m_msgbufsize);
 		m_msg.msg = p;
 		m_msg.haveMsg = false;
 		m_lpfnNotifyMsg = NULL;
@@ -67,19 +67,11 @@ namespace TCPCommunication
 
 	bool CSocketClient::InitSocket()
 	{
-		//SetNotifyMsg(SocketClientMsgType::error, _T("Socket初始化!\n"));
-
-		TCHAR str[1024];
-		wsprintf(str, _T("str: %s\n"), _T("str"));
-		SetNotifyMsg(SocketClientMsgType::info, str);
-
-		SetNotifyMsg(SocketClientMsgType::info, _T("sdddddddddddddddd\n"));
-
 		WSADATA wsaData;
 
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
-			//_tprintf(_T("Socket初始化失败!\n"));
+			SetNotifyMsg(SocketClientMsgType::error, _T("Socket初始化失败!\n"));
 			return false;
 		}
 
@@ -98,7 +90,7 @@ namespace TCPCommunication
 		SetAddressBySocket(m_socket);
 		if (m_socket == INVALID_SOCKET)
 		{
-			_tprintf(_T("创建Socket失败: %d\n"), WSAGetLastError());
+			SetNotifyMsg(SocketClientMsgType::error, _T("创建Socket失败!\n"));
 			CleanSocket();
 			return false;
 		}
@@ -126,7 +118,9 @@ namespace TCPCommunication
 			int result = connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
 			if (result == SOCKET_ERROR)
 			{
-				_tprintf(_T("连接服务端失败: %s:%d\n"), m_strServerIP, m_nServerPort);
+				TCHAR s[100];
+				wsprintf(s, _T("连接服务端失败: %s:%d\n"), m_strServerIP, m_nServerPort);
+				SetNotifyMsg(SocketClientMsgType::error, s);
 				CleanSocket();
 				return false;
 			}
@@ -144,20 +138,6 @@ namespace TCPCommunication
 	void CSocketClient::CloseConnect()
 	{
 		closesocket(m_socket);
-	}
-
-	void CSocketClient::WriteLine(string log)
-	{
-#ifdef _DEBUG
-#ifdef _CONSOLE
-		_tprintf(log.c_str());
-		_tprintf("\n");
-#endif
-#ifdef _WINDOWS
-		TRACE(log.c_str());
-		TRACE("\n");
-#endif
-#endif
 	}
 
 	SOCKET CSocketClient::GetServerSocket()
@@ -300,20 +280,15 @@ namespace TCPCommunication
 	{
 		if (m_msg.haveMsg)
 		{
-			bool b = m_lpfnNotifyMsg(m_msg.type, m_msg.msg);
+			m_lpfnNotifyMsg(m_msg.type, m_msg.msg);
 			m_msg.haveMsg = false;
-			if (b == false && m_msg.msg != NULL)
-			{
-				int n = 0;
-				//WriteLine(m_msg.msg);
-			}
 		}
 	}
 
 	void CSocketClient::SetNotifyMsg(SocketClientMsgType type, TCHAR* msg)
 	{
 		m_msg.type = type;
-		memset(m_msg.msg, 0, sizeof(TCHAR) * 1024);
+		memset(m_msg.msg, 0, m_msgbufsize);
 		if (msg != NULL)
 		{
 			int n = GetStrByteCount(msg);
