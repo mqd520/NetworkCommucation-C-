@@ -12,58 +12,80 @@ using namespace std;
 
 namespace TCPCommunication
 {
-	//函数指针:收到tcp数据
+	//************************************
+	// Method:    收到socket数据
+	// FullName:  TCPCommunication::LPOnRecvSocketData
+	// Access:    public 
+	// Returns:   void
+	// Qualifier: 缓冲区
+	// Parameter: 缓冲区长度
+	//************************************
 	typedef void(*LPOnRecvSocketData)(BYTE buf[], int len);
 
-	//通知消息类型
-	enum SocketClientMsgType
+	//事件类型
+	enum SocketClientEvtType
 	{
-		info,//消息
+		Info,//消息
 		error,//错误
-		other//其它
+		Debug//其它
 	};
 
 	//消息通知结构体
-	typedef struct tagNotifyMsg
+	typedef struct tagNotifyEvt
 	{
-		bool haveMsg;//是否有消息
-		SocketClientMsgType type;//消息类型
+		bool haveMsg;//是否有事件
+		SocketClientEvtType type;//事件类型
 		TCHAR* msg;//消息
-	}NotifyMsg, *LPNotifyMsg;
+	}NotifyEvt, *LPNotifyEvt;
 
-	//收到socket客户端消息函数指针
-	typedef void(*LPOnRecvNotifyMsg)(SocketClientMsgType type, TCHAR* msg);
+	//************************************
+	// Method:    收到socket客户端事件函数指针
+	// FullName:  TCPCommunication::LPOnRecvNotifyEvt
+	// Access:    public 
+	// Returns:   是否已处理
+	// Qualifier: 事件类型
+	// Parameter: 消息
+	//************************************
+	typedef bool(*LPOnRecvNotifyEvt)(SocketClientEvtType type, TCHAR* msg);
 
-	//TcpClient客户端类
+	//Socket客户端类
 	class CSocketClient
 	{
 	private:
 		//线程信息
 		typedef struct tagThreadInfo
 		{
-			HANDLE hThread;
-			DWORD nThreadID;
+			HANDLE hThread;//句柄
+			DWORD nThreadID;//ID
 		}ThreadInfo, *LPThreadInfo;
+
+		//缓存Socket缓冲区信息
+		typedef struct tagCatchSocketBufInfo
+		{
+			int adress;//指针地址
+			int len;//缓冲区长度
+		}CatchSocketBufInfo, *LPCatchSocketBufInfo;
 
 	protected:
 		const TCHAR* m_strServerIP;//服务端IP
 		int m_nServerPort;//服务端端口
 		bool m_bIsCleaned;//是否已清理
 		bool m_bIsConnected;//是否已经连接上服务端
-		TCHAR* m_strLastError;//最后一次错误信息
 		SOCKADDR_IN m_addrSrv;//服务端地址
 		SOCKET m_socket;//客户端Socket
-		ThreadInfo m_readThreadInfo;//数据读取线程信息
-		bool m_bInited;//初始化
-		LPOnRecvSocketData m_lpOnRecvData;//数据回调指针
+		ThreadInfo m_tiReadSocketData;//读取socket数据线程信息
+		bool m_bInited;//是否初始化
+		LPOnRecvSocketData m_lpfnOnRecvSocketData;//接收socket数据回调函数
 		TCHAR* m_strClientIP;//客户端IP
 		int m_nClientPort;//客户端端口
-		int m_nSocketBufLen;//接收缓冲区大小
-		char* m_pRecvBuf;//接收缓冲区
-		NotifyMsg m_msg;//消息
-		ThreadInfo m_notifyThreadInfo;//消息通知线程信息
-		LPOnRecvNotifyMsg m_lpfnNotifyMsg;//消息通知回调函数
-		const int m_msgbufsize = 1024;//消息缓冲区大小
+		int m_nRecvSocketBufLen;//接收Socket缓冲区总长度
+		char* m_pRecvSocketBuf;//接收Socket缓冲区
+		NotifyEvt m_evt;//事件
+		ThreadInfo m_tiReadNotifyEvt;//读取通知消息线程信息
+		LPOnRecvNotifyEvt m_lpfnOnRecvNotifyEvt;//接收通知消息回调函数
+		const int m_msgbufsize = 1024;//通知消息缓冲区大小
+		vector<CatchSocketBufInfo> m_vecCatchRecvSocketBuf;//缓存接收缓冲区集合
+		ThreadInfo m_tiReadCatchSocketData;//读取缓存socket数据线程信息
 
 	protected:
 		//************************************
@@ -94,16 +116,35 @@ namespace TCPCommunication
 		virtual void CleanThread();
 
 		//************************************
-		// Method:    设置通知消息
-		// FullName:  TCPCommunication::CSocketClient::SetNotifyMsg
+		// Method:    保存通知事件
+		// FullName:  TCPCommunication::CSocketClient::SaveNotifyEvt
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
-		// type: 消息类型
-		// format: 格式化字符串
-		// ...: 参数
+		// Parameter: 类型
+		// Parameter: 消息
 		//************************************
-		virtual void SetNotifyMsg(SocketClientMsgType type, TCHAR* msg);
+		virtual void SaveNotifyEvt(SocketClientEvtType type, TCHAR* msg);
+
+		//************************************
+		// Method:    设置客户端IP和端口
+		// FullName:  CSocketClient::SetAddressBySocket
+		// Access:    protected 
+		// Returns:   bool
+		// Qualifier:
+		// Parameter: SOCKET socket
+		//************************************
+		virtual bool SetAddressBySocket(SOCKET socket);
+
+		//************************************
+		// Method:    打印消息
+		// FullName:  TCPCommunication::CSocketClient::Printf
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 消息
+		//************************************
+		virtual void Printf(TCHAR* msg);
 
 	public:
 		CSocketClient();
@@ -117,19 +158,20 @@ namespace TCPCommunication
 		// Qualifier:
 		// Parameter: 服务端IP
 		// Parameter: 服务端端口
+		// Parameter: 接收消息回调函数
 		// Parameter: 回调函数指针
 		//************************************
-		virtual void Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn, LPOnRecvNotifyMsg lpfnMsg = NULL, int socketBufLen = 1024);
+		virtual void Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt = NULL, int socketBufLen = 1024);
 
 		//************************************
-		// Method:    设置客户端IP和端口
-		// FullName:  CSocketClient::SetAddressBySocket
-		// Access:    protected 
-		// Returns:   bool
+		// Method:    设置接收socket数据回调函数
+		// FullName:  TCPCommunication::CSocketClient::SetCallback
+		// Access:    virtual public 
+		// Returns:   void
 		// Qualifier:
-		// Parameter: SOCKET socket
+		// Parameter: 接收socket数据回调函数
 		//************************************
-		virtual bool SetAddressBySocket(SOCKET socket);
+		virtual void SetCallback(LPOnRecvSocketData lpfnOnRecvSocketData);
 
 		//************************************
 		// Method:    开始连接服务端
@@ -150,33 +192,24 @@ namespace TCPCommunication
 		virtual void CloseConnect();
 
 		//************************************
-		// Method:    获取最后一次错误信息
-		// FullName:  TCPCommunication::CSocketClient::GetLastError
-		// Access:    public 
-		// Returns:   TCHAR*
-		// Qualifier:
-		//************************************
-		virtual TCHAR* GetLastError();
-
-		//************************************
 		// Method:    获取服务端Socket
 		// FullName:  TCPCommunication::CSocketClient::GetServerSocket
 		// Access:    public 
 		// Returns:   SOCKET
 		// Qualifier:
 		//************************************
-		virtual SOCKET GetServerSocket();
+		virtual SOCKET GetClientSocket();
 
 		//************************************
-		// Method:    socket数据接收处理
-		// FullName:  TCPCommunication::CSocketClient::OnRecvData
-		// Access:    public 
+		// Method:    读取Socket数据
+		// FullName:  TCPCommunication::CSocketClient::OnRecvSocketData
+		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
-		// Parameter: 字节数组
-		// Parameter: 字节数组长度
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
 		//************************************
-		virtual void OnRecvData(BYTE buf[], int len);
+		virtual void ReadSocketData();
 
 		//************************************
 		// Method:    主动释放资源
@@ -199,31 +232,32 @@ namespace TCPCommunication
 		virtual bool SendData(BYTE buf[], int len);
 
 		//************************************
-		// Method:    是否已初始化
-		// FullName:  TCPCommunication::CSocketClient::IsInited
-		// Access:    public 
-		// Returns:   bool
-		// Qualifier:
-		//************************************
-		virtual bool IsInited();
-
-		//************************************
-		// Method:    获取接收缓冲区
-		// FullName:  TCPCommunication::CSocketClient::GetRecvBuf
-		// Access:    virtual public 
-		// Returns:   缓冲区
-		// Qualifier:
-		// Parameter: 缓冲区大小(输出)
-		//************************************
-		virtual char* GetRecvBuf(int *len);
-
-		//************************************
-		// Method:    向调用者发送消息
+		// Method:    读取通知消息并发送给调用者
 		// FullName:  TCPCommunication::CSocketClient::NotifyMsg
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
 		//************************************
-		virtual void NotifyMsg();
+		virtual void ReadNotifyEvt();
+
+		//************************************
+		// Method:    读取缓存Socket数据并发送给调用者
+		// FullName:  TCPCommunication::CSocketClient::SendSocketData
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void ReadCatchSocketData();
+
+		//************************************
+		// Method:    模拟一次服务端发包
+		// FullName:  TCPCommunication::CSocketClient::SimularServerData
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		virtual void SimulateServerData(BYTE* buf, int len);
 	};
 }

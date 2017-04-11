@@ -16,7 +16,7 @@
 //收到DemoPackage事件处理
 void OnRecvDemoPackage(DemoPackageType type, void* data);
 
-void OnRecvMsg(SocketClientMsgType type, TCHAR* msg);
+void OnRecvMsg(SocketClientEvtType type, TCHAR* msg);
 
 // CClient3App
 

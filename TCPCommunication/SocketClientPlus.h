@@ -5,43 +5,35 @@
 namespace TCPCommunication
 {
 	template<typename T>
-	class CSocketClientPlus :public CSocketClient
+	//socket客户端模板类
+	class CSocketClientT :public CSocketClient
 	{
 	public:
-		typedef void(T::*LPOnMemRecvSocketData)(BYTE buf[], int len);//成员函数指针
+		typedef void(T::*LPOnRecvSocketDataT)(BYTE buf[], int len);//成员函数指针
 
 	protected:
 		T* m_pT;//调用方指针
-		LPOnMemRecvSocketData m_lpfn;//成员函数指针
+		LPOnRecvSocketDataT m_lpfnOnRecvSocketDataT;//成员函数指针
 
 	public:
-		void Init(const TCHAR* ip, int port, LPOnMemRecvSocketData lpfn, T* p, int socketBufLen = 1024)
+		void SetCallback(LPOnRecvSocketDataT lpfnOnRecvSocketDataT)
 		{
-			if (!m_bInited)
-			{
-				m_bInited = true;
-				m_pT = p;
-				m_lpfn = lpfn;
-				m_nSocketBufLen = socketBufLen;
-				m_pRecvBuf = new char[socketBufLen];
-				m_strServerIP = ip;
-				m_nServerPort = port;
-			}
+			m_lpfnOnRecvSocketDataT = lpfnOnRecvSocketDataT;
 		};
 
-		void OnRecvData(BYTE buf[], int len)
+		void CSocketClient::ReadCatchSocketData()
 		{
-			if (m_lpfn&&m_pT)
+			if (m_vecCatchRecvSocketBuf.size() > 0)
 			{
-				try
+				BYTE* buf = (BYTE*)(m_vecCatchRecvSocketBuf[0].adress);
+				int len = m_vecCatchRecvSocketBuf[0].len;
+				m_vecCatchRecvSocketBuf.erase(m_vecCatchRecvSocketBuf.begin());
+				if (m_lpfnOnRecvSocketDataT && buf)
 				{
-					(m_pT->*m_lpfn)(buf, len);
-				}
-				catch (int)
-				{
-
+					m_lpfnPlusOnRecvSocketData(buf, len);
+					delete buf;
 				}
 			}
-		};
+		}
 	};
 }

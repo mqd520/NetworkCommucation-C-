@@ -5,64 +5,71 @@
 
 namespace TCPCommunication
 {
-	//开始读取数据
-	DWORD WINAPI StartReadData(LPVOID lpParam);
+	//读取Socket数据线程入口
+	DWORD WINAPI ReadSocketData(LPVOID lpParam);
 
-	//通知调用者消息
-	DWORD WINAPI NotifyCallerMsg(LPVOID lpParam);
+	//读取缓存Socket数据线程入口
+	DWORD WINAPI ReadCatchSocketData(LPVOID lpParam);
+
+	//通知消息线程入口
+	DWORD WINAPI ReadNotifyMsg(LPVOID lpParam);
 
 	CSocketClient::CSocketClient()
 	{
-		m_nSocketBufLen = 0;
-		m_pRecvBuf = NULL;
+		m_nRecvSocketBufLen = 0;
+		m_pRecvSocketBuf = NULL;
 		m_strServerIP = NULL;
 		m_nServerPort = 0;
 		m_bIsCleaned = false;
 		m_bIsConnected = false;
-		m_strLastError = NULL;
 		m_socket = NULL;
 		m_strClientIP = NULL;
 		m_nClientPort = 0;
 		memset(&m_addrSrv, 0, sizeof(SOCKADDR_IN));
-		m_readThreadInfo = { 0 };
-		m_notifyThreadInfo = { 0 };
+		m_tiReadSocketData = { 0 };
+		m_tiReadNotifyEvt = { 0 };
 		TCHAR* p = new TCHAR[m_msgbufsize];
 		memset(p, 0, m_msgbufsize);
-		m_msg.msg = p;
-		m_msg.haveMsg = false;
-		m_lpfnNotifyMsg = NULL;
+		m_evt.msg = p;
+		m_evt.haveMsg = false;
+		m_lpfnOnRecvNotifyEvt = NULL;
+		m_tiReadCatchSocketData = { 0 };
 	}
 
 	CSocketClient::~CSocketClient()
 	{
-		if (m_pRecvBuf)
+		if (m_pRecvSocketBuf)
 		{
-			delete m_pRecvBuf;
-			m_pRecvBuf = NULL;
+			delete m_pRecvSocketBuf;
+			m_pRecvSocketBuf = NULL;
 		}
-		if (m_msg.msg)
+		if (m_evt.msg)
 		{
-			delete m_msg.msg;
+			delete m_evt.msg;
 		}
 		Dispose();
 	}
 
-	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvSocketData lpfn, LPOnRecvNotifyMsg lpfnMsg, int socketBufLen)
+	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt, int socketBufLen)
 	{
 		if (!m_bInited)
 		{
 			m_bInited = true;
-			m_nSocketBufLen = socketBufLen;
-			m_pRecvBuf = new char[socketBufLen];
+			m_nRecvSocketBufLen = socketBufLen;
+			m_pRecvSocketBuf = new char[socketBufLen];
 			m_strServerIP = ip;
 			m_nServerPort = port;
-			m_lpOnRecvData = lpfn;
-			m_lpfnNotifyMsg = lpfnMsg;
-			if (m_lpfnNotifyMsg)
+			m_lpfnOnRecvNotifyEvt = lpfnOnRecvNotifyEvt;
+			if (m_lpfnOnRecvNotifyEvt)
 			{
-				m_notifyThreadInfo.hThread = ::CreateThread(NULL, 0, NotifyCallerMsg, this, NULL, &m_notifyThreadInfo.nThreadID);
+				m_tiReadNotifyEvt.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadNotifyMsg, this, NULL, &m_tiReadNotifyEvt.nThreadID);
 			}
 		}
+	}
+
+	void CSocketClient::SetCallback(LPOnRecvSocketData lpfnOnRecvSocketData)
+	{
+		m_lpfnOnRecvSocketData = lpfnOnRecvSocketData;
 	}
 
 	bool CSocketClient::InitSocket()
@@ -71,7 +78,7 @@ namespace TCPCommunication
 
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
-			SetNotifyMsg(SocketClientMsgType::error, _T("Socket初始化失败!\n"));
+			SaveNotifyEvt(SocketClientEvtType::error, _T("Socket初始化失败!\n"));
 			return false;
 		}
 
@@ -90,7 +97,7 @@ namespace TCPCommunication
 		SetAddressBySocket(m_socket);
 		if (m_socket == INVALID_SOCKET)
 		{
-			SetNotifyMsg(SocketClientMsgType::error, _T("创建Socket失败!\n"));
+			SaveNotifyEvt(SocketClientEvtType::error, _T("创建Socket失败!\n"));
 			CleanSocket();
 			return false;
 		}
@@ -120,19 +127,15 @@ namespace TCPCommunication
 			{
 				TCHAR s[100];
 				wsprintf(s, _T("连接服务端失败: %s:%d\n"), m_strServerIP, m_nServerPort);
-				SetNotifyMsg(SocketClientMsgType::error, s);
+				SaveNotifyEvt(SocketClientEvtType::error, s);
 				CleanSocket();
 				return false;
 			}
-			m_readThreadInfo.hThread = ::CreateThread(NULL, 0, StartReadData, this, NULL, &m_readThreadInfo.nThreadID);
+			m_tiReadSocketData.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadSocketData, this, NULL, &m_tiReadSocketData.nThreadID);
+			m_tiReadCatchSocketData.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadCatchSocketData, this, NULL, &m_tiReadCatchSocketData.nThreadID);
 			return true;
 		}
 		return false;
-	}
-
-	TCHAR* CSocketClient::GetLastError()
-	{
-		return m_strLastError;
 	}
 
 	void CSocketClient::CloseConnect()
@@ -140,63 +143,52 @@ namespace TCPCommunication
 		closesocket(m_socket);
 	}
 
-	SOCKET CSocketClient::GetServerSocket()
+	SOCKET CSocketClient::GetClientSocket()
 	{
 		return m_socket;
 	}
 
-	DWORD WINAPI StartReadData(LPVOID lpParam)
+	DWORD WINAPI ReadSocketData(LPVOID lpParam)
 	{
 		CSocketClient* p = (CSocketClient*)lpParam;
-		int len = 0;
-		char* buf = p->GetRecvBuf(&len);
 		while (true)
 		{
-			memset(buf, 0, len);
-			int recvLen = recv(p->GetServerSocket(), buf, len, 0);
-			if (recvLen > 0)
-			{
-				p->OnRecvData((BYTE*)buf, recvLen);
-			}
+			p->ReadSocketData();
 		}
 		return 0;
 	}
 
-	void CSocketClient::OnRecvData(BYTE buf[], int len)
+	void CSocketClient::ReadSocketData()
 	{
-		if (m_lpOnRecvData)
+		memset(m_pRecvSocketBuf, 0, m_nRecvSocketBufLen);
+		int len = recv(m_socket, m_pRecvSocketBuf, m_nRecvSocketBufLen, 0);
+		if (len > 0 && m_lpfnOnRecvSocketData)
 		{
-			//BYTE* buf1 = new BYTE[len];
-			//memcpy(buf1, buf, len);
-			try
-			{
-				//m_lpOnRecvData(buf, len, m_strClientIP, m_nClientPort);
-				m_lpOnRecvData(buf, len);
-				//if (buf1)
-				//{
-				//	delete buf1;
-				//}
-			}
-			catch (int)
-			{
-				//delete buf1;
-			}
+			BYTE* buf = new BYTE[len];
+			memcpy(buf, m_pRecvSocketBuf, len);
+			m_vecCatchRecvSocketBuf.push_back({ (int)buf, len });
 		}
 	}
 
 	void CSocketClient::CleanThread()
 	{
-		if (m_readThreadInfo.hThread > 0)
+		if (m_tiReadSocketData.hThread > 0)
 		{
-			::TerminateThread(m_readThreadInfo.hThread, 0);
-			::CloseHandle(m_readThreadInfo.hThread);
-			m_readThreadInfo = { 0 };
+			::TerminateThread(m_tiReadSocketData.hThread, 0);
+			::CloseHandle(m_tiReadSocketData.hThread);
+			m_tiReadSocketData = { 0 };
 		}
-		if (m_notifyThreadInfo.hThread > 0)
+		if (m_tiReadNotifyEvt.hThread > 0)
 		{
-			::TerminateThread(m_notifyThreadInfo.hThread, 0);
-			::CloseHandle(m_notifyThreadInfo.hThread);
-			m_notifyThreadInfo = { 0 };
+			::TerminateThread(m_tiReadNotifyEvt.hThread, 0);
+			::CloseHandle(m_tiReadNotifyEvt.hThread);
+			m_tiReadNotifyEvt = { 0 };
+		}
+		if (m_tiReadCatchSocketData.hThread > 0)
+		{
+			::TerminateThread(m_tiReadCatchSocketData.hThread, 0);
+			::CloseHandle(m_tiReadCatchSocketData.hThread);
+			m_tiReadCatchSocketData = { 0 };
 		}
 	}
 
@@ -230,17 +222,6 @@ namespace TCPCommunication
 		return b;
 	}
 
-	bool CSocketClient::IsInited()
-	{
-		return m_bInited;
-	}
-
-	char* CSocketClient::GetRecvBuf(int *len)
-	{
-		*len = m_nSocketBufLen;
-		return m_pRecvBuf;
-	}
-
 	bool CSocketClient::SetAddressBySocket(SOCKET socket)
 	{
 		SOCKADDR_IN address;
@@ -266,34 +247,82 @@ namespace TCPCommunication
 		return true;
 	}
 
-	DWORD WINAPI NotifyCallerMsg(LPVOID lpParam)
+	DWORD WINAPI ReadNotifyMsg(LPVOID lpParam)
 	{
 		CSocketClient* p = (CSocketClient*)lpParam;
 		while (true)
 		{
-			p->NotifyMsg();
+			p->ReadNotifyEvt();
 		}
 		return 0;
 	}
 
-	void CSocketClient::NotifyMsg()
+	void CSocketClient::ReadNotifyEvt()
 	{
-		if (m_msg.haveMsg)
+		if (m_evt.haveMsg)
 		{
-			m_lpfnNotifyMsg(m_msg.type, m_msg.msg);
-			m_msg.haveMsg = false;
+			if (m_lpfnOnRecvNotifyEvt)
+			{
+				bool b = m_lpfnOnRecvNotifyEvt(m_evt.type, m_evt.msg);
+				if (b&&m_evt.msg[0] != 0)
+				{
+					Printf(m_evt.msg);
+				}
+			}
+			m_evt.haveMsg = false;
 		}
 	}
 
-	void CSocketClient::SetNotifyMsg(SocketClientMsgType type, TCHAR* msg)
+	void CSocketClient::SaveNotifyEvt(SocketClientEvtType type, TCHAR* msg)
 	{
-		m_msg.type = type;
-		memset(m_msg.msg, 0, m_msgbufsize);
+		m_evt.type = type;
+		memset(m_evt.msg, 0, m_msgbufsize);
 		if (msg != NULL)
 		{
 			int n = GetStrByteCount(msg);
-			memcpy(m_msg.msg, msg, n);
+			memcpy(m_evt.msg, msg, n);
 		}
-		m_msg.haveMsg = true;
+		m_evt.haveMsg = true;
+	}
+
+	DWORD WINAPI ReadCatchSocketData(LPVOID lpParam)
+	{
+		CSocketClient* p = (CSocketClient*)lpParam;
+		while (true)
+		{
+			p->ReadCatchSocketData();
+		}
+		return 0;
+	}
+
+	void CSocketClient::ReadCatchSocketData()
+	{
+		if (m_vecCatchRecvSocketBuf.size() > 0)
+		{
+			BYTE* buf = (BYTE*)(m_vecCatchRecvSocketBuf[0].adress);
+			int len = m_vecCatchRecvSocketBuf[0].len;
+			m_vecCatchRecvSocketBuf.erase(m_vecCatchRecvSocketBuf.begin());
+			if (m_lpfnOnRecvSocketData && buf)
+			{
+				m_lpfnOnRecvSocketData(buf, len);
+			}
+		}
+	}
+
+	void CSocketClient::Printf(TCHAR* msg)
+	{
+#ifdef _DEBUG
+#ifdef _CONSOLE
+		_tprintf(msg);
+#endif
+#ifdef _WINDOWS
+		TRACE(msg);
+#endif
+#endif // _DEBUG
+	}
+
+	void CSocketClient::SimulateServerData(BYTE* buf, int len)
+	{
+		m_vecCatchRecvSocketBuf.push_back({ (int)&buf, len });
 	}
 }

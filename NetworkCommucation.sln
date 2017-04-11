@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server1", "Server1\Server1.vcxproj", "{AF423D2D-3D50-4654-8053-0038AA14CD31}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client1", "Client1\Client1.vcxproj", "{04BBCFB7-197A-4593-A2F7-8A2E14925BD0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F7FD0AC-5D87-40EC-8E07-316D79745805} = {0F7FD0AC-5D87-40EC-8E07-316D79745805}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 客户端", "02 客户端", "{BA9E35E0-A82E-4EA4-8823-52D6F2A9DA79}"
 EndProject

@@ -9,9 +9,9 @@
 #endif
 
 #include "resource.h"		// 主符号
-#include "TcpClient.h"
+#include "SocketClient.h"
 
-
+using namespace TCPCommunication;
 
 // CClient1App: 
 // 有关此类的实现，请参阅 Client1.cpp
@@ -22,13 +22,11 @@ void OnRecvData(BYTE buf[], int len);
 
 class CClient1App : public CWinApp
 {
+protected:
+	CSocketClient m_socket;
+
 public:
 	CClient1App();
-	CTcpClient m_tcpClient;//TCPClient客户端对象
-	//发送数据
-	bool SendData(BYTE buf[], int len);
-	//连接服务端
-	bool ConnectServer(TCHAR* ip, int port);
 
 	// 重写
 public:

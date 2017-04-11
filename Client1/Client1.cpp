@@ -7,12 +7,14 @@
 #include "Client1Dlg.h"
 #include "NetTool.h"
 
-using namespace NetTool;
+using namespace TCPCommunication;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+void OnRecvData(BYTE buf[], int len);
+bool OnRecvEvt(SocketClientEvtType type, TCHAR* msg);
 
 // CClient1App
 
@@ -68,6 +70,14 @@ BOOL CClient1App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
+	TCHAR ip[20];
+	if (GetLocalIP(ip))
+	{
+		m_socket.Init(ip, 8080, OnRecvEvt);
+		m_socket.SetCallback(OnRecvData);
+		m_socket.StartConnect();
+	}
+
 	CClient1Dlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
@@ -101,26 +111,10 @@ BOOL CClient1App::InitInstance()
 void OnRecvData(BYTE buf[], int len)
 {
 	string str = ReadMultiByteStr(buf, len);
-	wstring wstr = NetTool::MultiByteToUTF8(str.c_str());
-	((CClient1Dlg*)theApp.m_pMainWnd)->OnRecvData((TCHAR*)wstr.c_str());
+	delete buf;
 }
 
-//发送数据
-bool CClient1App::SendData(BYTE buf[], int len)
+bool OnRecvEvt(SocketClientEvtType type, TCHAR* msg)
 {
-	bool b = false;
-	if (m_tcpClient.IsInited())
-	{
-		b = m_tcpClient.SendData(buf, len);
-		delete buf;
-	}
-	return b;
+	return false;
 }
-
-//连接服务端
-bool CClient1App::ConnectServer(TCHAR* ip, int port)
-{
-	m_tcpClient.Init(ip, port, (LPOnRecvData)OnRecvData);
-	return m_tcpClient.StartConnect();
-}
-

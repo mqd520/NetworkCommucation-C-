@@ -3,7 +3,35 @@
 //包管理接口
 __interface IPackageMgr
 {
+	//************************************
+	// Method:    反解析包
+	// FullName:  IPackageMgr::Unparse
+	// Access:    public 
+	// Returns:   缓冲区
+	// Qualifier:
+	// Parameter: 包体结构体指针
+	// Parameter: 缓冲区(输出)
+	//************************************
 	BYTE* Unparse(void* data, int* len);
+
+	//************************************
+	// Method:    解析包
+	// FullName:  IPackageMgr::Parse
+	// Access:    public 
+	// Returns:   包体结构体指针
+	// Qualifier:
+	// Parameter: 缓冲区
+	// Parameter: 缓冲区大小
+	//************************************
 	void* Parse(BYTE* buf, int len);
+
+	//************************************
+	// Method:    释放包
+	// FullName:  IPackageMgr::Release
+	// Access:    public 
+	// Returns:   void
+	// Qualifier:
+	// Parameter: 包体结构体指针
+	//************************************
 	void Release(void* data);
 };

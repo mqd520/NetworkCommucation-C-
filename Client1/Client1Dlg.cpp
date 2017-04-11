@@ -6,10 +6,7 @@
 #include "Client1.h"
 #include "Client1Dlg.h"
 #include "afxdialogex.h"
-#include "NetTool.h"
-#include "Common.h"
 
-using namespace NetTool;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -66,12 +63,12 @@ BOOL CClient1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
-	TCHAR ip[20] = { '\0' };
-	if (GetLocalIP(ip))
-	{
-		m_ipServerIP.SetWindowText(ip);
-	}
-	m_edServerPort.SetWindowText(_T("8080"));
+	//TCHAR ip[20] = { '\0' };
+	//if (GetLocalIP(ip))
+	//{
+	//	m_ipServerIP.SetWindowText(ip);
+	//}
+	//m_edServerPort.SetWindowText(_T("8080"));
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 
@@ -117,24 +114,12 @@ void CClient1Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(TRUE);
-	if (theApp.ConnectServer(m_strServerIP.GetBuffer(), m_nServerPort))
-	{
-		m_btn1.EnableWindow(false);
-		m_ipServerIP.EnableWindow(FALSE);
-		m_edServerPort.EnableWindow(FALSE);
-	}
 }
 
 void CClient1Dlg::OnBnClickedButton2()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(true);
-	int len = 0;
-	BYTE* buf = WriteUTF8Str(m_str1.GetBuffer(), &len);
-	if (!theApp.SendData(buf, len))
-	{
-		OnRecvData(_T("发送失败!"));
-	}
 }
 
 void CClient1Dlg::OnBnClickedButton3()
@@ -144,8 +129,5 @@ void CClient1Dlg::OnBnClickedButton3()
 
 void CClient1Dlg::OnRecvData(TCHAR* str)
 {
-	m_editResult.GetWindowText(m_strResult);
-	m_strResult = _T("\r\n") + m_strResult;
-	m_strResult = str + m_strResult;
-	m_editResult.SetWindowTextW(m_strResult);
+	
 }

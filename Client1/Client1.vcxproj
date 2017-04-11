@@ -65,7 +65,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../TCPCommunication/bin/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>TCPCommunicationd.lib</AdditionalDependencies>
+      <AdditionalDependencies>TCPCommunication_d.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -121,7 +121,6 @@
   <ItemGroup>
     <ClCompile Include="Client1.cpp" />
     <ClCompile Include="Client1Dlg.cpp" />
-    <ClCompile Include="Common.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -131,6 +130,7 @@
     <ResourceCompile Include="Client1.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="res\Client1.rc2" />
   </ItemGroup>
   <ItemGroup>

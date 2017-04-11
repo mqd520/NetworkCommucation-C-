@@ -23,7 +23,7 @@ namespace TCPCommunication
 		typedef void(*LPOnRecvBusinessPackage)(TPackageType type, void* data);
 
 	protected:
-		CSocketClientPlus<CTCPClientMgrSelf> m_socket;//socket客户端管理对象
+		CSocketClientT<CTCPClientMgrSelf> m_socket;//socket客户端管理对象
 		TProtocolMgr m_protocol;//协议管理对象
 		CByteStream* m_stream;//字节流对象
 		CByteStream* m_streamCatch;//字节流缓存对象
