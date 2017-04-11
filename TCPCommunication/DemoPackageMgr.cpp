@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ProtocolTool.h"
-#include "Common.h"
+#include "StringHandle.h"
 #include "DemoPackageMgr.h"
 
 namespace TCPCommunication

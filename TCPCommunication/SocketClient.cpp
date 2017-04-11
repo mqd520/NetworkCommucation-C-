@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SocketClient.h"
 #include "NetTool.h"
-#include "Common.h"
+#include "StringHandle.h"
 
 namespace TCPCommunication
 {
@@ -12,7 +12,7 @@ namespace TCPCommunication
 	DWORD WINAPI ReadCatchSocketData(LPVOID lpParam);
 
 	//通知消息线程入口
-	DWORD WINAPI ReadNotifyMsg(LPVOID lpParam);
+	DWORD WINAPI ReadNotifyEvt(LPVOID lpParam);
 
 	CSocketClient::CSocketClient()
 	{
@@ -34,6 +34,7 @@ namespace TCPCommunication
 		m_evt.haveMsg = false;
 		m_lpfnOnRecvNotifyEvt = NULL;
 		m_tiReadCatchSocketData = { 0 };
+		m_bHaslpfnRecvSocketData = false;
 	}
 
 	CSocketClient::~CSocketClient()
@@ -62,13 +63,14 @@ namespace TCPCommunication
 			m_lpfnOnRecvNotifyEvt = lpfnOnRecvNotifyEvt;
 			if (m_lpfnOnRecvNotifyEvt)
 			{
-				m_tiReadNotifyEvt.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadNotifyMsg, this, NULL, &m_tiReadNotifyEvt.nThreadID);
+				m_tiReadNotifyEvt.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadNotifyEvt, this, NULL, &m_tiReadNotifyEvt.nThreadID);
 			}
 		}
 	}
 
 	void CSocketClient::SetCallback(LPOnRecvSocketData lpfnOnRecvSocketData)
 	{
+		m_bHaslpfnRecvSocketData = true;
 		m_lpfnOnRecvSocketData = lpfnOnRecvSocketData;
 	}
 
@@ -118,7 +120,7 @@ namespace TCPCommunication
 		}
 	}
 
-	bool CSocketClient::StartConnect()
+	bool CSocketClient::Connect()
 	{
 		if (InitSocket())
 		{
@@ -136,6 +138,11 @@ namespace TCPCommunication
 			return true;
 		}
 		return false;
+	}
+
+	bool CSocketClient::ConnectUnasync()
+	{
+		return true;
 	}
 
 	void CSocketClient::CloseConnect()
@@ -162,7 +169,7 @@ namespace TCPCommunication
 	{
 		memset(m_pRecvSocketBuf, 0, m_nRecvSocketBufLen);
 		int len = recv(m_socket, m_pRecvSocketBuf, m_nRecvSocketBufLen, 0);
-		if (len > 0 && m_lpfnOnRecvSocketData)
+		if (len > 0 && m_bHaslpfnRecvSocketData)
 		{
 			BYTE* buf = new BYTE[len];
 			memcpy(buf, m_pRecvSocketBuf, len);
@@ -247,7 +254,7 @@ namespace TCPCommunication
 		return true;
 	}
 
-	DWORD WINAPI ReadNotifyMsg(LPVOID lpParam)
+	DWORD WINAPI ReadNotifyEvt(LPVOID lpParam)
 	{
 		CSocketClient* p = (CSocketClient*)lpParam;
 		while (true)
@@ -302,9 +309,12 @@ namespace TCPCommunication
 			BYTE* buf = (BYTE*)(m_vecCatchRecvSocketBuf[0].adress);
 			int len = m_vecCatchRecvSocketBuf[0].len;
 			m_vecCatchRecvSocketBuf.erase(m_vecCatchRecvSocketBuf.begin());
-			if (m_lpfnOnRecvSocketData && buf)
+			if (m_bHaslpfnRecvSocketData && buf)
 			{
-				m_lpfnOnRecvSocketData(buf, len);
+				if (!SendRecvData(buf, len))
+				{
+					delete buf;
+				}
 			}
 		}
 	}
@@ -319,6 +329,11 @@ namespace TCPCommunication
 		TRACE(msg);
 #endif
 #endif // _DEBUG
+	}
+
+	bool CSocketClient::SendRecvData(BYTE buf[], int len)
+	{
+		return m_lpfnOnRecvSocketData(buf, len);
 	}
 
 	void CSocketClient::SimulateServerData(BYTE* buf, int len)

@@ -39,9 +39,6 @@
     <ClInclude Include="MemoryTool.h">
       <Filter>01 工具</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>01 工具</Filter>
-    </ClInclude>
     <ClInclude Include="ProtocolMgr.h">
       <Filter>03 协议管理</Filter>
     </ClInclude>
@@ -60,11 +57,14 @@
     <ClInclude Include="DemoPackageMgr.h">
       <Filter>05 客户端</Filter>
     </ClInclude>
-    <ClInclude Include="SocketClientPlus.h">
-      <Filter>02 Socket管理</Filter>
-    </ClInclude>
     <ClInclude Include="Interface.h">
       <Filter>03 协议管理</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketClientT.h">
+      <Filter>02 Socket管理</Filter>
+    </ClInclude>
+    <ClInclude Include="StringHandle.h">
+      <Filter>01 工具</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -80,9 +80,6 @@
     <ClCompile Include="MemoryTool.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
-    <ClCompile Include="Common.cpp">
-      <Filter>01 工具</Filter>
-    </ClCompile>
     <ClCompile Include="SocketClient.cpp">
       <Filter>02 Socket管理</Filter>
     </ClCompile>
@@ -91,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="DemoPackageMgr.cpp">
       <Filter>05 客户端</Filter>
+    </ClCompile>
+    <ClCompile Include="StringHandle.cpp">
+      <Filter>01 工具</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

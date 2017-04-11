@@ -81,7 +81,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Common.h" />
+    <ClInclude Include="StringHandle.h" />
     <ClInclude Include="DemoProtocolMgr.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="MemoryTool.h" />
@@ -90,14 +90,14 @@
     <ClInclude Include="DemoPackageMgr.h" />
     <ClInclude Include="ProtocolMgr.h" />
     <ClInclude Include="ProtocolTool.h" />
-    <ClInclude Include="SocketClientPlus.h" />
+    <ClInclude Include="SocketClientT.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="SocketClient.h" />
     <ClInclude Include="TCPClientMgr.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Common.cpp" />
+    <ClCompile Include="StringHandle.cpp" />
     <ClCompile Include="DemoProtocolMgr.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="NetTool.cpp" />

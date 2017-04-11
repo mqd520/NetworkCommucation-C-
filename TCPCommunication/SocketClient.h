@@ -16,11 +16,11 @@ namespace TCPCommunication
 	// Method:    收到socket数据
 	// FullName:  TCPCommunication::LPOnRecvSocketData
 	// Access:    public 
-	// Returns:   void
+	// Returns:   指示调用是否已释放缓冲区
 	// Qualifier: 缓冲区
 	// Parameter: 缓冲区长度
 	//************************************
-	typedef void(*LPOnRecvSocketData)(BYTE buf[], int len);
+	typedef bool(*LPOnRecvSocketData)(BYTE buf[], int len);
 
 	//事件类型
 	enum SocketClientEvtType
@@ -86,6 +86,7 @@ namespace TCPCommunication
 		const int m_msgbufsize = 1024;//通知消息缓冲区大小
 		vector<CatchSocketBufInfo> m_vecCatchRecvSocketBuf;//缓存接收缓冲区集合
 		ThreadInfo m_tiReadCatchSocketData;//读取缓存socket数据线程信息
+		bool m_bHaslpfnRecvSocketData;//是否已有接收socket数据回调函数
 
 	protected:
 		//************************************
@@ -146,6 +147,17 @@ namespace TCPCommunication
 		//************************************
 		virtual void Printf(TCHAR* msg);
 
+		//************************************
+		// Method:    发送接收到的socket数据到调用者
+		// FullName:  TCPCommunication::CSocketClient::SendRecvData
+		// Access:    virtual protected 
+		// Returns:   指示调用是否已释放缓冲区
+		// Qualifier:
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		virtual bool SendRecvData(BYTE buf[], int len);
+
 	public:
 		CSocketClient();
 		~CSocketClient();
@@ -174,13 +186,22 @@ namespace TCPCommunication
 		virtual void SetCallback(LPOnRecvSocketData lpfnOnRecvSocketData);
 
 		//************************************
-		// Method:    开始连接服务端
-		// FullName:  TCPCommunication::CSocketClient::StartConnect
-		// Access:    public 
+		// Method:    连接服务端(阻塞)
+		// FullName:  TCPCommunication::CSocketClient::Connect
+		// Access:    virtual public 
 		// Returns:   bool
 		// Qualifier:
 		//************************************
-		virtual bool StartConnect();
+		virtual bool Connect();
+
+		//************************************
+		// Method:    连接服务端(非阻塞)
+		// FullName:  TCPCommunication::CSocketClient::ConnectUnasync
+		// Access:    virtual public 
+		// Returns:   bool
+		// Qualifier:
+		//************************************
+		virtual bool ConnectUnasync();
 
 		//************************************
 		// Method:    关闭与服务端连接

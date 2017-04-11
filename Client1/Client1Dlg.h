@@ -17,7 +17,7 @@ public:
 
 	// 对话框数据
 	enum { IDD = IDD_CLIENT1_DIALOG };
-	void OnRecvData(TCHAR* str);
+	LRESULT OnRecvData(WPARAM wparam, LPARAM lparam);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 

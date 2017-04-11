@@ -71,7 +71,7 @@ namespace TCPCommunication
 				m_lpfn = lpfn;
 				m_protocol.Init();
 				m_socket.Init(ip, port, &CTCPClientMgrSelf::OnRecvData, this, socketRecvBufLen);
-				return m_socket.StartConnect();
+				return m_socket.Connect();
 			}
 			return true;
 		};

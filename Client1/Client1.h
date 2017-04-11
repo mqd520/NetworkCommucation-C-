@@ -10,23 +10,28 @@
 
 #include "resource.h"		// 主符号
 #include "SocketClient.h"
+#include "SocketClientT.h"
 
 using namespace TCPCommunication;
+
+#define WM_CUSTOM_MESSAGE1	(WM_USER+1)
 
 // CClient1App: 
 // 有关此类的实现，请参阅 Client1.cpp
 //
 
 //接收数据
-void OnRecvData(BYTE buf[], int len);
+bool OnRecvData(BYTE buf[], int len);
 
 class CClient1App : public CWinApp
 {
 protected:
-	CSocketClient m_socket;
+	bool OnRecvDataT(BYTE buf[], int len);
 
 public:
 	CClient1App();
+	CSocketClient m_socket;
+	CSocketClientT<CClient1App>	m_socketT;
 
 	// 重写
 public:

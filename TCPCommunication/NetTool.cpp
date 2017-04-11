@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "NetTool.h"
-#include "Common.h"
+#include "StringHandle.h"
 
 namespace TCPCommunication
 {

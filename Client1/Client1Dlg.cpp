@@ -6,7 +6,10 @@
 #include "Client1.h"
 #include "Client1Dlg.h"
 #include "afxdialogex.h"
+#include "NetTool.h"
+#include "StringHandle.h"
 
+using namespace TCPCommunication;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -48,6 +51,7 @@ BEGIN_MESSAGE_MAP(CClient1Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CClient1Dlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CClient1Dlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CClient1Dlg::OnBnClickedButton3)
+	ON_MESSAGE(WM_CUSTOM_MESSAGE1, &CClient1Dlg::OnRecvData)
 END_MESSAGE_MAP()
 
 
@@ -120,6 +124,8 @@ void CClient1Dlg::OnBnClickedButton2()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(true);
+	BYTE buf[3] = { 48, 49, 50 };
+	theApp.m_socket.SendData(buf, 3);
 }
 
 void CClient1Dlg::OnBnClickedButton3()
@@ -127,7 +133,10 @@ void CClient1Dlg::OnBnClickedButton3()
 	// TODO:  在此添加控件通知处理程序代码
 }
 
-void CClient1Dlg::OnRecvData(TCHAR* str)
+LRESULT CClient1Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
 {
-	
+	string str = ReadMultiByteStr((BYTE*)wparam, (int)lparam);
+	wstring wstr = MultiByteToUTF8(str.c_str());
+	m_editResult.SetWindowText(wstr.c_str());
+	return 0;
 }
