@@ -70,7 +70,6 @@ namespace TCPCommunication
 		const TCHAR* m_strServerIP;//服务端IP
 		int m_nServerPort;//服务端端口
 		bool m_bIsCleaned;//是否已清理
-		bool m_bIsConnected;//是否已经连接上服务端
 		SOCKADDR_IN m_addrSrv;//服务端地址
 		SOCKET m_socket;//客户端Socket
 		ThreadInfo m_tiReadSocketData;//读取socket数据线程信息
@@ -87,6 +86,9 @@ namespace TCPCommunication
 		vector<CatchSocketBufInfo> m_vecCatchRecvSocketBuf;//缓存接收缓冲区集合
 		ThreadInfo m_tiReadCatchSocketData;//读取缓存socket数据线程信息
 		bool m_bHaslpfnRecvSocketData;//是否已有接收socket数据回调函数
+		ThreadInfo m_tiConnectServer;//连接服务端线程信息
+		bool m_bConnected;//是否已连接上服务端
+		bool m_bReconnectServer;//是否需要重新连接服务端
 
 	protected:
 		//************************************
@@ -97,6 +99,15 @@ namespace TCPCommunication
 		// Qualifier:
 		//************************************
 		virtual bool InitSocket();
+
+		//************************************
+		// Method:    重新连接服务端
+		// FullName:  TCPCommunication::CSocketClient::ReconnectServer
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void ReconnectServer();
 
 		//************************************
 		// Method:    清理Socket
@@ -158,6 +169,15 @@ namespace TCPCommunication
 		//************************************
 		virtual bool SendRecvData(BYTE buf[], int len);
 
+		//************************************
+		// Method:    创建后台线程
+		// FullName:  TCPCommunication::CSocketClient::CreateThread
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void CreateThread();
+
 	public:
 		CSocketClient();
 		~CSocketClient();
@@ -186,7 +206,7 @@ namespace TCPCommunication
 		virtual void SetCallback(LPOnRecvSocketData lpfnOnRecvSocketData);
 
 		//************************************
-		// Method:    连接服务端(阻塞)
+		// Method:    连接服务端
 		// FullName:  TCPCommunication::CSocketClient::Connect
 		// Access:    virtual public 
 		// Returns:   bool
@@ -195,13 +215,13 @@ namespace TCPCommunication
 		virtual bool Connect();
 
 		//************************************
-		// Method:    连接服务端(非阻塞)
-		// FullName:  TCPCommunication::CSocketClient::ConnectUnasync
-		// Access:    virtual public 
+		// Method:    连接服务端
+		// FullName:  TCPCommunication::CSocketClient::ConnectServer
+		// Access:    virtual protected 
 		// Returns:   bool
 		// Qualifier:
 		//************************************
-		virtual bool ConnectUnasync();
+		virtual void ConnectServer();
 
 		//************************************
 		// Method:    关闭与服务端连接

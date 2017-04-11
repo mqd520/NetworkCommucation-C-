@@ -14,6 +14,9 @@ namespace TCPCommunication
 	//通知消息线程入口
 	DWORD WINAPI ReadNotifyEvt(LPVOID lpParam);
 
+	//连接服务端线程入口
+	DWORD WINAPI ConnectServer(LPVOID lpParam);
+
 	CSocketClient::CSocketClient()
 	{
 		m_nRecvSocketBufLen = 0;
@@ -21,7 +24,6 @@ namespace TCPCommunication
 		m_strServerIP = NULL;
 		m_nServerPort = 0;
 		m_bIsCleaned = false;
-		m_bIsConnected = false;
 		m_socket = NULL;
 		m_strClientIP = NULL;
 		m_nClientPort = 0;
@@ -35,6 +37,9 @@ namespace TCPCommunication
 		m_lpfnOnRecvNotifyEvt = NULL;
 		m_tiReadCatchSocketData = { 0 };
 		m_bHaslpfnRecvSocketData = false;
+		m_tiConnectServer = { 0 };
+		m_bConnected = false;
+		m_bReconnectServer = false;
 	}
 
 	CSocketClient::~CSocketClient()
@@ -107,6 +112,38 @@ namespace TCPCommunication
 		return true;
 	}
 
+	DWORD WINAPI ConnectServer(LPVOID lpParam)
+	{
+		CSocketClient* p = (CSocketClient*)lpParam;
+		while (true)
+		{
+			p->ConnectServer();
+		}
+	}
+
+	void CSocketClient::ConnectServer()
+	{
+		if (m_bReconnectServer && m_bConnected == false)
+		{
+			int result = connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
+			if (result == SOCKET_ERROR)
+			{
+				TCHAR s[100];
+				wsprintf(s, _T("failed to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
+				SaveNotifyEvt(SocketClientEvtType::error, s);
+			}
+			else
+			{
+				m_bReconnectServer = false;
+			}
+		}
+	}
+
+	void CSocketClient::ReconnectServer()
+	{
+		m_bReconnectServer = true;
+	}
+
 	void CSocketClient::CleanSocket()
 	{
 		if (!m_bIsCleaned)
@@ -122,27 +159,17 @@ namespace TCPCommunication
 
 	bool CSocketClient::Connect()
 	{
-		if (InitSocket())
-		{
-			int result = connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
-			if (result == SOCKET_ERROR)
-			{
-				TCHAR s[100];
-				wsprintf(s, _T("连接服务端失败: %s:%d\n"), m_strServerIP, m_nServerPort);
-				SaveNotifyEvt(SocketClientEvtType::error, s);
-				CleanSocket();
-				return false;
-			}
-			m_tiReadSocketData.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadSocketData, this, NULL, &m_tiReadSocketData.nThreadID);
-			m_tiReadCatchSocketData.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadCatchSocketData, this, NULL, &m_tiReadCatchSocketData.nThreadID);
-			return true;
-		}
+		InitSocket();
+		CreateThread();
+		ReconnectServer();
 		return false;
 	}
 
-	bool CSocketClient::ConnectUnasync()
+	void CSocketClient::CreateThread()
 	{
-		return true;
+		m_tiReadSocketData.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadSocketData, this, NULL, &m_tiReadSocketData.nThreadID);
+		m_tiReadCatchSocketData.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadCatchSocketData, this, NULL, &m_tiReadCatchSocketData.nThreadID);
+		m_tiConnectServer.hThread = ::CreateThread(NULL, 0, TCPCommunication::ConnectServer, this, NULL, &m_tiConnectServer.nThreadID);
 	}
 
 	void CSocketClient::CloseConnect()
