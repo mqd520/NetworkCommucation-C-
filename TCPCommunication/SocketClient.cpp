@@ -17,29 +17,32 @@ namespace TCPCommunication
 	//连接服务端线程入口
 	DWORD WINAPI ConnectServer(LPVOID lpParam);
 
-	CSocketClient::CSocketClient()
+	CSocketClient::CSocketClient() :
+		m_nRecvSocketBufLen(0),
+		m_pRecvSocketBuf(NULL),
+		m_strServerIP(NULL),
+		m_nServerPort(0),
+		m_bIsCleaned(false),
+		m_socket(0),
+		m_strClientIP(NULL),
+		m_nClientPort(0),
+		m_addrSrv({ 0 }),
+		m_tiReadSocketData({ 0, 0, true }),
+		m_tiReadNotifyEvt({ 0 }),
+		m_evt({ false, SocketClientEvtType::Info, new TCHAR[1024] }),
+		m_lpfnOnRecvNotifyEvt(NULL),
+		m_tiReadCatchSocketData({ 0 }),
+		m_bHaslpfnRecvSocketData(false),
+		m_tiConnectServer({ 0, 0, true }),
+		m_bConnected(false),
+		m_nReconnectTimeSpan(3000),
+		m_nReconnectTimes(3),
+		m_nReconnected(0),
+		m_bReconnecting(false),
+		m_bAutoReconnect(true),
+		m_whileinfo({ false, false, false, true })
 	{
-		m_nRecvSocketBufLen = 0;
-		m_pRecvSocketBuf = NULL;
-		m_strServerIP = NULL;
-		m_nServerPort = 0;
-		m_bIsCleaned = false;
-		m_socket = NULL;
-		m_strClientIP = NULL;
-		m_nClientPort = 0;
-		memset(&m_addrSrv, 0, sizeof(SOCKADDR_IN));
-		m_tiReadSocketData = { 0 };
-		m_tiReadNotifyEvt = { 0 };
-		TCHAR* p = new TCHAR[m_msgbufsize];
-		memset(p, 0, m_msgbufsize);
-		m_evt.msg = p;
-		m_evt.haveMsg = false;
-		m_lpfnOnRecvNotifyEvt = NULL;
-		m_tiReadCatchSocketData = { 0 };
-		m_bHaslpfnRecvSocketData = false;
-		m_tiConnectServer = { 0 };
-		m_bConnected = false;
-		m_bReconnectServer = false;
+
 	}
 
 	CSocketClient::~CSocketClient()
@@ -56,16 +59,21 @@ namespace TCPCommunication
 		Dispose();
 	}
 
-	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt, int socketBufLen)
+	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt, int socketBufLen, bool autoReconnect,
+		int reconnectTimes, int reconnectTimeSpan)
 	{
 		if (!m_bInited)
 		{
+			m_bAutoReconnect = autoReconnect;
+			m_nReconnectTimes = reconnectTimes;
+			m_nReconnectTimeSpan = reconnectTimeSpan;
 			m_bInited = true;
 			m_nRecvSocketBufLen = socketBufLen;
 			m_pRecvSocketBuf = new char[socketBufLen];
 			m_strServerIP = ip;
 			m_nServerPort = port;
 			m_lpfnOnRecvNotifyEvt = lpfnOnRecvNotifyEvt;
+			InitSocket();
 			if (m_lpfnOnRecvNotifyEvt)
 			{
 				m_tiReadNotifyEvt.hThread = ::CreateThread(NULL, 0, TCPCommunication::ReadNotifyEvt, this, NULL, &m_tiReadNotifyEvt.nThreadID);
@@ -79,37 +87,34 @@ namespace TCPCommunication
 		m_lpfnOnRecvSocketData = lpfnOnRecvSocketData;
 	}
 
-	bool CSocketClient::InitSocket()
+	void CSocketClient::InitSocket()
 	{
 		WSADATA wsaData;
 
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
 			SaveNotifyEvt(SocketClientEvtType::error, _T("Socket初始化失败!\n"));
-			return false;
 		}
-
-		//创建服务端地址
-		m_addrSrv.sin_family = AF_INET;
-		m_addrSrv.sin_port = htons(m_nServerPort);
+		else
+		{
+			m_addrSrv.sin_family = AF_INET;
+			m_addrSrv.sin_port = htons(m_nServerPort);
 #ifdef _UNICODE
-		string strTmp = UTF8ToMultiByte(m_strServerIP);
-		m_addrSrv.sin_addr.S_un.S_addr = inet_addr(strTmp.c_str());
+			string strTmp = UTF8ToMultiByte(m_strServerIP);
+			m_addrSrv.sin_addr.S_un.S_addr = inet_addr(strTmp.c_str());
 #else
-		m_addrSrv.sin_addr.S_un.S_addr = inet_addr(m_strServerIP);
+			m_addrSrv.sin_addr.S_un.S_addr = inet_addr(m_strServerIP);
 #endif
+		}
+	}
 
-		//创建客户端Socket
+	void CSocketClient::CreateClientSocket()
+	{
 		m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-		SetAddressBySocket(m_socket);
 		if (m_socket == INVALID_SOCKET)
 		{
 			SaveNotifyEvt(SocketClientEvtType::error, _T("创建Socket失败!\n"));
-			CleanSocket();
-			return false;
 		}
-
-		return true;
 	}
 
 	DWORD WINAPI ConnectServer(LPVOID lpParam)
@@ -117,31 +122,111 @@ namespace TCPCommunication
 		CSocketClient* p = (CSocketClient*)lpParam;
 		while (true)
 		{
-			p->ConnectServer();
+			if (p->GetWhileInfo().bConnectServer)
+			{
+				p->ConnectServer();
+			}
 		}
 	}
 
 	void CSocketClient::ConnectServer()
 	{
-		if (m_bReconnectServer && m_bConnected == false)
+		if (m_bConnected == false)
 		{
 			int result = connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
 			if (result == SOCKET_ERROR)
 			{
-				TCHAR s[100];
-				wsprintf(s, _T("failed to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
-				SaveNotifyEvt(SocketClientEvtType::error, s);
+				m_whileinfo.bReadSocketData = false;
+				m_whileinfo.bReadCatchSocketData = false;
+				TCHAR msg[100];
+				wsprintf(msg, _T("failed to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
+				SaveNotifyEvt(SocketClientEvtType::disconnected, msg);
+				if (m_nReconnectTimes > 0)
+				{
+					m_nReconnected++;
+					if (m_nReconnected == m_nReconnectTimes)
+					{
+						m_nReconnected = 0;
+						m_bReconnecting = false;
+						m_whileinfo.bConnectServer = false;
+					}
+				}
+				::Sleep(m_nReconnectTimeSpan);
 			}
 			else
 			{
-				m_bReconnectServer = false;
+				OnConnected();
 			}
 		}
 	}
 
 	void CSocketClient::ReconnectServer()
 	{
-		m_bReconnectServer = true;
+		if (!m_bReconnecting)
+		{
+			m_bReconnecting = true;
+			CreateClientSocket();
+			m_whileinfo.bConnectServer = true;
+		}
+	}
+
+	void CSocketClient::OnLoseConnect(LoseConnectReason reason)
+	{
+		m_bConnected = false;
+		m_whileinfo.bReadSocketData = false;
+		m_whileinfo.bReadCatchSocketData = false;
+		if (reason == LoseConnectReason::Client)
+		{
+			SaveNotifyEvt(disconnected, _T("client disconnect the connection!\n"));
+		}
+		else
+		{
+			if (reason == LoseConnectReason::Server)
+			{
+				SaveNotifyEvt(disconnected, _T("server disconnect the connection!\n"));
+			}
+			else if (reason == LoseConnectReason::Net)
+			{
+				SaveNotifyEvt(disconnected, _T("Net trouble happended!\n"));
+			}
+			if (m_bAutoReconnect)
+			{
+				ReconnectServer();
+			}
+		}
+	}
+
+	void CSocketClient::OnConnected()
+	{
+		m_nReconnected = 0;
+		m_bReconnecting = false;
+		m_bConnected = true;
+		m_whileinfo.bConnectServer = false;
+		m_whileinfo.bReadSocketData = true;
+		m_whileinfo.bReadCatchSocketData = true;
+		TCHAR msg[100];
+		wsprintf(msg, _T("success to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
+		SaveNotifyEvt(SocketClientEvtType::connected, msg);
+	}
+
+	void CSocketClient::PauseThread(bool pause, LPThreadInfo ti)
+	{
+		if (pause)
+		{
+			if (ti->bPause == false)
+			{
+				::SuspendThread(ti->hThread);
+				ti->bPause = true;
+			}
+		}
+		else
+		{
+			if (ti->bPause == true)
+			{
+				::ResumeThread(ti->hThread);
+				ti->bPause = false;
+			}
+		}
 	}
 
 	void CSocketClient::CleanSocket()
@@ -157,12 +242,18 @@ namespace TCPCommunication
 		}
 	}
 
-	bool CSocketClient::Connect()
+	void CSocketClient::Connect()
 	{
-		InitSocket();
-		CreateThread();
+		if (m_tiReadSocketData.nThreadID == 0)
+		{
+			CreateThread();
+			ReconnectServer();
+		}
+	}
+
+	void CSocketClient::Reconnect()
+	{
 		ReconnectServer();
-		return false;
 	}
 
 	void CSocketClient::CreateThread()
@@ -187,7 +278,10 @@ namespace TCPCommunication
 		CSocketClient* p = (CSocketClient*)lpParam;
 		while (true)
 		{
-			p->ReadSocketData();
+			if (p->GetWhileInfo().bReadSocketData)
+			{
+				p->ReadSocketData();
+			}
 		}
 		return 0;
 	}
@@ -201,6 +295,17 @@ namespace TCPCommunication
 			BYTE* buf = new BYTE[len];
 			memcpy(buf, m_pRecvSocketBuf, len);
 			m_vecCatchRecvSocketBuf.push_back({ (int)buf, len });
+		}
+		else
+		{
+			if (len == 0)//服务端主动断开连接
+			{
+				OnLoseConnect(LoseConnectReason::Server);
+			}
+			else if (len == -1)//网络故障
+			{
+				OnLoseConnect(LoseConnectReason::Net);
+			}
 		}
 	}
 
@@ -224,6 +329,12 @@ namespace TCPCommunication
 			::CloseHandle(m_tiReadCatchSocketData.hThread);
 			m_tiReadCatchSocketData = { 0 };
 		}
+		if (m_tiConnectServer.hThread > 0)
+		{
+			::TerminateThread(m_tiConnectServer.hThread, 0);
+			::CloseHandle(m_tiConnectServer.hThread);
+			m_tiConnectServer = { 0 };
+		}
 	}
 
 	void CSocketClient::Dispose()
@@ -232,17 +343,17 @@ namespace TCPCommunication
 		CleanThread();
 	}
 
+	bool CSocketClient::GetConnectStatus()
+	{
+		return m_bConnected;
+	}
+
 	bool CSocketClient::SendData(BYTE buf[], int len)
 	{
 		bool b = false;
 		int sended = 0;
 		while (true)
 		{
-			if (sended == len)
-			{
-				b = true;
-				break;
-			}
 			int result = send(m_socket, (char*)buf, len - sended, 0);
 			if (result == SOCKET_ERROR)
 			{
@@ -251,6 +362,11 @@ namespace TCPCommunication
 			else
 			{
 				sended += result;
+				if (sended == len)
+				{
+					b = true;
+					break;
+				}
 			}
 		}
 		return b;
@@ -286,7 +402,10 @@ namespace TCPCommunication
 		CSocketClient* p = (CSocketClient*)lpParam;
 		while (true)
 		{
-			p->ReadNotifyEvt();
+			if (p->GetWhileInfo().bReadNotifyEvt)
+			{
+				p->ReadNotifyEvt();
+			}
 		}
 		return 0;
 	}
@@ -324,7 +443,10 @@ namespace TCPCommunication
 		CSocketClient* p = (CSocketClient*)lpParam;
 		while (true)
 		{
-			p->ReadCatchSocketData();
+			if (p->GetWhileInfo().bReadCatchSocketData)
+			{
+				p->ReadCatchSocketData();
+			}
 		}
 		return 0;
 	}
@@ -361,6 +483,11 @@ namespace TCPCommunication
 	bool CSocketClient::SendRecvData(BYTE buf[], int len)
 	{
 		return m_lpfnOnRecvSocketData(buf, len);
+	}
+
+	ThreadWhileInfo CSocketClient::GetWhileInfo()
+	{
+		return m_whileinfo;
 	}
 
 	void CSocketClient::SimulateServerData(BYTE* buf, int len)

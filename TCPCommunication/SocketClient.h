@@ -27,6 +27,8 @@ namespace TCPCommunication
 	{
 		Info,//消息
 		error,//错误
+		disconnected,//失去服务端连接
+		connected,//连接上服务端
 		Debug//其它
 	};
 
@@ -48,6 +50,15 @@ namespace TCPCommunication
 	//************************************
 	typedef bool(*LPOnRecvNotifyEvt)(SocketClientEvtType type, TCHAR* msg);
 
+	//线程循环信息
+	typedef struct tagThreadWhileInfo
+	{
+		bool bReadSocketData;
+		bool bConnectServer;
+		bool bReadCatchSocketData;
+		bool bReadNotifyEvt;
+	}ThreadWhileInfo, *LPThreadWhileInfo;
+
 	//Socket客户端类
 	class CSocketClient
 	{
@@ -57,6 +68,7 @@ namespace TCPCommunication
 		{
 			HANDLE hThread;//句柄
 			DWORD nThreadID;//ID
+			bool bPause;//是否已暂停
 		}ThreadInfo, *LPThreadInfo;
 
 		//缓存Socket缓冲区信息
@@ -65,6 +77,14 @@ namespace TCPCommunication
 			int adress;//指针地址
 			int len;//缓冲区长度
 		}CatchSocketBufInfo, *LPCatchSocketBufInfo;
+
+		//失去服务端连接原因枚举
+		enum LoseConnectReason
+		{
+			Server,//服务端主动断开
+			Client,//客户端主动断开
+			Net//网络故障
+		};
 
 	protected:
 		const TCHAR* m_strServerIP;//服务端IP
@@ -88,9 +108,23 @@ namespace TCPCommunication
 		bool m_bHaslpfnRecvSocketData;//是否已有接收socket数据回调函数
 		ThreadInfo m_tiConnectServer;//连接服务端线程信息
 		bool m_bConnected;//是否已连接上服务端
-		bool m_bReconnectServer;//是否需要重新连接服务端
+		int m_nReconnectTimeSpan;//连接失败后间隔时间(毫秒)
+		int m_nReconnectTimes;//允许重连次数(0:一直连接)(默认1)
+		int m_nReconnected;//断开后已重连次数
+		bool m_bReconnecting;//正在重新连接
+		bool m_bAutoReconnect;//断线后是否自动重新连接
+		ThreadWhileInfo m_whileinfo;//线程循环信息
 
 	protected:
+		//************************************
+		// Method:    初始化socket
+		// FullName:  TCPCommunication::CSocketClient::InitSocket
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void InitSocket();
+
 		//************************************
 		// Method:    初始化客户端socket
 		// FullName:  TCPCommunication::CSocketClient::InitSocket
@@ -98,7 +132,7 @@ namespace TCPCommunication
 		// Returns:   bool
 		// Qualifier:
 		//************************************
-		virtual bool InitSocket();
+		virtual void CreateClientSocket();
 
 		//************************************
 		// Method:    重新连接服务端
@@ -178,6 +212,36 @@ namespace TCPCommunication
 		//************************************
 		virtual void CreateThread();
 
+		//************************************
+		// Method:    失去服务端连接
+		// FullName:  TCPCommunication::CSocketClient::OnLoseConnect
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 原因
+		//************************************
+		virtual void OnLoseConnect(LoseConnectReason reason);
+
+		//************************************
+		// Method:    暂停(恢复)线程
+		// FullName:  TCPCommunication::CSocketClient::PauseThread
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 是否暂停
+		// Parameter: 线程信息
+		//************************************
+		virtual void PauseThread(bool pause, LPThreadInfo ti);
+
+		//************************************
+		// Method:    已连接上服务端
+		// FullName:  TCPCommunication::CSocketClient::OnConnected
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void OnConnected();
+
 	public:
 		CSocketClient();
 		~CSocketClient();
@@ -193,7 +257,8 @@ namespace TCPCommunication
 		// Parameter: 接收消息回调函数
 		// Parameter: 回调函数指针
 		//************************************
-		virtual void Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt = NULL, int socketBufLen = 1024);
+		virtual void Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt = NULL, int socketBufLen = 1024,
+			bool autoReconnect = true, int reconnectTimes = 3, int reconnectTimeSpan = 1500);
 
 		//************************************
 		// Method:    设置接收socket数据回调函数
@@ -212,7 +277,16 @@ namespace TCPCommunication
 		// Returns:   bool
 		// Qualifier:
 		//************************************
-		virtual bool Connect();
+		virtual void Connect();
+
+		//************************************
+		// Method:    强制重新连接服务端
+		// FullName:  TCPCommunication::CSocketClient::Reconnect
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void Reconnect();
 
 		//************************************
 		// Method:    连接服务端
@@ -253,6 +327,15 @@ namespace TCPCommunication
 		virtual void ReadSocketData();
 
 		//************************************
+		// Method:    获取线程循环信息
+		// FullName:  TCPCommunication::CSocketClient::GetWhileInfo
+		// Access:    virtual public 
+		// Returns:   TCPCommunication::CSocketClient::ThreadWhileInfo
+		// Qualifier:
+		//************************************
+		virtual ThreadWhileInfo GetWhileInfo();
+
+		//************************************
 		// Method:    主动释放资源
 		// FullName:  TCPCommunication::CSocketClient::Dispose
 		// Access:    public 
@@ -289,6 +372,15 @@ namespace TCPCommunication
 		// Qualifier:
 		//************************************
 		virtual void ReadCatchSocketData();
+
+		//************************************
+		// Method:    获取连接状态
+		// FullName:  TCPCommunication::CSocketClient::GetConnectStatus
+		// Access:    virtual public 
+		// Returns:   bool
+		// Qualifier:
+		//************************************
+		virtual bool GetConnectStatus();
 
 		//************************************
 		// Method:    模拟一次服务端发包

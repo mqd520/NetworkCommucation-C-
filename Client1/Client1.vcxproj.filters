@@ -57,7 +57,6 @@
     <None Include="res\Client1.rc2">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Client1.ico">

@@ -4,11 +4,11 @@
 #include "stdafx.h"
 #include "MyTcp.h"
 
-#define ListenPort	8011
+#define ListenPort	7080
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	StartListen(NULL, ListenPort);
+	StartListen(_T("192.168.0.17"), ListenPort);
 
 	_tprintf(_T("ÊäÈëexitÍË³ö³ÌĞò!\n"));
 	TCHAR input[5];

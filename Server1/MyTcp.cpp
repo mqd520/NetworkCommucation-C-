@@ -133,6 +133,7 @@ DWORD WINAPI WaitConnect(LPVOID lpParam)
 
 		//等待客户端连接
 		SOCKET socClient = accept(socketListen, (SOCKADDR *)&info.addr, &len);
+		SendData(socClient, NULL);
 		_tprintf(_T("收到新客户端连接: %s:%d\n"), inet_ntoa(info.addr.sin_addr), (int)info.addr.sin_port);
 
 		info.connected = true;
@@ -176,7 +177,8 @@ DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam)
 bool SendData(SOCKET socket, TCHAR* data)
 {
 	int len = _tcslen(data);
-	int val = send(socket, data, len, 0);
+	//int val = send(socket, data, len, 0);
+	int val = send(socket, NULL, 0, 0);
 	if (val == SOCKET_ERROR)
 	{
 		return false;

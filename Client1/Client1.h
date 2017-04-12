@@ -10,7 +10,6 @@
 
 #include "resource.h"		// Ö÷·ûºÅ
 #include "SocketClient.h"
-#include "SocketClientT.h"
 
 using namespace TCPCommunication;
 
@@ -25,13 +24,9 @@ bool OnRecvData(BYTE buf[], int len);
 
 class CClient1App : public CWinApp
 {
-protected:
-	bool OnRecvDataT(BYTE buf[], int len);
-
 public:
 	CClient1App();
 	CSocketClient m_socket;
-	CSocketClientT<CClient1App>	m_socketT;
 
 	// ÖØÐ´
 public:

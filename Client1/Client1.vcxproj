@@ -130,7 +130,6 @@
     <ResourceCompile Include="Client1.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="res\Client1.rc2" />
   </ItemGroup>
   <ItemGroup>

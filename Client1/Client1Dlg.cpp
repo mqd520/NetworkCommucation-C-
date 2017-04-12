@@ -126,6 +126,8 @@ void CClient1Dlg::OnBnClickedButton2()
 	UpdateData(true);
 	BYTE buf[3] = { 48, 49, 50 };
 	theApp.m_socket.SendData(buf, 3);
+
+	theApp.m_socket.SendData(NULL, 0);
 }
 
 void CClient1Dlg::OnBnClickedButton3()

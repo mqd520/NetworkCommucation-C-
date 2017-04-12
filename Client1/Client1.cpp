@@ -15,7 +15,6 @@ using namespace TCPCommunication;
 
 bool OnRecvData(BYTE buf[], int len);
 bool OnRecvEvt(SocketClientEvtType type, TCHAR* msg);
-bool OnRecvEvtT(SocketClientEvtType type, TCHAR* msg);
 
 // CClient1App
 
@@ -77,10 +76,6 @@ BOOL CClient1App::InitInstance()
 		m_socket.Init(ip, 8080, OnRecvEvt);
 		m_socket.SetCallback(OnRecvData);
 		m_socket.Connect();
-
-		m_socketT.Init(ip, 8080, OnRecvEvtT);
-		m_socketT.SetCallbackT(&CClient1App::OnRecvDataT, this);
-		m_socketT.Connect();
 	}
 
 	CClient1Dlg dlg;
@@ -121,15 +116,6 @@ bool OnRecvData(BYTE buf[], int len)
 
 bool OnRecvEvt(SocketClientEvtType type, TCHAR* msg)
 {
-	return false;
-}
-
-bool OnRecvEvtT(SocketClientEvtType type, TCHAR* msg)
-{
-	return false;
-}
-
-bool CClient1App::OnRecvDataT(BYTE buf[], int len)
-{
+	TRACE(msg);
 	return false;
 }
