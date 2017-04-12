@@ -34,17 +34,17 @@ protected:
 protected:
 	afx_msg void OnBnClickedButton1();
 protected:
-	CListCtrl m_lc1;
-	CButton m_btn1;
-	CEdit m_edit1;
-	CButton m_btn2;
+	CButton m_btnDisconnect;//断开按钮
+	CEdit m_edSend;//发送内容文本框
+	CString m_strSend;//发送内容
+	CButton m_btnSend;//发送按钮
 	afx_msg void OnBnClickedButton2();
-	CString m_str1;
-	CString m_strServerIP;
-	int m_nServerPort;
-	CIPAddressCtrl m_ipServerIP;
-	CEdit m_edServerPort;
 	afx_msg void OnBnClickedButton3();
-	CEdit m_editResult;
-	CString m_strResult;
+	CEdit m_editResult;//结果文本框
+	CString m_strResult;//结果
+public:
+	afx_msg void OnBnClickedButton4();
+protected:
+	// 模拟发送按钮
+	CButton m_btnSimulate;
 };

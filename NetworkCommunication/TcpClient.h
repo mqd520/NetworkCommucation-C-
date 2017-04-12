@@ -13,7 +13,7 @@ using namespace std;
 namespace NetworkCommunication
 {
 	//事件类型
-	enum SocketClientEvtType
+	enum TcpClientEvtType
 	{
 		Info,//消息
 		error,//错误
@@ -23,28 +23,29 @@ namespace NetworkCommunication
 	};
 
 	//************************************
-	// Method:    收到socket数据
-	// FullName:  NetworkCommunication::LPOnRecvSocketData
+	// Method:    收到tcp数据
+	// FullName:  NetworkCommunication::LPOnRecvTcpData
 	// Access:    public 
-	// Returns:   指示调用是否已释放缓冲区
+	// Returns:   指示调用者是否已释放缓冲区
 	// Qualifier: 缓冲区
 	// Parameter: 缓冲区长度
 	//************************************
-	typedef bool(*LPOnRecvSocketData)(BYTE buf[], int len);
+	typedef bool(*LPOnRecvTcpData)(BYTE buf[], int len);
 
 	//************************************
-	// Method:    收到socket客户端事件函数指针
+	// Method:    收到tcp客户端事件函数指针
 	// FullName:  NetworkCommunication::LPOnRecvNotifyEvt
 	// Access:    public 
 	// Returns:   是否已处理
 	// Qualifier: 事件类型
 	// Parameter: 消息
 	//************************************
-	typedef bool(*LPOnRecvNotifyEvt)(SocketClientEvtType type, TCHAR* msg);
+	typedef bool(*LPOnRecvNotifyEvt)(TcpClientEvtType type, TCHAR* msg);
 
 	//tcp客户端
 	class CTcpClient
 	{
+	private:
 		//失去服务端连接原因枚举
 		enum LoseConnectReason
 		{
@@ -53,18 +54,25 @@ namespace NetworkCommunication
 			Net//网络故障
 		};
 
+		//线程信息
+		typedef struct tagThreadInfo
+		{
+			HANDLE hThread;//线程句柄
+			DWORD dwThreadID;//线程ID
+		}ThreadInfo, *LPThreadInfo;
+
 	protected:
 		const TCHAR* m_strServerIP;//服务端IP
 		int m_nServerPort;//服务端端口
 		bool m_bIsCleaned;//是否已清理
 		SOCKADDR_IN m_addrSrv;//服务端地址
 		SOCKET m_socket;//客户端Socket
-		bool m_bInited;//是否初始化
-		LPOnRecvSocketData m_lpfnOnRecvSocketData;//接收socket数据回调函数
-		int m_nRecvSocketBufLen;//接收Socket缓冲区总长度
-		char* m_pRecvSocketBuf;//接收Socket缓冲区
+		bool m_bInited;//是否初始化::CTcpClient::
+		LPOnRecvTcpData m_lpfnOnRecvTcpData;//接收tcp数据回调函数
+		int m_nRecvTcpBufLen;//接收tcp缓冲区总长度
+		char* m_pRecvTcpBuf;//接收tcp缓冲区
 		LPOnRecvNotifyEvt m_lpfnOnRecvNotifyEvt;//接收通知事件回调函数
-		bool m_bHaslpfnRecvSocketData;//是否已有接收socket数据回调函数
+		bool m_bHaslpfnRecvTcpData;//是否已有接收tcp数据回调函数
 		bool m_bConnected;//是否已连接上服务端
 		int m_nReconnectTimeSpan;//连接失败后间隔时间(毫秒)
 		int m_nReconnectTimes;//允许重连次数(0:一直连接)(默认1)
@@ -72,11 +80,15 @@ namespace NetworkCommunication
 		bool m_bReconnecting;//正在重新连接
 		bool m_bAutoReconnect;//断线后是否自动重新连接
 		bool m_bExitThread;//指示线程应该退出(只有析构函数被调用才赋值"true")
+		int m_nConnectTimeout;//连接超时时间(0:无限制等待)
+		ThreadInfo m_tiConnect;//连接线程信息
+		ThreadInfo m_tiConnectTimeout;//连接超时线程信息
+		bool m_bConnectedTimeout;//指示连接是否超时
 
 	protected:
 		//************************************
 		// Method:    初始化socket
-		// FullName:  NetworkCommunication::CSocketClient::InitSocket
+		// FullName:  NetworkCommunication::CTcpClient::InitSocket
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -85,7 +97,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    初始化客户端socket
-		// FullName:  NetworkCommunication::CSocketClient::InitSocket
+		// FullName:  NetworkCommunication::CTcpClient::InitSocket
 		// Access:    protected 
 		// Returns:   bool
 		// Qualifier:
@@ -94,7 +106,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    重新连接服务端
-		// FullName:  NetworkCommunication::CSocketClient::ReconnectServer
+		// FullName:  NetworkCommunication::CTcpClient::ReconnectServer
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -103,7 +115,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    清理Socket
-		// FullName:  NetworkCommunication::CSocketClient::CleanSocket
+		// FullName:  NetworkCommunication::CTcpClient::CleanSocket
 		// Access:    protected 
 		// Returns:   void
 		// Qualifier:
@@ -112,18 +124,18 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    发送通知事件
-		// FullName:  NetworkCommunication::CSocketClient::SaveNotifyEvt
+		// FullName:  NetworkCommunication::CTcpClient::SaveNotifyEvt
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
 		// Parameter: 类型
 		// Parameter: 消息
 		//************************************
-		virtual void SendNotifyEvt(SocketClientEvtType type, TCHAR* msg);
+		virtual void SendNotifyEvt(TcpClientEvtType type, TCHAR* msg);
 
 		//************************************
 		// Method:    打印消息
-		// FullName:  NetworkCommunication::CSocketClient::Printf
+		// FullName:  NetworkCommunication::CTcpClient::Printf
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -133,7 +145,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    失去服务端连接
-		// FullName:  NetworkCommunication::CSocketClient::OnLoseConnect
+		// FullName:  NetworkCommunication::CTcpClient::OnLoseConnect
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -143,7 +155,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    已连接上服务端
-		// FullName:  NetworkCommunication::CSocketClient::OnConnected
+		// FullName:  NetworkCommunication::CTcpClient::OnConnected
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -156,7 +168,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    初始化
-		// FullName:  NetworkCommunication::CSocketClient::Init
+		// FullName:  NetworkCommunication::CTcpClient::Init
 		// Access:    public 
 		// Returns:   void
 		// Qualifier:
@@ -166,21 +178,21 @@ namespace NetworkCommunication
 		// Parameter: 回调函数指针
 		//************************************
 		virtual void Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt = NULL, int socketBufLen = 1024,
-			bool autoReconnect = true, int reconnectTimes = 3, int reconnectTimeSpan = 1500);
+			bool autoReconnect = true, int reconnectTimes = 3, int reconnectTimeSpan = 1500, int connectTimeout = 2000);
 
 		//************************************
-		// Method:    设置接收socket数据回调函数
-		// FullName:  NetworkCommunication::CSocketClient::SetCallback
+		// Method:    设置接收tcp数据回调函数
+		// FullName:  NetworkCommunication::CTcpClient::SetCallback
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
 		// Parameter: 接收socket数据回调函数
 		//************************************
-		virtual void SetCallback(LPOnRecvSocketData lpfnOnRecvSocketData);
+		virtual void SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData);
 
 		//************************************
 		// Method:    连接服务端
-		// FullName:  NetworkCommunication::CSocketClient::Connect
+		// FullName:  NetworkCommunication::CTcpClient::Connect
 		// Access:    virtual public 
 		// Returns:   bool
 		// Qualifier:
@@ -189,7 +201,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    强制重新连接服务端
-		// FullName:  NetworkCommunication::CSocketClient::Reconnect
+		// FullName:  NetworkCommunication::CTcpClient::Reconnect
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
@@ -198,7 +210,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    连接服务端
-		// FullName:  NetworkCommunication::CSocketClient::ConnectServer
+		// FullName:  NetworkCommunication::CTcpClient::ConnectServer
 		// Access:    virtual protected 
 		// Returns:   是否应该退出线程
 		// Qualifier:
@@ -207,7 +219,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    关闭与服务端连接
-		// FullName:  NetworkCommunication::CSocketClient::CloseConnect
+		// FullName:  NetworkCommunication::CTcpClient::CloseConnect
 		// Access:    public 
 		// Returns:   void
 		// Qualifier:
@@ -216,7 +228,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    获取服务端Socket
-		// FullName:  NetworkCommunication::CSocketClient::GetServerSocket
+		// FullName:  NetworkCommunication::CTcpClient::GetServerSocket
 		// Access:    public 
 		// Returns:   SOCKET
 		// Qualifier:
@@ -224,19 +236,19 @@ namespace NetworkCommunication
 		virtual SOCKET GetClientSocket();
 
 		//************************************
-		// Method:    读取Socket数据
-		// FullName:  NetworkCommunication::CSocketClient::OnRecvSocketData
+		// Method:    读取tcp数据
+		// FullName:  NetworkCommunication::CTcpClient::ReadTcpData
 		// Access:    virtual public 
 		// Returns:   是否该退出线程
 		// Qualifier:
 		// Parameter: 缓冲区
 		// Parameter: 缓冲区长度
 		//************************************
-		virtual bool ReadSocketData();
+		virtual bool ReadTcpData();
 
 		//************************************
 		// Method:    发送数据
-		// FullName:  NetworkCommunication::CSocketClient::SendData
+		// FullName:  NetworkCommunication::CTcpClient::SendData
 		// Access:    public 
 		// Returns:   bool
 		// Qualifier:
@@ -247,7 +259,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    获取连接状态
-		// FullName:  NetworkCommunication::CSocketClient::GetConnectStatus
+		// FullName:  NetworkCommunication::CTcpClient::GetConnectStatus
 		// Access:    virtual public 
 		// Returns:   bool
 		// Qualifier:
@@ -255,19 +267,28 @@ namespace NetworkCommunication
 		virtual bool GetConnectStatus();
 
 		//************************************
-		// Method:    收到socket数据
-		// FullName:  NetworkCommunication::CSocketClient::OnRecvSocketData
+		// Method:    收到tcp数据
+		// FullName:  NetworkCommunication::CTcpClient::OnRecvSocketData
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
-		// Parameter: BYTE buf[]
-		// Parameter: int len
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
 		//************************************
-		virtual void OnRecvSocketData(BYTE buf[], int len);
+		virtual void OnRecvTcpData(BYTE buf[], int len);
+
+		//************************************
+		// Method:    连接超时
+		// FullName:  NetworkCommunication::CTcpClient::OnConnectTimeout
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void OnConnectTimeout();
 
 		//************************************
 		// Method:    模拟一次服务端发包
-		// FullName:  NetworkCommunication::CSocketClient::SimularServerData
+		// FullName:  NetworkCommunication::CTcpClient::SimulateServerData
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:

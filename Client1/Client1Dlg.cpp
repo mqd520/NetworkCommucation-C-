@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 #include "NetTool.h"
 #include "StringHandle.h"
+#include "NetTool.h"
 
 using namespace NetworkCommunication;
 
@@ -33,16 +34,13 @@ CClient1Dlg::~CClient1Dlg()
 void CClient1Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_BUTTON1, m_btn1);
-	DDX_Control(pDX, IDC_EDIT1, m_edit1);
-	DDX_Control(pDX, IDC_BUTTON2, m_btn2);
-	DDX_Text(pDX, IDC_EDIT1, m_str1);
-	DDX_Control(pDX, IDC_IPADDRESS1, m_ipServerIP);
-	DDX_Control(pDX, IDC_EDIT2, m_edServerPort);
-	DDX_Text(pDX, IDC_IPADDRESS1, m_strServerIP);
-	DDX_Text(pDX, IDC_EDIT2, m_nServerPort);
+	DDX_Control(pDX, IDC_BUTTON1, m_btnDisconnect);
+	DDX_Control(pDX, IDC_EDIT1, m_edSend);
+	DDX_Text(pDX, IDC_EDIT1, m_strSend);
+	DDX_Control(pDX, IDC_BUTTON2, m_btnSend);
 	DDX_Control(pDX, IDC_EDIT3, m_editResult);
 	DDX_Text(pDX, IDC_EDIT3, m_strResult);
+	DDX_Control(pDX, IDC_BUTTON3, m_btnSimulate);
 }
 
 BEGIN_MESSAGE_MAP(CClient1Dlg, CDialogEx)
@@ -52,6 +50,7 @@ BEGIN_MESSAGE_MAP(CClient1Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CClient1Dlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CClient1Dlg::OnBnClickedButton3)
 	ON_MESSAGE(WM_CUSTOM_MESSAGE1, &CClient1Dlg::OnRecvData)
+	ON_BN_CLICKED(IDC_BUTTON4, &CClient1Dlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -118,16 +117,18 @@ void CClient1Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(TRUE);
+	theApp.m_tcp.CloseConnect();
 }
 
 void CClient1Dlg::OnBnClickedButton2()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(true);
-	BYTE buf[3] = { 48, 49, 50 };
-	theApp.m_tcp.SendData(buf, 3);
-
-	theApp.m_tcp.SendData(NULL, 0);
+	string	str = UTF8ToMultiByte(m_strSend.GetBuffer());
+	int len = 0;
+	BYTE* buf = WriteMultiByteStr((char*)str.c_str(), &len);
+	theApp.m_tcp.SendData(buf, len);
+	delete buf;
 }
 
 void CClient1Dlg::OnBnClickedButton3()
@@ -137,8 +138,17 @@ void CClient1Dlg::OnBnClickedButton3()
 
 LRESULT CClient1Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
 {
+	UpdateData(true);
 	string str = ReadMultiByteStr((BYTE*)wparam, (int)lparam);
 	wstring wstr = MultiByteToUTF8(str.c_str());
-	m_editResult.SetWindowText(wstr.c_str());
+	wstr += _T("\r\n");
+	CString tmp(wstr.c_str());
+	m_strResult = tmp + m_strResult;
+	m_editResult.SetWindowText(m_strResult);
 	return 0;
+}
+
+void CClient1Dlg::OnBnClickedButton4()
+{
+	// TODO:  在此添加控件通知处理程序代码
 }

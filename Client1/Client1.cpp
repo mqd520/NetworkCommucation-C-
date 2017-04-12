@@ -14,7 +14,7 @@ using namespace NetworkCommunication;
 #endif
 
 bool OnRecvData(BYTE buf[], int len);
-bool OnRecvEvt(SocketClientEvtType type, TCHAR* msg);
+bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg);
 
 // CClient1App
 
@@ -114,7 +114,7 @@ bool OnRecvData(BYTE buf[], int len)
 	return false;
 }
 
-bool OnRecvEvt(SocketClientEvtType type, TCHAR* msg)
+bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg)
 {
 	//TRACE(msg);
 	return false;

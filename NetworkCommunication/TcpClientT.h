@@ -18,7 +18,7 @@ namespace NetworkCommunication
 	public:
 		void SetCallbackT(LPOnRecvSocketDataT lpfnOnRecvSocketDataT, T* instance)
 		{
-			m_bHaslpfnRecvSocketData = true;
+			m_bHaslpfnRecvTcpData = true;
 			m_lpfnOnRecvSocketDataT = lpfnOnRecvSocketDataT;
 			m_pT = instance;
 		};
