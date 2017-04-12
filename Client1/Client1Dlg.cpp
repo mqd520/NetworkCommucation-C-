@@ -41,6 +41,7 @@ void CClient1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT3, m_editResult);
 	DDX_Text(pDX, IDC_EDIT3, m_strResult);
 	DDX_Control(pDX, IDC_BUTTON3, m_btnSimulate);
+	DDX_Control(pDX, IDC_BUTTON4, m_btnDisconnect);
 }
 
 BEGIN_MESSAGE_MAP(CClient1Dlg, CDialogEx)
@@ -134,6 +135,12 @@ void CClient1Dlg::OnBnClickedButton2()
 void CClient1Dlg::OnBnClickedButton3()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	string	str = UTF8ToMultiByte(m_strSend.GetBuffer());
+	int len = 0;
+	BYTE* buf = WriteMultiByteStr((char*)str.c_str(), &len);
+	theApp.m_tcp.SimulateServerData(buf, len);
+	delete buf;
 }
 
 LRESULT CClient1Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)

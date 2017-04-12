@@ -373,7 +373,9 @@ namespace NetworkCommunication
 
 	void CTcpClient::SimulateServerData(BYTE* buf, int len)
 	{
-		OnRecvTcpData(buf, len);
+		BYTE* buf1 = new BYTE[len];
+		memcpy(buf1, buf, len);
+		OnRecvTcpData(buf1, len);
 	}
 
 	DWORD WINAPI OnRecvTcpData(LPVOID lpParam)

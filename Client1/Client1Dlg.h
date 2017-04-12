@@ -34,7 +34,6 @@ protected:
 protected:
 	afx_msg void OnBnClickedButton1();
 protected:
-	CButton m_btnDisconnect;//断开按钮
 	CEdit m_edSend;//发送内容文本框
 	CString m_strSend;//发送内容
 	CButton m_btnSend;//发送按钮
@@ -47,4 +46,6 @@ public:
 protected:
 	// 模拟发送按钮
 	CButton m_btnSimulate;
+	// 模拟服务端数据发送
+	CButton m_btnDisconnect;
 };
