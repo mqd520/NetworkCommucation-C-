@@ -176,9 +176,10 @@ DWORD WINAPI ListenClientSocketStatus(LPVOID lpParam)
 
 bool SendData(SOCKET socket, TCHAR* data)
 {
-	int len = _tcslen(data);
+	//int len = _tcslen(data);
 	//int val = send(socket, data, len, 0);
-	int val = send(socket, NULL, 0, 0);
+	char buf[1] = { 48 };
+	int val = send(socket, buf, 1, 0);
 	if (val == SOCKET_ERROR)
 	{
 		return false;
