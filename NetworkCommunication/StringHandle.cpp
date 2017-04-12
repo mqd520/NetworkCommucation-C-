@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "StringHandle.h"
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	wstring MultiByteToUTF8(const char* str)
 	{

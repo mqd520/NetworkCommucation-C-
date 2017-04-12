@@ -3,7 +3,7 @@
 #include "StringHandle.h"
 #include "DemoPackageMgr.h"
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	BYTE* CDemoPackage1Mgr::Unparse(void* data, int* len)
 	{

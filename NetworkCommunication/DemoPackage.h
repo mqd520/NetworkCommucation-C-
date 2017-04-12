@@ -2,7 +2,7 @@
 
 #include <minwindef.h>
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	//∞¸¿‡–Õ
 	enum DemoPackageType

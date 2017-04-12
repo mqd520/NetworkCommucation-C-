@@ -10,7 +10,7 @@
 
 using namespace std;
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	//事件类型
 	enum SocketClientEvtType
@@ -24,7 +24,7 @@ namespace TCPCommunication
 
 	//************************************
 	// Method:    收到socket数据
-	// FullName:  TCPCommunication::LPOnRecvSocketData
+	// FullName:  NetworkCommunication::LPOnRecvSocketData
 	// Access:    public 
 	// Returns:   指示调用是否已释放缓冲区
 	// Qualifier: 缓冲区
@@ -34,7 +34,7 @@ namespace TCPCommunication
 
 	//************************************
 	// Method:    收到socket客户端事件函数指针
-	// FullName:  TCPCommunication::LPOnRecvNotifyEvt
+	// FullName:  NetworkCommunication::LPOnRecvNotifyEvt
 	// Access:    public 
 	// Returns:   是否已处理
 	// Qualifier: 事件类型
@@ -42,8 +42,8 @@ namespace TCPCommunication
 	//************************************
 	typedef bool(*LPOnRecvNotifyEvt)(SocketClientEvtType type, TCHAR* msg);
 
-	//Socket客户端类
-	class CSocketClient
+	//tcp客户端
+	class CTcpClient
 	{
 		//失去服务端连接原因枚举
 		enum LoseConnectReason
@@ -76,7 +76,7 @@ namespace TCPCommunication
 	protected:
 		//************************************
 		// Method:    初始化socket
-		// FullName:  TCPCommunication::CSocketClient::InitSocket
+		// FullName:  NetworkCommunication::CSocketClient::InitSocket
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -85,7 +85,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    初始化客户端socket
-		// FullName:  TCPCommunication::CSocketClient::InitSocket
+		// FullName:  NetworkCommunication::CSocketClient::InitSocket
 		// Access:    protected 
 		// Returns:   bool
 		// Qualifier:
@@ -94,7 +94,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    重新连接服务端
-		// FullName:  TCPCommunication::CSocketClient::ReconnectServer
+		// FullName:  NetworkCommunication::CSocketClient::ReconnectServer
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -103,7 +103,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    清理Socket
-		// FullName:  TCPCommunication::CSocketClient::CleanSocket
+		// FullName:  NetworkCommunication::CSocketClient::CleanSocket
 		// Access:    protected 
 		// Returns:   void
 		// Qualifier:
@@ -112,7 +112,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    发送通知事件
-		// FullName:  TCPCommunication::CSocketClient::SaveNotifyEvt
+		// FullName:  NetworkCommunication::CSocketClient::SaveNotifyEvt
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -123,7 +123,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    打印消息
-		// FullName:  TCPCommunication::CSocketClient::Printf
+		// FullName:  NetworkCommunication::CSocketClient::Printf
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -133,7 +133,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    失去服务端连接
-		// FullName:  TCPCommunication::CSocketClient::OnLoseConnect
+		// FullName:  NetworkCommunication::CSocketClient::OnLoseConnect
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -143,7 +143,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    已连接上服务端
-		// FullName:  TCPCommunication::CSocketClient::OnConnected
+		// FullName:  NetworkCommunication::CSocketClient::OnConnected
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
@@ -151,12 +151,12 @@ namespace TCPCommunication
 		virtual void OnConnected();
 
 	public:
-		CSocketClient();
-		~CSocketClient();
+		CTcpClient();
+		~CTcpClient();
 
 		//************************************
 		// Method:    初始化
-		// FullName:  TCPCommunication::CSocketClient::Init
+		// FullName:  NetworkCommunication::CSocketClient::Init
 		// Access:    public 
 		// Returns:   void
 		// Qualifier:
@@ -170,7 +170,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    设置接收socket数据回调函数
-		// FullName:  TCPCommunication::CSocketClient::SetCallback
+		// FullName:  NetworkCommunication::CSocketClient::SetCallback
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
@@ -180,7 +180,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    连接服务端
-		// FullName:  TCPCommunication::CSocketClient::Connect
+		// FullName:  NetworkCommunication::CSocketClient::Connect
 		// Access:    virtual public 
 		// Returns:   bool
 		// Qualifier:
@@ -189,7 +189,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    强制重新连接服务端
-		// FullName:  TCPCommunication::CSocketClient::Reconnect
+		// FullName:  NetworkCommunication::CSocketClient::Reconnect
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
@@ -198,7 +198,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    连接服务端
-		// FullName:  TCPCommunication::CSocketClient::ConnectServer
+		// FullName:  NetworkCommunication::CSocketClient::ConnectServer
 		// Access:    virtual protected 
 		// Returns:   是否应该退出线程
 		// Qualifier:
@@ -207,7 +207,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    关闭与服务端连接
-		// FullName:  TCPCommunication::CSocketClient::CloseConnect
+		// FullName:  NetworkCommunication::CSocketClient::CloseConnect
 		// Access:    public 
 		// Returns:   void
 		// Qualifier:
@@ -216,7 +216,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    获取服务端Socket
-		// FullName:  TCPCommunication::CSocketClient::GetServerSocket
+		// FullName:  NetworkCommunication::CSocketClient::GetServerSocket
 		// Access:    public 
 		// Returns:   SOCKET
 		// Qualifier:
@@ -225,7 +225,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    读取Socket数据
-		// FullName:  TCPCommunication::CSocketClient::OnRecvSocketData
+		// FullName:  NetworkCommunication::CSocketClient::OnRecvSocketData
 		// Access:    virtual public 
 		// Returns:   是否该退出线程
 		// Qualifier:
@@ -236,7 +236,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    发送数据
-		// FullName:  TCPCommunication::CSocketClient::SendData
+		// FullName:  NetworkCommunication::CSocketClient::SendData
 		// Access:    public 
 		// Returns:   bool
 		// Qualifier:
@@ -247,7 +247,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    获取连接状态
-		// FullName:  TCPCommunication::CSocketClient::GetConnectStatus
+		// FullName:  NetworkCommunication::CSocketClient::GetConnectStatus
 		// Access:    virtual public 
 		// Returns:   bool
 		// Qualifier:
@@ -256,7 +256,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    收到socket数据
-		// FullName:  TCPCommunication::CSocketClient::OnRecvSocketData
+		// FullName:  NetworkCommunication::CSocketClient::OnRecvSocketData
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
@@ -267,7 +267,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    模拟一次服务端发包
-		// FullName:  TCPCommunication::CSocketClient::SimularServerData
+		// FullName:  NetworkCommunication::CSocketClient::SimularServerData
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:

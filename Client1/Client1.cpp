@@ -7,7 +7,7 @@
 #include "Client1Dlg.h"
 #include "NetTool.h"
 
-using namespace TCPCommunication;
+using namespace NetworkCommunication;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -73,9 +73,9 @@ BOOL CClient1App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		m_socket.Init(ip, 8080, OnRecvEvt);
-		m_socket.SetCallback(OnRecvData);
-		m_socket.Connect();
+		m_tcp.Init(ip, 8080, OnRecvEvt);
+		m_tcp.SetCallback(OnRecvData);
+		m_tcp.Connect();
 	}
 
 	CClient1Dlg dlg;

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	class CByteStream
 	{

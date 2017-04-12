@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	//************************************
 	// Method:    ¶à×Ö½Ú×Ö·û´®×ªUTF8×Ö·û´®

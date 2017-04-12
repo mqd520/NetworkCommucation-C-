@@ -6,7 +6,7 @@
 #include "ProtocolMgr.h"
 #include "SocketClientPlus.h"
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	template<typename TPackageType, typename TPackageBase, typename TProtocolMgr>
 	//第1个模板参数:	包类型定义
@@ -23,7 +23,7 @@ namespace TCPCommunication
 		typedef void(*LPOnRecvBusinessPackage)(TPackageType type, void* data);
 
 	protected:
-		CSocketClientT<CTCPClientMgrSelf> m_socket;//socket客户端管理对象
+		CTcpClientT<CTCPClientMgrSelf> m_socket;//socket客户端管理对象
 		TProtocolMgr m_protocol;//协议管理对象
 		CByteStream* m_stream;//字节流对象
 		CByteStream* m_streamCatch;//字节流缓存对象
@@ -54,7 +54,7 @@ namespace TCPCommunication
 
 		//************************************
 		// Method:    初始化
-		// FullName:  TCPCommunication::CTCPClientMgr<TPackageType, TPackageBase, TProtocolMgr>::Init
+		// FullName:  NetworkCommunication::CTCPClientMgr<TPackageType, TPackageBase, TProtocolMgr>::Init
 		// Access:    virtual public 
 		// Returns:   bool
 		// Qualifier:

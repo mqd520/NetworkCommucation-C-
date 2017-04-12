@@ -3,7 +3,7 @@
 #include "DemoPackageMgr.h"
 #include "ProtocolTool.h"
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 #define DemoProtocol_HeadLen	7	//协议头长度
 

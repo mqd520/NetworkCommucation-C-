@@ -9,7 +9,7 @@
 #include "NetTool.h"
 #include "StringHandle.h"
 
-using namespace TCPCommunication;
+using namespace NetworkCommunication;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -125,9 +125,9 @@ void CClient1Dlg::OnBnClickedButton2()
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(true);
 	BYTE buf[3] = { 48, 49, 50 };
-	theApp.m_socket.SendData(buf, 3);
+	theApp.m_tcp.SendData(buf, 3);
 
-	theApp.m_socket.SendData(NULL, 0);
+	theApp.m_tcp.SendData(NULL, 0);
 }
 
 void CClient1Dlg::OnBnClickedButton3()

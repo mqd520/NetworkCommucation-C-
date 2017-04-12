@@ -13,11 +13,11 @@
     <Filter Include="05 客户端">
       <UniqueIdentifier>{4f6957ea-8ed9-43ff-8f1e-7bd0cea9bfa8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02 Socket管理">
-      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04 TCP管理">
       <UniqueIdentifier>{4dd5811a-4d9c-4c43-b2ce-ce2cc38b0e4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 Tcp管理">
+      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,9 +45,6 @@
     <ClInclude Include="TCPClientMgr.h">
       <Filter>04 TCP管理</Filter>
     </ClInclude>
-    <ClInclude Include="SocketClient.h">
-      <Filter>02 Socket管理</Filter>
-    </ClInclude>
     <ClInclude Include="DemoProtocolMgr.h">
       <Filter>05 客户端</Filter>
     </ClInclude>
@@ -60,11 +57,14 @@
     <ClInclude Include="Interface.h">
       <Filter>03 协议管理</Filter>
     </ClInclude>
-    <ClInclude Include="SocketClientT.h">
-      <Filter>02 Socket管理</Filter>
-    </ClInclude>
     <ClInclude Include="StringHandle.h">
       <Filter>01 工具</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpClient.h">
+      <Filter>02 Tcp管理</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpClientT.h">
+      <Filter>02 Tcp管理</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -80,9 +80,6 @@
     <ClCompile Include="MemoryTool.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
-    <ClCompile Include="SocketClient.cpp">
-      <Filter>02 Socket管理</Filter>
-    </ClCompile>
     <ClCompile Include="DemoProtocolMgr.cpp">
       <Filter>05 客户端</Filter>
     </ClCompile>
@@ -91,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="StringHandle.cpp">
       <Filter>01 工具</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpClient.cpp">
+      <Filter>02 Tcp管理</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

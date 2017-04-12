@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "SocketClient.h"
+#include "TcpClient.h"
 #include "NetTool.h"
 #include "StringHandle.h"
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	//接收socket数据线程入口
 	DWORD WINAPI OnRecvSocketData(LPVOID lpParam);
@@ -17,12 +17,12 @@ namespace TCPCommunication
 	//线程入口参数
 	typedef struct tagThreadEntryPara
 	{
-		CSocketClient* pClient;//客户端指针
+		CTcpClient* pClient;//客户端指针
 		BYTE* buf;//缓冲区
 		int len;//缓冲区长度
 	}ThreadEntryPara, *LPThreadEntryPara;
 
-	CSocketClient::CSocketClient() :
+	CTcpClient::CTcpClient() :
 		m_nRecvSocketBufLen(0),
 		m_pRecvSocketBuf(NULL),
 		m_strServerIP(NULL),
@@ -43,7 +43,7 @@ namespace TCPCommunication
 
 	}
 
-	CSocketClient::~CSocketClient()
+	CTcpClient::~CTcpClient()
 	{
 		m_bExitThread = true;
 		CleanSocket();
@@ -54,7 +54,7 @@ namespace TCPCommunication
 		}
 	}
 
-	void CSocketClient::Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt, int socketBufLen, bool autoReconnect,
+	void CTcpClient::Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt, int socketBufLen, bool autoReconnect,
 		int reconnectTimes, int reconnectTimeSpan)
 	{
 		if (!m_bInited)
@@ -72,13 +72,13 @@ namespace TCPCommunication
 		}
 	}
 
-	void CSocketClient::SetCallback(LPOnRecvSocketData lpfnOnRecvSocketData)
+	void CTcpClient::SetCallback(LPOnRecvSocketData lpfnOnRecvSocketData)
 	{
 		m_bHaslpfnRecvSocketData = true;
 		m_lpfnOnRecvSocketData = lpfnOnRecvSocketData;
 	}
 
-	void CSocketClient::InitSocket()
+	void CTcpClient::InitSocket()
 	{
 		WSADATA wsaData;
 
@@ -99,7 +99,7 @@ namespace TCPCommunication
 		}
 	}
 
-	void CSocketClient::CreateClientSocket()
+	void CTcpClient::CreateClientSocket()
 	{
 		m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (m_socket == INVALID_SOCKET)
@@ -110,7 +110,7 @@ namespace TCPCommunication
 
 	DWORD WINAPI ConnectServer(LPVOID lpParam)
 	{
-		CSocketClient* p = (CSocketClient*)lpParam;
+		CTcpClient* p = (CTcpClient*)lpParam;
 		while (true)
 		{
 			if (p->ConnectServer())
@@ -121,7 +121,7 @@ namespace TCPCommunication
 		return 0;
 	}
 
-	bool CSocketClient::ConnectServer()
+	bool CTcpClient::ConnectServer()
 	{
 		if (m_bConnected == false || m_bReconnecting || m_bExitThread == false)
 		{
@@ -155,17 +155,17 @@ namespace TCPCommunication
 		}
 	}
 
-	void CSocketClient::ReconnectServer()
+	void CTcpClient::ReconnectServer()
 	{
 		if (!m_bReconnecting)
 		{
 			m_bReconnecting = true;
 			CreateClientSocket();
-			::CreateThread(NULL, 0, TCPCommunication::ConnectServer, this, NULL, NULL);
+			::CreateThread(NULL, 0, NetworkCommunication::ConnectServer, this, NULL, NULL);
 		}
 	}
 
-	void CSocketClient::OnLoseConnect(LoseConnectReason reason)
+	void CTcpClient::OnLoseConnect(LoseConnectReason reason)
 	{
 		m_bConnected = false;
 		if (reason == LoseConnectReason::Client)
@@ -189,7 +189,7 @@ namespace TCPCommunication
 		}
 	}
 
-	void CSocketClient::OnConnected()
+	void CTcpClient::OnConnected()
 	{
 		m_nReconnected = 0;
 		m_bReconnecting = false;
@@ -197,10 +197,10 @@ namespace TCPCommunication
 		TCHAR msg[100];
 		wsprintf(msg, _T("success to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
 		SendNotifyEvt(SocketClientEvtType::connected, msg);
-		::CreateThread(NULL, 0, TCPCommunication::ReadSocketData, this, NULL, NULL);
+		::CreateThread(NULL, 0, NetworkCommunication::ReadSocketData, this, NULL, NULL);
 	}
 
-	void CSocketClient::CleanSocket()
+	void CTcpClient::CleanSocket()
 	{
 		if (!m_bIsCleaned)
 		{
@@ -210,7 +210,7 @@ namespace TCPCommunication
 		}
 	}
 
-	void CSocketClient::Connect()
+	void CTcpClient::Connect()
 	{
 		if (!m_bConnected)
 		{
@@ -218,26 +218,26 @@ namespace TCPCommunication
 		}
 	}
 
-	void CSocketClient::Reconnect()
+	void CTcpClient::Reconnect()
 	{
 		ReconnectServer();
 	}
 
-	void CSocketClient::CloseConnect()
+	void CTcpClient::CloseConnect()
 	{
 		m_bReconnecting = false;
 		m_bConnected = false;
 		closesocket(m_socket);
 	}
 
-	SOCKET CSocketClient::GetClientSocket()
+	SOCKET CTcpClient::GetClientSocket()
 	{
 		return m_socket;
 	}
 
 	DWORD WINAPI ReadSocketData(LPVOID lpParam)
 	{
-		CSocketClient* p = (CSocketClient*)lpParam;
+		CTcpClient* p = (CTcpClient*)lpParam;
 		while (true)
 		{
 			if (p->ReadSocketData())
@@ -248,7 +248,7 @@ namespace TCPCommunication
 		return 0;
 	}
 
-	bool CSocketClient::ReadSocketData()
+	bool CTcpClient::ReadSocketData()
 	{
 		memset(m_pRecvSocketBuf, 0, m_nRecvSocketBufLen);
 		int len = recv(m_socket, m_pRecvSocketBuf, m_nRecvSocketBufLen, 0);
@@ -261,7 +261,7 @@ namespace TCPCommunication
 			BYTE* buf = new BYTE[len];
 			memcpy(buf, m_pRecvSocketBuf, len);
 			LPThreadEntryPara info = new ThreadEntryPara{ this, buf, len };
-			::CreateThread(NULL, 0, TCPCommunication::OnRecvSocketData, info, NULL, NULL);
+			::CreateThread(NULL, 0, NetworkCommunication::OnRecvSocketData, info, NULL, NULL);
 		}
 		else
 		{
@@ -278,12 +278,12 @@ namespace TCPCommunication
 		return false;
 	}
 
-	bool CSocketClient::GetConnectStatus()
+	bool CTcpClient::GetConnectStatus()
 	{
 		return m_bConnected;
 	}
 
-	bool CSocketClient::SendData(BYTE buf[], int len)
+	bool CTcpClient::SendData(BYTE buf[], int len)
 	{
 		bool b = false;
 		int sended = 0;
@@ -307,7 +307,7 @@ namespace TCPCommunication
 		return b;
 	}
 
-	void CSocketClient::SendNotifyEvt(SocketClientEvtType type, TCHAR* msg)
+	void CTcpClient::SendNotifyEvt(SocketClientEvtType type, TCHAR* msg)
 	{
 		if (m_lpfnOnRecvNotifyEvt)
 		{
@@ -321,7 +321,7 @@ namespace TCPCommunication
 		}
 	}
 
-	void CSocketClient::Printf(TCHAR* msg)
+	void CTcpClient::Printf(TCHAR* msg)
 	{
 #ifdef _DEBUG
 #ifdef _CONSOLE
@@ -336,7 +336,7 @@ namespace TCPCommunication
 #endif // _DEBUG
 	}
 
-	void CSocketClient::SimulateServerData(BYTE* buf, int len)
+	void CTcpClient::SimulateServerData(BYTE* buf, int len)
 	{
 		OnRecvSocketData(buf, len);
 	}
@@ -349,7 +349,7 @@ namespace TCPCommunication
 		return 0;
 	}
 
-	void CSocketClient::OnRecvSocketData(BYTE buf[], int len)
+	void CTcpClient::OnRecvSocketData(BYTE buf[], int len)
 	{
 		if (m_lpfnOnRecvSocketData&&buf&&len > 0)
 		{

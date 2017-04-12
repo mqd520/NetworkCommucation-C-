@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	//************************************
 	// Method:    从字节数组中读取多字节字符串
@@ -55,7 +55,7 @@ namespace TCPCommunication
 
 	//************************************
 	// Method:    获取本地IP
-	// FullName:  TCPCommunication::GetLocalIP
+	// FullName:  NetworkCommunication::GetLocalIP
 	// Access:    public 
 	// Returns:   bool
 	// Qualifier:

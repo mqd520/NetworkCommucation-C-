@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	//协议管理
 	template<typename TPackageType, typename TPackageBase>

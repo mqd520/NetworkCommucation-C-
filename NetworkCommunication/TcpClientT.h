@@ -1,12 +1,12 @@
 #pragma once
 
-#include "SocketClient.h"
+#include "TcpClient.h"
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	template<typename T>
-	//socket客户端模板类
-	class CSocketClientT :public CSocketClient
+	//tcp模板客户端
+	class CTcpClientT :public CTcpClient
 	{
 	public:
 		typedef bool(T::*LPOnRecvSocketDataT)(BYTE buf[], int len);//成员函数指针

@@ -9,9 +9,9 @@
 #endif
 
 #include "resource.h"		// Ö÷·ûºÅ
-#include "SocketClient.h"
+#include "TcpClient.h"
 
-using namespace TCPCommunication;
+using namespace NetworkCommunication;
 
 #define WM_CUSTOM_MESSAGE1	(WM_USER+1)
 
@@ -26,7 +26,7 @@ class CClient1App : public CWinApp
 {
 public:
 	CClient1App();
-	CSocketClient m_socket;
+	CTcpClient m_tcp;
 
 	// ÖØÐ´
 public:

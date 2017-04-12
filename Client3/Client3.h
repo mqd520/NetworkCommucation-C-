@@ -13,7 +13,7 @@
 #include "DemoPackage.h"
 #include "DemoProtocolMgr.h"
 
-using namespace TCPCommunication;
+using namespace NetworkCommunication;
 
 // CClient3App: 
 // 有关此类的实现，请参阅 Client3.cpp

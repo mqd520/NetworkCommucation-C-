@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MemoryTool.h"
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	CByteStream::CByteStream(int len)
 	{

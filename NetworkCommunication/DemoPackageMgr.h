@@ -3,7 +3,7 @@
 #include "DemoPackage.h"
 #include "Interface.h"
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	template<typename T>
 	//DemoPackage管理基类

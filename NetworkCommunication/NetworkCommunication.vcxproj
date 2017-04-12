@@ -14,6 +14,7 @@
     <ProjectGuid>{0F7FD0AC-5D87-40EC-8E07-316D79745805}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TCPCommunication</RootNamespace>
+    <ProjectName>NetworkCommunication</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -90,10 +91,10 @@
     <ClInclude Include="DemoPackageMgr.h" />
     <ClInclude Include="ProtocolMgr.h" />
     <ClInclude Include="ProtocolTool.h" />
-    <ClInclude Include="SocketClientT.h" />
+    <ClInclude Include="TcpClientT.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="SocketClient.h" />
+    <ClInclude Include="TcpClient.h" />
     <ClInclude Include="TCPClientMgr.h" />
   </ItemGroup>
   <ItemGroup>
@@ -107,7 +108,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SocketClient.cpp" />
+    <ClCompile Include="TcpClient.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

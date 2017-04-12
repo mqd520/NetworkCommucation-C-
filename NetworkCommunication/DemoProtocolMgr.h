@@ -3,7 +3,7 @@
 #include "ProtocolMgr.h"
 #include "DemoPackage.h"
 
-namespace TCPCommunication
+namespace NetworkCommunication
 {
 	//CDemoProtocolMgrµÄ»ùÀà
 	typedef CProtocolMgr < DemoPackageType, DemoPackageBase >	CDemoProtocolMgrBase;
