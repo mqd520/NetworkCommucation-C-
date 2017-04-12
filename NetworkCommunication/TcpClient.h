@@ -79,7 +79,7 @@ namespace NetworkCommunication
 		int m_nReconnected;//断开后已重连次数
 		bool m_bReconnecting;//正在重新连接
 		bool m_bAutoReconnect;//断线后是否自动重新连接
-		bool m_bExitThread;//指示线程应该退出(只有析构函数被调用才赋值"true")
+		bool m_bExitThread;//指示应该退出后台线程
 		int m_nConnectTimeout;//连接超时时间(0:无限制等待)
 		ThreadInfo m_tiConnect;//连接线程信息
 		ThreadInfo m_tiConnectTimeout;//连接超时线程信息

@@ -251,6 +251,7 @@ namespace NetworkCommunication
 	{
 		m_bReconnecting = false;
 		m_bConnected = false;
+		m_bExitThread = true;
 		closesocket(m_socket);
 		if (m_tiConnect.hThread)
 		{
@@ -409,6 +410,13 @@ namespace NetworkCommunication
 	{
 		Sleep(m_nConnectTimeout);
 
+		m_tiConnectTimeout = { 0 };//重置连接超时线程信息
+
+		if (m_bExitThread)//指示应该退出线程
+		{
+			return;
+		}
+
 		if (m_bConnectedTimeout)//指示连接已超时,可以进行超时处理
 		{
 			if (m_tiConnect.hThread)
@@ -444,7 +452,5 @@ namespace NetworkCommunication
 				m_tiConnect.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ConnectServer, this, NULL, &(m_tiConnect.dwThreadID));
 			}
 		}
-
-		m_tiConnectTimeout = { 0 };//重置连接超时线程信息
 	}
 }

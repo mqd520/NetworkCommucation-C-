@@ -151,4 +151,5 @@ LRESULT CClient1Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
 void CClient1Dlg::OnBnClickedButton4()
 {
 	// TODO:  在此添加控件通知处理程序代码
+
 }
