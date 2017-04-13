@@ -242,11 +242,6 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CTcpClient::Reconnect()
-	{
-		ReconnectServer();
-	}
-
 	void CTcpClient::CloseConnect()
 	{
 		m_bReconnecting = false;
@@ -320,6 +315,10 @@ namespace NetworkCommunication
 
 	bool CTcpClient::SendData(BYTE buf[], int len)
 	{
+		if (!m_bConnected)
+		{
+			return false;
+		}
 		bool b = false;
 		int sended = 0;
 		while (true)

@@ -41,8 +41,6 @@ protected:
 	afx_msg void OnBnClickedButton3();
 	CEdit m_editResult;//结果文本框
 	CString m_strResult;//结果
-public:
-	afx_msg void OnBnClickedButton4();
 protected:
 	// 模拟发送按钮
 	CButton m_btnSimulate;

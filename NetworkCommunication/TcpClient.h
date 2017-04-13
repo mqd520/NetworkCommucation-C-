@@ -200,15 +200,6 @@ namespace NetworkCommunication
 		virtual void Connect();
 
 		//************************************
-		// Method:    强制重新连接服务端
-		// FullName:  NetworkCommunication::CTcpClient::Reconnect
-		// Access:    virtual public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void Reconnect();
-
-		//************************************
 		// Method:    连接服务端
 		// FullName:  NetworkCommunication::CTcpClient::ConnectServer
 		// Access:    virtual protected 
