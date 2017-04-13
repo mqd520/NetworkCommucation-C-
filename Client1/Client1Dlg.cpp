@@ -8,7 +8,6 @@
 #include "afxdialogex.h"
 #include "NetTool.h"
 #include "StringHandle.h"
-#include "NetTool.h"
 
 using namespace NetworkCommunication;
 

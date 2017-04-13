@@ -6,9 +6,8 @@
 #include "Client2.h"
 #include "Client2Dlg.h"
 #include "afxdialogex.h"
-#include "Protocol1Handle.h"
-
-using namespace Protocol1;
+#include "NetTool.h"
+#include "StringHandle.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -27,12 +26,19 @@ CClient2Dlg::CClient2Dlg(CWnd* pParent /*=NULL*/)
 void CClient2Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT1, m_edSend);
+	DDX_Control(pDX, IDC_EDIT2, m_edResult);
+	DDX_Text(pDX, IDC_EDIT1, m_strSend);
+	DDX_Text(pDX, IDC_EDIT2, m_strResult);
 }
 
 BEGIN_MESSAGE_MAP(CClient2Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON1, &CClient2Dlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CClient2Dlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CClient2Dlg::OnBnClickedButton3)
+	ON_MESSAGE(WM_CUSTOM_MESSAGE1, &CClient2Dlg::OnRecvData)
 END_MESSAGE_MAP()
 
 
@@ -89,29 +95,48 @@ HCURSOR CClient2Dlg::OnQueryDragIcon()
 }
 
 
+void CClient2Dlg::OnBnClickedButton1()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	UpdateData(TRUE);
+	string	str = UTF8ToMultiByte(m_strSend.GetBuffer());
+	int len = 0;
+	BYTE* buf = WriteMultiByteStr((char*)str.c_str(), &len);
+	bool b = theApp.m_tcp.SendData(buf, len);
+	delete buf;
+	if (!b)
+	{
+		MessageBox(_T("发送失败!"));
+	}
+}
+
+
+void CClient2Dlg::OnBnClickedButton2()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	theApp.m_tcp.CloseConnect();
+}
+
 
 void CClient2Dlg::OnBnClickedButton3()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	CProtocol1Handle handler;
-	//业务数据
-	char* str = "123";
-	//业务数据转字节数组
-	BYTE* buf1 = (BYTE*)str;
-	//封包
-	LPPackage1 pack1 = handler.Packet(Package1Type::type1, buf1, 4);
-	//发送
-	BYTE* buf2 = handler.GetBuffer(pack1);
-	//...
+	UpdateData(TRUE);
+	string	str = UTF8ToMultiByte(m_strSend.GetBuffer());
+	int len = 0;
+	BYTE* buf = WriteMultiByteStr((char*)str.c_str(), &len);
+	theApp.m_tcp.SimulateServerData(buf, len);
+	delete buf;
+}
 
-	//解包
-	int len = 11;
-	LPPackage1 pack2 = handler.UnPacket(buf2, len);
-	int datalen = handler.GetDataLen(pack2);
-	BYTE buf3[1024];
-	memcpy(buf3, pack2->data, datalen);
-
-	delete buf2;
-	handler.ReleaseMemory(pack2);
-	handler.ReleaseMemory(pack1);
+LRESULT CClient2Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
+{
+	UpdateData(true);
+	string str = ReadMultiByteStr((BYTE*)wparam, (int)lparam);
+	wstring wstr = MultiByteToUTF8(str.c_str());
+	wstr += _T("\r\n");
+	CString tmp(wstr.c_str());
+	m_strResult = tmp + m_strResult;
+	m_edResult.SetWindowText(m_strResult);
+	return 0;
 }

@@ -6,6 +6,8 @@
 #include "Client3.h"
 #include "Client3Dlg.h"
 #include "afxdialogex.h"
+#include "NetTool.h"
+#include "StringHandle.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,6 +32,7 @@ BEGIN_MESSAGE_MAP(CClient3Dlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CClient3Dlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CClient3Dlg::OnBnClickedButton2)
+	ON_MESSAGE(WM_CUSTOM_MESSAGE1, &CClient3Dlg::OnRecvData)
 END_MESSAGE_MAP()
 
 
@@ -91,7 +94,7 @@ void CClient3Dlg::OnBnClickedButton1()
 	DemoPackage1 packet1;
 	packet1.strUsername = _T("eguser001");
 	packet1.strPwd = _T("123456");
-	theApp.m_tcp.SimulateServerData(DemoPackageType::type1, &packet1);
+	theApp.m_demoProtocol.SimulateServerData(DemoPackageType::type1, &packet1);
 }
 
 
@@ -101,5 +104,12 @@ void CClient3Dlg::OnBnClickedButton2()
 	DemoPackage1 packet1;
 	packet1.strUsername = _T("eguser001");
 	packet1.strPwd = _T("123456");
-	theApp.m_tcp.Send(DemoPackageType::type1, &packet1);
+	theApp.m_demoProtocol.SendData(DemoPackageType::type1, &packet1);
+}
+
+LRESULT CClient3Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
+{
+	UpdateData(true);
+	
+	return 0;
 }

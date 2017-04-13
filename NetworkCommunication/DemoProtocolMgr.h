@@ -5,18 +5,21 @@
 
 namespace NetworkCommunication
 {
-	//CDemoProtocolMgr的基类
-	typedef CProtocolMgr < DemoPackageType, DemoPackageBase >	CDemoProtocolMgrBase;
-
-	class CDemoProtocolMgr :public CDemoProtocolMgrBase
+	class CDemoProtocolMgr :public CProtocolMgr < DemoPackageType, DemoPackageBase >
 	{
+	private:
+		//CProtocolMgr基类别名
+		typedef CProtocolMgr < DemoPackageType, DemoPackageBase > CDemoProtocolMgrBase;
+
+	protected:
+		void AssoicatePackageType();
+		void InitPackageHeadBuf(DemoPackageType type, int len);
+		bool ValidateKeepAlivePackage(DemoPackageBase* data);
+
 	public:
 		CDemoProtocolMgr();
 		~CDemoProtocolMgr(){};
 
-		void Init();
-		BYTE* PacketFromBuf(DemoPackageType type, BYTE buf[], int bufLen, int* packetLen);
-		bool ValidateKeepAlivePackage(DemoPackageBase* data);
 		int GetDataLen(BYTE buf[], int len);
 		DemoPackageType GetPackageType(BYTE buf[], int len);
 	};

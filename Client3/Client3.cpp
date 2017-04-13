@@ -5,9 +5,7 @@
 #include "stdafx.h"
 #include "Client3.h"
 #include "Client3Dlg.h"
-#include "DemoPackageMgr.h"
 #include "NetTool.h"
-#include "SocketClient.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -15,8 +13,8 @@
 
 //收到DemoPackage事件处理
 void OnRecvDemoPackage(DemoPackageType type, void* data);
-
-void OnRecvMsg(SocketClientEvtType type, TCHAR* msg);
+//收到通知事件
+bool OnRecvNotifyEvt(TcpClientEvtType type, TCHAR* msg);
 
 // CClient3App
 
@@ -75,9 +73,7 @@ BOOL CClient3App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		//m_tcp.Init(ip, 8080, OnRecvDemoPackage);
-		client.Init(ip, 8080, NULL, OnRecvMsg);
-		client.StartConnect();
+		m_demoProtocol.Init(ip, 8080, OnRecvDemoPackage, OnRecvNotifyEvt);
 	}
 
 	CClient3Dlg dlg;
@@ -119,24 +115,12 @@ int CClient3App::ExitInstance()
 void OnRecvDemoPackage(DemoPackageType type, void* data)
 {
 	LPDemoPackageBase packet = NULL;
-	switch (type)
-	{
-	case DemoPackageType::type1:
-		//SendMessage(NULL, UINT, 0, 0);
-		break;
-	case DemoPackageType::type2:
-		break;
-	case DemoPackageType::type3:
-		break;
-	case DemoPackageType::invalid:
-		break;
-	default:
-		break;
-	}
-	theApp.m_tcp.ReleasePackage(type, (LPDemoPackageBase)data);
+	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_CUSTOM_MESSAGE1, (WPARAM)(int)type, (LPARAM)data);
+	theApp.m_demoProtocol.ReleasePackage(type, (LPDemoPackageBase)data);
 }
 
-void OnRecvMsg(SocketClientMsgType type, TCHAR* msg)
+bool OnRecvNotifyEvt(TcpClientEvtType type, TCHAR* msg)
 {
-	
+	TRACE(msg);
+	return true;
 }

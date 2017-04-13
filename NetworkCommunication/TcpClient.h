@@ -178,7 +178,7 @@ namespace NetworkCommunication
 		// Parameter: 回调函数指针
 		//************************************
 		virtual void Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt = NULL, int socketBufLen = 1024,
-			bool autoReconnect = true, int reconnectTimes = 3, int reconnectTimeSpan = 1500, int connectTimeout = 2000);
+			bool autoReconnect = true, int reconnectTimes = 0, int reconnectTimeSpan = 1500, int connectTimeout = 2000);
 
 		//************************************
 		// Method:    设置接收tcp数据回调函数

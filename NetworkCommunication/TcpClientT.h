@@ -9,23 +9,41 @@ namespace NetworkCommunication
 	class CTcpClientT :public CTcpClient
 	{
 	public:
-		typedef bool(T::*LPOnRecvSocketDataT)(BYTE buf[], int len);//成员函数指针
+		//************************************
+		// Method:    成员函数指针
+		// FullName:  NetworkCommunication::CTcpClientT<T>::LPOnRecvTcpDataT
+		// Access:    public 
+		// Returns:   指示调用者是否已释放缓冲区
+		// Qualifier: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		typedef bool(T::*LPOnRecvTcpDataT)(BYTE buf[], int len);
 
 	protected:
-		T* m_pT;//调用方指针
-		LPOnRecvSocketDataT m_lpfnOnRecvSocketDataT;//成员函数指针
+		T* m_pInstanceT;//调用方实例
+		LPOnRecvTcpDataT m_lpfnOnRecvTcpDataT;//成员函数指针
 
 	public:
-		void SetCallbackT(LPOnRecvSocketDataT lpfnOnRecvSocketDataT, T* instance)
+		void SetCallbackT(LPOnRecvTcpDataT lpfnOnRecvTcpDataT, T* pInstance)
 		{
 			m_bHaslpfnRecvTcpData = true;
-			m_lpfnOnRecvSocketDataT = lpfnOnRecvSocketDataT;
-			m_pT = instance;
+			m_lpfnOnRecvTcpDataT = lpfnOnRecvTcpDataT;
+			m_pInstanceT = pInstance;
 		};
 
-		bool SendRecvData(BYTE buf[], int len)
+		void OnRecvTcpData(BYTE buf[], int len)
 		{
-			return (m_pT->*m_lpfnOnRecvSocketDataT)(buf, len);
-		};
+			if (m_lpfnOnRecvTcpDataT&&buf&&len > 0)
+			{
+				if (!(m_pInstanceT->*m_lpfnOnRecvTcpDataT)(buf, len))
+				{
+					delete buf;
+				}
+			}
+			else
+			{
+				delete buf;
+			}
+		}
 	};
 }

@@ -9,11 +9,12 @@
 #endif
 
 #include "resource.h"		// 主符号
-#include "TCPClientMgr.h"
-#include "DemoPackage.h"
 #include "DemoProtocolMgr.h"
+#include "DemoPackage.h"
 
 using namespace NetworkCommunication;
+
+#define WM_CUSTOM_MESSAGE1	(WM_USER+1)
 
 // CClient3App: 
 // 有关此类的实现，请参阅 Client3.cpp
@@ -21,17 +22,13 @@ using namespace NetworkCommunication;
 
 class CClient3App : public CWinApp
 {
-protected:
-	void OnRecvData(BYTE buf[], int len);
-
 public:
 	CClient3App();
 
 	// 重写
 public:
 	virtual BOOL InitInstance();
-	CTCPClientMgr<DemoPackageType, DemoPackageBase, CDemoProtocolMgr> m_tcp;//TCP客户端管理对象
-	CSocketClient client;
+	CDemoProtocolMgr m_demoProtocol;//demo协议管理对象
 
 	// 实现
 

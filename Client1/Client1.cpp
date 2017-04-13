@@ -116,6 +116,6 @@ bool OnRecvData(BYTE buf[], int len)
 
 bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg)
 {
-	//TRACE(msg);
-	return false;
+	TRACE(msg);
+	return true;
 }

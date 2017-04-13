@@ -5,11 +5,14 @@
 #include "stdafx.h"
 #include "Client2.h"
 #include "Client2Dlg.h"
+#include "TcpClientT.h"
+#include "NetTool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg);
 
 // CClient2App
 
@@ -65,6 +68,14 @@ BOOL CClient2App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
+	TCHAR ip[20];
+	if (GetLocalIP(ip))
+	{
+		m_tcp.Init(ip, 8080, OnRecvEvt);
+		m_tcp.SetCallbackT(&CClient2App::OnRecvData, this);
+		m_tcp.Connect();
+	}
+
 	CClient2Dlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
@@ -93,5 +104,17 @@ BOOL CClient2App::InitInstance()
 	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
 	//  而不是启动应用程序的消息泵。
 	return FALSE;
+}
+
+bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg)
+{
+	TRACE(msg);
+	return true;
+}
+
+bool CClient2App::OnRecvData(BYTE buf[], int len)
+{
+	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_CUSTOM_MESSAGE1, (WPARAM)buf, len);
+	return false;
 }
 

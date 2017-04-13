@@ -358,14 +358,11 @@ namespace NetworkCommunication
 	void CTcpClient::Printf(TCHAR* msg)
 	{
 #ifdef _DEBUG
-#ifdef _CONSOLE
+#ifdef _CONSOLE_APP
 		_tprintf(msg);
 #endif
-#ifdef _WINDOWS
-		TRACE(msg);
-#endif
-#ifdef _MFCDLL
-		TRACE(msg);
+#ifdef _WINDOWS_
+		OutputDebugString(msg);
 #endif
 #endif // _DEBUG
 	}

@@ -89,13 +89,12 @@
     <ClInclude Include="NetTool.h" />
     <ClInclude Include="DemoPackage.h" />
     <ClInclude Include="DemoPackageMgr.h" />
-    <ClInclude Include="ProtocolMgr.h" />
     <ClInclude Include="ProtocolTool.h" />
     <ClInclude Include="TcpClientT.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TcpClient.h" />
-    <ClInclude Include="TCPClientMgr.h" />
+    <ClInclude Include="ProtocolMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StringHandle.cpp" />

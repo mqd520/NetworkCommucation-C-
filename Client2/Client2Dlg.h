@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "afxwin.h"
 
 
 // CClient2Dlg 对话框
@@ -28,6 +29,16 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+	// 发送文本框
+	CEdit m_edSend;
+	// 结构文本框
+	CEdit m_edResult;
+	CString m_strSend;//发送内容
+	CString m_strResult;//结果
+
+	LRESULT OnRecvData(WPARAM wparam, LPARAM lparam);
 public:
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
 };

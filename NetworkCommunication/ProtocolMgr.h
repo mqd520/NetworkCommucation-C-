@@ -1,19 +1,34 @@
 #pragma once
 
+#include <tchar.h>
 #include <vector>
+#include "MemoryTool.h"
 #include "Interface.h"
-
-using namespace std;
+#include "TcpClientT.h"
 
 namespace NetworkCommunication
 {
-	//协议管理
 	template<typename TPackageType, typename TPackageBase>
+	//协议管理
 	//第1个模板参数:	包类型定义
-	//第2个模板参数:	包基类型定义
+	//第2个模板参数:	包管理器基类定义
 	class CProtocolMgr
 	{
+	private:
+		//CProtocolMgr重定义
+		typedef CProtocolMgr<TPackageType, TPackageBase>	CProtocolMgrSelf;
+
 	protected:
+		//************************************
+		// Method:    客户端收到包体数据函数指针
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::LPOnRecvBusinessData
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier: 包类型
+		// Parameter: 包体结构体指针
+		//************************************
+		typedef void(*LPOnRecvPackageBodyData)(TPackageType type, void* data);
+
 		//包管理信息
 		typedef struct tagPackageMgrInfo
 		{
@@ -22,19 +37,120 @@ namespace NetworkCommunication
 		}PackageMgrInfo, *LPPackageMgrInfo;
 
 	protected:
+		CTcpClientT<CProtocolMgr> m_tcp;//tcp客户端对象
+		CByteStream* m_stream;//字节流对象
+		CByteStream* m_streamCatch;//字节流缓存对象
+		LPOnRecvPackageBodyData m_lpfnRecvData;//收到数据函数指针
 		int m_nPackageHeadLen;//包头长度
 		int m_nInvalidPackage;//无效包
 		int m_nKeepAlive;//心跳包
 		vector<PackageMgrInfo> m_vecPackageMgr;//包管理器集合
+		BYTE* m_pPackageHeadBuf;//包头缓冲区指针
+		bool m_bKeepAlive;//是否使用心跳包
 
 	public:
-		CProtocolMgr()
+		CProtocolMgr() :
+			m_lpfnRecvData(NULL),
+			m_streamCatch(NULL),
+			m_stream(NULL),
+			m_nPackageHeadLen(0),
+			m_nInvalidPackage(0),
+			m_nKeepAlive(0),
+			m_pPackageHeadBuf(NULL),
+			m_bKeepAlive(false)
 		{
-			m_nPackageHeadLen = 0;
-			m_nInvalidPackage = 0;
-			m_nKeepAlive = 0;
+
 		};
 
+	protected:
+		//************************************
+		// Method:    关联包类型到包管理器
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::AssoicatePackageType
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void AssoicatePackageType()
+		{
+
+		};
+
+		//************************************
+		// Method:    验证心跳包
+		// FullName:  ProtocolMgr::CProtocolMgr<TPackageType, TPackageBase>::ValidateKeepAlivePackage
+		// Access:    virtual public 
+		// Returns:   bool
+		// Qualifier:
+		// Parameter: 心跳包
+		//************************************
+		virtual bool ValidateKeepAlivePackage(TPackageBase* data)
+		{
+			return true;
+		}
+
+		//************************************
+		// Method:    初始化包头缓冲区
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::InitPackageHeadBuf
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 包类型
+		// Parameter: 长度
+		//************************************
+		virtual void InitPackageHeadBuf(TPackageType type, int len)
+		{
+
+		};
+
+		//************************************
+		// Method:    接收数据事件处理
+		// FullName:  CServer3Mgr::OnRecvData
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: BYTE buf[]
+		// Parameter: int len
+		//************************************
+		virtual bool OnRecvData(BYTE buf[], int len)
+		{
+			if (m_streamCatch)
+			{
+				m_stream->Write(m_streamCatch);//从缓存中读取数据写入到当前流对象
+				if (m_streamCatch->GetDataLen() == 0)//缓存流对象不再使用
+				{
+					delete m_streamCatch;
+					m_streamCatch = NULL;
+				}
+				else
+				{
+					if (len > 0)
+					{
+						m_streamCatch->Write(buf, len);//buf来源于服务端,将buf存储于缓存流中
+					}
+					Unpacket();
+					OnRecvData(NULL, 0);//继续从缓存流中读取数据
+				}
+			}
+			if (len > 0)//buf来源于服务端
+			{
+				int len1 = m_stream->Write(buf, len);//实际写入的长度
+				Unpacket();
+				if (len1 < len)
+				{
+					m_streamCatch = new CByteStream(len - len1);//流对象未能全部存储数据,需要缓存流对象存储数据
+					m_streamCatch->Write(buf + len1, len - len1);
+					OnRecvData(NULL, 0);//继续从缓存流中读取数据
+				}
+			}
+			else
+			{
+				Unpacket();
+			}
+
+			return true;
+		};
+
+	public:
 		~CProtocolMgr()
 		{
 			for (vector<PackageMgrInfo>::iterator it = m_vecPackageMgr.begin(); it < m_vecPackageMgr.end(); ++it)
@@ -44,16 +160,36 @@ namespace NetworkCommunication
 					delete it->mgr;
 				}
 			}
+			if (m_stream)
+			{
+				delete m_stream;
+				m_stream = NULL;
+			}
+			if (m_streamCatch)
+			{
+				delete m_streamCatch;
+				m_streamCatch = NULL;
+			}
+			if (m_pPackageHeadBuf)
+			{
+				delete m_pPackageHeadBuf;
+			}
 		};
 
-		//************************************
-		// Method:    初始化
-		// FullName:  Protocol3::CProtocol3Handle::Init
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void Init(){};
+		virtual void Init(TCHAR* ip, int port, LPOnRecvPackageBodyData lpfnRecvData, LPOnRecvNotifyEvt lpfnNotifyEvt = NULL, int proBufLen = 1024,
+			int tcpBufLen = 1024, bool autoReconnect = true, int reconnectTimes = 0, int reconnectTimeSpan = 1500, int connectTimeout = 2000)
+		{
+			if (m_stream == NULL)//只初始化一次
+			{
+				m_pPackageHeadBuf = new BYTE[m_nPackageHeadLen];
+				AssoicatePackageType();//关联包类型和包管理器
+				m_stream = new CByteStream(proBufLen);//创建接收缓冲区字节流对象
+				m_lpfnRecvData = lpfnRecvData;
+				m_tcp.Init(ip, port, lpfnNotifyEvt, tcpBufLen, autoReconnect, reconnectTimes, reconnectTimeSpan, connectTimeout);
+				m_tcp.SetCallbackT(&CProtocolMgrSelf::OnRecvData, this);//设置成员函数回调
+				return m_tcp.Connect();
+			}
+		};
 
 		//************************************
 		// Method:    封包(调用方释放缓冲区指针)
@@ -68,8 +204,11 @@ namespace NetworkCommunication
 		//************************************
 		virtual BYTE* PacketFromBuf(TPackageType type, BYTE buf[], int bufLen, int* packetLen)
 		{
-			*packetLen = bufLen;
-			return buf;
+			*packetLen = m_nPackageHeadLen + bufLen;
+			BYTE* data = new BYTE[*packetLen];
+			memcpy(data, m_pPackageHeadBuf, m_nPackageHeadLen);//拷贝包头数据
+			memcpy(data + m_nPackageHeadLen, buf, bufLen);//拷贝包体数据
+			return data;
 		};
 
 		//************************************
@@ -204,40 +343,165 @@ namespace NetworkCommunication
 		};
 
 		//************************************
-		// Method:    获取无效包
-		// FullName:  ProtocolMgr::CProtocolMgr<TPackageType, TPackageBase>::GetInvalidPackage
+		// Method:    获取包头缓冲区
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::GetPackageHeadBuf
 		// Access:    virtual public 
-		// Returns:   int
+		// Returns:   包头缓冲区
 		// Qualifier:
 		//************************************
-		virtual int GetInvalidPackage()
+		virtual BYTE* GetPackageHeadBuf()
 		{
-			return m_nInvalidPackage;
+			BYTE* buf = new BYTE[m_nPackageHeadLen];
+			memcpy(buf, m_pPackageHeadBuf, m_nPackageHeadLen);
+			return buf;
 		};
 
 		//************************************
-		// Method:    获取心跳包
-		// FullName:  ProtocolMgr::CProtocolMgr<TPackageType, TPackageBase>::GetKeepAlivePackage
-		// Access:    virtual public 
-		// Returns:   int
+		// Method:    解包
+		// FullName:  CServer3Mgr::Unpacket
+		// Access:    public 
+		// Returns:   void
 		// Qualifier:
 		//************************************
-		virtual int GetKeepAlivePackage()
+		virtual void Unpacket()
 		{
-			return m_nKeepAlive;
+			if (m_stream->GetDataLen() > m_nPackageHeadLen)
+			{
+				int len = 0;
+				TPackageType type = GetPackageType(m_stream->GetBuf(), m_nPackageHeadLen);//获取包类型
+				if ((int)type != m_nInvalidPackage)//验证是否无效包
+				{
+					int datalen = GetDataLen(m_stream->GetBuf(), m_nPackageHeadLen);//获取包体数据长度
+					int packgetlen = datalen + m_nPackageHeadLen;//计算包总长度
+					BYTE* buf = m_stream->Read(packgetlen);//从字节流对象中读取一个完整包数据
+					if (buf != NULL)
+					{
+						void* data = Unpacket(buf, packgetlen);//解包
+						delete buf;
+						if (AnalyticsPackage(type, (TPackageBase*)data) && m_lpfnRecvData)//分析包
+						{
+							m_lpfnRecvData(type, data);
+						}
+						else
+						{
+							ReleasePackage(type, (TPackageBase*)data);
+						}
+					}
+				}
+			}
 		};
 
 		//************************************
-		// Method:    验证心跳包
-		// FullName:  ProtocolMgr::CProtocolMgr<TPackageType, TPackageBase>::ValidateKeepAlivePackage
-		// Access:    virtual public 
+		// Method:    分析包,表示是否需要继续处理
+		// FullName:  CServer3Mgr::AnalyticsPackage
+		// Access:    public 
+		// Returns:   否需要继续处理
+		// Qualifier:
+		// Parameter: 包类型
+		// Parameter: 包体结构体指针
+		//************************************
+		virtual bool AnalyticsPackage(TPackageType type, TPackageBase* data)
+		{
+			if (type == m_nKeepAlive&&m_bKeepAlive)//心跳包
+			{
+				bool b = ValidateKeepAlivePackage(data);
+				if (!b)
+				{
+					//重置
+				}
+				return true;
+			}
+			return true;
+		};
+
+		//************************************
+		// Method:    释放包体结构体
+		// FullName:  CServer3Mgr::ReleasePackage
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 包类型
+		// Parameter: 包体结构体指针
+		//************************************
+		virtual void ReleasePackage(TPackageType type, TPackageBase* data)
+		{
+			IPackageMgr* mgr = GetPackageMgr(type);
+			if (mgr)
+			{
+				mgr->Release((void*)data);
+			}
+		};
+
+		//************************************
+		// Method:    发包
+		// FullName:  CServer3Mgr::Send
+		// Access:    public 
 		// Returns:   bool
 		// Qualifier:
-		// Parameter: 心跳包
+		// Parameter: 包类型
+		// Parameter: 包体结构体指针
 		//************************************
-		virtual bool ValidateKeepAlivePackage(TPackageBase* data)
+		virtual bool SendData(TPackageType type, TPackageBase* data)
 		{
-			return true;
-		}
+			int len = 0;
+			BYTE* buf = Packet(type, data, &len);
+			return m_tcp.SendData(buf, len);
+		};
+
+		//************************************
+		// Method:    关闭连接
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::CloseConnect
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void CloseConnect()
+		{
+			m_tcp.CloseConnect();
+		};
+
+		//************************************
+		// Method:    连接服务端
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::Reconnect
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void Connect()
+		{
+			if (!m_tcp.GetConnectStatus())
+			{
+				m_tcp.Connect();
+			}
+		};
+
+		//************************************
+		// Method:    获取tcp客户端对象
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::GetTcpObj
+		// Access:    virtual public 
+		// Returns:   NetworkCommunication::CTcpClientT*
+		// Qualifier:
+		//************************************
+		virtual CTcpClient GetTcpClientObj()
+		{
+			return m_tcp;
+		};
+
+		//************************************
+		// Method:    模拟一次服务端发包
+		// FullName:  CServer3Mgr::SimulateServer3Data
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 包类型
+		// Parameter: 包体结构体指针
+		//************************************
+		virtual void SimulateServerData(TPackageType type, TPackageBase* data)
+		{
+			int len = 0;
+			BYTE* buf = Packet(type, data, &len);
+			m_tcp.SimulateServerData(buf, len);
+			delete buf;
+		};
 	};
 }

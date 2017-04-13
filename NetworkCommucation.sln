@@ -17,6 +17,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Lib", "01 Lib", "{87B059F3-CA46-4B04-B402-DA65B57C2B62}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client2", "Client2\Client2.vcxproj", "{4D7C5679-02B2-4D7F-A715-A43BF92002FB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F7FD0AC-5D87-40EC-8E07-316D79745805} = {0F7FD0AC-5D87-40EC-8E07-316D79745805}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client3", "Client3\Client3.vcxproj", "{45E2AB25-14CD-44EC-AB6E-DEC206B6B7AB}"
 	ProjectSection(ProjectDependencies) = postProject
