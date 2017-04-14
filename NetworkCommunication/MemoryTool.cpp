@@ -4,11 +4,11 @@
 namespace NetworkCommunication
 {
 	CByteStream::CByteStream(int len) :
-		m_streamLen(len),
-		m_buf(new BYTE[len]{0}),
+		m_nStreamLen(len),
+		m_buf(new BYTE[len]),
 		m_nDataEndPos(-1)
 	{
-
+		memset(m_buf, 0, len);
 	}
 
 	CByteStream::~CByteStream()
@@ -69,11 +69,10 @@ namespace NetworkCommunication
 
 	int CByteStream::Write(BYTE buf[], int len)
 	{
-		int nlen = len > (m_streamLen - GetDataLen()) ? (m_streamLen - GetDataLen()) : len;//计算实际写入字节长度
+		int nlen = len > (m_nStreamLen - GetDataLen()) ? (m_nStreamLen - GetDataLen()) : len;//计算实际写入字节长度
 		if (nlen > 0)
 		{
 			memcpy(m_buf + m_nDataEndPos + 1, buf, nlen);
-			m_dataLen += nlen;
 			m_nDataEndPos += nlen;
 		}
 		return nlen;
@@ -82,7 +81,7 @@ namespace NetworkCommunication
 	int CByteStream::Write(CByteStream* p)
 	{
 		int datalen = p->GetDataLen();//读取流对象的可用数据长度
-		int remainlen = m_streamLen - GetDataLen();//当前流对象的剩余长度
+		int remainlen = m_nStreamLen - GetDataLen();//当前流对象的剩余长度
 		int nlen = 0;//实际写入长度
 		if (datalen > 0 && remainlen > 0)
 		{
@@ -102,8 +101,9 @@ namespace NetworkCommunication
 		{
 			nIndex = 0;
 		}
-		m_nDataEndPos -= len;//计算平移后的数据结束索引
+		m_nDataEndPos -= space;//计算平移后的数据结束索引
 		memcpy(m_buf + nIndex, buf, len);
+		delete buf;
 	}
 
 	void CByteStream::Clean()
@@ -121,5 +121,20 @@ namespace NetworkCommunication
 		{
 			m_nDataEndPos = -1;
 		}
+	}
+
+	int CByteStream::GetBufLen()
+	{
+		return m_nStreamLen;
+	}
+
+	bool CByteStream::IsFull()
+	{
+		return GetDataLen() == m_nStreamLen ? true : false;
+	}
+
+	int CByteStream::GetWriteLen()
+	{
+		return m_nStreamLen - GetDataLen();
 	}
 }

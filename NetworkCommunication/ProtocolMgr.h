@@ -39,27 +39,22 @@ namespace NetworkCommunication
 	protected:
 		CTcpClientT<CProtocolMgr> m_tcp;//tcp客户端对象
 		CByteStream* m_stream;//字节流对象
-		CByteStream* m_streamCatch;//字节流缓存对象
 		LPOnRecvPackageBodyData m_lpfnRecvData;//收到数据函数指针
 		int m_nPackageHeadLen;//包头长度
-		int m_nInvalidPackage;//无效包
 		int m_nKeepAlive;//心跳包
 		vector<PackageMgrInfo> m_vecPackageMgr;//包管理器集合
-		BYTE* m_pPackageHeadBuf;//包头缓冲区指针
 		bool m_bKeepAlive;//是否使用心跳包
+		HANDLE m_hMutexStream;//字节流互斥对象
 
 	public:
 		CProtocolMgr() :
 			m_lpfnRecvData(NULL),
-			m_streamCatch(NULL),
 			m_stream(NULL),
 			m_nPackageHeadLen(0),
-			m_nInvalidPackage(0),
 			m_nKeepAlive(0),
-			m_pPackageHeadBuf(NULL),
 			m_bKeepAlive(false)
 		{
-
+			m_hMutexStream = ::CreateMutex(NULL, false, NULL);
 		};
 
 	protected:
@@ -87,20 +82,6 @@ namespace NetworkCommunication
 		{
 			return true;
 		}
-
-		//************************************
-		// Method:    初始化包头缓冲区
-		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::InitPackageHeadBuf
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: 包类型
-		// Parameter: 长度
-		//************************************
-		virtual void InitPackageHeadBuf(TPackageType type, int len)
-		{
-
-		};
 
 		//************************************
 		// Method:    验证接收到的包头缓冲区是否有效(缓冲区长度为包头长度)
@@ -134,46 +115,105 @@ namespace NetworkCommunication
 		// Access:    public 
 		// Returns:   void
 		// Qualifier:
-		// Parameter: BYTE buf[]
-		// Parameter: int len
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
 		//************************************
 		virtual bool OnRecvData(BYTE buf[], int len)
 		{
-			if (m_streamCatch)
+			int index = 0;//读取缓冲区开始索引
+			while (true)
 			{
-				m_stream->Write(m_streamCatch);//从缓存中读取数据写入到当前流对象
-				if (m_streamCatch->GetDataLen() == 0)//缓存流对象不再使用
+				::WaitForSingleObject(m_hMutexStream, INFINITE);
+				int actualLen = m_stream->Write(buf + index, len);//缓冲区数据写入到流对象,返回实际写入字节长度
+				if (m_stream->IsFull())//如果流中数据已满,立刻进行解包操作
 				{
-					delete m_streamCatch;
-					m_streamCatch = NULL;
+					::ReleaseMutex(m_hMutexStream);
+					StartUnpacket();
 				}
 				else
 				{
-					if (len > 0)
+					if (actualLen < len)//实际读取长度小于缓冲区长度,继续循环读取缓冲区
 					{
-						m_streamCatch->Write(buf, len);//buf来源于服务端,将buf存储于缓存流中
+						index += actualLen;
+						::ReleaseMutex(m_hMutexStream);
+						continue;
 					}
-					Unpacket();
-					OnRecvData(NULL, 0);//继续从缓存流中读取数据
+					else//缓冲区数据已读取完毕,跳出循环,进行解包操作
+					{
+						::ReleaseMutex(m_hMutexStream);
+						break;
+					}
 				}
-			}
-			if (len > 0)//buf来源于服务端
-			{
-				int len1 = m_stream->Write(buf, len);//实际写入的长度
-				Unpacket();
-				if (len1 < len)
-				{
-					m_streamCatch = new CByteStream(len - len1);//流对象未能全部存储数据,需要缓存流对象存储数据
-					m_streamCatch->Write(buf + len1, len - len1);
-					OnRecvData(NULL, 0);//继续从缓存流中读取数据
-				}
-			}
-			else
-			{
-				Unpacket();
 			}
 
-			return false;
+			delete buf;
+			StartUnpacket();
+			return true;
+		};
+
+		//************************************
+		// Method:    开始解包(循环从流中解包,直到流中长度不足包头长度)
+		// FullName:  CServer3Mgr::Unpacket
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void StartUnpacket()
+		{
+			while (true)
+			{
+				::WaitForSingleObject(m_hMutexStream, INFINITE);//锁住互斥对象
+
+				//数据长度小于等于包头长度(表示流中没有包体数据,不进行任何处理,继续接收数据)
+				if (m_stream->GetDataLen() <= m_nPackageHeadLen)
+				{
+					::ReleaseMutex(m_hMutexStream);//解锁
+					break;
+				}
+				if (!ValidatePackageHead(m_stream->GetBuf()))//验证包头是否有效
+				{
+					m_stream->Detele(m_nPackageHeadLen);//删除无效包头数据
+					::ReleaseMutex(m_hMutexStream);//解锁
+					continue;//继续下次循环
+				}
+				TPackageType type = GetPackageType(m_stream->GetBuf(), m_nPackageHeadLen);//获取包类型
+				if (!ValidatePackageType(type))
+				{
+					m_stream->Detele(m_nPackageHeadLen);//删除无效包头数据
+					::ReleaseMutex(m_hMutexStream);//解锁
+					continue;//继续下次循环
+				}
+				int datalen = GetDataLen(m_stream->GetBuf(), m_nPackageHeadLen);//获取包体数据长度
+				int packgetlen = datalen + m_nPackageHeadLen;//计算包总长度
+				if (packgetlen > m_stream->GetBufLen())//包总长度超过流字节长度视为无效包
+				{
+					m_stream->Detele(m_nPackageHeadLen);//删除无效包头数据
+					::ReleaseMutex(m_hMutexStream);//解锁
+					continue;//继续下次循环
+				}
+				BYTE* buf = m_stream->Read(packgetlen);//从字节流对象中读取一个完整包数据
+				::ReleaseMutex(m_hMutexStream);//解锁
+				if (buf != NULL)
+				{
+					void* data = Unpacket(buf, packgetlen);//解包
+					delete buf;
+					if (AnalyticsPackage(type, (TPackageBase*)data))//分析包是否交由调用者处理
+					{
+						if (m_lpfnRecvData)
+						{
+							m_lpfnRecvData(type, data);
+						}
+						else
+						{
+							ReleasePackage(type, (TPackageBase*)data);//释放包数据
+						}
+					}
+					else
+					{
+						ReleasePackage(type, (TPackageBase*)data);//释放包数据
+					}
+				}
+			}
 		};
 
 	public:
@@ -186,19 +226,14 @@ namespace NetworkCommunication
 					delete it->mgr;
 				}
 			}
+			if (m_hMutexStream)
+			{
+				::CloseHandle(m_hMutexStream);
+			}
 			if (m_stream)
 			{
 				delete m_stream;
 				m_stream = NULL;
-			}
-			if (m_streamCatch)
-			{
-				delete m_streamCatch;
-				m_streamCatch = NULL;
-			}
-			if (m_pPackageHeadBuf)
-			{
-				delete m_pPackageHeadBuf;
 			}
 		};
 
@@ -207,10 +242,9 @@ namespace NetworkCommunication
 		{
 			if (m_stream == NULL)//只初始化一次
 			{
-				m_pPackageHeadBuf = new BYTE[m_nPackageHeadLen];
-				AssoicatePackageType();//关联包类型和包管理器
 				m_stream = new CByteStream(proBufLen);//创建接收缓冲区字节流对象
 				m_lpfnRecvData = lpfnRecvData;
+				AssoicatePackageType();//关联包类型和包管理器
 				m_tcp.Init(ip, port, lpfnNotifyEvt, tcpBufLen, autoReconnect, reconnectTimes, reconnectTimeSpan, connectTimeout);
 				m_tcp.SetCallbackT(&CProtocolMgrSelf::OnRecvData, this);//设置成员函数回调
 				return m_tcp.Connect();
@@ -232,9 +266,25 @@ namespace NetworkCommunication
 		{
 			*packetLen = m_nPackageHeadLen + bufLen;
 			BYTE* data = new BYTE[*packetLen];
-			memcpy(data, m_pPackageHeadBuf, m_nPackageHeadLen);//拷贝包头数据
+			BYTE* bufHead = GetPackageHeadBuf(type, bufLen);
+			memcpy(data, bufHead, m_nPackageHeadLen);//拷贝包头数据
+			delete bufHead;
 			memcpy(data + m_nPackageHeadLen, buf, bufLen);//拷贝包体数据
 			return data;
+		};
+
+		//************************************
+		// Method:    获取包头缓冲区
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::GetPackageHeadBuf
+		// Access:    virtual protected 
+		// Returns:   缓冲区
+		// Qualifier:
+		// Parameter: 包类型
+		// Parameter: 包体数据长度
+		//************************************
+		virtual BYTE* GetPackageHeadBuf(TPackageType type, int len)
+		{
+			return NULL;
 		};
 
 		//************************************
@@ -325,7 +375,7 @@ namespace NetworkCommunication
 		//************************************
 		virtual TPackageType GetPackageType(BYTE buf[], int len)
 		{
-			return TPackageType(m_nInvalidPackage);
+			return TPackageType(-999);
 		};
 
 		//************************************
@@ -366,63 +416,6 @@ namespace NetworkCommunication
 			BYTE* result = new BYTE[datalen];
 			memcpy(result, buf + headlen, datalen);
 			return result;
-		};
-
-		//************************************
-		// Method:    获取包头缓冲区
-		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::GetPackageHeadBuf
-		// Access:    virtual public 
-		// Returns:   包头缓冲区
-		// Qualifier:
-		//************************************
-		virtual BYTE* GetPackageHeadBuf()
-		{
-			BYTE* buf = new BYTE[m_nPackageHeadLen];
-			memcpy(buf, m_pPackageHeadBuf, m_nPackageHeadLen);
-			return buf;
-		};
-
-		//************************************
-		// Method:    解包
-		// FullName:  CServer3Mgr::Unpacket
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void Unpacket()
-		{
-			if (m_stream->GetDataLen() > m_nPackageHeadLen)//数据长度必须大于包体长度(指示有数据到来)
-			{
-				if (!ValidatePackageHead(m_stream->GetBuf()))//验证包头是否有效
-				{
-					m_stream->Detele(m_nPackageHeadLen);//删除无效包头数据
-					return;
-				}
-				TPackageType type = GetPackageType(m_stream->GetBuf(), m_nPackageHeadLen);//获取包类型
-				if (!ValidatePackageType(type))
-				{
-
-				}
-				if ((int)type != m_nInvalidPackage)//验证是否无效包
-				{
-					int datalen = GetDataLen(m_stream->GetBuf(), m_nPackageHeadLen);//获取包体数据长度
-					int packgetlen = datalen + m_nPackageHeadLen;//计算包总长度
-					BYTE* buf = m_stream->Read(packgetlen);//从字节流对象中读取一个完整包数据
-					if (buf != NULL)
-					{
-						void* data = Unpacket(buf, packgetlen);//解包
-						delete buf;
-						if (AnalyticsPackage(type, (TPackageBase*)data) && m_lpfnRecvData)//分析包
-						{
-							m_lpfnRecvData(type, data);
-						}
-						else
-						{
-							ReleasePackage(type, (TPackageBase*)data);
-						}
-					}
-				}
-			}
 		};
 
 		//************************************

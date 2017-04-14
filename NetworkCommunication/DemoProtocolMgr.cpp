@@ -10,7 +10,6 @@ namespace NetworkCommunication
 	CDemoProtocolMgr::CDemoProtocolMgr()
 	{
 		m_nPackageHeadLen = DemoProtocol_HeadLen;
-		m_nInvalidPackage = (int)DemoPackageType::invalid;
 		m_nKeepAlive = (int)DemoPackageType::type4;
 	}
 
@@ -21,15 +20,17 @@ namespace NetworkCommunication
 		m_vecPackageMgr.push_back({ DemoPackageType::type3, new CDemoPackageMgr<DemoPackage3>() });
 	}
 
-	void CDemoProtocolMgr::InitPackageHeadBuf(DemoPackageType type, int len)
+	BYTE* CDemoProtocolMgr::GetPackageHeadBuf(DemoPackageType type, int len)
 	{
-		m_pPackageHeadBuf[0] = 1;//主版本号
-		m_pPackageHeadBuf[1] = 0;//次版本号
-		m_pPackageHeadBuf[2] = DemoProtocol_HeadLen;//包头长度
-		m_pPackageHeadBuf[3] = GetTrdByteFromInt(type);//包类型(高位)
-		m_pPackageHeadBuf[4] = GetFouthByteFromInt(type);//包类型(低位)
-		m_pPackageHeadBuf[5] = GetTrdByteFromInt(len);//包体长度(高位)
-		m_pPackageHeadBuf[6] = GetFouthByteFromInt(len);//包体长度(低位)
+		BYTE* buf = new BYTE[m_nPackageHeadLen];
+		buf[0] = 1;//主版本号
+		buf[1] = 0;//次版本号
+		buf[2] = m_nPackageHeadLen;//包头长度
+		buf[3] = GetTrdByteFromInt(type);//包类型(高位)
+		buf[4] = GetFouthByteFromInt(type);//包类型(低位)
+		buf[5] = GetTrdByteFromInt(len);//包体长度(高位)
+		buf[6] = GetFouthByteFromInt(len);//包体长度(低位)
+		return buf;
 	}
 
 	int CDemoProtocolMgr::GetDataLen(BYTE buf[], int len)
@@ -82,7 +83,10 @@ namespace NetworkCommunication
 		bool b = false;
 		if (true)//具体根据包类型来验证
 		{
-			b = true;
+			if (type == type1 || type == type2 || type == type3 || type == type4)
+			{
+				b = true;
+			}
 		}
 		return b;
 	}

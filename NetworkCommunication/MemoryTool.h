@@ -7,10 +7,9 @@ namespace NetworkCommunication
 	class CByteStream
 	{
 	private:
-		int m_streamLen;//字节流长度
+		int m_nStreamLen;//字节流长度
 		BYTE* m_buf;//缓冲区指针
 		int m_nDataEndPos;//数据结尾索引
-		int m_dataLen;//数据长度
 
 	public:
 		CByteStream(int len);
@@ -39,6 +38,15 @@ namespace NetworkCommunication
 		// Qualifier:
 		//************************************
 		int GetDataLen();
+
+		//************************************
+		// Method:    获取字节流大小
+		// FullName:  NetworkCommunication::CByteStream::GetBufLen
+		// Access:    public 
+		// Returns:   int
+		// Qualifier:
+		//************************************
+		int GetBufLen();
 
 		//************************************
 		// Method:    获取当前流对象缓冲区指针
@@ -109,5 +117,23 @@ namespace NetworkCommunication
 		// Parameter: 指定长度
 		//************************************
 		void Detele(int len);
+
+		//************************************
+		// Method:    流中数据是否已满
+		// FullName:  NetworkCommunication::CByteStream::IsFull
+		// Access:    public 
+		// Returns:   bool
+		// Qualifier:
+		//************************************
+		bool IsFull();
+
+		//************************************
+		// Method:    获取流中可写入字节长度
+		// FullName:  NetworkCommunication::CByteStream::GetWriteLen
+		// Access:    public 
+		// Returns:   int
+		// Qualifier:
+		//************************************
+		int GetWriteLen();
 	};
 }

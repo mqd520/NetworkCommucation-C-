@@ -13,7 +13,7 @@ namespace NetworkCommunication
 
 	protected:
 		void AssoicatePackageType();
-		void InitPackageHeadBuf(DemoPackageType type, int len);
+		BYTE* GetPackageHeadBuf(DemoPackageType type, int len);
 		bool ValidateKeepAlivePackage(DemoPackageBase* data);
 		bool ValidatePackageHead(BYTE buf[]);
 		bool ValidatePackageType(DemoPackageType type);
