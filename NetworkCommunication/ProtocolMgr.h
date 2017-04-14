@@ -103,6 +103,32 @@ namespace NetworkCommunication
 		};
 
 		//************************************
+		// Method:    验证接收到的包头缓冲区是否有效(缓冲区长度为包头长度)
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::ValidatePackageHead
+		// Access:    virtual protected 
+		// Returns:   bool
+		// Qualifier:
+		// Parameter: 缓冲区
+		//************************************
+		virtual bool ValidatePackageHead(BYTE buf[])
+		{
+			return false;
+		};
+
+		//************************************
+		// Method:    验证包类型是否有效
+		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::ValidatePackageType
+		// Access:    virtual protected 
+		// Returns:   bool
+		// Qualifier:
+		// Parameter: 包类型
+		//************************************
+		virtual bool ValidatePackageType(TPackageType type)
+		{
+			return false;
+		};
+
+		//************************************
 		// Method:    接收数据事件处理
 		// FullName:  CServer3Mgr::OnRecvData
 		// Access:    public 
@@ -147,7 +173,7 @@ namespace NetworkCommunication
 				Unpacket();
 			}
 
-			return true;
+			return false;
 		};
 
 	public:
@@ -365,10 +391,18 @@ namespace NetworkCommunication
 		//************************************
 		virtual void Unpacket()
 		{
-			if (m_stream->GetDataLen() > m_nPackageHeadLen)
+			if (m_stream->GetDataLen() > m_nPackageHeadLen)//数据长度必须大于包体长度(指示有数据到来)
 			{
-				int len = 0;
+				if (!ValidatePackageHead(m_stream->GetBuf()))//验证包头是否有效
+				{
+					m_stream->Detele(m_nPackageHeadLen);//删除无效包头数据
+					return;
+				}
 				TPackageType type = GetPackageType(m_stream->GetBuf(), m_nPackageHeadLen);//获取包类型
+				if (!ValidatePackageType(type))
+				{
+
+				}
 				if ((int)type != m_nInvalidPackage)//验证是否无效包
 				{
 					int datalen = GetDataLen(m_stream->GetBuf(), m_nPackageHeadLen);//获取包体数据长度

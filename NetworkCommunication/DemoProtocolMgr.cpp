@@ -34,7 +34,7 @@ namespace NetworkCommunication
 
 	int CDemoProtocolMgr::GetDataLen(BYTE buf[], int len)
 	{
-		if (len + 1 > m_nPackageHeadLen)
+		if (len >= m_nPackageHeadLen)
 		{
 			return MergeByte(buf[6], buf[5]);
 		}
@@ -46,7 +46,7 @@ namespace NetworkCommunication
 
 	DemoPackageType CDemoProtocolMgr::GetPackageType(BYTE buf[], int len)
 	{
-		if (len + 1 > m_nPackageHeadLen)
+		if (len >= m_nPackageHeadLen)
 		{
 			int type = MergeByte(buf[4], buf[3]);
 			return DemoPackageType(type);
@@ -65,5 +65,25 @@ namespace NetworkCommunication
 			return p->n == 0 ? true : false;
 		}
 		return false;
+	}
+
+	bool CDemoProtocolMgr::ValidatePackageHead(BYTE buf[])
+	{
+		bool b = false;
+		if (true)//具体根据包头来验证
+		{
+			b = true;
+		}
+		return true;
+	}
+
+	bool CDemoProtocolMgr::ValidatePackageType(DemoPackageType type)
+	{
+		bool b = false;
+		if (true)//具体根据包类型来验证
+		{
+			b = true;
+		}
+		return b;
 	}
 }

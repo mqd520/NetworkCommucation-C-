@@ -2,36 +2,34 @@
 
 namespace NetworkCommunication
 {
+	//字节流对象:
+	//从开始出读取(读取后后面的数据依次向前平移),从结尾处写入
 	class CByteStream
 	{
 	private:
 		int m_streamLen;//字节流长度
 		BYTE* m_buf;//缓冲区指针
-		int m_nPosition;//数据结尾位置,索引,0开始
+		int m_nDataEndPos;//数据结尾索引
 		int m_dataLen;//数据长度
 
 	public:
 		CByteStream(int len);
-		~CByteStream();
 
+	protected:
 		//************************************
-		// Method:    获取流当前位置
-		// FullName:  MemoryTool::CByteStream::GetPosition
-		// Access:    public 
-		// Returns:   int
-		// Qualifier:
-		//************************************
-		int GetPosition();
-
-		//************************************
-		// Method:    设置流当前位置
-		// FullName:  MemoryTool::CByteStream::SetPosition
+		// Method:    向左平移
+		// FullName:  MemoryTool::CByteStreamTransform::Left
 		// Access:    public 
 		// Returns:   void
 		// Qualifier:
-		// Parameter: 当前位置
+		// Parameter: 开始索引
+		// Parameter: 需要平移的字节长度
+		// Parameter: 平移距离
 		//************************************
-		void SetPosition(int pos);
+		void Left(int start, int len, int space);
+
+	public:
+		~CByteStream();
 
 		//************************************
 		// Method:    获取当前流数据长度
@@ -52,18 +50,6 @@ namespace NetworkCommunication
 		BYTE* GetBuf();
 
 		//************************************
-		// Method:    从当前流中指定位置读取指定长度的数据,实际读取长度可能小于预计读取长度
-		// FullName:  MemoryTool::CByteStream::Read
-		// Access:    public 
-		// Returns:   读取到的缓冲区指针
-		// Qualifier:
-		// Parameter: 开始位置(非索引,1开始)
-		// Parameter: 预计读取的数据长度
-		// Parameter: 实际读取的数据长度(输出)
-		//************************************
-		BYTE* Read(int start, int len, int* readLen);
-
-		//************************************
 		// Method:    从当前流中开始位置读取指定长度的数据,实际读取长度可能小于预计读取长度
 		// FullName:  MemoryTool::CByteStream::Read
 		// Access:    public 
@@ -72,10 +58,10 @@ namespace NetworkCommunication
 		// Parameter: 预计读取的数据长度
 		// Parameter: 实际读取的数据长度(输出)
 		//************************************
-		BYTE* Read(int len, int* readLen);
+		BYTE* Read(int len, int* actualLen);
 
 		//************************************
-		// Method:    从当前流中开始位置读取指定长度的数据,如果流数据长度不够,不进行读取动作
+		// Method:    从当前流中开始位置读取指定长度的数据,如果数据长度不够,不进行读取动作
 		// FullName:  MemoryTool::CByteStream::Read
 		// Access:    public 
 		// Returns:   读取到的缓冲区指针
@@ -106,15 +92,22 @@ namespace NetworkCommunication
 		int Write(CByteStream* p);
 
 		//************************************
-		// Method:    向左平移
-		// FullName:  MemoryTool::CByteStreamTransform::Left
+		// Method:    清空流
+		// FullName:  NetworkCommunication::CByteStream::Clean
 		// Access:    public 
 		// Returns:   void
 		// Qualifier:
-		// Parameter: 开始位置,非索引,1开始
-		// Parameter: 需要平移的字节长度
-		// Parameter: 平移长度
 		//************************************
-		void Left(int start, int size, int len);
+		void Clean();
+
+		//************************************
+		// Method:    删除从开始位置指定长度的字节数据,后面数据自动平移
+		// FullName:  NetworkCommunication::CByteStream::Detele
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 指定长度
+		//************************************
+		void Detele(int len);
 	};
 }
