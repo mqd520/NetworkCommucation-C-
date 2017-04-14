@@ -122,6 +122,6 @@ void OnRecvDemoPackage(DemoPackageType type, void* data)
 
 bool OnRecvNotifyEvt(TcpClientEvtType type, TCHAR* msg)
 {
-	TRACE(msg);
+	OutputDebugString(msg);
 	return true;
 }

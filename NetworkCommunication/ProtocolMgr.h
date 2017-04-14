@@ -472,7 +472,9 @@ namespace NetworkCommunication
 		{
 			int len = 0;
 			BYTE* buf = Packet(type, data, &len);
-			return m_tcp.SendData(buf, len);
+			bool b = m_tcp.SendData(buf, len);
+			delete buf;
+			return b;
 		};
 
 		//************************************
