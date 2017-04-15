@@ -82,26 +82,26 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Def.h" />
+    <ClInclude Include="ProtocolMgr.h" />
     <ClInclude Include="StringHandle.h" />
     <ClInclude Include="DemoProtocolMgr.h" />
-    <ClInclude Include="Interface.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="NetTool.h" />
-    <ClInclude Include="DemoPackage.h" />
-    <ClInclude Include="DemoPackageMgr.h" />
+    <ClInclude Include="DemoProtocol.h" />
     <ClInclude Include="ProtocolTool.h" />
     <ClInclude Include="TcpClientT.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TcpClient.h" />
-    <ClInclude Include="ProtocolMgr.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ProtocolMgr.cpp" />
     <ClCompile Include="StringHandle.cpp" />
     <ClCompile Include="DemoProtocolMgr.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="NetTool.cpp" />
-    <ClCompile Include="DemoPackageMgr.cpp" />
+    <ClCompile Include="DemoProtocol.cpp" />
     <ClCompile Include="ProtocolTool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

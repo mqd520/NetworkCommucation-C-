@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DemoProtocolMgr.h"
 #include "ProtocolTool.h"
-#include "DemoPackageMgr.h"
 
 namespace NetworkCommunication
 {
@@ -10,17 +9,17 @@ namespace NetworkCommunication
 	CDemoProtocolMgr::CDemoProtocolMgr()
 	{
 		m_nPackageHeadLen = DemoProtocol_HeadLen;
-		m_nKeepAlive = (int)DemoPackageType::type4;
+		m_nKeepAlive = DemoPackageType::type4;
 	}
 
-	void CDemoProtocolMgr::AssoicatePackageType()
+	void CDemoProtocolMgr::AssociatePackageType()
 	{
 		m_vecPackageMgr.push_back({ DemoPackageType::type1, new CDemoPackage1Mgr() });
-		m_vecPackageMgr.push_back({ DemoPackageType::type2, new CDemoPackageMgr<DemoPackage2>() });
-		m_vecPackageMgr.push_back({ DemoPackageType::type3, new CDemoPackageMgr<DemoPackage3>() });
+		m_vecPackageMgr.push_back({ DemoPackageType::type2, new CCommonPackageMgr<DemoPackage2>() });
+		m_vecPackageMgr.push_back({ DemoPackageType::type3, new CCommonPackageMgr<DemoPackage3>() });
 	}
 
-	BYTE* CDemoProtocolMgr::GetPackageHeadBuf(DemoPackageType type, int len)
+	BYTE* CDemoProtocolMgr::GetPackageHeadBuf(int type, int len)
 	{
 		BYTE* buf = new BYTE[m_nPackageHeadLen];
 		buf[0] = 1;//主版本号
@@ -45,7 +44,7 @@ namespace NetworkCommunication
 		}
 	}
 
-	DemoPackageType CDemoProtocolMgr::GetPackageType(BYTE buf[], int len)
+	int CDemoProtocolMgr::GetPackageType(BYTE buf[], int len)
 	{
 		if (len >= m_nPackageHeadLen)
 		{
@@ -58,7 +57,7 @@ namespace NetworkCommunication
 		}
 	}
 
-	bool CDemoProtocolMgr::ValidateKeepAlivePackage(DemoPackageBase* data)
+	bool CDemoProtocolMgr::ValidateKeepAlivePackage(LPPackageBase data)
 	{
 		LPKeepAlivePackage p = (LPKeepAlivePackage)data;
 		if (p)
@@ -78,7 +77,7 @@ namespace NetworkCommunication
 		return true;
 	}
 
-	bool CDemoProtocolMgr::ValidatePackageType(DemoPackageType type)
+	bool CDemoProtocolMgr::ValidatePackageType(int type)
 	{
 		bool b = false;
 		if (true)//具体根据包类型来验证

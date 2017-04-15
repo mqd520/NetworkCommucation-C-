@@ -10,7 +10,6 @@
 
 #include "resource.h"		// Ö÷·ûºÅ
 #include "DemoProtocolMgr.h"
-#include "DemoPackage.h"
 
 using namespace NetworkCommunication;
 

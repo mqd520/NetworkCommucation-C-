@@ -1,28 +1,24 @@
 #pragma once
 
 #include "ProtocolMgr.h"
-#include "DemoPackage.h"
+#include "DemoProtocol.h"
 
 namespace NetworkCommunication
 {
-	class CDemoProtocolMgr :public CProtocolMgr < DemoPackageType, DemoPackageBase >
+	class CDemoProtocolMgr :public CProtocolMgr
 	{
-	private:
-		//CProtocolMgr基类别名
-		typedef CProtocolMgr < DemoPackageType, DemoPackageBase > CDemoProtocolMgrBase;
-
 	protected:
-		void AssoicatePackageType();
-		BYTE* GetPackageHeadBuf(DemoPackageType type, int len);
-		bool ValidateKeepAlivePackage(DemoPackageBase* data);
+		void AssociatePackageType();
+		BYTE* GetPackageHeadBuf(int type, int len);
+		bool ValidateKeepAlivePackage(LPPackageBase data);
 		bool ValidatePackageHead(BYTE buf[]);
-		bool ValidatePackageType(DemoPackageType type);
+		bool ValidatePackageType(int type);
 
 	public:
 		CDemoProtocolMgr();
 		~CDemoProtocolMgr(){};
 
 		int GetDataLen(BYTE buf[], int len);
-		DemoPackageType GetPackageType(BYTE buf[], int len);
+		int GetPackageType(BYTE buf[], int len);
 	};
 }

@@ -39,15 +39,6 @@
     <ClInclude Include="DemoProtocolMgr.h">
       <Filter>04 DemoProtocol管理</Filter>
     </ClInclude>
-    <ClInclude Include="DemoPackage.h">
-      <Filter>04 DemoProtocol管理</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoPackageMgr.h">
-      <Filter>04 DemoProtocol管理</Filter>
-    </ClInclude>
-    <ClInclude Include="Interface.h">
-      <Filter>03 协议管理</Filter>
-    </ClInclude>
     <ClInclude Include="StringHandle.h">
       <Filter>01 工具</Filter>
     </ClInclude>
@@ -59,6 +50,12 @@
     </ClInclude>
     <ClInclude Include="ProtocolMgr.h">
       <Filter>03 协议管理</Filter>
+    </ClInclude>
+    <ClInclude Include="Def.h">
+      <Filter>03 协议管理</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoProtocol.h">
+      <Filter>04 DemoProtocol管理</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,14 +74,17 @@
     <ClCompile Include="DemoProtocolMgr.cpp">
       <Filter>04 DemoProtocol管理</Filter>
     </ClCompile>
-    <ClCompile Include="DemoPackageMgr.cpp">
-      <Filter>04 DemoProtocol管理</Filter>
-    </ClCompile>
     <ClCompile Include="StringHandle.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp">
       <Filter>02 Tcp管理</Filter>
+    </ClCompile>
+    <ClCompile Include="ProtocolMgr.cpp">
+      <Filter>03 协议管理</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoProtocol.cpp">
+      <Filter>04 DemoProtocol管理</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

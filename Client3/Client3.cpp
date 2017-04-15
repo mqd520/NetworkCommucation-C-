@@ -12,7 +12,7 @@
 #endif
 
 //收到DemoPackage事件处理
-void OnRecvDemoPackage(DemoPackageType type, void* data);
+void OnRecvDemoPackage(int type, LPPackageBase data);
 //收到通知事件
 bool OnRecvNotifyEvt(TcpClientEvtType type, TCHAR* msg);
 
@@ -113,11 +113,11 @@ int CClient3App::ExitInstance()
 	return CWinApp::ExitInstance();
 }
 
-void OnRecvDemoPackage(DemoPackageType type, void* data)
+void OnRecvDemoPackage(int type, LPPackageBase data)
 {
-	LPDemoPackageBase packet = NULL;
+	LPPackageBase packet = NULL;
 	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_CUSTOM_MESSAGE1, (WPARAM)(int)type, (LPARAM)data);
-	theApp.m_demoProtocol.ReleasePackage(type, (LPDemoPackageBase)data);
+	theApp.m_demoProtocol.ReleasePackage(type, (LPPackageBase)data);
 }
 
 bool OnRecvNotifyEvt(TcpClientEvtType type, TCHAR* msg)

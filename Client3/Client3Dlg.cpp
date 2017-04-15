@@ -110,6 +110,5 @@ void CClient3Dlg::OnBnClickedButton2()
 LRESULT CClient3Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
 {
 	UpdateData(true);
-	
 	return 0;
 }

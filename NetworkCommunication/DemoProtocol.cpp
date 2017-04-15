@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ProtocolTool.h"
 #include "StringHandle.h"
-#include "DemoPackageMgr.h"
+#include "DemoProtocol.h"
 
 namespace NetworkCommunication
 {
