@@ -17,7 +17,10 @@ namespace NetworkCommunication
 		m_nKeepAliveTimeout(1 * 1000),
 		m_bRecvKeepAlive(false),
 		m_nKeepAliveFailCount(0),
-		m_nKeepAliveFailMaxCount(3)
+		m_nKeepAliveFailMaxCount(3),
+		m_pKeepAlive(NULL),
+		m_pKeepAliveBuf(NULL),
+		m_nKeepAliveBufLen(0)
 	{
 		m_hMutexStream = ::CreateMutex(NULL, false, NULL);
 	};
@@ -33,6 +36,11 @@ namespace NetworkCommunication
 		{
 			delete m_stream;
 			m_stream = NULL;
+		}
+		if (m_pKeepAliveBuf)
+		{
+			delete m_pKeepAliveBuf;
+			m_pKeepAliveBuf = NULL;
 		}
 		for (vector<PackageMgrInfo>::iterator it = m_vecPackageMgr.begin(); it < m_vecPackageMgr.end(); ++it)
 		{
@@ -156,14 +164,14 @@ namespace NetworkCommunication
 
 	bool CProtocolMgr::AnalyticsPackage(int type, LPPackageBase data)
 	{
-		if (type == m_nKeepAlive)//心跳包
+		if (type == m_nKeepAlive&&m_nKeepAlive != PackageTypeNullVal)//启用了心跳包并且已收到心跳包
 		{
 			bool b = ValidateKeepAlivePackage(data);
-			if (!b)
+			if (b)
 			{
-				//重置
+				m_nKeepAliveFailCount = 0;//已收到心跳包
 			}
-			return true;
+			return false;
 		}
 		return true;
 	}
@@ -176,10 +184,7 @@ namespace NetworkCommunication
 			m_stream = new CByteStream(proBufLen);//创建接收缓冲区字节流对象
 			m_lpfnRecvData = lpfnRecvData;
 			AssociatePackageType();//关联包类型和包管理器
-			if (m_nKeepAlive != PackageTypeNullVal)//指定心跳包
-			{
-				m_tiTimer.hThread = ::CreateThread(NULL, 0, StartTimer, this, NULL, &(m_tiTimer.dwThreadID));
-			}
+			InitKeepAlive();//初始化心跳包
 			m_tcp.Init(ip, port, lpfnNotifyEvt, tcpBufLen, autoReconnect, reconnectTimes, reconnectTimeSpan, connectTimeout);
 			m_tcp.SetCallbackT(&CProtocolMgr::OnRecvData, this);//设置成员函数回调
 			return m_tcp.Connect();
@@ -297,10 +302,7 @@ namespace NetworkCommunication
 
 	void CProtocolMgr::Connect()
 	{
-		if (!m_tcp.GetConnectStatus())
-		{
-			m_tcp.Connect();
-		}
+		m_tcp.Connect();
 	}
 
 	CTcpClient CProtocolMgr::GetTcpClientObj()
@@ -330,27 +332,64 @@ namespace NetworkCommunication
 	{
 		while (true)
 		{
-			if (m_nKeepAliveFailCount > 0)//没有收到心跳包
+			if (IsOnline())//如果对方在线,则验证对方是否在线并向对方发送心跳包
 			{
-				if (m_nKeepAliveFailCount > m_nKeepAliveFailMaxCount)//超过允许失败最大值
+				bool b = true;//是否向对方发送心跳包
+				if (m_nKeepAliveFailCount > 0)//没有收到心跳包
 				{
-					//认为对方已掉线
+					if (m_nKeepAliveFailCount > m_nKeepAliveFailMaxCount)//超过允许失败最大值
+					{
+						b = false;//认为对方已掉线
+					}
+					else
+					{
+						m_nKeepAliveFailCount++;
+					}
 				}
-				else
+				else//如果收到了心跳包,立即设置为没有收到心跳包状态
 				{
-					m_nKeepAliveFailCount++;
+					m_nKeepAliveFailCount = 1;
+				}
+				if (b&&m_pKeepAlive)
+				{
+					m_tcp.SendData(m_pKeepAliveBuf, m_nKeepAliveBufLen);//向对方发送心跳包
 				}
 			}
-
-			//SendData(m_nKeepAlive,)
+			else
+			{
+				OutputDebugString(_T("对方已掉线\n"));
+			}
 
 			::Sleep(m_nKeepAliveTimeout);
 		}
 	}
 
-	LPPackageBase CProtocolMgr::GetKeepAlivePackage()
+	bool CProtocolMgr::IsOnline()
 	{
-		return NULL;
+		if (m_nKeepAlive != PackageTypeNullVal)//指示启用了心跳包
+		{
+			//通过判断接收心跳包失败次数是否超过最大值来决定是否在线
+			return m_nKeepAliveFailCount > m_nKeepAliveFailMaxCount ? false : true;
+		}
+		else
+		{
+			//通过向对方发送TCP数据是否成功来判断是否在线
+			BYTE buf[1] = { 0 };
+			return 	m_tcp.SendData(buf, 1);
+		}
+	}
+
+	void CProtocolMgr::InitKeepAlive()
+	{
+		if (m_nKeepAlive != PackageTypeNullVal&&m_pKeepAlive)//客户端指定了心跳包
+		{
+			IPackageMgr* mgr = GetPackageMgr(m_nKeepAlive);
+			if (mgr)
+			{
+				m_pKeepAliveBuf = Packet(m_nKeepAlive, m_pKeepAlive, &m_nKeepAliveBufLen);
+				m_tiTimer.hThread = ::CreateThread(NULL, 0, StartTimer, this, NULL, &(m_tiTimer.dwThreadID));
+			}
+		}
 	}
 
 	DWORD WINAPI StartTimer(LPVOID lpParam)

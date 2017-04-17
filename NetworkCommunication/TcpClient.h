@@ -73,7 +73,6 @@ namespace NetworkCommunication
 		char* m_pRecvTcpBuf;//接收tcp缓冲区
 		LPOnRecvNotifyEvt m_lpfnOnRecvNotifyEvt;//接收通知事件回调函数
 		bool m_bHaslpfnRecvTcpData;//是否已有接收tcp数据回调函数
-		bool m_bConnected;//是否已连接上服务端
 		int m_nReconnectTimeSpan;//连接失败后间隔时间(毫秒)
 		int m_nReconnectTimes;//允许重连次数(0:一直连接)(默认1)
 		int m_nReconnected;//断开后已重连次数
@@ -247,15 +246,6 @@ namespace NetworkCommunication
 		// Parameter: 字节数组长度
 		//************************************
 		virtual bool SendData(BYTE buf[], int len);
-
-		//************************************
-		// Method:    获取连接状态
-		// FullName:  NetworkCommunication::CTcpClient::GetConnectStatus
-		// Access:    virtual public 
-		// Returns:   bool
-		// Qualifier:
-		//************************************
-		virtual bool GetConnectStatus();
 
 		//************************************
 		// Method:    收到tcp数据

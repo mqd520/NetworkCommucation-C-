@@ -8,8 +8,14 @@ namespace NetworkCommunication
 
 	CDemoProtocolMgr::CDemoProtocolMgr()
 	{
-		m_nPackageHeadLen = DemoProtocol_HeadLen;
-		m_nKeepAlive = DemoPackageType::type4;
+		//必需
+		m_nPackageHeadLen = DemoProtocol_HeadLen;//指定包头长度
+
+		// 非必需
+		m_nKeepAlive = DemoPackageType::type4;//指定心跳包类型(非-999)
+		m_pKeepAlive = new KeepAlivePackage();//指定心跳包
+		m_nKeepAliveFailMaxCount = 3;//指定心跳包允许失败最大值
+		m_nKeepAliveTimeout = 1 * 1000;//指定心跳包超时时间
 	}
 
 	void CDemoProtocolMgr::AssociatePackageType()
@@ -17,6 +23,7 @@ namespace NetworkCommunication
 		m_vecPackageMgr.push_back({ DemoPackageType::type1, new CDemoPackage1Mgr() });
 		m_vecPackageMgr.push_back({ DemoPackageType::type2, new CCommonPackageMgr<DemoPackage2>() });
 		m_vecPackageMgr.push_back({ DemoPackageType::type3, new CCommonPackageMgr<DemoPackage3>() });
+		m_vecPackageMgr.push_back({ DemoPackageType::type4, new CCommonPackageMgr<KeepAlivePackage>() });
 	}
 
 	BYTE* CDemoProtocolMgr::GetPackageHeadBuf(int type, int len)

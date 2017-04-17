@@ -42,7 +42,6 @@ namespace NetworkCommunication
 		m_addrSrv({ 0 }),
 		m_lpfnOnRecvNotifyEvt(NULL),
 		m_bHaslpfnRecvTcpData(false),
-		m_bConnected(false),
 		m_nReconnectTimeSpan(3000),
 		m_nReconnectTimes(0),
 		m_nReconnected(0),
@@ -138,7 +137,7 @@ namespace NetworkCommunication
 
 	bool CTcpClient::ConnectServer()
 	{
-		if (m_bConnected == false || m_bReconnecting || m_bExitThread == false)
+		if (m_bReconnecting || m_bExitThread == false)
 		{
 			if (m_nConnectTimeout > 0)//连接超时时间不为0时，启动超时线程
 			{
@@ -191,7 +190,6 @@ namespace NetworkCommunication
 
 	void CTcpClient::OnLoseConnect(LoseConnectReason reason)
 	{
-		m_bConnected = false;
 		if (reason == LoseConnectReason::Client)
 		{
 			SendNotifyEvt(disconnected, _T("client disconnect the connection!\n"));
@@ -217,7 +215,6 @@ namespace NetworkCommunication
 	{
 		m_nReconnected = 0;
 		m_bReconnecting = false;
-		m_bConnected = true;
 		TCHAR msg[100];
 		wsprintf(msg, _T("success to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
 		SendNotifyEvt(TcpClientEvtType::connected, msg);
@@ -236,16 +233,13 @@ namespace NetworkCommunication
 
 	void CTcpClient::Connect()
 	{
-		if (!m_bConnected)
-		{
-			ReconnectServer();
-		}
+		CloseConnect();
+		ReconnectServer();
 	}
 
 	void CTcpClient::CloseConnect()
 	{
 		m_bReconnecting = false;
-		m_bConnected = false;
 		m_bExitThread = true;
 		closesocket(m_socket);
 		if (m_tiConnect.hThread)
@@ -258,6 +252,7 @@ namespace NetworkCommunication
 			::TerminateThread(m_tiConnectTimeout.hThread, 0);
 			m_tiConnectTimeout = { 0 };
 		}
+		m_bExitThread = false;
 	}
 
 	SOCKET CTcpClient::GetClientSocket()
@@ -308,17 +303,8 @@ namespace NetworkCommunication
 		return false;
 	}
 
-	bool CTcpClient::GetConnectStatus()
-	{
-		return m_bConnected;
-	}
-
 	bool CTcpClient::SendData(BYTE buf[], int len)
 	{
-		if (!m_bConnected)
-		{
-			return false;
-		}
 		bool b = false;
 		int sended = 0;
 		while (true)

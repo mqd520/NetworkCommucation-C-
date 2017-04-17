@@ -36,6 +36,10 @@ namespace NetworkCommunication
 			DWORD dwThreadID;//线程ID
 		}ThreadInfo, *LPThreadInfo;
 
+	private:
+		BYTE* m_pKeepAliveBuf;//心跳包缓冲区
+		int m_nKeepAliveBufLen;//心跳包缓冲区长度
+
 	protected:
 		CTcpClientT<CProtocolMgr> m_tcp;//tcp客户端对象
 		CByteStream* m_stream;//字节流对象
@@ -50,6 +54,17 @@ namespace NetworkCommunication
 		int m_nKeepAliveFailCount;//心跳包失败计数,0代表已收到对方心跳包
 		int m_nKeepAliveFailMaxCount;//心跳包失败计数最大值,超过值后认为对方已掉线
 		LPPackageBase m_pKeepAlive;//心跳包指针
+
+
+	private:
+		//************************************
+		// Method:    初始化心跳包
+		// FullName:  NetworkCommunication::CProtocolMgr::InitKeepAlive
+		// Access:    private 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		void InitKeepAlive();
 
 	protected:
 		//************************************
@@ -130,15 +145,6 @@ namespace NetworkCommunication
 		// Qualifier:
 		//************************************
 		void CleanThread();
-
-		//************************************
-		// Method:    获取心跳包(需重写)
-		// FullName:  NetworkCommunication::CProtocolMgr::GetKeepAlivePackage
-		// Access:    protected 
-		// Returns:   包体结构体指针
-		// Qualifier:
-		//************************************
-		LPPackageBase GetKeepAlivePackage();
 
 	public:
 		CProtocolMgr();
@@ -331,5 +337,14 @@ namespace NetworkCommunication
 		// Qualifier:
 		//************************************
 		virtual void OnTimerKeepAlive();
+
+		//************************************
+		// Method:    对方是否在线
+		// FullName:  NetworkCommunication::CProtocolMgr::IsOnline
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		bool IsOnline();
 	};
 }
