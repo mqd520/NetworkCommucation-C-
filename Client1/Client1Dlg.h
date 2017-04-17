@@ -46,4 +46,6 @@ protected:
 	CButton m_btnSimulate;
 	// 模拟服务端数据发送
 	CButton m_btnDisconnect;
+public:
+	afx_msg void OnBnClickedButton4();
 };

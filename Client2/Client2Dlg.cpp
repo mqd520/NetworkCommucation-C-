@@ -39,6 +39,7 @@ BEGIN_MESSAGE_MAP(CClient2Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CClient2Dlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CClient2Dlg::OnBnClickedButton3)
 	ON_MESSAGE(WM_CUSTOM_MESSAGE1, &CClient2Dlg::OnRecvData)
+	ON_BN_CLICKED(IDC_BUTTON4, &CClient2Dlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -139,4 +140,11 @@ LRESULT CClient2Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
 	m_strResult = tmp + m_strResult;
 	m_edResult.SetWindowText(m_strResult);
 	return 0;
+}
+
+
+void CClient2Dlg::OnBnClickedButton4()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	theApp.m_tcp.Connect();
 }

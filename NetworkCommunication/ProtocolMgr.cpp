@@ -185,8 +185,8 @@ namespace NetworkCommunication
 			m_lpfnRecvData = lpfnRecvData;
 			AssociatePackageType();//关联包类型和包管理器
 			InitKeepAlive();//初始化心跳包
-			m_tcp.Init(ip, port, lpfnNotifyEvt, tcpBufLen, autoReconnect, reconnectTimes, reconnectTimeSpan, connectTimeout);
-			m_tcp.SetCallbackT(&CProtocolMgr::OnRecvData, this);//设置成员函数回调
+			//m_tcp.Init(ip, port, lpfnNotifyEvt, tcpBufLen, autoReconnect, reconnectTimes, reconnectTimeSpan, connectTimeout);
+			//m_tcp.SetCallbackT(&CProtocolMgr::OnRecvData, this);//设置成员函数回调
 			return m_tcp.Connect();
 		}
 	}

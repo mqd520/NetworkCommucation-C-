@@ -67,8 +67,8 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CTcpClient::Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt, int socketBufLen, bool autoReconnect,
-		int reconnectTimes, int reconnectTimeSpan, int connectTimeout)
+	void CTcpClient::Init(const TCHAR* ip, int port, int socketBufLen, bool autoReconnect, int reconnectTimes,
+		int reconnectTimeSpan, int connectTimeout)
 	{
 		if (!m_bInited)
 		{
@@ -80,16 +80,16 @@ namespace NetworkCommunication
 			m_pRecvTcpBuf = new char[socketBufLen];
 			m_strServerIP = ip;
 			m_nServerPort = port;
-			m_lpfnOnRecvNotifyEvt = lpfnOnRecvNotifyEvt;
 			m_nConnectTimeout = connectTimeout;
 			InitSocket();
 		}
 	}
 
-	void CTcpClient::SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData)
+	void CTcpClient::SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt)
 	{
 		m_bHaslpfnRecvTcpData = true;
 		m_lpfnOnRecvTcpData = lpfnOnRecvTcpData;
+		m_lpfnOnRecvNotifyEvt = lpfnOnRecvNotifyEvt;
 	}
 
 	void CTcpClient::InitSocket()

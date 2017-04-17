@@ -73,6 +73,7 @@ BOOL CClient1App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
+		//m_tcp.Init(_T("192.168.0.2"), 8080, OnRecvEvt);
 		m_tcp.Init(ip, 8080, OnRecvEvt);
 		m_tcp.SetCallback(OnRecvData);
 		m_tcp.Connect();
@@ -116,6 +117,6 @@ bool OnRecvData(BYTE buf[], int len)
 
 bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg)
 {
-	TRACE(msg);
+	OutputDebugString(msg);
 	return true;
 }

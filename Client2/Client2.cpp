@@ -12,8 +12,6 @@
 #define new DEBUG_NEW
 #endif
 
-bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg);
-
 // CClient2App
 
 BEGIN_MESSAGE_MAP(CClient2App, CWinApp)
@@ -71,8 +69,8 @@ BOOL CClient2App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		m_tcp.Init(ip, 8080, OnRecvEvt);
-		m_tcp.SetCallbackT(&CClient2App::OnRecvData, this);
+		m_tcp.Init(ip, 8080);
+		m_tcp.SetCallbackT(this, &CClient2App::OnRecvData, &CClient2App::OnRecvEvt);
 		m_tcp.Connect();
 	}
 
@@ -106,9 +104,9 @@ BOOL CClient2App::InitInstance()
 	return FALSE;
 }
 
-bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg)
+bool CClient2App::OnRecvEvt(TcpClientEvtType type, TCHAR* msg)
 {
-	TRACE(msg);
+	OutputDebugString(msg);
 	return true;
 }
 

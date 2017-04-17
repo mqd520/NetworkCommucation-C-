@@ -176,18 +176,18 @@ namespace NetworkCommunication
 		// Parameter: 接收消息回调函数
 		// Parameter: 回调函数指针
 		//************************************
-		virtual void Init(const TCHAR* ip, int port, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt = NULL, int socketBufLen = 1024,
-			bool autoReconnect = true, int reconnectTimes = 0, int reconnectTimeSpan = 1500, int connectTimeout = 2000);
+		virtual void Init(const TCHAR* ip, int port, int socketBufLen = 1024, bool autoReconnect = true, int reconnectTimes = 0,
+			int reconnectTimeSpan = 1500, int connectTimeout = 2000);
 
 		//************************************
-		// Method:    设置接收tcp数据回调函数
+		// Method:    设置回调函数
 		// FullName:  NetworkCommunication::CTcpClient::SetCallback
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
 		// Parameter: 接收socket数据回调函数
 		//************************************
-		virtual void SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData);
+		virtual void SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt = NULL);
 
 		//************************************
 		// Method:    连接服务端
