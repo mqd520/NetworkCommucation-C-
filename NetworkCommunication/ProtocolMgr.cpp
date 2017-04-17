@@ -14,13 +14,24 @@ namespace NetworkCommunication
 		m_nPackageHeadLen(0),
 		m_nKeepAlive(PackageTypeNullVal),
 		m_tiTimer({ 0 }),
-		m_nKeepAliveTimeout(1 * 1000),
+		m_nKeepAliveTimespan(2 * 1000),
 		m_bRecvKeepAlive(false),
 		m_nKeepAliveFailCount(0),
 		m_nKeepAliveFailMaxCount(3),
+		m_nReconnectServerCount(0),
+		m_nReconnectServerMaxCount(3),
+		m_bIsOnlineCallEvt(false),
+		m_bIsOfflineCallEvt(false),
 		m_pKeepAlive(NULL),
 		m_pKeepAliveBuf(NULL),
-		m_nKeepAliveBufLen(0)
+		m_nKeepAliveBufLen(0),
+		m_lpfnRecvProtocolEvt(NULL),
+		m_nStreamBufLen(1024),
+		m_nTcpBufLen(1024),
+		m_bAutoReconnect(true),
+		m_nReconnectTimes(0),
+		m_nReconnectTimeSpan(1500),
+		m_nConnectTimeout(2000)
 	{
 		m_hMutexStream = ::CreateMutex(NULL, false, NULL);
 	};
@@ -176,18 +187,17 @@ namespace NetworkCommunication
 		return true;
 	}
 
-	void CProtocolMgr::Init(TCHAR* ip, int port, LPOnRecvPackageBodyData lpfnRecvData, LPOnRecvNotifyEvt lpfnNotifyEvt, int proBufLen,
-		int tcpBufLen, bool autoReconnect, int reconnectTimes, int reconnectTimeSpan, int connectTimeout)
+	void CProtocolMgr::Init(TCHAR* ip, int port, LPOnRecvPackageData lpfnRecvData, LPOnRecvProtocolEvt lpfnRecvProtocolEvt)
 	{
 		if (m_stream == NULL)//只初始化一次
 		{
-			m_stream = new CByteStream(proBufLen);//创建接收缓冲区字节流对象
+			m_stream = new CByteStream(m_nStreamBufLen);//创建接收缓冲区字节流对象
 			m_lpfnRecvData = lpfnRecvData;
+			m_lpfnRecvProtocolEvt = lpfnRecvProtocolEvt;
 			AssociatePackageType();//关联包类型和包管理器
 			InitKeepAlive();//初始化心跳包
-			//m_tcp.Init(ip, port, lpfnNotifyEvt, tcpBufLen, autoReconnect, reconnectTimes, reconnectTimeSpan, connectTimeout);
-			//m_tcp.SetCallbackT(&CProtocolMgr::OnRecvData, this);//设置成员函数回调
-			return m_tcp.Connect();
+			m_tcp.Init(ip, port, m_nTcpBufLen, m_bAutoReconnect, m_nReconnectTimes, m_nReconnectTimeSpan, m_nConnectTimeout);
+			m_tcp.SetCallbackT(this, &CProtocolMgr::OnRecvData, &CProtocolMgr::OnRecvTcpEvt);
 		}
 	}
 
@@ -298,6 +308,7 @@ namespace NetworkCommunication
 	void CProtocolMgr::CloseConnect()
 	{
 		m_tcp.CloseConnect();
+		CleanThread();
 	}
 
 	void CProtocolMgr::Connect()
@@ -325,57 +336,61 @@ namespace NetworkCommunication
 			::TerminateThread(m_tiTimer.hThread, 0);
 			::CloseHandle(m_tiTimer.hThread);
 			m_tiTimer = { 0 };
+			m_nKeepAliveFailCount = 0;
+			m_nReconnectServerCount = 0;
 		}
 	}
 
 	void CProtocolMgr::OnTimerKeepAlive()
 	{
+		m_nKeepAliveFailCount = -1;
+		m_bIsOfflineCallEvt = false;
+		m_bIsOnlineCallEvt = false;
 		while (true)
 		{
-			if (IsOnline())//如果对方在线,则验证对方是否在线并向对方发送心跳包
+			::Sleep(m_nKeepAliveTimespan);
+
+			if (m_nKeepAliveFailCount <= m_nKeepAliveFailMaxCount)//如果对方在线,则验证对方是否在线并向对方发送心跳包
 			{
-				bool b = true;//是否向对方发送心跳包
-				if (m_nKeepAliveFailCount > 0)//没有收到心跳包
+				bool b = false;//是否向对方发送心跳包
+				if (m_nKeepAliveFailCount > 0 || m_nKeepAliveFailCount == -1)//没有收到心跳包
 				{
-					if (m_nKeepAliveFailCount > m_nKeepAliveFailMaxCount)//超过允许失败最大值
+					if (m_nKeepAliveFailCount <= m_nKeepAliveFailMaxCount)//未超过允许失败最大值
 					{
-						b = false;//认为对方已掉线
+						if (m_nKeepAliveFailCount == -1)//初始值
+						{
+							m_nKeepAliveFailCount = 1;
+						}
+						else
+						{
+							m_nKeepAliveFailCount++;
+						}
 					}
-					else
-					{
-						m_nKeepAliveFailCount++;
-					}
+					SendProtocolEvt(ProtocolEvtType::keepAliveFail, _T("心跳包检测失败: \n"));
 				}
-				else//如果收到了心跳包,立即设置为没有收到心跳包状态
+				else//已收到心跳包
 				{
-					m_nKeepAliveFailCount = 1;
+					b = true;
+					if (!m_bIsOnlineCallEvt)//上线事件是否已触发
+					{
+						m_bIsOnlineCallEvt = true;//只触发一次(tcp连接有效的情况下)
+						OnConnectServerSuccsss();
+					}
+					m_nKeepAliveFailCount = -1;
 				}
-				if (b&&m_pKeepAlive)
+				if (b&&m_pKeepAlive)//只有收到对方心跳包才向对方发送心跳包
 				{
 					m_tcp.SendData(m_pKeepAliveBuf, m_nKeepAliveBufLen);//向对方发送心跳包
 				}
 			}
 			else
 			{
-				OutputDebugString(_T("对方已掉线\n"));
+				if (!m_bIsOfflineCallEvt)//掉线事件是否已触发
+				{
+					m_bIsOfflineCallEvt = true;//只触发一次(tcp连接有效的情况下)
+					OnConnectServerFail();
+				}
 			}
-
-			::Sleep(m_nKeepAliveTimeout);
-		}
-	}
-
-	bool CProtocolMgr::IsOnline()
-	{
-		if (m_nKeepAlive != PackageTypeNullVal)//指示启用了心跳包
-		{
-			//通过判断接收心跳包失败次数是否超过最大值来决定是否在线
-			return m_nKeepAliveFailCount > m_nKeepAliveFailMaxCount ? false : true;
-		}
-		else
-		{
-			//通过向对方发送TCP数据是否成功来判断是否在线
-			BYTE buf[1] = { 0 };
-			return 	m_tcp.SendData(buf, 1);
 		}
 	}
 
@@ -387,7 +402,6 @@ namespace NetworkCommunication
 			if (mgr)
 			{
 				m_pKeepAliveBuf = Packet(m_nKeepAlive, m_pKeepAlive, &m_nKeepAliveBufLen);
-				m_tiTimer.hThread = ::CreateThread(NULL, 0, StartTimer, this, NULL, &(m_tiTimer.dwThreadID));
 			}
 		}
 	}
@@ -397,5 +411,71 @@ namespace NetworkCommunication
 		CProtocolMgr* mgr = (CProtocolMgr*)lpParam;
 		mgr->OnTimerKeepAlive();
 		return 0;
+	}
+
+	bool CProtocolMgr::OnRecvTcpEvt(TcpEvtType type, TCHAR* msg)
+	{
+		if (type == TcpEvtType::connected)
+		{
+			OnTcpConnectSuccess();
+		}
+		else if (type == TcpEvtType::disconnected)
+		{
+			OnTcpConnectFail();
+		}
+		else
+		{
+			SendProtocolEvt(ProtocolEvtType::tcpError, msg);
+		}
+		return true;
+	}
+
+	void CProtocolMgr::OnTcpConnectSuccess()
+	{
+		OutputDebugString(_T("success to connect server: \n"));
+		if (m_tiTimer.hThread == 0)
+		{
+			m_tiTimer.hThread = ::CreateThread(NULL, 0, StartTimer, this, NULL, &(m_tiTimer.dwThreadID));
+		}
+	}
+
+	void CProtocolMgr::OnTcpConnectFail()
+	{
+		//CleanThread();//清理心跳包线程
+		//m_nKeepAliveFailCount = 0;
+		OutputDebugString(_T("failed to connect server: \n"));
+	}
+
+	void CProtocolMgr::SendProtocolEvt(ProtocolEvtType type, TCHAR* msg)
+	{
+		if (m_lpfnRecvProtocolEvt)
+		{
+			if (!m_lpfnRecvProtocolEvt(type, msg))
+			{
+				//自己处理
+				OutputDebugString(msg);
+			}
+		}
+	}
+
+	void CProtocolMgr::OnConnectServerSuccsss()
+	{
+		SendProtocolEvt(ProtocolEvtType::online, _T("服务端已上线: \n"));
+	}
+
+	void CProtocolMgr::OnConnectServerFail()
+	{
+		SendProtocolEvt(ProtocolEvtType::offline, _T("服务端已掉线: \n"));
+		if (m_nReconnectServerMaxCount != 0 && m_nReconnectServerCount > m_nReconnectServerMaxCount)//超过允许连接最大值
+		{
+			CloseConnect();
+		}
+		else
+		{
+			m_nReconnectServerCount++;
+			m_bIsOnlineCallEvt = false;
+			m_bIsOfflineCallEvt = false;
+			m_nKeepAliveFailCount = -1;
+		}
 	}
 }

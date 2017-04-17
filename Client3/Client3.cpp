@@ -11,10 +11,10 @@
 #define new DEBUG_NEW
 #endif
 
-//收到DemoPackage事件处理
-void OnRecvDemoPackage(int type, LPPackageBase data);
-//收到通知事件
-bool OnRecvNotifyEvt(TcpClientEvtType type, TCHAR* msg);
+//收到包数据处理
+void OnRecvPackage(int type, LPPackageBase data);
+//收到事件处理
+bool OnRecvEvt(ProtocolEvtType type, TCHAR* msg);
 
 // CClient3App
 
@@ -74,7 +74,8 @@ BOOL CClient3App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		m_demoProtocol.Init(ip, 8080, OnRecvDemoPackage, OnRecvNotifyEvt);
+		m_demoProtocol.Init(ip, 8080, OnRecvPackage, OnRecvEvt);
+		m_demoProtocol.Connect();
 	}
 
 	CClient3Dlg dlg;
@@ -113,14 +114,14 @@ int CClient3App::ExitInstance()
 	return CWinApp::ExitInstance();
 }
 
-void OnRecvDemoPackage(int type, LPPackageBase data)
+void OnRecvPackage(int type, LPPackageBase data)
 {
 	LPPackageBase packet = NULL;
 	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_CUSTOM_MESSAGE1, (WPARAM)(int)type, (LPARAM)data);
 	theApp.m_demoProtocol.ReleasePackage(type, (LPPackageBase)data);
 }
 
-bool OnRecvNotifyEvt(TcpClientEvtType type, TCHAR* msg)
+bool OnRecvEvt(ProtocolEvtType type, TCHAR* msg)
 {
 	OutputDebugString(msg);
 	return true;

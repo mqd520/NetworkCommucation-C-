@@ -10,7 +10,7 @@ namespace NetworkCommunication
 	{
 	public:
 		//************************************
-		// Method:    成员函数指针
+		// Method:    收到tcp数据函数指针
 		// FullName:  NetworkCommunication::CTcpClientT<T>::LPOnRecvTcpDataT
 		// Access:    public 
 		// Returns:   指示调用者是否已释放缓冲区
@@ -20,19 +20,19 @@ namespace NetworkCommunication
 		typedef bool(T::*LPOnRecvTcpDataT)(BYTE buf[], int len);
 
 		//************************************
-		// Method:    收到tcp客户端事件函数指针
+		// Method:    收到tcp事件函数指针
 		// FullName:  NetworkCommunication::LPOnRecvNotifyEvt
 		// Access:    public 
 		// Returns:   是否已处理
 		// Qualifier: 事件类型
 		// Parameter: 消息
 		//************************************
-		typedef bool(T::*LPOnRecvNotifyEvtT)(TcpClientEvtType type, TCHAR* msg);
+		typedef bool(T::*LPOnRecvTcpEvtT)(TcpEvtType type, TCHAR* msg);
 
 	protected:
 		T* m_pInstanceT;//调用方实例
 		LPOnRecvTcpDataT m_lpfnOnRecvTcpDataT;//接受tcp数据函数指针
-		LPOnRecvNotifyEvtT m_lpfnRecvNotify;//接受通知函数指针
+		LPOnRecvTcpEvtT m_lpfnRecvTcpEvt;//接受通知函数指针
 
 	public:
 		//************************************
@@ -45,12 +45,12 @@ namespace NetworkCommunication
 		// Parameter: 接收tcp数据函数指针
 		// Parameter: 接收通知函数指针
 		//************************************
-		void SetCallbackT(T* pInstance, LPOnRecvTcpDataT lpfnOnRecvTcpDataT, LPOnRecvNotifyEvtT lpfnRecvNotify = NULL)
+		void SetCallbackT(T* pInstance, LPOnRecvTcpDataT lpfnOnRecvTcpDataT, LPOnRecvTcpEvtT lpfnRecvTcpEvt = NULL)
 		{
 			m_bHaslpfnRecvTcpData = true;
 			m_pInstanceT = pInstance;
 			m_lpfnOnRecvTcpDataT = lpfnOnRecvTcpDataT;
-			m_lpfnRecvNotify = lpfnRecvNotify;
+			m_lpfnRecvTcpEvt = lpfnRecvTcpEvt;
 		};
 
 		void OnRecvTcpData(BYTE buf[], int len)
@@ -68,13 +68,13 @@ namespace NetworkCommunication
 			}
 		}
 
-		void SendNotifyEvt(TcpClientEvtType type, TCHAR* msg)
+		void SendTcpEvt(TcpEvtType type, TCHAR* msg)
 		{
-			if (m_lpfnRecvNotify)
+			if (m_lpfnRecvTcpEvt)
 			{
-				if (!((m_pInstanceT->*m_lpfnRecvNotify)(type, msg)))
+				if (!((m_pInstanceT->*m_lpfnRecvTcpEvt)(type, msg)))
 				{
-					if (type == error || type == Debug || type == TcpClientEvtType::Info)
+					if (msg)
 					{
 						Printf(msg);
 					}

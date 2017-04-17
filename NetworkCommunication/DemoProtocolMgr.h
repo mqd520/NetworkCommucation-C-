@@ -5,6 +5,7 @@
 
 namespace NetworkCommunication
 {
+	//DemoProtocol协议管理
 	class CDemoProtocolMgr :public CProtocolMgr
 	{
 	protected:

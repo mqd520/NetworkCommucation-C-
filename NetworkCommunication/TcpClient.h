@@ -12,18 +12,16 @@ using namespace std;
 
 namespace NetworkCommunication
 {
-	//事件类型
-	enum TcpClientEvtType
+	//tcp事件类型
+	enum TcpEvtType
 	{
-		Info,//消息
 		error,//错误
 		disconnected,//失去服务端连接
-		connected,//连接上服务端
-		Debug//其它
+		connected//连接上服务端
 	};
 
 	//************************************
-	// Method:    收到tcp数据
+	// Method:    收到tcp数据函数指针
 	// FullName:  NetworkCommunication::LPOnRecvTcpData
 	// Access:    public 
 	// Returns:   指示调用者是否已释放缓冲区
@@ -33,14 +31,14 @@ namespace NetworkCommunication
 	typedef bool(*LPOnRecvTcpData)(BYTE buf[], int len);
 
 	//************************************
-	// Method:    收到tcp客户端事件函数指针
-	// FullName:  NetworkCommunication::LPOnRecvNotifyEvt
+	// Method:    收到tcp事件函数指针
+	// FullName:  NetworkCommunication::LPOnRecvTcpEvt
 	// Access:    public 
 	// Returns:   是否已处理
 	// Qualifier: 事件类型
 	// Parameter: 消息
 	//************************************
-	typedef bool(*LPOnRecvNotifyEvt)(TcpClientEvtType type, TCHAR* msg);
+	typedef bool(*LPOnRecvTcpEvt)(TcpEvtType type, TCHAR* msg);
 
 	//tcp客户端
 	class CTcpClient
@@ -67,11 +65,11 @@ namespace NetworkCommunication
 		bool m_bIsCleaned;//是否已清理
 		SOCKADDR_IN m_addrSrv;//服务端地址
 		SOCKET m_socket;//客户端Socket
-		bool m_bInited;//是否初始化::CTcpClient::
+		bool m_bInited;//是否初始化
 		LPOnRecvTcpData m_lpfnOnRecvTcpData;//接收tcp数据回调函数
 		int m_nRecvTcpBufLen;//接收tcp缓冲区总长度
 		char* m_pRecvTcpBuf;//接收tcp缓冲区
-		LPOnRecvNotifyEvt m_lpfnOnRecvNotifyEvt;//接收通知事件回调函数
+		LPOnRecvTcpEvt m_lpfnOnRecvTcpEvt;//接收tcp事件回调函数
 		bool m_bHaslpfnRecvTcpData;//是否已有接收tcp数据回调函数
 		int m_nReconnectTimeSpan;//连接失败后间隔时间(毫秒)
 		int m_nReconnectTimes;//允许重连次数(0:一直连接)(默认1)
@@ -130,7 +128,7 @@ namespace NetworkCommunication
 		// Parameter: 类型
 		// Parameter: 消息
 		//************************************
-		virtual void SendNotifyEvt(TcpClientEvtType type, TCHAR* msg);
+		virtual void SendTcpEvt(TcpEvtType type, TCHAR* msg);
 
 		//************************************
 		// Method:    打印消息
@@ -187,7 +185,7 @@ namespace NetworkCommunication
 		// Qualifier:
 		// Parameter: 接收socket数据回调函数
 		//************************************
-		virtual void SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt = NULL);
+		virtual void SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData, LPOnRecvTcpEvt lpfnOnRecvTcpEvt = NULL);
 
 		//************************************
 		// Method:    连接服务端
@@ -244,8 +242,9 @@ namespace NetworkCommunication
 		// Qualifier:
 		// Parameter: 字节数组
 		// Parameter: 字节数组长度
+		// Parameter: 实际发送长度
 		//************************************
-		virtual bool SendData(BYTE buf[], int len);
+		virtual bool SendData(BYTE buf[], int len, int* actualLen = NULL);
 
 		//************************************
 		// Method:    收到tcp数据

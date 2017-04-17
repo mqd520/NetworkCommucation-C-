@@ -15,7 +15,7 @@ namespace NetworkCommunication
 		m_nKeepAlive = DemoPackageType::type4;//指定心跳包类型(非-999)
 		m_pKeepAlive = new KeepAlivePackage();//指定心跳包
 		m_nKeepAliveFailMaxCount = 3;//指定心跳包允许失败最大值
-		m_nKeepAliveTimeout = 1 * 1000;//指定心跳包超时时间
+		m_nKeepAliveTimespan = 2 * 1000;//指定心跳包间隔时间
 	}
 
 	void CDemoProtocolMgr::AssociatePackageType()

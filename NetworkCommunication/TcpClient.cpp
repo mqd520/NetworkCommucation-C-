@@ -40,7 +40,7 @@ namespace NetworkCommunication
 		m_bIsCleaned(false),
 		m_socket(0),
 		m_addrSrv({ 0 }),
-		m_lpfnOnRecvNotifyEvt(NULL),
+		m_lpfnOnRecvTcpEvt(NULL),
 		m_bHaslpfnRecvTcpData(false),
 		m_nReconnectTimeSpan(3000),
 		m_nReconnectTimes(0),
@@ -85,11 +85,11 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CTcpClient::SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData, LPOnRecvNotifyEvt lpfnOnRecvNotifyEvt)
+	void CTcpClient::SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData, LPOnRecvTcpEvt lpfnOnRecvTcpEvt)
 	{
 		m_bHaslpfnRecvTcpData = true;
 		m_lpfnOnRecvTcpData = lpfnOnRecvTcpData;
-		m_lpfnOnRecvNotifyEvt = lpfnOnRecvNotifyEvt;
+		m_lpfnOnRecvTcpEvt = lpfnOnRecvTcpEvt;
 	}
 
 	void CTcpClient::InitSocket()
@@ -98,7 +98,7 @@ namespace NetworkCommunication
 
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
-			SendNotifyEvt(TcpClientEvtType::error, _T("Socket初始化失败!\n"));
+			SendTcpEvt(TcpEvtType::error, _T("Socket初始化失败!\n"));
 		}
 		else
 		{
@@ -118,7 +118,7 @@ namespace NetworkCommunication
 		m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (m_socket == INVALID_SOCKET)
 		{
-			SendNotifyEvt(TcpClientEvtType::error, _T("创建Socket失败!\n"));
+			SendTcpEvt(TcpEvtType::error, _T("创建Socket失败!\n"));
 		}
 	}
 
@@ -153,7 +153,7 @@ namespace NetworkCommunication
 			{
 				TCHAR msg[100];
 				wsprintf(msg, _T("failed to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
-				SendNotifyEvt(TcpClientEvtType::disconnected, msg);
+				SendTcpEvt(TcpEvtType::disconnected, msg);
 				if (m_nReconnectTimes > 0)
 				{
 					m_nReconnected++;
@@ -192,17 +192,17 @@ namespace NetworkCommunication
 	{
 		if (reason == LoseConnectReason::Client)
 		{
-			SendNotifyEvt(disconnected, _T("client disconnect the connection!\n"));
+			SendTcpEvt(disconnected, _T("client disconnect the connection!\n"));
 		}
 		else
 		{
 			if (reason == LoseConnectReason::Server)
 			{
-				SendNotifyEvt(disconnected, _T("server disconnect the connection!\n"));
+				SendTcpEvt(disconnected, _T("server disconnect the connection!\n"));
 			}
 			else if (reason == LoseConnectReason::Net)
 			{
-				SendNotifyEvt(disconnected, _T("Net trouble happended!\n"));
+				SendTcpEvt(disconnected, _T("Net trouble happended!\n"));
 			}
 			if (m_bExitThread == false && m_bAutoReconnect)
 			{
@@ -217,7 +217,7 @@ namespace NetworkCommunication
 		m_bReconnecting = false;
 		TCHAR msg[100];
 		wsprintf(msg, _T("success to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
-		SendNotifyEvt(TcpClientEvtType::connected, msg);
+		SendTcpEvt(TcpEvtType::connected, msg);
 		::CreateThread(NULL, 0, NetworkCommunication::ReadTcpData, this, NULL, NULL);
 	}
 
@@ -303,10 +303,10 @@ namespace NetworkCommunication
 		return false;
 	}
 
-	bool CTcpClient::SendData(BYTE buf[], int len)
+	bool CTcpClient::SendData(BYTE buf[], int len, int* actualLen)
 	{
 		bool b = false;
-		int sended = 0;
+		int sended = 0;//已发送字节数
 		while (true)
 		{
 			int result = send(m_socket, (char*)buf, len - sended, 0);
@@ -324,16 +324,20 @@ namespace NetworkCommunication
 				}
 			}
 		}
+		if (actualLen != NULL)
+		{
+			*actualLen = sended;
+		}
 		return b;
 	}
 
-	void CTcpClient::SendNotifyEvt(TcpClientEvtType type, TCHAR* msg)
+	void CTcpClient::SendTcpEvt(TcpEvtType type, TCHAR* msg)
 	{
-		if (m_lpfnOnRecvNotifyEvt)
+		if (m_lpfnOnRecvTcpEvt)
 		{
-			if (!m_lpfnOnRecvNotifyEvt(type, msg))
+			if (!m_lpfnOnRecvTcpEvt(type, msg))
 			{
-				if (type == error || type == Debug || type == TcpClientEvtType::Info)
+				if (msg)
 				{
 					Printf(msg);
 				}
@@ -412,7 +416,7 @@ namespace NetworkCommunication
 			bool connect = false;//是否应该重新启动连接
 			TCHAR msg[100];
 			wsprintf(msg, _T("failed to connect server(time out): %s:%d\n"), m_strServerIP, m_nServerPort);
-			SendNotifyEvt(TcpClientEvtType::disconnected, msg);
+			SendTcpEvt(TcpEvtType::disconnected, msg);
 			if (m_nReconnectTimes > 0)//有限次数重连
 			{
 				m_nReconnected++;

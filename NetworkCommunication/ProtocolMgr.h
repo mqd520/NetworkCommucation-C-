@@ -8,6 +8,15 @@
 
 namespace NetworkCommunication
 {
+	//协议管理事件类型
+	enum ProtocolEvtType
+	{
+		tcpError = TcpEvtType::error,//发生了tcp错误
+		keepAliveFail = 2,//心跳包失败
+		online = 10,//服务端已上线
+		offline = 11//服务端已下线
+	};
+
 	//协议管理
 	class CProtocolMgr
 	{
@@ -20,7 +29,17 @@ namespace NetworkCommunication
 		// Qualifier: 包类型
 		// Parameter: 包体结构体指针
 		//************************************
-		typedef void(*LPOnRecvPackageBodyData)(int type, LPPackageBase data);
+		typedef void(*LPOnRecvPackageData)(int type, LPPackageBase data);
+
+		//************************************
+		// Method:    收到协议事件处理
+		// FullName:  NetworkCommunication::CProtocolMgr::LPOnRecvProtocolEvt
+		// Access:    protected 
+		// Returns:   是否已处理事件
+		// Qualifier: 事件类型
+		// Parameter: 消息
+		//************************************
+		typedef bool(*LPOnRecvProtocolEvt)(ProtocolEvtType type, TCHAR* msg);
 
 		//包管理信息
 		typedef struct tagPackageMgrInfo
@@ -36,25 +55,33 @@ namespace NetworkCommunication
 			DWORD dwThreadID;//线程ID
 		}ThreadInfo, *LPThreadInfo;
 
-	private:
-		BYTE* m_pKeepAliveBuf;//心跳包缓冲区
-		int m_nKeepAliveBufLen;//心跳包缓冲区长度
-
 	protected:
 		CTcpClientT<CProtocolMgr> m_tcp;//tcp客户端对象
 		CByteStream* m_stream;//字节流对象
-		LPOnRecvPackageBodyData m_lpfnRecvData;//收到数据函数指针
+		LPOnRecvPackageData m_lpfnRecvData;//收到包体数据函数指针
 		int m_nPackageHeadLen;//包头长度
 		int m_nKeepAlive;//心跳包类型
 		vector<PackageMgrInfo> m_vecPackageMgr;//包管理器集合
 		HANDLE m_hMutexStream;//字节流互斥对象
 		ThreadInfo m_tiTimer;//心跳包线程信息
-		UINT m_nKeepAliveTimeout;//心跳包时间
+		int m_nKeepAliveTimespan;//心跳包间隔时间
 		bool m_bRecvKeepAlive;//是否已收到心跳包
 		int m_nKeepAliveFailCount;//心跳包失败计数,0代表已收到对方心跳包
 		int m_nKeepAliveFailMaxCount;//心跳包失败计数最大值,超过值后认为对方已掉线
+		int m_nReconnectServerMaxCount;//失去服务端连接(非tcp连接,检测不到指定次数的心跳包),自动重连的最大值(0:无限制)
+		int m_nReconnectServerCount;//失去服务端连接后,已连接服务端的次数
+		bool m_bIsOnlineCallEvt;//是否已触发掉线事件
+		bool m_bIsOfflineCallEvt;//是否已触发上线事件
 		LPPackageBase m_pKeepAlive;//心跳包指针
-
+		BYTE* m_pKeepAliveBuf;//心跳包缓冲区
+		int m_nKeepAliveBufLen;//心跳包缓冲区长度
+		LPOnRecvProtocolEvt m_lpfnRecvProtocolEvt;//收到协议事件函数指针
+		int m_nStreamBufLen;//流缓冲区长度
+		int m_nTcpBufLen;//tcp接收缓冲区长度
+		bool m_bAutoReconnect;//是否自动重连
+		int m_nReconnectTimes;//允许重连次数
+		int m_nReconnectTimeSpan;//重连间隔时间
+		int m_nConnectTimeout;//连接超时时间
 
 	private:
 		//************************************
@@ -146,6 +173,64 @@ namespace NetworkCommunication
 		//************************************
 		void CleanThread();
 
+		//************************************
+		// Method:    收到tcp事件处理
+		// FullName:  NetworkCommunication::CProtocolMgr::OnRecvTcpEvt
+		// Access:    protected 
+		// Returns:   bool
+		// Qualifier:
+		// Parameter: TcpClientEvtType type
+		// Parameter: TCHAR * msg
+		//************************************
+		bool OnRecvTcpEvt(TcpEvtType type, TCHAR* msg);
+
+		//************************************
+		// Method:    tcp连接成功事件处理
+		// FullName:  NetworkCommunication::CProtocolMgr::OnTcpConnectSuccess
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void OnTcpConnectSuccess();
+
+		//************************************
+		// Method:    tcp连接失败事件处理
+		// FullName:  NetworkCommunication::CProtocolMgr::OnTcpConnectFail
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void OnTcpConnectFail();
+
+		//************************************
+		// Method:    连接服务端成功事件处理
+		// FullName:  NetworkCommunication::CProtocolMgr::OnConnectServerSuccsss
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void OnConnectServerSuccsss();
+
+		//************************************
+		// Method:    连接服务端失败事件处理
+		// FullName:  NetworkCommunication::CProtocolMgr::OnConnectServerFail
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		virtual void OnConnectServerFail();
+
+		//************************************
+		// Method:    发送协议事件
+		// FullName:  NetworkCommunication::CProtocolMgr::SendProtocolEvt
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 事件类型
+		// Parameter: 消息
+		//************************************
+		void SendProtocolEvt(ProtocolEvtType type, TCHAR* msg);
+
 	public:
 		CProtocolMgr();
 		~CProtocolMgr();
@@ -160,15 +245,8 @@ namespace NetworkCommunication
 		// Parameter: int port
 		// Parameter: LPOnRecvPackageBodyData lpfnRecvData
 		// Parameter: LPOnRecvNotifyEvt lpfnNotifyEvt
-		// Parameter: int proBufLen
-		// Parameter: int tcpBufLen
-		// Parameter: bool autoReconnect
-		// Parameter: int reconnectTimes
-		// Parameter: int reconnectTimeSpan
-		// Parameter: int connectTimeout
 		//************************************
-		virtual void Init(TCHAR* ip, int port, LPOnRecvPackageBodyData lpfnRecvData, LPOnRecvNotifyEvt lpfnNotifyEvt = NULL, int proBufLen = 1024,
-			int tcpBufLen = 1024, bool autoReconnect = true, int reconnectTimes = 0, int reconnectTimeSpan = 1500, int connectTimeout = 2000);
+		virtual void Init(TCHAR* ip, int port, LPOnRecvPackageData lpfnRecvData, LPOnRecvProtocolEvt lpfnRecvProtocolEvt = NULL);
 
 		//************************************
 		// Method:    封包(调用方释放缓冲区指针)
