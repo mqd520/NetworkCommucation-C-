@@ -8,48 +8,50 @@ namespace NetworkCommunication
 	//包类型
 	enum DemoPackageType
 	{
-		type1 = 1,
-		type2 = 2,
-		type3 = 3,
-		type4 = 4,//心跳包
-		invalid = 0//无效
+		KeepAlive = 1,//心跳包
+		ProtocolLogin = 8,//协议登录
+		ProtocolLoginReply = 9,//协议登录应答
+
+		Login = 511,//登录请求包
+		LoginReply = 512//登录应答包
 	};
 
 
 	/////////////////////////////////包体定义/////////////////////////////////////////
-	//包体1
-	typedef struct tagDemoPackage1 :public PackageBase
-	{
-		wchar_t* strUsername;
-		wchar_t* strPwd;
-	}DemoPackage1, *LPDemoPackage1;
-
-	//包体2
-	typedef	struct tagDemoPackage2 :public PackageBase
-	{
-		int n1;
-		int n2;
-	}DemoPackage2, *LPDemoPackage2;
-
-	//包体3
-	typedef	struct tagDemoPackage3 :public PackageBase
-	{
-		int n1;
-		char str1[10];
-		int n2;
-		char str2[20];
-	}DemoPackage3, *LPDemoPackage3;
-
+	//心跳包
 	typedef	struct tagKeepAlivePackage :public PackageBase
 	{
 		BYTE n = 0;
 	}KeepAlivePackage, *LPKeepAlivePackage;
 
+	//协议登录包
+	typedef	struct tagProtocolLoginPackage :public PackageBase
+	{
+		int nType;
+		int nServerID;
+		int nKeepAlive;
+		int nVersion;
+		wchar_t* str;
+	}ProtocolLoginPackage, *LPProtocolLoginPackage;
+
+	//登录请求包
+	typedef struct tagLoginPackage :public PackageBase
+	{
+		wchar_t strUsername[15];//用户名
+		wchar_t strPwd[15];//密码
+	}LoginPackage, *LPLoginPackage;
+
+	//登录应答包
+	typedef	struct tagLoginReplyPackage :public PackageBase
+	{
+		bool b;//登录是否成功
+		wchar_t msg[30];//错误信息
+	}LoginReplyPackage, *LPLoginReplyPackage;
 
 
-	/////////////////////////////////包管理器定义/////////////////////////////////////////
-	//DemoPackage1包管理
-	class CDemoPackage1Mgr :public CCommonPackageMgr < DemoPackage1 >
+	/////////////////////////////////包管理定义/////////////////////////////////////////
+	//协议登录包管理
+	class CProtocolLoginPackageMgr :public CCommonPackageMgr < ProtocolLoginPackage >
 	{
 		BYTE* Unparse(void* data, int* len);
 		void* Parse(BYTE* buf, int len);

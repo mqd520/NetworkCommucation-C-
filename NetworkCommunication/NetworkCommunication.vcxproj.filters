@@ -57,6 +57,9 @@
     <ClInclude Include="DemoProtocol.h">
       <Filter>04 DemoProtocol管理</Filter>
     </ClInclude>
+    <ClInclude Include="EncryptBuffer.h">
+      <Filter>01 工具</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetTool.cpp">
@@ -83,7 +86,10 @@
     <ClCompile Include="ProtocolMgr.cpp">
       <Filter>03 协议管理</Filter>
     </ClCompile>
-    <ClCompile Include="DemoProtocol.cpp">
+    <ClCompile Include="EncryptBuffer.cpp">
+      <Filter>01 工具</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoProtocolPackMgr.cpp">
       <Filter>04 DemoProtocol管理</Filter>
     </ClCompile>
   </ItemGroup>

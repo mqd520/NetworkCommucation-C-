@@ -2,6 +2,7 @@
 
 #include "ProtocolMgr.h"
 #include "DemoProtocol.h"
+#include "EncryptBuffer.h"
 
 namespace NetworkCommunication
 {
@@ -9,11 +10,17 @@ namespace NetworkCommunication
 	class CDemoProtocolMgr :public CProtocolMgr
 	{
 	protected:
+		CEncryptBuffer m_entrypy;//字节加密对象
+
+	protected:
 		void AssociatePackageType();
 		BYTE* GetPackageHeadBuf(int type, int len);
 		bool ValidateKeepAlivePackage(LPPackageBase data);
 		bool ValidatePackageHead(BYTE buf[]);
 		bool ValidatePackageType(int type);
+		void OnSendBufReadyCmp(BYTE* buf, int len);
+		bool OnRecvBufReadyCmp(BYTE* buf, int len);
+		void OnTcpConnectSuccess();
 
 	public:
 		CDemoProtocolMgr();

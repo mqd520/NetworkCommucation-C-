@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DemoProtocolMgr.h"
 #include "ProtocolTool.h"
+#include "NetTool.h"
 
 namespace NetworkCommunication
 {
@@ -12,7 +13,7 @@ namespace NetworkCommunication
 		m_nPackageHeadLen = DemoProtocol_HeadLen;//指定包头长度
 
 		// 非必需
-		m_nKeepAlive = DemoPackageType::type4;//指定心跳包类型(非-999)
+		m_nKeepAlive = DemoPackageType::KeepAlive;//指定心跳包类型(非-999)
 		m_pKeepAlive = new KeepAlivePackage();//指定心跳包
 		m_nKeepAliveFailMaxCount = 3;//指定心跳包允许失败最大值
 		m_nKeepAliveTimespan = 2 * 1000;//指定心跳包间隔时间
@@ -20,22 +21,21 @@ namespace NetworkCommunication
 
 	void CDemoProtocolMgr::AssociatePackageType()
 	{
-		m_vecPackageMgr.push_back({ DemoPackageType::type1, new CDemoPackage1Mgr() });
-		m_vecPackageMgr.push_back({ DemoPackageType::type2, new CCommonPackageMgr<DemoPackage2>() });
-		m_vecPackageMgr.push_back({ DemoPackageType::type3, new CCommonPackageMgr<DemoPackage3>() });
-		m_vecPackageMgr.push_back({ DemoPackageType::type4, new CCommonPackageMgr<KeepAlivePackage>() });
+		m_vecPackageMgr.push_back({ DemoPackageType::Login, new CCommonPackageMgr<LoginPackage>() });
+		m_vecPackageMgr.push_back({ DemoPackageType::LoginReply, new CCommonPackageMgr<LoginReplyPackage>() });
+		m_vecPackageMgr.push_back({ DemoPackageType::KeepAlive, new CCommonPackageMgr<KeepAlivePackage>() });
 	}
 
 	BYTE* CDemoProtocolMgr::GetPackageHeadBuf(int type, int len)
 	{
 		BYTE* buf = new BYTE[m_nPackageHeadLen];
-		buf[0] = 1;//主版本号
-		buf[1] = 0;//次版本号
-		buf[2] = m_nPackageHeadLen;//包头长度
-		buf[3] = GetTrdByteFromInt(type);//包类型(高位)
-		buf[4] = GetFouthByteFromInt(type);//包类型(低位)
-		buf[5] = GetTrdByteFromInt(len);//包体长度(高位)
-		buf[6] = GetFouthByteFromInt(len);//包体长度(低位)
+		buf[0] = 127;//主版本号
+		buf[1] = 104;//次版本号
+		buf[2] = GetTrdByteFromInt(type);//包类型(高位)
+		buf[3] = GetFouthByteFromInt(type);//包类型(低位)
+		buf[4] = GetTrdByteFromInt(len);//包体长度(高位)
+		buf[5] = GetFouthByteFromInt(len);//包体长度(低位)
+		buf[6] = 0;//校验码
 		return buf;
 	}
 
@@ -43,7 +43,7 @@ namespace NetworkCommunication
 	{
 		if (len >= m_nPackageHeadLen)
 		{
-			return MergeByte(buf[6], buf[5]);
+			return MergeByte(buf[5], buf[4]);
 		}
 		else
 		{
@@ -55,7 +55,7 @@ namespace NetworkCommunication
 	{
 		if (len >= m_nPackageHeadLen)
 		{
-			int type = MergeByte(buf[4], buf[3]);
+			int type = MergeByte(buf[3], buf[2]);
 			return DemoPackageType(type);
 		}
 		else
@@ -89,11 +89,39 @@ namespace NetworkCommunication
 		bool b = false;
 		if (true)//具体根据包类型来验证
 		{
-			if (type == type1 || type == type2 || type == type3 || type == type4)
+			if (type == Login || type == LoginReply || type == KeepAlive)
 			{
 				b = true;
 			}
 		}
 		return b;
+	}
+
+	void CDemoProtocolMgr::OnSendBufReadyCmp(BYTE* buf, int len)
+	{
+		BYTE code = m_entrypy.Encrypt(buf + GetHeadLen(), len - GetHeadLen());
+		buf[6] = code;
+	}
+
+	bool CDemoProtocolMgr::OnRecvBufReadyCmp(BYTE* buf, int len)
+	{
+		BYTE code = buf[6];
+		return m_entrypy.DeEncrypt(buf + GetHeadLen(), len - GetHeadLen(), code);
+	}
+
+	void CDemoProtocolMgr::OnTcpConnectSuccess()
+	{
+		wchar_t pwd[8] = L"abcdefg";//协议密码
+		int len = 0;
+		BYTE* buf = WriteUTF8Str(pwd, &len);
+		m_tcp.SendData(buf, len);
+		ProtocolLoginPackage pack1;
+		pack1.nKeepAlive = 1;
+		pack1.nServerID = 1;
+		pack1.nType = 16;
+		pack1.nVersion = 0x007;
+		pack1.str = L"";
+		SendData(DemoPackageType::ProtocolLogin, &pack1);
+		CProtocolMgr::OnTcpConnectSuccess();
 	}
 }

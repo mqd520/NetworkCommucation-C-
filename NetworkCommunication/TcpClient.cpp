@@ -296,6 +296,7 @@ namespace NetworkCommunication
 			}
 			else if (len == -1)//Õ¯¬Áπ ’œ
 			{
+				DWORD n = ::GetLastError();
 				OnLoseConnect(LoseConnectReason::Net);
 			}
 			return true;

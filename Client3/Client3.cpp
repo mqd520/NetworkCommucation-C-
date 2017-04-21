@@ -74,7 +74,8 @@ BOOL CClient3App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		m_demoProtocol.Init(ip, 8080, OnRecvPackage, OnRecvEvt);
+		//m_demoProtocol.Init(ip, 8080, OnRecvPackage, OnRecvEvt);
+		m_demoProtocol.Init(_T("192.168.0.113"), 7000, OnRecvPackage, OnRecvEvt);
 		m_demoProtocol.Connect();
 	}
 

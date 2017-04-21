@@ -231,6 +231,46 @@ namespace NetworkCommunication
 		//************************************
 		void SendProtocolEvt(ProtocolEvtType type, TCHAR* msg);
 
+		//************************************
+		// Method:    发送缓冲区准备完成事件处理
+		// FullName:  NetworkCommunication::CProtocolMgr::OnSendBufReadyCmp
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		virtual void OnSendBufReadyCmp(BYTE* buf, int len);
+
+		//************************************
+		// Method:    接收缓冲区(完整包)准备完成事件处理
+		// FullName:  NetworkCommunication::CProtocolMgr::OnRecvBufReadyCmp
+		// Access:    virtual protected 
+		// Returns:   缓冲区是否有效
+		// Qualifier:
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		virtual bool OnRecvBufReadyCmp(BYTE* buf, int len);
+
+		//************************************
+		// Method:    开始心跳包
+		// FullName:  NetworkCommunication::CProtocolMgr::StartKeepAlive
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		void StartKeepAlive();
+
+		//************************************
+		// Method:    是否指定了心跳包
+		// FullName:  NetworkCommunication::CProtocolMgr::IsAssignedKeepAlive
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		bool IsAssignedKeepAlive();
+
 	public:
 		CProtocolMgr();
 		~CProtocolMgr();

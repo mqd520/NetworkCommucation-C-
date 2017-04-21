@@ -91,20 +91,20 @@ HCURSOR CClient3Dlg::OnQueryDragIcon()
 void CClient3Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	DemoPackage1 packet1;
-	packet1.strUsername = _T("eguser001");
-	packet1.strPwd = _T("123456");
-	theApp.m_demoProtocol.SimulateServerData(DemoPackageType::type1, &packet1);
+	//LoginPackage packet1;
+	//packet1.strUsername = _T("eguser001");
+	//packet1.strPwd = _T("123456");
+	//theApp.m_demoProtocol.SimulateServerData(DemoPackageType::type1, &packet1);
 }
 
 
 void CClient3Dlg::OnBnClickedButton2()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	DemoPackage1 packet1;
-	packet1.strUsername = _T("eguser001");
-	packet1.strPwd = _T("123456");
-	theApp.m_demoProtocol.SendData(DemoPackageType::type1, &packet1);
+	//DemoPackage1 packet1;
+	//packet1.strUsername = _T("eguser001");
+	//packet1.strPwd = _T("123456");
+	//theApp.m_demoProtocol.SendData(DemoPackageType::type1, &packet1);
 }
 
 LRESULT CClient3Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)

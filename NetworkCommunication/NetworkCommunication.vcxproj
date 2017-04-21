@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Def.h" />
+    <ClInclude Include="EncryptBuffer.h" />
     <ClInclude Include="ProtocolMgr.h" />
     <ClInclude Include="StringHandle.h" />
     <ClInclude Include="DemoProtocolMgr.h" />
@@ -96,12 +97,13 @@
     <ClInclude Include="TcpClient.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DemoProtocolPackMgr.cpp" />
+    <ClCompile Include="EncryptBuffer.cpp" />
     <ClCompile Include="ProtocolMgr.cpp" />
     <ClCompile Include="StringHandle.cpp" />
     <ClCompile Include="DemoProtocolMgr.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="NetTool.cpp" />
-    <ClCompile Include="DemoProtocol.cpp" />
     <ClCompile Include="ProtocolTool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

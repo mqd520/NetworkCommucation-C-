@@ -152,6 +152,12 @@ namespace NetworkCommunication
 			::ReleaseMutex(m_hMutexStream);//解锁
 			if (buf != NULL)
 			{
+				//接收缓冲区(完整包)事件处理
+				if (!OnRecvBufReadyCmp(buf, packgetlen))
+				{
+					delete buf;
+					continue;
+				}
 				void* data = Unpacket(buf, packgetlen);//解包
 				delete buf;
 				if (AnalyticsPackage(type, (LPPackageBase)data))//分析包是否交由调用者处理
@@ -175,7 +181,7 @@ namespace NetworkCommunication
 
 	bool CProtocolMgr::AnalyticsPackage(int type, LPPackageBase data)
 	{
-		if (type == m_nKeepAlive&&m_nKeepAlive != PackageTypeNullVal)//启用了心跳包并且已收到心跳包
+		if (IsAssignedKeepAlive() && type == m_nKeepAlive)//启用了心跳包并且已收到心跳包
 		{
 			bool b = ValidateKeepAlivePackage(data);
 			if (b)
@@ -300,6 +306,7 @@ namespace NetworkCommunication
 	{
 		int len = 0;
 		BYTE* buf = Packet(type, data, &len);
+		OnSendBufReadyCmp(buf, len);
 		bool b = m_tcp.SendData(buf, len);
 		delete buf;
 		return b;
@@ -348,11 +355,12 @@ namespace NetworkCommunication
 		m_bIsOnlineCallEvt = false;
 		while (true)
 		{
+			m_tcp.SendData(m_pKeepAliveBuf, m_nKeepAliveBufLen);//向对方发送心跳包
+
 			::Sleep(m_nKeepAliveTimespan);
 
 			if (m_nKeepAliveFailCount <= m_nKeepAliveFailMaxCount)//如果对方在线,则验证对方是否在线并向对方发送心跳包
 			{
-				bool b = false;//是否向对方发送心跳包
 				if (m_nKeepAliveFailCount > 0 || m_nKeepAliveFailCount == -1)//没有收到心跳包
 				{
 					if (m_nKeepAliveFailCount <= m_nKeepAliveFailMaxCount)//未超过允许失败最大值
@@ -370,17 +378,12 @@ namespace NetworkCommunication
 				}
 				else//已收到心跳包
 				{
-					b = true;
 					if (!m_bIsOnlineCallEvt)//上线事件是否已触发
 					{
 						m_bIsOnlineCallEvt = true;//只触发一次(tcp连接有效的情况下)
 						OnConnectServerSuccsss();
 					}
 					m_nKeepAliveFailCount = -1;
-				}
-				if (b&&m_pKeepAlive)//只有收到对方心跳包才向对方发送心跳包
-				{
-					m_tcp.SendData(m_pKeepAliveBuf, m_nKeepAliveBufLen);//向对方发送心跳包
 				}
 			}
 			else
@@ -433,9 +436,9 @@ namespace NetworkCommunication
 	void CProtocolMgr::OnTcpConnectSuccess()
 	{
 		OutputDebugString(_T("success to connect server: \n"));
-		if (m_tiTimer.hThread == 0)
+		if (IsAssignedKeepAlive())
 		{
-			m_tiTimer.hThread = ::CreateThread(NULL, 0, StartTimer, this, NULL, &(m_tiTimer.dwThreadID));
+			StartKeepAlive();
 		}
 	}
 
@@ -477,5 +480,28 @@ namespace NetworkCommunication
 			m_bIsOfflineCallEvt = false;
 			m_nKeepAliveFailCount = -1;
 		}
+	}
+
+	void CProtocolMgr::OnSendBufReadyCmp(BYTE* buf, int len)
+	{
+
+	}
+
+	bool CProtocolMgr::OnRecvBufReadyCmp(BYTE* buf, int len)
+	{
+		return true;
+	}
+
+	void CProtocolMgr::StartKeepAlive()
+	{
+		if (m_tiTimer.hThread == 0)
+		{
+			m_tiTimer.hThread = ::CreateThread(NULL, 0, StartTimer, this, NULL, &(m_tiTimer.dwThreadID));
+		}
+	}
+
+	bool CProtocolMgr::IsAssignedKeepAlive()
+	{
+		return m_nKeepAlive != -999;
 	}
 }
