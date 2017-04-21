@@ -14,7 +14,7 @@ using namespace NetworkCommunication;
 #endif
 
 bool OnRecvData(BYTE buf[], int len);
-bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg);
+bool OnRecvEvt(TcpEvtType type, TCHAR* msg);
 
 // CClient1App
 
@@ -74,7 +74,7 @@ BOOL CClient1App::InitInstance()
 	if (GetLocalIP(ip))
 	{
 		//m_tcp.Init(_T("192.168.0.2"), 8080);
-		m_tcp.Init(ip, 8080);
+		m_tcp.Init(ip, 8070);
 		m_tcp.SetCallback(OnRecvData, OnRecvEvt);
 		m_tcp.Connect();
 	}
@@ -115,7 +115,7 @@ bool OnRecvData(BYTE buf[], int len)
 	return false;
 }
 
-bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg)
+bool OnRecvEvt(TcpEvtType type, TCHAR* msg)
 {
 	OutputDebugString(msg);
 	return true;

@@ -202,7 +202,7 @@ namespace NetworkCommunication
 			m_lpfnRecvProtocolEvt = lpfnRecvProtocolEvt;
 			AssociatePackageType();//关联包类型和包管理器
 			InitKeepAlive();//初始化心跳包
-			m_tcp.Init(ip, port, m_nTcpBufLen, m_bAutoReconnect, m_nReconnectTimes, m_nReconnectTimeSpan, m_nConnectTimeout);
+			//m_tcp.Init(ip, port, m_nTcpBufLen, m_bAutoReconnect, m_nReconnectTimes, m_nReconnectTimeSpan, m_nConnectTimeout);
 			m_tcp.SetCallbackT(this, &CProtocolMgr::OnRecvData, &CProtocolMgr::OnRecvTcpEvt);
 		}
 	}
@@ -444,8 +444,6 @@ namespace NetworkCommunication
 
 	void CProtocolMgr::OnTcpConnectFail()
 	{
-		//CleanThread();//清理心跳包线程
-		//m_nKeepAliveFailCount = 0;
 		OutputDebugString(_T("failed to connect server: \n"));
 	}
 

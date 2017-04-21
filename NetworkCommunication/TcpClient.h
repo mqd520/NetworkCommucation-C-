@@ -57,6 +57,7 @@ namespace NetworkCommunication
 		{
 			HANDLE hThread;//线程句柄
 			DWORD dwThreadID;//线程ID
+			bool bPause;//是否暂停
 		}ThreadInfo, *LPThreadInfo;
 
 	protected:
@@ -71,15 +72,15 @@ namespace NetworkCommunication
 		char* m_pRecvTcpBuf;//接收tcp缓冲区
 		LPOnRecvTcpEvt m_lpfnOnRecvTcpEvt;//接收tcp事件回调函数
 		bool m_bHaslpfnRecvTcpData;//是否已有接收tcp数据回调函数
-		int m_nReconnectTimeSpan;//连接失败后间隔时间(毫秒)
-		int m_nReconnectTimes;//允许重连次数(0:一直连接)(默认1)
-		int m_nReconnected;//断开后已重连次数
+		int m_nReconnectTimeSpan;//连接失败后再次连接间隔时间(毫秒)
+		int m_nAllowReconnectCount;//允许重连计数(-1:不重连,0:无限制,>0:允许次数)
+		int m_nReconnectCount;//已重连计数(连接成功后立即重置0)
 		bool m_bReconnecting;//正在重新连接
-		bool m_bAutoReconnect;//断线后是否自动重新连接
 		bool m_bExitThread;//指示应该退出后台线程
 		int m_nConnectTimeout;//连接超时时间(0:无限制等待)
 		ThreadInfo m_tiConnect;//连接线程信息
 		ThreadInfo m_tiConnectTimeout;//连接超时线程信息
+		ThreadInfo m_tiReadTcpData;//读取tcp数据线程信息
 		bool m_bConnectedTimeout;//指示连接是否超时
 
 	protected:
@@ -90,7 +91,16 @@ namespace NetworkCommunication
 		// Returns:   void
 		// Qualifier:
 		//************************************
-		virtual void InitSocket();
+		void InitSocket();
+
+		//************************************
+		// Method:    初始化服务端地址信息
+		// FullName:  NetworkCommunication::CTcpClient::InitServerAddr
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		//************************************
+		void InitServerAddr();
 
 		//************************************
 		// Method:    初始化客户端socket
@@ -99,16 +109,7 @@ namespace NetworkCommunication
 		// Returns:   bool
 		// Qualifier:
 		//************************************
-		virtual void CreateClientSocket();
-
-		//************************************
-		// Method:    重新连接服务端
-		// FullName:  NetworkCommunication::CTcpClient::ReconnectServer
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void ReconnectServer();
+		virtual void CreateSocket();
 
 		//************************************
 		// Method:    清理Socket
@@ -157,7 +158,18 @@ namespace NetworkCommunication
 		// Returns:   void
 		// Qualifier:
 		//************************************
-		virtual void OnConnected();
+		virtual void OnConnectSuccess();
+
+		//************************************
+		// Method:    暂停(恢复)指定线程
+		// FullName:  NetworkCommunication::CTcpClient::PauseThread
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 线程信息指针
+		// Parameter: 暂停与否
+		//************************************
+		void PauseThread(ThreadInfo* ti, bool b);
 
 	public:
 		CTcpClient();
@@ -174,8 +186,8 @@ namespace NetworkCommunication
 		// Parameter: 接收消息回调函数
 		// Parameter: 回调函数指针
 		//************************************
-		virtual void Init(const TCHAR* ip, int port, int socketBufLen = 1024, bool autoReconnect = true, int reconnectTimes = 0,
-			int reconnectTimeSpan = 1500, int connectTimeout = 2000);
+		void Init(const TCHAR* ip, int port, int socketBufLen = 1024, int allowReconnectCount = 0, int reconnectTimeSpan = 1500,
+			int connectTimeout = 2000);
 
 		//************************************
 		// Method:    设置回调函数
@@ -203,7 +215,7 @@ namespace NetworkCommunication
 		// Returns:   是否应该退出线程
 		// Qualifier:
 		//************************************
-		virtual bool ConnectServer();
+		void ConnectServer();
 
 		//************************************
 		// Method:    关闭与服务端连接
@@ -232,7 +244,7 @@ namespace NetworkCommunication
 		// Parameter: 缓冲区
 		// Parameter: 缓冲区长度
 		//************************************
-		virtual bool ReadTcpData();
+		void ReadTcpData();
 
 		//************************************
 		// Method:    发送数据

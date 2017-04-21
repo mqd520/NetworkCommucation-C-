@@ -12,6 +12,9 @@ namespace NetworkCommunication
 	DWORD WINAPI ReadTcpData(LPVOID lpParam);
 
 	//连接服务端线程入口
+	//DWORD WINAPI ConnectServer(LPVOID lpParam);
+
+	//连接服务端线程入口
 	DWORD WINAPI ConnectServer(LPVOID lpParam);
 
 	//超时线程入口
@@ -43,10 +46,9 @@ namespace NetworkCommunication
 		m_lpfnOnRecvTcpEvt(NULL),
 		m_bHaslpfnRecvTcpData(false),
 		m_nReconnectTimeSpan(3000),
-		m_nReconnectTimes(0),
-		m_nReconnected(0),
+		m_nAllowReconnectCount(0),
+		m_nReconnectCount(0),
 		m_bReconnecting(false),
-		m_bAutoReconnect(true),
 		m_bExitThread(false),
 		m_nConnectTimeout(2 * 1000),
 		m_tiConnect({ 0 }),
@@ -59,7 +61,7 @@ namespace NetworkCommunication
 	CTcpClient::~CTcpClient()
 	{
 		m_bExitThread = true;
-		CleanSocket();
+		CloseConnect();
 		if (m_pRecvTcpBuf)
 		{
 			delete m_pRecvTcpBuf;
@@ -67,13 +69,11 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CTcpClient::Init(const TCHAR* ip, int port, int socketBufLen, bool autoReconnect, int reconnectTimes,
-		int reconnectTimeSpan, int connectTimeout)
+	void CTcpClient::Init(const TCHAR* ip, int port, int socketBufLen, int allowReconnectCount, int reconnectTimeSpan, int connectTimeout)
 	{
 		if (!m_bInited)
 		{
-			m_bAutoReconnect = autoReconnect;
-			m_nReconnectTimes = reconnectTimes;
+			m_nAllowReconnectCount = allowReconnectCount;
 			m_nReconnectTimeSpan = reconnectTimeSpan;
 			m_bInited = true;
 			m_nRecvTcpBufLen = socketBufLen;
@@ -82,6 +82,7 @@ namespace NetworkCommunication
 			m_nServerPort = port;
 			m_nConnectTimeout = connectTimeout;
 			InitSocket();
+			InitServerAddr();
 		}
 	}
 
@@ -100,20 +101,9 @@ namespace NetworkCommunication
 		{
 			SendTcpEvt(TcpEvtType::error, _T("Socket初始化失败!\n"));
 		}
-		else
-		{
-			m_addrSrv.sin_family = AF_INET;
-			m_addrSrv.sin_port = htons(m_nServerPort);
-#ifdef _UNICODE
-			string strTmp = UTF8ToMultiByte(m_strServerIP);
-			m_addrSrv.sin_addr.S_un.S_addr = inet_addr(strTmp.c_str());
-#else
-			m_addrSrv.sin_addr.S_un.S_addr = inet_addr(m_strServerIP);
-#endif
-		}
 	}
 
-	void CTcpClient::CreateClientSocket()
+	void CTcpClient::CreateSocket()
 	{
 		m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (m_socket == INVALID_SOCKET)
@@ -122,71 +112,71 @@ namespace NetworkCommunication
 		}
 	}
 
-	DWORD WINAPI ConnectServer(LPVOID lpParam)
-	{
-		CTcpClient* p = (CTcpClient*)lpParam;
-		while (true)
-		{
-			if (p->ConnectServer())
-			{
-				break;
-			}
-		}
-		return 0;
-	}
+	//DWORD WINAPI ConnectServer(LPVOID lpParam)
+	//{
+	//	CTcpClient* p = (CTcpClient*)lpParam;
+	//	while (true)
+	//	{
+	//		if (p->ConnectServer())
+	//		{
+	//			break;
+	//		}
+	//	}
+	//	return 0;
+	//}
 
-	bool CTcpClient::ConnectServer()
-	{
-		if (m_bReconnecting || m_bExitThread == false)
-		{
-			if (m_nConnectTimeout > 0)//连接超时时间不为0时，启动超时线程
-			{
-				m_bConnectedTimeout = true;//指示连接已超时
-				m_tiConnectTimeout.hThread = ::CreateThread(NULL, 0, Timeout, this, NULL, &(m_tiConnectTimeout.dwThreadID));
-			}
-			int result = connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
-			if (m_nConnectTimeout > 0)
-			{
-				m_bConnectedTimeout = false;//指示已连接上,没有超时
-			}
-			if (result == SOCKET_ERROR)
-			{
-				TCHAR msg[100];
-				wsprintf(msg, _T("failed to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
-				SendTcpEvt(TcpEvtType::disconnected, msg);
-				if (m_nReconnectTimes > 0)
-				{
-					m_nReconnected++;
-					if (m_nReconnected == m_nReconnectTimes)
-					{
-						m_nReconnected = 0;
-						m_bReconnecting = false;
-					}
-				}
-				::Sleep(m_nReconnectTimeSpan);
-				return false;
-			}
-			else
-			{
-				OnConnected();
-				return true;
-			}
-		}
-		else
-		{
-			return true;
-		}
-	}
+	//bool CTcpClient::ConnectServer()
+	//{
+	//	if (m_bReconnecting || m_bExitThread == false)
+	//	{
+	//		if (m_nConnectTimeout > 0)//连接超时时间不为0时，启动超时线程
+	//		{
+	//			m_bConnectedTimeout = true;//指示连接已超时
+	//			m_tiConnectTimeout.hThread = ::CreateThread(NULL, 0, Timeout, this, NULL, &(m_tiConnectTimeout.dwThreadID));
+	//		}
+	//		int result = connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
+	//		if (m_nConnectTimeout > 0)
+	//		{
+	//			m_bConnectedTimeout = false;//指示已连接上,没有超时
+	//		}
+	//		if (result == SOCKET_ERROR)
+	//		{
+	//			TCHAR msg[100];
+	//			wsprintf(msg, _T("failed to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
+	//			SendTcpEvt(TcpEvtType::disconnected, msg);
+	//			if (m_nAllowReconnectCount > 0)
+	//			{
+	//				m_nReconnectCount++;
+	//				if (m_nReconnectCount == m_nAllowReconnectCount)
+	//				{
+	//					m_nReconnectCount = 0;
+	//					m_bReconnecting = false;
+	//				}
+	//			}
+	//			::Sleep(m_nReconnectTimeSpan);
+	//			return false;
+	//		}
+	//		else
+	//		{
+	//			OnConnectSuccess();
+	//			return true;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		return true;
+	//	}
+	//}
 
-	void CTcpClient::ReconnectServer()
-	{
-		if (!m_bReconnecting)
-		{
-			m_bReconnecting = true;
-			CreateClientSocket();
-			m_tiConnect.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ConnectServer, this, NULL, &(m_tiConnect.dwThreadID));
-		}
-	}
+	//void CTcpClient::ReconnectServer()
+	//{
+	//	if (!m_bReconnecting)
+	//	{
+	//		m_bReconnecting = true;
+	//		CreateSocket();
+	//		m_tiConnect.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ConnectServer, this, NULL, &(m_tiConnect.dwThreadID));
+	//	}
+	//}
 
 	void CTcpClient::OnLoseConnect(LoseConnectReason reason)
 	{
@@ -204,21 +194,29 @@ namespace NetworkCommunication
 			{
 				SendTcpEvt(disconnected, _T("Net trouble happended!\n"));
 			}
-			if (m_bExitThread == false && m_bAutoReconnect)
+			if (m_bExitThread == false)
 			{
-				ReconnectServer();
+				Connect();
+				PauseThread(&m_tiReadTcpData, true);
 			}
 		}
 	}
 
-	void CTcpClient::OnConnected()
+	void CTcpClient::OnConnectSuccess()
 	{
-		m_nReconnected = 0;
+		m_nReconnectCount = 0;
 		m_bReconnecting = false;
 		TCHAR msg[100];
 		wsprintf(msg, _T("success to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
 		SendTcpEvt(TcpEvtType::connected, msg);
-		::CreateThread(NULL, 0, NetworkCommunication::ReadTcpData, this, NULL, NULL);
+		if (m_tiReadTcpData.hThread == 0)//启动读取tcp数据线程
+		{
+			m_tiReadTcpData.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ReadTcpData, this, NULL, &m_tiReadTcpData.dwThreadID);
+		}
+		else
+		{
+			PauseThread(&m_tiReadTcpData, false);//恢复读取tcp数据线程
+		}
 	}
 
 	void CTcpClient::CleanSocket()
@@ -233,8 +231,19 @@ namespace NetworkCommunication
 
 	void CTcpClient::Connect()
 	{
-		CloseConnect();
-		ReconnectServer();
+		CloseConnect();//关闭可能已经存在的连接
+		CreateSocket();//重新创建客户端socket
+		if (m_tiConnect.hThread == 0)
+		{
+			//启动连接服务端线程
+			m_tiConnect.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ConnectServer, this, NULL, &m_tiConnect.dwThreadID);
+		}
+		else
+		{
+			//恢复已挂起的连接线程
+			m_nReconnectCount = 0;
+			PauseThread(&m_tiConnect, false);
+		}
 	}
 
 	void CTcpClient::CloseConnect()
@@ -242,16 +251,7 @@ namespace NetworkCommunication
 		m_bReconnecting = false;
 		m_bExitThread = true;
 		closesocket(m_socket);
-		if (m_tiConnect.hThread)
-		{
-			::TerminateThread(m_tiConnect.hThread, 0);
-			m_tiConnect = { 0 };
-		}
-		if (m_tiConnectTimeout.hThread)
-		{
-			::TerminateThread(m_tiConnectTimeout.hThread, 0);
-			m_tiConnectTimeout = { 0 };
-		}
+		PauseThread(&m_tiConnect, true);
 		m_bExitThread = false;
 	}
 
@@ -263,45 +263,35 @@ namespace NetworkCommunication
 	DWORD WINAPI ReadTcpData(LPVOID lpParam)
 	{
 		CTcpClient* p = (CTcpClient*)lpParam;
-		while (true)
-		{
-			if (p->ReadTcpData())
-			{
-				break;
-			}
-		}
+		p->ReadTcpData();
 		return 0;
 	}
 
-	bool CTcpClient::ReadTcpData()
+	void CTcpClient::ReadTcpData()
 	{
-		memset(m_pRecvTcpBuf, 0, m_nRecvTcpBufLen);
-		int len = recv(m_socket, m_pRecvTcpBuf, m_nRecvTcpBufLen, 0);
-		if (m_bExitThread)
+		while (true)
 		{
-			return true;
-		}
-		if (len > 0 && m_bHaslpfnRecvTcpData)
-		{
-			BYTE* buf = new BYTE[len];
-			memcpy(buf, m_pRecvTcpBuf, len);
-			LPRecvDataThreadEntryPara info = new RecvDataThreadEntryPara{ this, buf, len };
-			::CreateThread(NULL, 0, NetworkCommunication::OnRecvTcpData, info, NULL, NULL);
-		}
-		else
-		{
-			if (len == 0)//服务端主动断开连接
+			memset(m_pRecvTcpBuf, 0, m_nRecvTcpBufLen);
+			int len = recv(m_socket, m_pRecvTcpBuf, m_nRecvTcpBufLen, 0);
+			if (len > 0 && m_bHaslpfnRecvTcpData)
 			{
-				OnLoseConnect(LoseConnectReason::Server);
+				BYTE* buf = new BYTE[len];
+				memcpy(buf, m_pRecvTcpBuf, len);
+				LPRecvDataThreadEntryPara info = new RecvDataThreadEntryPara{ this, buf, len };
+				::CreateThread(NULL, 0, NetworkCommunication::OnRecvTcpData, info, NULL, NULL);
 			}
-			else if (len == -1)//网络故障
+			else
 			{
-				DWORD n = ::GetLastError();
-				OnLoseConnect(LoseConnectReason::Net);
+				if (len == 0)//服务端主动断开连接
+				{
+					OnLoseConnect(LoseConnectReason::Server);
+				}
+				else if (len == -1)//网络故障
+				{
+					OnLoseConnect(LoseConnectReason::Net);
+				}
 			}
-			return true;
 		}
-		return false;
 	}
 
 	bool CTcpClient::SendData(BYTE buf[], int len, int* actualLen)
@@ -418,12 +408,12 @@ namespace NetworkCommunication
 			TCHAR msg[100];
 			wsprintf(msg, _T("failed to connect server(time out): %s:%d\n"), m_strServerIP, m_nServerPort);
 			SendTcpEvt(TcpEvtType::disconnected, msg);
-			if (m_nReconnectTimes > 0)//有限次数重连
+			if (m_nAllowReconnectCount > 0)//有限次数重连
 			{
-				m_nReconnected++;
-				if (m_nReconnected == m_nReconnectTimes)//已达到重连次数
+				m_nReconnectCount++;
+				if (m_nReconnectCount == m_nAllowReconnectCount)//已达到重连次数
 				{
-					m_nReconnected = 0;//充值重连次数
+					m_nReconnectCount = 0;//充值重连次数
 					m_bReconnecting = false;//取消正在重连
 				}
 				else
@@ -441,5 +431,73 @@ namespace NetworkCommunication
 				m_tiConnect.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ConnectServer, this, NULL, &(m_tiConnect.dwThreadID));
 			}
 		}
+	}
+
+	DWORD WINAPI ConnectServer(LPVOID lpParam)
+	{
+		CTcpClient* p = (CTcpClient*)lpParam;
+		p->ConnectServer();
+		return 0;
+	}
+
+	void CTcpClient::ConnectServer()
+	{
+		while (true)
+		{
+			int result = ::connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
+			if (result == SOCKET_ERROR)
+			{
+				if (m_nAllowReconnectCount == 0 || (m_nAllowReconnectCount > 0 && m_nReconnectCount < m_nAllowReconnectCount))//判断是否需要重连
+				{
+					m_nReconnectCount++;
+					SendTcpEvt(TcpEvtType::disconnected, _T("failed to connect server \n"));
+					Sleep(m_nReconnectTimeSpan);//连接失败后休眠指定时间继续连接
+				}
+				else
+				{
+					PauseThread(&m_tiConnect, true);
+				}
+			}
+			else
+			{
+				OnConnectSuccess();//连接成功
+				PauseThread(&m_tiConnect, true);
+			}
+		}
+	}
+
+	void CTcpClient::PauseThread(ThreadInfo* ti, bool b)
+	{
+		if (ti->hThread != 0)
+		{
+			if (b)
+			{
+				if (!ti->bPause)
+				{
+					ti->bPause = true;
+					::SuspendThread(ti->hThread);
+				}
+			}
+			else
+			{
+				if (ti->bPause)
+				{
+					ti->bPause = false;
+					::ResumeThread(ti->hThread);
+				}
+			}
+		}
+	}
+
+	void CTcpClient::InitServerAddr()
+	{
+		m_addrSrv.sin_family = AF_INET;
+		m_addrSrv.sin_port = htons(m_nServerPort);
+#ifdef _UNICODE
+		string strTmp = UTF8ToMultiByte(m_strServerIP);
+		m_addrSrv.sin_addr.S_un.S_addr = inet_addr(strTmp.c_str());
+#else
+		m_addrSrv.sin_addr.S_un.S_addr = inet_addr(m_strServerIP);
+#endif
 	}
 }
