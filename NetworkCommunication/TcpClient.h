@@ -2,11 +2,11 @@
 #pragma comment(lib, "ws2_32.lib")
 #pragma warning(disable:4996)
 
-#include <stdio.h>
 #include <tchar.h>
 #include <WinSock2.h>
 #include <string>
-#include <vector>
+#include <queue>
+#include "Timer.h"
 
 using namespace std;
 
@@ -19,6 +19,21 @@ namespace NetworkCommunication
 		disconnected,//失去服务端连接
 		connected//连接上服务端
 	};
+
+	//tcp数据发送方式
+	enum TcpDataSendType
+	{
+		que,//队列
+		single,//单线程(接收线程)
+		multi//多线程
+	};
+
+	//缓冲区信息
+	typedef struct tagBufInfo
+	{
+		BYTE* buf;//缓冲区
+		int len;//缓冲区长度
+	}BufInfo, *LPBufInfo;
 
 	//************************************
 	// Method:    收到tcp数据函数指针
@@ -44,14 +59,6 @@ namespace NetworkCommunication
 	class CTcpClient
 	{
 	private:
-		//失去服务端连接原因枚举
-		enum LoseConnectReason
-		{
-			Server,//服务端主动断开
-			Client,//客户端主动断开
-			Net//网络故障
-		};
-
 		//线程信息
 		typedef struct tagThreadInfo
 		{
@@ -63,9 +70,9 @@ namespace NetworkCommunication
 	protected:
 		const TCHAR* m_strServerIP;//服务端IP
 		int m_nServerPort;//服务端端口
-		bool m_bIsCleaned;//是否已清理
 		SOCKADDR_IN m_addrSrv;//服务端地址
 		SOCKET m_socket;//客户端Socket
+		bool m_bSocketClosed;//客户端socket是否已关闭
 		bool m_bInited;//是否初始化
 		LPOnRecvTcpData m_lpfnOnRecvTcpData;//接收tcp数据回调函数
 		int m_nRecvTcpBufLen;//接收tcp缓冲区总长度
@@ -73,92 +80,48 @@ namespace NetworkCommunication
 		LPOnRecvTcpEvt m_lpfnOnRecvTcpEvt;//接收tcp事件回调函数
 		bool m_bHaslpfnRecvTcpData;//是否已有接收tcp数据回调函数
 		int m_nReconnectTimeSpan;//连接失败后再次连接间隔时间(毫秒)
-		int m_nAllowReconnectCount;//允许重连计数(-1:不重连,0:无限制,>0:允许次数)
+		int m_nAllowReconnectCount;//允许重连计数(-1:不允许重连,0:无限制,>0:允许次数)
 		int m_nReconnectCount;//已重连计数(连接成功后立即重置0)
-		bool m_bReconnecting;//正在重新连接
-		bool m_bExitThread;//指示应该退出后台线程
-		int m_nConnectTimeout;//连接超时时间(0:无限制等待)
+		int m_nConnectTimeout;//连接超时时间(0:无限制等待,>0:限制指定时间)
 		ThreadInfo m_tiConnect;//连接线程信息
-		ThreadInfo m_tiConnectTimeout;//连接超时线程信息
 		ThreadInfo m_tiReadTcpData;//读取tcp数据线程信息
-		bool m_bConnectedTimeout;//指示连接是否超时
+		CTimerT<CTcpClient>* m_timer;//连接超时对象
+		TcpDataSendType m_sendType;//tcp数据发送方式
+		queue<BufInfo> m_queue;//队列对象
+		ThreadInfo m_tiQueue;//队列线程信息
 
 	protected:
-		//************************************
-		// Method:    初始化socket
-		// FullName:  NetworkCommunication::CTcpClient::InitSocket
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
+		//初始化socket环境
 		void InitSocket();
 
-		//************************************
-		// Method:    初始化服务端地址信息
-		// FullName:  NetworkCommunication::CTcpClient::InitServerAddr
-		// Access:    protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
+		//初始化服务端地址信息
 		void InitServerAddr();
 
-		//************************************
-		// Method:    初始化客户端socket
-		// FullName:  NetworkCommunication::CTcpClient::InitSocket
-		// Access:    protected 
-		// Returns:   bool
-		// Qualifier:
-		//************************************
-		virtual void CreateSocket();
-
-		//************************************
-		// Method:    清理Socket
-		// FullName:  NetworkCommunication::CTcpClient::CleanSocket
-		// Access:    protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void CleanSocket();
+		//创建socket
+		void CreateSocket();
 
 		//************************************
 		// Method:    发送通知事件
-		// FullName:  NetworkCommunication::CTcpClient::SaveNotifyEvt
+		// FullName:  NetworkCommunication::CTcpClient::SendTcpEvt
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
-		// Parameter: 类型
+		// Parameter: 事件类型
 		// Parameter: 消息
 		//************************************
 		virtual void SendTcpEvt(TcpEvtType type, TCHAR* msg);
 
-		//************************************
-		// Method:    打印消息
-		// FullName:  NetworkCommunication::CTcpClient::Printf
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: 消息
-		//************************************
-		virtual void Printf(TCHAR* msg);
+		//连接成功事件处理
+		void OnConnectSuccess();
 
 		//************************************
-		// Method:    失去服务端连接
-		// FullName:  NetworkCommunication::CTcpClient::OnLoseConnect
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: 原因
-		//************************************
-		virtual void OnLoseConnect(LoseConnectReason reason);
-
-		//************************************
-		// Method:    已连接上服务端
-		// FullName:  NetworkCommunication::CTcpClient::OnConnected
-		// Access:    virtual protected 
-		// Returns:   void
+		// Method:    连接超时事件处理
+		// FullName:  NetworkCommunication::CTcpClient::OnConnectTimeout
+		// Access:    protected 
+		// Returns:   是否继续计时
 		// Qualifier:
 		//************************************
-		virtual void OnConnectSuccess();
+		bool OnConnectTimeout();
 
 		//************************************
 		// Method:    暂停(恢复)指定线程
@@ -170,6 +133,67 @@ namespace NetworkCommunication
 		// Parameter: 暂停与否
 		//************************************
 		void PauseThread(ThreadInfo* ti, bool b);
+
+		//清理线程
+		void CleanThread();
+
+		//关闭socket
+		void CloseSocket();
+
+		//************************************
+		// Method:    收到tcp数据事件处理
+		// FullName:  NetworkCommunication::CTcpClient::OnRecvTcpData
+		// Access:    virtual public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		void OnRecvTcpData(BYTE buf[], int len);
+
+		//************************************
+		// Method:    发送接收到的tcp数据
+		// FullName:  NetworkCommunication::CTcpClient::SendTcpData
+		// Access:    virtual protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		virtual void SendTcpData(BYTE buf[], int len);
+
+		//************************************
+		// Method:    单线程处理接收到的数据
+		// FullName:  NetworkCommunication::CTcpClient::OnSingle
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		void OnSingle(BYTE buf[], int len);
+
+		//************************************
+		// Method:    队列处理接收到的数据
+		// FullName:  NetworkCommunication::CTcpClient::OnQueue
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		void OnQueue(BYTE buf[], int len);
+
+		//************************************
+		// Method:    多线程处理接收到的数据
+		// FullName:  NetworkCommunication::CTcpClient::OnMulti
+		// Access:    protected 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
+		//************************************
+		void OnMulti(BYTE buf[], int len);
 
 	public:
 		CTcpClient();
@@ -183,11 +207,14 @@ namespace NetworkCommunication
 		// Qualifier:
 		// Parameter: 服务端IP
 		// Parameter: 服务端端口
-		// Parameter: 接收消息回调函数
-		// Parameter: 回调函数指针
+		// Parameter: 发送接收到的tcp数据方式
+		// Parameter: 接收缓冲区长度
+		// Parameter: 允许重连计数(-1:不允许重连,0:无限制,>0:允许次数)
+		// Parameter: 重连事件间隔
+		// Parameter: 连接超时时间
 		//************************************
-		void Init(const TCHAR* ip, int port, int socketBufLen = 1024, int allowReconnectCount = 0, int reconnectTimeSpan = 1500,
-			int connectTimeout = 2000);
+		void Init(const TCHAR* ip, int port, TcpDataSendType type = TcpDataSendType::que, int socketBufLen = 1024, int allowReconnectCount = 0,
+			int reconnectTimeSpan = 2000, int connectTimeout = 2000);
 
 		//************************************
 		// Method:    设置回调函数
@@ -195,55 +222,24 @@ namespace NetworkCommunication
 		// Access:    virtual public 
 		// Returns:   void
 		// Qualifier:
-		// Parameter: 接收socket数据回调函数
+		// Parameter: 接收tcp数据回调函数
+		// Parameter: 接收tcp事件回调函数
 		//************************************
 		virtual void SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData, LPOnRecvTcpEvt lpfnOnRecvTcpEvt = NULL);
 
-		//************************************
-		// Method:    连接服务端
-		// FullName:  NetworkCommunication::CTcpClient::Connect
-		// Access:    virtual public 
-		// Returns:   bool
-		// Qualifier:
-		//************************************
-		virtual void Connect();
+		//开始连接
+		void Connect();
 
-		//************************************
-		// Method:    连接服务端
-		// FullName:  NetworkCommunication::CTcpClient::ConnectServer
-		// Access:    virtual protected 
-		// Returns:   是否应该退出线程
-		// Qualifier:
-		//************************************
+		//连接服务端线程入口(无需调用)
 		void ConnectServer();
 
-		//************************************
-		// Method:    关闭与服务端连接
-		// FullName:  NetworkCommunication::CTcpClient::CloseConnect
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void CloseConnect();
+		//关闭连接
+		void CloseConnect();
 
-		//************************************
-		// Method:    获取服务端Socket
-		// FullName:  NetworkCommunication::CTcpClient::GetServerSocket
-		// Access:    public 
-		// Returns:   SOCKET
-		// Qualifier:
-		//************************************
-		virtual SOCKET GetClientSocket();
+		//获取服务端Socket
+		SOCKET GetClientSocket();
 
-		//************************************
-		// Method:    读取tcp数据
-		// FullName:  NetworkCommunication::CTcpClient::ReadTcpData
-		// Access:    virtual public 
-		// Returns:   是否该退出线程
-		// Qualifier:
-		// Parameter: 缓冲区
-		// Parameter: 缓冲区长度
-		//************************************
+		//读取tcp数据线程入口(无需调用)
 		void ReadTcpData();
 
 		//************************************
@@ -256,27 +252,7 @@ namespace NetworkCommunication
 		// Parameter: 字节数组长度
 		// Parameter: 实际发送长度
 		//************************************
-		virtual bool SendData(BYTE buf[], int len, int* actualLen = NULL);
-
-		//************************************
-		// Method:    收到tcp数据
-		// FullName:  NetworkCommunication::CTcpClient::OnRecvSocketData
-		// Access:    virtual public 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: 缓冲区
-		// Parameter: 缓冲区长度
-		//************************************
-		virtual void OnRecvTcpData(BYTE buf[], int len);
-
-		//************************************
-		// Method:    连接超时
-		// FullName:  NetworkCommunication::CTcpClient::OnConnectTimeout
-		// Access:    virtual public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void OnConnectTimeout();
+		bool SendData(BYTE buf[], int len, int* actualLen = NULL);
 
 		//************************************
 		// Method:    模拟一次服务端发包
@@ -287,6 +263,20 @@ namespace NetworkCommunication
 		// Parameter: 缓冲区
 		// Parameter: 缓冲区长度
 		//************************************
-		virtual void SimulateServerData(BYTE* buf, int len);
+		void SimulateServerData(BYTE* buf, int len);
+
+		//************************************
+		// Method:    多线程处理接收的tcp数据线程入口(无需调用)
+		// FullName:  NetworkCommunication::CTcpClient::MultiSendTcpData
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: BYTE buf[]
+		// Parameter: int len
+		//************************************
+		void MultiSendTcpData(BYTE buf[], int len);
+		
+		//读取队列线程入口(无需调用)
+		void ReadQueue();
 	};
 }

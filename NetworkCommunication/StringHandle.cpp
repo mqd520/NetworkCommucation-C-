@@ -46,4 +46,16 @@ namespace NetworkCommunication
 			return GetWStrByteCount((wchar_t*)str);
 		}
 	}
+
+	void Printf(TCHAR* msg)
+	{
+#ifdef _DEBUG
+#ifdef _CONSOLE_APP
+		_tprintf(msg);
+#endif
+#ifdef _WINDOWS_
+		OutputDebugString(msg);
+#endif
+#endif // _DEBUG
+	}
 }

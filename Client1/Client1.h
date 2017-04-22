@@ -10,6 +10,7 @@
 
 #include "resource.h"		// Ö÷·ûºÅ
 #include "TcpClient.h"
+#include "Timer.h"
 
 using namespace NetworkCommunication;
 
@@ -35,6 +36,7 @@ public:
 	// ÊµÏÖ
 
 	DECLARE_MESSAGE_MAP()
+	virtual int ExitInstance();
 };
 
 extern CClient1App theApp;

@@ -25,17 +25,21 @@ END_MESSAGE_MAP()
 
 // CClient1App 构造
 
+bool OnTimer()
+{
+	OutputDebugString(_T("OnTimer\n"));
+	return false;
+}
+
 CClient1App::CClient1App()
 {
 	// TODO:  在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
 }
 
-
 // 唯一的一个 CClient1App 对象
 
 CClient1App theApp;
-
 
 // CClient1App 初始化
 
@@ -70,11 +74,12 @@ BOOL CClient1App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
+
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		//m_tcp.Init(_T("192.168.0.2"), 8080);
-		m_tcp.Init(ip, 8070);
+		//m_tcp.Init(_T("192.168.0.24"), 8080);
+		m_tcp.Init(ip, 8080);
 		m_tcp.SetCallback(OnRecvData, OnRecvEvt);
 		m_tcp.Connect();
 	}
@@ -119,4 +124,10 @@ bool OnRecvEvt(TcpEvtType type, TCHAR* msg)
 {
 	OutputDebugString(msg);
 	return true;
+}
+
+int CClient1App::ExitInstance()
+{
+	// TODO:  在此添加专用代码和/或调用基类
+	return CWinApp::ExitInstance();
 }

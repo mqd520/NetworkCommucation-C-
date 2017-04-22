@@ -5,42 +5,30 @@
 
 namespace NetworkCommunication
 {
-	//接收tcp数据线程入口
-	DWORD WINAPI OnRecvTcpData(LPVOID lpParam);
+	//连接服务端线程入口
+	DWORD WINAPI ConnectServer(LPVOID lpParam);
 
 	//读取tcp数据线程入口
 	DWORD WINAPI ReadTcpData(LPVOID lpParam);
 
-	//连接服务端线程入口
-	//DWORD WINAPI ConnectServer(LPVOID lpParam);
+	//多线程发送数据线程入口
+	DWORD WINAPI MultiSendRecvData(LPVOID lpParam);
 
-	//连接服务端线程入口
-	DWORD WINAPI ConnectServer(LPVOID lpParam);
+	//读取队列数据线程入口
+	DWORD WINAPI ReadQueue(LPVOID lpParam);
 
-	//超时线程入口
-	DWORD WINAPI Timeout(LPVOID lpParam);
-
-	//接收数据线程入口参数
-	typedef struct tagRecvDataThreadEntryPara
+	//多线程发送tcp数据线程参数
+	typedef struct tagMultiSendTcpDataThreadPara
 	{
 		CTcpClient* pClient;//客户端指针
-		BYTE* buf;//缓冲区
-		int nlen;//缓冲区长度
-	}RecvDataThreadEntryPara, *LPRecvDataThreadEntryPara;
-
-	//超时线程入口参数
-	typedef struct tagTimeoutThreadEntryPara
-	{
-		CTcpClient* pClient;//客户端指针
-		int nTimeout;
-	}TimeoutThreadEntryPara, *LPTimeoutThreadEntryPara;
+		BufInfo buf;//缓冲区信息
+	}MultiSendTcpDataThreadPara, *LPMultiSendTcpDataThreadPara;
 
 	CTcpClient::CTcpClient() :
 		m_nRecvTcpBufLen(0),
 		m_pRecvTcpBuf(NULL),
 		m_strServerIP(NULL),
 		m_nServerPort(0),
-		m_bIsCleaned(false),
 		m_socket(0),
 		m_addrSrv({ 0 }),
 		m_lpfnOnRecvTcpEvt(NULL),
@@ -48,31 +36,38 @@ namespace NetworkCommunication
 		m_nReconnectTimeSpan(3000),
 		m_nAllowReconnectCount(0),
 		m_nReconnectCount(0),
-		m_bReconnecting(false),
-		m_bExitThread(false),
 		m_nConnectTimeout(2 * 1000),
 		m_tiConnect({ 0 }),
-		m_tiConnectTimeout({ 0 }),
-		m_bConnectedTimeout(false)
+		m_bSocketClosed(true),
+		m_timer(NULL),
+		m_sendType(TcpDataSendType::single),
+		m_tiQueue({ 0 })
 	{
 
 	}
 
 	CTcpClient::~CTcpClient()
 	{
-		m_bExitThread = true;
 		CloseConnect();
+		CleanThread();
+		WSACleanup();
 		if (m_pRecvTcpBuf)
 		{
 			delete m_pRecvTcpBuf;
 			m_pRecvTcpBuf = NULL;
 		}
+		if (m_timer)
+		{
+			delete m_timer;
+		}
 	}
 
-	void CTcpClient::Init(const TCHAR* ip, int port, int socketBufLen, int allowReconnectCount, int reconnectTimeSpan, int connectTimeout)
+	void CTcpClient::Init(const TCHAR* ip, int port, TcpDataSendType type, int socketBufLen, int allowReconnectCount, int reconnectTimeSpan,
+		int connectTimeout)
 	{
 		if (!m_bInited)
 		{
+			m_sendType = type;
 			m_nAllowReconnectCount = allowReconnectCount;
 			m_nReconnectTimeSpan = reconnectTimeSpan;
 			m_bInited = true;
@@ -80,7 +75,15 @@ namespace NetworkCommunication
 			m_pRecvTcpBuf = new char[socketBufLen];
 			m_strServerIP = ip;
 			m_nServerPort = port;
-			m_nConnectTimeout = connectTimeout;
+			if (connectTimeout > 0)//连接有超时时间
+			{
+				m_timer = new CTimerT<CTcpClient>(connectTimeout);
+				m_timer->SetCallbackT(&CTcpClient::OnConnectTimeout, this);
+			}
+			if (m_sendType == TcpDataSendType::que)//创建队列线程
+			{
+				m_tiQueue.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ReadQueue, this, NULL, &m_tiQueue.dwThreadID);
+			}
 			InitSocket();
 			InitServerAddr();
 		}
@@ -96,7 +99,6 @@ namespace NetworkCommunication
 	void CTcpClient::InitSocket()
 	{
 		WSADATA wsaData;
-
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
 			SendTcpEvt(TcpEvtType::error, _T("Socket初始化失败!\n"));
@@ -110,102 +112,15 @@ namespace NetworkCommunication
 		{
 			SendTcpEvt(TcpEvtType::error, _T("创建Socket失败!\n"));
 		}
-	}
-
-	//DWORD WINAPI ConnectServer(LPVOID lpParam)
-	//{
-	//	CTcpClient* p = (CTcpClient*)lpParam;
-	//	while (true)
-	//	{
-	//		if (p->ConnectServer())
-	//		{
-	//			break;
-	//		}
-	//	}
-	//	return 0;
-	//}
-
-	//bool CTcpClient::ConnectServer()
-	//{
-	//	if (m_bReconnecting || m_bExitThread == false)
-	//	{
-	//		if (m_nConnectTimeout > 0)//连接超时时间不为0时，启动超时线程
-	//		{
-	//			m_bConnectedTimeout = true;//指示连接已超时
-	//			m_tiConnectTimeout.hThread = ::CreateThread(NULL, 0, Timeout, this, NULL, &(m_tiConnectTimeout.dwThreadID));
-	//		}
-	//		int result = connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
-	//		if (m_nConnectTimeout > 0)
-	//		{
-	//			m_bConnectedTimeout = false;//指示已连接上,没有超时
-	//		}
-	//		if (result == SOCKET_ERROR)
-	//		{
-	//			TCHAR msg[100];
-	//			wsprintf(msg, _T("failed to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
-	//			SendTcpEvt(TcpEvtType::disconnected, msg);
-	//			if (m_nAllowReconnectCount > 0)
-	//			{
-	//				m_nReconnectCount++;
-	//				if (m_nReconnectCount == m_nAllowReconnectCount)
-	//				{
-	//					m_nReconnectCount = 0;
-	//					m_bReconnecting = false;
-	//				}
-	//			}
-	//			::Sleep(m_nReconnectTimeSpan);
-	//			return false;
-	//		}
-	//		else
-	//		{
-	//			OnConnectSuccess();
-	//			return true;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		return true;
-	//	}
-	//}
-
-	//void CTcpClient::ReconnectServer()
-	//{
-	//	if (!m_bReconnecting)
-	//	{
-	//		m_bReconnecting = true;
-	//		CreateSocket();
-	//		m_tiConnect.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ConnectServer, this, NULL, &(m_tiConnect.dwThreadID));
-	//	}
-	//}
-
-	void CTcpClient::OnLoseConnect(LoseConnectReason reason)
-	{
-		if (reason == LoseConnectReason::Client)
-		{
-			SendTcpEvt(disconnected, _T("client disconnect the connection!\n"));
-		}
 		else
 		{
-			if (reason == LoseConnectReason::Server)
-			{
-				SendTcpEvt(disconnected, _T("server disconnect the connection!\n"));
-			}
-			else if (reason == LoseConnectReason::Net)
-			{
-				SendTcpEvt(disconnected, _T("Net trouble happended!\n"));
-			}
-			if (m_bExitThread == false)
-			{
-				Connect();
-				PauseThread(&m_tiReadTcpData, true);
-			}
+			m_bSocketClosed = false;
 		}
 	}
 
 	void CTcpClient::OnConnectSuccess()
 	{
 		m_nReconnectCount = 0;
-		m_bReconnecting = false;
 		TCHAR msg[100];
 		wsprintf(msg, _T("success to connect server: %s:%d\n"), m_strServerIP, m_nServerPort);
 		SendTcpEvt(TcpEvtType::connected, msg);
@@ -219,14 +134,10 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CTcpClient::CleanSocket()
+	bool CTcpClient::OnConnectTimeout()
 	{
-		if (!m_bIsCleaned)
-		{
-			CloseConnect();
-			WSACleanup();
-			m_bIsCleaned = true;
-		}
+		CloseSocket();
+		return false;
 	}
 
 	void CTcpClient::Connect()
@@ -235,7 +146,7 @@ namespace NetworkCommunication
 		CreateSocket();//重新创建客户端socket
 		if (m_tiConnect.hThread == 0)
 		{
-			//启动连接服务端线程
+			//启动连接线程
 			m_tiConnect.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ConnectServer, this, NULL, &m_tiConnect.dwThreadID);
 		}
 		else
@@ -248,11 +159,9 @@ namespace NetworkCommunication
 
 	void CTcpClient::CloseConnect()
 	{
-		m_bReconnecting = false;
-		m_bExitThread = true;
-		closesocket(m_socket);
+		CloseSocket();
 		PauseThread(&m_tiConnect, true);
-		m_bExitThread = false;
+		PauseThread(&m_tiReadTcpData, true);
 	}
 
 	SOCKET CTcpClient::GetClientSocket()
@@ -271,25 +180,29 @@ namespace NetworkCommunication
 	{
 		while (true)
 		{
-			memset(m_pRecvTcpBuf, 0, m_nRecvTcpBufLen);
+			memset(m_pRecvTcpBuf, 0, m_nRecvTcpBufLen);//接收缓冲区清零
 			int len = recv(m_socket, m_pRecvTcpBuf, m_nRecvTcpBufLen, 0);
 			if (len > 0 && m_bHaslpfnRecvTcpData)
 			{
 				BYTE* buf = new BYTE[len];
 				memcpy(buf, m_pRecvTcpBuf, len);
-				LPRecvDataThreadEntryPara info = new RecvDataThreadEntryPara{ this, buf, len };
-				::CreateThread(NULL, 0, NetworkCommunication::OnRecvTcpData, info, NULL, NULL);
+				OnRecvTcpData(buf, len);
 			}
 			else
 			{
-				if (len == 0)//服务端主动断开连接
+				if (len == 0)//连接被关闭
 				{
-					OnLoseConnect(LoseConnectReason::Server);
+					SendTcpEvt(disconnected, _T("server disconnect the connection! \n"));
 				}
 				else if (len == -1)//网络故障
 				{
-					OnLoseConnect(LoseConnectReason::Net);
+					SendTcpEvt(disconnected, _T("Net trouble happended! \n"));
 				}
+				if (m_nAllowReconnectCount != -1)//允许重连
+				{
+					Connect();//重连连接
+				}
+				PauseThread(&m_tiReadTcpData, true);//挂起读取tcp数据线程
 			}
 		}
 	}
@@ -336,18 +249,6 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CTcpClient::Printf(TCHAR* msg)
-	{
-#ifdef _DEBUG
-#ifdef _CONSOLE_APP
-		_tprintf(msg);
-#endif
-#ifdef _WINDOWS_
-		OutputDebugString(msg);
-#endif
-#endif // _DEBUG
-	}
-
 	void CTcpClient::SimulateServerData(BYTE* buf, int len)
 	{
 		BYTE* buf1 = new BYTE[len];
@@ -355,15 +256,43 @@ namespace NetworkCommunication
 		OnRecvTcpData(buf1, len);
 	}
 
-	DWORD WINAPI OnRecvTcpData(LPVOID lpParam)
+	void CTcpClient::OnRecvTcpData(BYTE buf[], int len)
 	{
-		LPRecvDataThreadEntryPara p = (LPRecvDataThreadEntryPara)lpParam;
-		p->pClient->OnRecvTcpData(p->buf, p->nlen);
-		delete p;
-		return 0;
+		switch (m_sendType)
+		{
+		case NetworkCommunication::que:
+			OnQueue(buf, len);
+			break;
+		case NetworkCommunication::single:
+			OnSingle(buf, len);
+			break;
+		case NetworkCommunication::multi:
+			OnMulti(buf, len);
+			break;
+		default:
+			delete buf;
+			break;
+		}
 	}
 
-	void CTcpClient::OnRecvTcpData(BYTE buf[], int len)
+	void CTcpClient::OnSingle(BYTE buf[], int len)
+	{
+		SendTcpData(buf, len);
+	}
+
+	void CTcpClient::OnQueue(BYTE buf[], int len)
+	{
+		m_queue.push({ buf, len });
+		PauseThread(&m_tiQueue, false);
+	}
+
+	void CTcpClient::OnMulti(BYTE buf[], int len)
+	{
+		LPMultiSendTcpDataThreadPara p = new MultiSendTcpDataThreadPara{ this, { buf, len } };
+		::CreateThread(NULL, 0, NetworkCommunication::MultiSendRecvData, p, NULL, NULL);
+	}
+
+	void CTcpClient::SendTcpData(BYTE buf[], int len)
 	{
 		if (m_lpfnOnRecvTcpData&&buf&&len > 0)
 		{
@@ -378,61 +307,6 @@ namespace NetworkCommunication
 		}
 	}
 
-	DWORD WINAPI Timeout(LPVOID lpParam)
-	{
-		CTcpClient* p = (CTcpClient*)lpParam;
-		p->OnConnectTimeout();
-		return 0;
-	}
-
-	void CTcpClient::OnConnectTimeout()
-	{
-		Sleep(m_nConnectTimeout);
-
-		m_tiConnectTimeout = { 0 };//重置连接超时线程信息
-
-		if (m_bExitThread)//指示应该退出线程
-		{
-			return;
-		}
-
-		if (m_bConnectedTimeout)//指示连接已超时,可以进行超时处理
-		{
-			if (m_tiConnect.hThread)
-			{
-				::TerminateThread(m_tiConnect.hThread, 0);
-				m_tiConnect = { 0 };
-			}
-
-			bool connect = false;//是否应该重新启动连接
-			TCHAR msg[100];
-			wsprintf(msg, _T("failed to connect server(time out): %s:%d\n"), m_strServerIP, m_nServerPort);
-			SendTcpEvt(TcpEvtType::disconnected, msg);
-			if (m_nAllowReconnectCount > 0)//有限次数重连
-			{
-				m_nReconnectCount++;
-				if (m_nReconnectCount == m_nAllowReconnectCount)//已达到重连次数
-				{
-					m_nReconnectCount = 0;//充值重连次数
-					m_bReconnecting = false;//取消正在重连
-				}
-				else
-				{
-					connect = true;
-				}
-			}
-			else//无限制重连
-			{
-				connect = true;
-			}
-			if (connect)
-			{
-				//开始重连
-				m_tiConnect.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ConnectServer, this, NULL, &(m_tiConnect.dwThreadID));
-			}
-		}
-	}
-
 	DWORD WINAPI ConnectServer(LPVOID lpParam)
 	{
 		CTcpClient* p = (CTcpClient*)lpParam;
@@ -444,7 +318,22 @@ namespace NetworkCommunication
 	{
 		while (true)
 		{
+			if (m_timer)//指定了连接超时时间
+			{
+				if (m_bSocketClosed)//socket可能因为上一次连接超时而被关闭
+				{
+					CreateSocket();//重新创建socket
+				}
+				m_timer->Start();//开始计时
+			}
 			int result = ::connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
+			if (m_timer)//指定了连接超时时间
+			{
+				if (!m_timer->IsTimeoutCmp())//连接没有超时,停止本次计时
+				{
+					m_timer->Stop();
+				}
+			}
 			if (result == SOCKET_ERROR)
 			{
 				if (m_nAllowReconnectCount == 0 || (m_nAllowReconnectCount > 0 && m_nReconnectCount < m_nAllowReconnectCount))//判断是否需要重连
@@ -499,5 +388,69 @@ namespace NetworkCommunication
 #else
 		m_addrSrv.sin_addr.S_un.S_addr = inet_addr(m_strServerIP);
 #endif
+	}
+
+	void CTcpClient::CleanThread()
+	{
+		if (m_tiConnect.hThread)
+		{
+			::TerminateThread(m_tiConnect.hThread, 0);
+			::CloseHandle(m_tiConnect.hThread);
+		}
+		if (m_tiReadTcpData.hThread)
+		{
+			::TerminateThread(m_tiReadTcpData.hThread, 0);
+			::CloseHandle(m_tiReadTcpData.hThread);
+		}
+		if (m_tiQueue.hThread)
+		{
+			::TerminateThread(m_tiQueue.hThread, 0);
+			::CloseHandle(m_tiQueue.hThread);
+		}
+	}
+
+	void CTcpClient::CloseSocket()
+	{
+		::closesocket(m_socket);
+		m_bSocketClosed = true;
+	}
+
+	DWORD WINAPI MultiSendRecvData(LPVOID lpParam)
+	{
+		LPMultiSendTcpDataThreadPara p = (LPMultiSendTcpDataThreadPara)lpParam;
+		p->pClient->MultiSendTcpData(p->buf.buf, p->buf.len);
+		delete p;
+		return 0;
+	}
+
+	void CTcpClient::MultiSendTcpData(BYTE buf[], int len)
+	{
+		SendTcpData(buf, len);
+	}
+
+	DWORD WINAPI ReadQueue(LPVOID lpParam)
+	{
+		CTcpClient* p = (CTcpClient*)lpParam;
+		p->ReadQueue();
+		return 0;
+	}
+
+	void CTcpClient::ReadQueue()
+	{
+		while (true)
+		{
+			if (m_queue.empty())//队列空了，应该挂起线程
+			{
+				PauseThread(&m_tiQueue, true);
+			}
+			else
+			{
+				BufInfo bufinfo = m_queue.front();
+				BYTE* buf = bufinfo.buf;
+				int len = bufinfo.len;
+				m_queue.pop();
+				SendTcpData(buf, len);
+			}
+		}
 	}
 }

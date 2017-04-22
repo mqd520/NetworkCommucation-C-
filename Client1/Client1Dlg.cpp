@@ -66,12 +66,6 @@ BOOL CClient1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
-	//TCHAR ip[20] = { '\0' };
-	//if (GetLocalIP(ip))
-	//{
-	//	m_ipServerIP.SetWindowText(ip);
-	//}
-	//m_edServerPort.SetWindowText(_T("8080"));
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 

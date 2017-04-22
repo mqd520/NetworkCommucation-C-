@@ -55,4 +55,14 @@ namespace NetworkCommunication
 	// Parameter: TCHAR * str
 	//************************************
 	int GetStrByteCount(TCHAR* str);
+
+	//************************************
+	// Method:    ¥Ú”°–≈œ¢
+	// FullName:  NetworkCommunication::Printf
+	// Access:    public 
+	// Returns:   void
+	// Qualifier:
+	// Parameter: TCHAR * msg
+	//************************************
+	void Printf(TCHAR* msg);
 }

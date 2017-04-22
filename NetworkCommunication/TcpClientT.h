@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TcpClient.h"
+#include "StringHandle.h"
 
 namespace NetworkCommunication
 {
@@ -34,6 +35,36 @@ namespace NetworkCommunication
 		LPOnRecvTcpDataT m_lpfnOnRecvTcpDataT;//接受tcp数据函数指针
 		LPOnRecvTcpEvtT m_lpfnRecvTcpEvt;//接受通知函数指针
 
+	protected:
+		void SendTcpData(BYTE buf[], int len)
+		{
+			if (m_lpfnOnRecvTcpDataT&&buf&&len > 0)
+			{
+				if (!(m_pInstanceT->*m_lpfnOnRecvTcpDataT)(buf, len))
+				{
+					delete buf;
+				}
+			}
+			else
+			{
+				delete buf;
+			}
+		};
+
+		void SendTcpEvt(TcpEvtType type, TCHAR* msg)
+		{
+			if (m_lpfnRecvTcpEvt)
+			{
+				if (!((m_pInstanceT->*m_lpfnRecvTcpEvt)(type, msg)))
+				{
+					if (msg)
+					{
+						Printf(msg);
+					}
+				}
+			}
+		};
+
 	public:
 		//************************************
 		// Method:    设置回调函数
@@ -52,34 +83,5 @@ namespace NetworkCommunication
 			m_lpfnOnRecvTcpDataT = lpfnOnRecvTcpDataT;
 			m_lpfnRecvTcpEvt = lpfnRecvTcpEvt;
 		};
-
-		void OnRecvTcpData(BYTE buf[], int len)
-		{
-			if (m_lpfnOnRecvTcpDataT&&buf&&len > 0)
-			{
-				if (!(m_pInstanceT->*m_lpfnOnRecvTcpDataT)(buf, len))
-				{
-					delete buf;
-				}
-			}
-			else
-			{
-				delete buf;
-			}
-		}
-
-		void SendTcpEvt(TcpEvtType type, TCHAR* msg)
-		{
-			if (m_lpfnRecvTcpEvt)
-			{
-				if (!((m_pInstanceT->*m_lpfnRecvTcpEvt)(type, msg)))
-				{
-					if (msg)
-					{
-						Printf(msg);
-					}
-				}
-			}
-		}
 	};
 }

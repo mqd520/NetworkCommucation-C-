@@ -60,6 +60,9 @@
     <ClInclude Include="EncryptBuffer.h">
       <Filter>01 工具</Filter>
     </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>01 工具</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetTool.cpp">
@@ -91,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="DemoProtocolPackMgr.cpp">
       <Filter>04 DemoProtocol管理</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>01 工具</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
