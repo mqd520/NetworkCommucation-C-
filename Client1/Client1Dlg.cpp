@@ -6,8 +6,7 @@
 #include "Client1.h"
 #include "Client1Dlg.h"
 #include "afxdialogex.h"
-#include "NetTool.h"
-#include "StringHandle.h"
+#include "MemoryTool.h"
 
 using namespace NetworkCommunication;
 

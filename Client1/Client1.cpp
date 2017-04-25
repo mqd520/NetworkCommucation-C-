@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "Client1.h"
 #include "Client1Dlg.h"
-#include "NetTool.h"
+#include "OtherTool.h"
 
 using namespace NetworkCommunication;
 
@@ -14,7 +14,7 @@ using namespace NetworkCommunication;
 #endif
 
 bool OnRecvData(BYTE buf[], int len);
-bool OnRecvEvt(TcpEvtType type, TCHAR* msg);
+void OnRecvEvt(TcpEvtType type, TCHAR* msg);
 
 // CClient1App
 
@@ -78,10 +78,10 @@ BOOL CClient1App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		//m_tcp.Init(_T("192.168.0.24"), 8080);
-		//m_tcp.Init(ip, 8080);
-		//m_tcp.SetCallback(OnRecvData, OnRecvEvt);
-		//m_tcp.Connect();
+		//m_tcp.Init(_T("192.168.0.10"), 8080);
+		m_tcp.Init(ip, 8080);
+		m_tcp.SetCallback(OnRecvData, OnRecvEvt);
+		m_tcp.Connect();
 	}
 
 	CClient1Dlg dlg;
@@ -120,10 +120,9 @@ bool OnRecvData(BYTE buf[], int len)
 	return false;
 }
 
-bool OnRecvEvt(TcpEvtType type, TCHAR* msg)
+void OnRecvEvt(TcpEvtType type, TCHAR* msg)
 {
 	OutputDebugString(msg);
-	return true;
 }
 
 int CClient1App::ExitInstance()
