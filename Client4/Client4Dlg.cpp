@@ -1,43 +1,42 @@
 
-// Client3Dlg.cpp : 实现文件
+// Client4Dlg.cpp : 实现文件
 //
 
 #include "stdafx.h"
-#include "Client3.h"
-#include "Client3Dlg.h"
+#include "Client4.h"
+#include "Client4Dlg.h"
 #include "afxdialogex.h"
-#include "MemoryTool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
-// CClient3Dlg 对话框
+// CClient4Dlg 对话框
 
-CClient3Dlg::CClient3Dlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CClient3Dlg::IDD, pParent)
+
+
+CClient4Dlg::CClient4Dlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CClient4Dlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-void CClient3Dlg::DoDataExchange(CDataExchange* pDX)
+void CClient4Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 }
 
-BEGIN_MESSAGE_MAP(CClient3Dlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CClient4Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BUTTON1, &CClient3Dlg::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON2, &CClient3Dlg::OnBnClickedButton2)
-	ON_MESSAGE(WM_CUSTOM_MESSAGE1, &CClient3Dlg::OnRecvData)
+	ON_BN_CLICKED(IDC_BUTTON1, &CClient4Dlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
-// CClient3Dlg 消息处理程序
+// CClient4Dlg 消息处理程序
 
-BOOL CClient3Dlg::OnInitDialog()
+BOOL CClient4Dlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -55,7 +54,7 @@ BOOL CClient3Dlg::OnInitDialog()
 //  来绘制该图标。  对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
 
-void CClient3Dlg::OnPaint()
+void CClient4Dlg::OnPaint()
 {
 	if (IsIconic())
 	{
@@ -82,32 +81,20 @@ void CClient3Dlg::OnPaint()
 
 //当用户拖动最小化窗口时系统调用此函数取得光标
 //显示。
-HCURSOR CClient3Dlg::OnQueryDragIcon()
+HCURSOR CClient4Dlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CClient3Dlg::OnBnClickedButton1()
+
+
+void CClient4Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	//LoginPackage packet1;
-	//packet1.strUsername = _T("eguser001");
-	//packet1.strPwd = _T("123456");
-	//theApp.m_demoProtocol.SimulateServerData(DemoPackageType::type1, &packet1);
-}
-
-
-void CClient3Dlg::OnBnClickedButton2()
-{
-	// TODO:  在此添加控件通知处理程序代码
-	//DemoPackage1 packet1;
-	//packet1.strUsername = _T("eguser001");
-	//packet1.strPwd = _T("123456");
-	//theApp.m_demoProtocol.SendData(DemoPackageType::type1, &packet1);
-}
-
-LRESULT CClient3Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
-{
-	UpdateData(true);
-	return 0;
+	m_socket.Init();
+	SOCKADDR_IN addr = m_socket.CreateSocketAddr(_T("192.168.1.119"), 8070);
+	SOCKET socket = m_socket.CreateTcpSocket();
+	m_socket.Connect(socket, &addr);
+	TCHAR* msg = m_socket.GetLastErr();
+	OutputDebugString(msg);
 }

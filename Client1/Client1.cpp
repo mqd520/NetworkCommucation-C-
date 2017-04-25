@@ -79,9 +79,9 @@ BOOL CClient1App::InitInstance()
 	if (GetLocalIP(ip))
 	{
 		//m_tcp.Init(_T("192.168.0.24"), 8080);
-		m_tcp.Init(ip, 8080);
-		m_tcp.SetCallback(OnRecvData, OnRecvEvt);
-		m_tcp.Connect();
+		//m_tcp.Init(ip, 8080);
+		//m_tcp.SetCallback(OnRecvData, OnRecvEvt);
+		//m_tcp.Connect();
 	}
 
 	CClient1Dlg dlg;

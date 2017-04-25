@@ -69,9 +69,9 @@ BOOL CClient2App::InitInstance()
 	TCHAR ip[20];
 	if (GetLocalIP(ip))
 	{
-		m_tcp.Init(ip, 8080);
-		m_tcp.SetCallbackT(this, &CClient2App::OnRecvData, &CClient2App::OnRecvEvt);
-		m_tcp.Connect();
+		//m_tcp.Init(ip, 8080);
+		//m_tcp.SetCallbackT(this, &CClient2App::OnRecvData, &CClient2App::OnRecvEvt);
+		//m_tcp.Connect();
 	}
 
 	CClient2Dlg dlg;
@@ -104,7 +104,7 @@ BOOL CClient2App::InitInstance()
 	return FALSE;
 }
 
-bool CClient2App::OnRecvEvt(TcpClientEvtType type, TCHAR* msg)
+bool CClient2App::OnRecvEvt(TcpEvtType type, TCHAR* msg)
 {
 	OutputDebugString(msg);
 	return true;

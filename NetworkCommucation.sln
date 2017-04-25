@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server1", "Server1\Server1.vcxproj", "{AF423D2D-3D50-4654-8053-0038AA14CD31}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F7FD0AC-5D87-40EC-8E07-316D79745805} = {0F7FD0AC-5D87-40EC-8E07-316D79745805}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client1", "Client1\Client1.vcxproj", "{04BBCFB7-197A-4593-A2F7-8A2E14925BD0}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -27,6 +30,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client3", "Client3\Client3.
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetworkCommunication", "NetworkCommunication\NetworkCommunication.vcxproj", "{0F7FD0AC-5D87-40EC-8E07-316D79745805}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client4", "Client4\Client4.vcxproj", "{9CB6FA8A-F26A-4838-9EF1-48BEE00BBE85}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F7FD0AC-5D87-40EC-8E07-316D79745805} = {0F7FD0AC-5D87-40EC-8E07-316D79745805}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +62,10 @@ Global
 		{0F7FD0AC-5D87-40EC-8E07-316D79745805}.Debug|Win32.Build.0 = Debug|Win32
 		{0F7FD0AC-5D87-40EC-8E07-316D79745805}.Release|Win32.ActiveCfg = Release|Win32
 		{0F7FD0AC-5D87-40EC-8E07-316D79745805}.Release|Win32.Build.0 = Release|Win32
+		{9CB6FA8A-F26A-4838-9EF1-48BEE00BBE85}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9CB6FA8A-F26A-4838-9EF1-48BEE00BBE85}.Debug|Win32.Build.0 = Debug|Win32
+		{9CB6FA8A-F26A-4838-9EF1-48BEE00BBE85}.Release|Win32.ActiveCfg = Release|Win32
+		{9CB6FA8A-F26A-4838-9EF1-48BEE00BBE85}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,5 +76,6 @@ Global
 		{4D7C5679-02B2-4D7F-A715-A43BF92002FB} = {BA9E35E0-A82E-4EA4-8823-52D6F2A9DA79}
 		{45E2AB25-14CD-44EC-AB6E-DEC206B6B7AB} = {BA9E35E0-A82E-4EA4-8823-52D6F2A9DA79}
 		{0F7FD0AC-5D87-40EC-8E07-316D79745805} = {87B059F3-CA46-4B04-B402-DA65B57C2B62}
+		{9CB6FA8A-F26A-4838-9EF1-48BEE00BBE85} = {BA9E35E0-A82E-4EA4-8823-52D6F2A9DA79}
 	EndGlobalSection
 EndGlobal

@@ -1,45 +1,40 @@
 
-// Client3.cpp : 定义应用程序的类行为。
+// Client4.cpp : 定义应用程序的类行为。
 //
 
 #include "stdafx.h"
-#include "Client3.h"
-#include "Client3Dlg.h"
-#include "MemoryTool.h"
+#include "Client4.h"
+#include "Client4Dlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-//收到包数据处理
-void OnRecvPackage(int type, LPPackageBase data);
-//收到事件处理
-bool OnRecvEvt(ProtocolEvtType type, TCHAR* msg);
 
-// CClient3App
+// CClient4App
 
-BEGIN_MESSAGE_MAP(CClient3App, CWinApp)
+BEGIN_MESSAGE_MAP(CClient4App, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
 
-// CClient3App 构造
+// CClient4App 构造
 
-CClient3App::CClient3App()
+CClient4App::CClient4App()
 {
 	// TODO:  在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
 }
 
 
-// 唯一的一个 CClient3App 对象
+// 唯一的一个 CClient4App 对象
 
-CClient3App theApp;
+CClient4App theApp;
 
 
-// CClient3App 初始化
+// CClient4App 初始化
 
-BOOL CClient3App::InitInstance()
+BOOL CClient4App::InitInstance()
 {
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
 	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
@@ -70,16 +65,7 @@ BOOL CClient3App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-
-	TCHAR ip[20];
-	if (GetLocalIP(ip))
-	{
-		//m_demoProtocol.Init(ip, 8080, OnRecvPackage, OnRecvEvt);
-		m_demoProtocol.Init(_T("192.168.0.113"), 7000, OnRecvPackage, OnRecvEvt);
-		m_demoProtocol.Connect();
-	}
-
-	CClient3Dlg dlg;
+	CClient4Dlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
@@ -109,21 +95,3 @@ BOOL CClient3App::InitInstance()
 	return FALSE;
 }
 
-int CClient3App::ExitInstance()
-{
-	// TODO:  在此添加专用代码和/或调用基类
-	return CWinApp::ExitInstance();
-}
-
-void OnRecvPackage(int type, LPPackageBase data)
-{
-	LPPackageBase packet = NULL;
-	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_CUSTOM_MESSAGE1, (WPARAM)(int)type, (LPARAM)data);
-	//theApp.m_demoProtocol.ReleasePackage(type, (LPPackageBase)data);
-}
-
-bool OnRecvEvt(ProtocolEvtType type, TCHAR* msg)
-{
-	OutputDebugString(msg);
-	return true;
-}

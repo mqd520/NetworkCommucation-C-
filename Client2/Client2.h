@@ -33,7 +33,7 @@ public:
 protected:
 	bool OnRecvData(BYTE buf[], int len);
 
-	bool OnRecvEvt(TcpClientEvtType type, TCHAR* msg);
+	bool OnRecvEvt(TcpEvtType type, TCHAR* msg);
 	// й╣ож
 
 	DECLARE_MESSAGE_MAP()
