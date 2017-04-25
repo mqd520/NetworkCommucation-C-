@@ -21,26 +21,17 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NetTool.h">
-      <Filter>01 工具</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>05 其它</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>05 其它</Filter>
     </ClInclude>
-    <ClInclude Include="ProtocolTool.h">
-      <Filter>01 工具</Filter>
-    </ClInclude>
     <ClInclude Include="MemoryTool.h">
       <Filter>01 工具</Filter>
     </ClInclude>
     <ClInclude Include="DemoProtocolMgr.h">
       <Filter>04 DemoProtocol管理</Filter>
-    </ClInclude>
-    <ClInclude Include="StringHandle.h">
-      <Filter>01 工具</Filter>
     </ClInclude>
     <ClInclude Include="TcpClient.h">
       <Filter>02 Tcp管理</Filter>
@@ -63,25 +54,29 @@
     <ClInclude Include="Timer.h">
       <Filter>01 工具</Filter>
     </ClInclude>
+    <ClInclude Include="TcpServer.h">
+      <Filter>02 Tcp管理</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SocketMgr.h">
+      <Filter>02 Tcp管理</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteStream.h">
+      <Filter>01 工具</Filter>
+    </ClInclude>
+    <ClInclude Include="OtherTool.h">
+      <Filter>01 工具</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NetTool.cpp">
-      <Filter>01 工具</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>05 其它</Filter>
-    </ClCompile>
-    <ClCompile Include="ProtocolTool.cpp">
-      <Filter>01 工具</Filter>
     </ClCompile>
     <ClCompile Include="MemoryTool.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
     <ClCompile Include="DemoProtocolMgr.cpp">
       <Filter>04 DemoProtocol管理</Filter>
-    </ClCompile>
-    <ClCompile Include="StringHandle.cpp">
-      <Filter>01 工具</Filter>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp">
       <Filter>02 Tcp管理</Filter>
@@ -98,5 +93,20 @@
     <ClCompile Include="Timer.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
+    <ClCompile Include="TcpServer.cpp">
+      <Filter>02 Tcp管理</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketMgr.cpp">
+      <Filter>02 Tcp管理</Filter>
+    </ClCompile>
+    <ClCompile Include="ByteStream.cpp">
+      <Filter>01 工具</Filter>
+    </ClCompile>
+    <ClCompile Include="OtherTool.cpp">
+      <Filter>01 工具</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NetworkCommunication.rc" />
   </ItemGroup>
 </Project>

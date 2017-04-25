@@ -27,11 +27,11 @@ namespace NetworkCommunication
 	//协议登录包
 	typedef	struct tagProtocolLoginPackage :public PackageBase
 	{
-		int nType;
-		int nServerID;
-		int nKeepAlive;
-		int nVersion;
-		wchar_t* str;
+		BYTE cbCurrentServerType;
+		BYTE cbRequestServerID;
+		BYTE cbKeepAlive;
+		INT32 nVersion;
+		char* strGuid;
 	}ProtocolLoginPackage, *LPProtocolLoginPackage;
 
 	//登录请求包

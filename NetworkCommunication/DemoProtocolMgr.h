@@ -21,10 +21,11 @@ namespace NetworkCommunication
 		void OnSendBufReadyCmp(BYTE* buf, int len);
 		bool OnRecvBufReadyCmp(BYTE* buf, int len);
 		void OnTcpConnectSuccess();
+		bool AnalyticsPackage(int type, LPPackageBase data);
 
 	public:
 		CDemoProtocolMgr();
-		~CDemoProtocolMgr(){};
+		~CDemoProtocolMgr();
 
 		int GetDataLen(BYTE buf[], int len);
 		int GetPackageType(BYTE buf[], int len);

@@ -3,138 +3,177 @@
 
 namespace NetworkCommunication
 {
-	CByteStream::CByteStream(int len) :
-		m_nStreamLen(len),
-		m_buf(new BYTE[len]),
-		m_nDataEndPos(-1)
+	wstring MultiByteToUTF8(const char* str)
 	{
-		memset(m_buf, 0, len);
+		int nlen = MultiByteToWideChar(CP_ACP, 0, str, -1, NULL, 0);
+		wchar_t* strUTF = new wchar_t[nlen];
+		MultiByteToWideChar(CP_ACP, 0, str, -1, strUTF, nlen);
+		wstring result = strUTF;
+		delete  strUTF;
+		return result;
 	}
 
-	CByteStream::~CByteStream()
+	string UTF8ToMultiByte(const wchar_t* str)
 	{
-		if (m_buf)
+		int nlen = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
+		char* strMultiByte = new char[nlen];
+		WideCharToMultiByte(CP_ACP, 0, str, -1, strMultiByte, nlen, NULL, NULL);
+		string result = strMultiByte;
+		delete strMultiByte;
+		return result;
+	}
+
+	int GetAStrByteCount(char* str)
+	{
+		wstring wstr = MultiByteToUTF8((char*)str);
+		int nlen = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
+		return nlen;
+	}
+
+	int GetWStrByteCount(wchar_t* str)
+	{
+		return (wcslen(str) + 1) * 2;
+	}
+
+	int GetStrByteCount(TCHAR* str)
+	{
+		if (sizeof(TCHAR) == 1)
 		{
-			delete m_buf;
-			m_buf = NULL;
-		}
-	}
-
-	int CByteStream::GetDataLen()
-	{
-		return m_nDataEndPos + 1;
-	}
-
-	BYTE* CByteStream::GetBuf()
-	{
-		return m_buf;
-	}
-
-	BYTE* CByteStream::Read(int len, int* actualLen)
-	{
-		int nlen = len > GetDataLen() ? GetDataLen() : len;//获取实际读取长度
-		if (nlen > 0)
-		{
-			BYTE* buf = new BYTE[nlen];
-			memcpy(buf, m_buf, nlen);
-			int behindLen = GetDataLen() - nlen;//计算开始出nlen后数据长度
-			if (behindLen > 0)//如果有剩余成都,进行平移操作
-			{
-				Left(nlen, behindLen, nlen);
-			}
-			else
-			{
-				m_nDataEndPos = -1;
-			}
-			if (actualLen != NULL)
-			{
-				*actualLen = nlen;
-			}
-			return buf;
-		}
-		return NULL;
-	}
-
-	BYTE* CByteStream::Read(int len)
-	{
-		if (len > GetDataLen())
-		{
-			return NULL;
+			return	GetAStrByteCount((char*)str);
 		}
 		else
 		{
-			return Read(len, NULL);
+			return GetWStrByteCount((wchar_t*)str);
 		}
 	}
 
-	int CByteStream::Write(BYTE buf[], int len)
+	BYTE GetFstByteFromInt(int n)
 	{
-		int nlen = len > (m_nStreamLen - GetDataLen()) ? (m_nStreamLen - GetDataLen()) : len;//计算实际写入字节长度
-		if (nlen > 0)
+		return (BYTE)(n >> 24);
+	}
+
+	BYTE GetSecByteFromInt(int n)
+	{
+		return (BYTE)((n << 8) >> 24);
+	}
+
+	BYTE GetTrdByteFromInt(int n)
+	{
+		return (BYTE)((n << 16) >> 24);
+	}
+
+	BYTE GetFouthByteFromInt(int n)
+	{
+		return (BYTE)((n << 24) >> 24);
+	}
+
+	int MergeByte(BYTE fouth, BYTE trd, BYTE sec, BYTE fst)
+	{
+		int result = 0;
+		if (fst != 0)
 		{
-			memcpy(m_buf + m_nDataEndPos + 1, buf, nlen);
-			m_nDataEndPos += nlen;
+			result += (int)(fst << 24);
 		}
-		return nlen;
-	}
-
-	int CByteStream::Write(CByteStream* p)
-	{
-		int datalen = p->GetDataLen();//读取流对象的可用数据长度
-		int remainlen = m_nStreamLen - GetDataLen();//当前流对象的剩余长度
-		int nlen = 0;//实际写入长度
-		if (datalen > 0 && remainlen > 0)
+		if (sec != 0)
 		{
-			nlen = datalen > remainlen ? remainlen : datalen;//计算实际写入长度
-			memcpy(m_buf + m_nDataEndPos + 1, p->GetBuf(), nlen);
-			p->Detele(nlen);
+			result += (int)(sec << 16);
 		}
-		return nlen;
+		if (trd != 0)
+		{
+			result += (int)(trd << 8);
+		}
+		if (fouth != 0)
+		{
+			result += (int)fouth;
+		}
+		return result;
 	}
 
-	void CByteStream::Left(int start, int len, int space)
+	int GetLenFromMultiByteBuf(BYTE* buf, int start, int end)
 	{
+		char* buf1 = new char[end - start];
+		memcpy(buf1, buf + start, end - start);
+		int len = strlen(buf1) + 1;
+		delete buf1;
+		return len;
+	}
+
+	BYTE* WriteIntToBuf(int val, bool bLittleEndian)
+	{
+		int len = sizeof(int);
 		BYTE* buf = new BYTE[len];
-		memcpy(buf, m_buf + start, len);//拷贝需要平移的字节缓冲区到buf
-		int nIndex = start - len;//计算平移后的开始位置
-		if (nIndex < 0)
+		if (bLittleEndian)
 		{
-			nIndex = 0;
-		}
-		m_nDataEndPos -= space;//计算平移后的数据结束索引
-		memcpy(m_buf + nIndex, buf, len);
-		delete buf;
-	}
-
-	void CByteStream::Clean()
-	{
-		m_nDataEndPos = -1;
-	}
-
-	void CByteStream::Detele(int len)
-	{
-		if (len < GetDataLen())
-		{
-			Left(len, GetDataLen() - len, len);
+			for (int i = 0; i < len; i++)
+			{
+				int left = (len - (1 + i)) * 8;//向左平移位数
+				int right = 3 * 8;//向右平移位数
+				buf[i] = (val << left) >> right;
+			}
 		}
 		else
 		{
-			m_nDataEndPos = -1;
+			for (int i = 0; i < len; i++)
+			{
+				int left = i * 8;//向左平移位数
+				int right = 3 * 8;//向右平移位数
+				buf[i] = (val << left) >> right;
+			}
 		}
+		return buf;
 	}
 
-	int CByteStream::GetBufLen()
+	string ReadMultiByteStr(BYTE buf[], int len)
 	{
-		return m_nStreamLen;
+		char* str = new char[len + 1];
+		memcpy(str, buf, len);
+		str[len] = 0;
+		string result = str;
+		delete str;
+		return result;
 	}
 
-	bool CByteStream::IsFull()
+	wstring ReadUTF8Str(BYTE buf[], int len)
 	{
-		return GetDataLen() == m_nStreamLen ? true : false;
+		int size = len / 2;
+		wchar_t* strUTF8 = new wchar_t[size + 1];
+		memcpy(strUTF8, buf, len);
+		strUTF8[size] = 0;
+		wstring result = strUTF8;
+		delete strUTF8;
+		return result;
 	}
 
-	int CByteStream::GetWriteLen()
+	BYTE* WriteMultiByteStr(char* str, int* size)
 	{
-		return m_nStreamLen - GetDataLen();
+		*size = strlen(str) + 1;
+		BYTE* buf = new BYTE[*size];
+		memcpy(buf, str, *size);
+		return buf;
+	}
+
+	BYTE* WriteUTF8Str(wchar_t* str, int* size)
+	{
+		*size = GetWStrByteCount(str);
+		BYTE* buf = new BYTE[*size];
+		memcpy(buf, str, *size);
+		return buf;
+	}
+
+	BYTE* WriteShortToBuf(short val, bool bLittleEndian)
+	{
+		int len = sizeof(short);
+		BYTE* buf = new BYTE[len];
+		if (bLittleEndian)
+		{
+			buf[0] = (val << 8) >> 8;
+			buf[1] = val >> 8;
+		}
+		else
+		{
+			buf[0] = val >> 8;
+			buf[1] = (val << 8) >> 8;
+		}
+		return buf;
 	}
 }

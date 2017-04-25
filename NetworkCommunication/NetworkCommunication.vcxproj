@@ -61,6 +61,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -82,36 +85,42 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ByteStream.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="EncryptBuffer.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SocketMgr.h" />
+    <ClInclude Include="TcpServer.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="ProtocolMgr.h" />
-    <ClInclude Include="StringHandle.h" />
     <ClInclude Include="DemoProtocolMgr.h" />
     <ClInclude Include="MemoryTool.h" />
-    <ClInclude Include="NetTool.h" />
+    <ClInclude Include="OtherTool.h" />
     <ClInclude Include="DemoProtocol.h" />
-    <ClInclude Include="ProtocolTool.h" />
     <ClInclude Include="TcpClientT.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TcpClient.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ByteStream.cpp" />
     <ClCompile Include="DemoProtocolPackMgr.cpp" />
     <ClCompile Include="EncryptBuffer.cpp" />
     <ClCompile Include="ProtocolMgr.cpp" />
-    <ClCompile Include="StringHandle.cpp" />
+    <ClCompile Include="SocketMgr.cpp" />
     <ClCompile Include="DemoProtocolMgr.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
-    <ClCompile Include="NetTool.cpp" />
-    <ClCompile Include="ProtocolTool.cpp" />
+    <ClCompile Include="OtherTool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp" />
+    <ClCompile Include="TcpServer.cpp" />
     <ClCompile Include="Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NetworkCommunication.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

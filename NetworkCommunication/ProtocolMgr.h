@@ -2,7 +2,8 @@
 
 #include <tchar.h>
 #include <vector>
-#include "MemoryTool.h"
+#include "ByteStream.h"
+#include "OtherTool.h"
 #include "Def.h"
 #include "TcpClientT.h"
 
@@ -12,9 +13,8 @@ namespace NetworkCommunication
 	enum ProtocolEvtType
 	{
 		tcpError = TcpEvtType::error,//发生了tcp错误
-		keepAliveFail = 2,//心跳包失败
-		online = 10,//服务端已上线
-		offline = 11//服务端已下线
+		online = 10,//服务端在线
+		offline = 11//服务端不在线
 	};
 
 	//协议管理
@@ -63,7 +63,6 @@ namespace NetworkCommunication
 		int m_nKeepAlive;//心跳包类型
 		vector<PackageMgrInfo> m_vecPackageMgr;//包管理器集合
 		HANDLE m_hMutexStream;//字节流互斥对象
-		ThreadInfo m_tiTimer;//心跳包线程信息
 		int m_nKeepAliveTimespan;//心跳包间隔时间
 		bool m_bRecvKeepAlive;//是否已收到心跳包
 		int m_nKeepAliveFailCount;//心跳包失败计数,0代表已收到对方心跳包
@@ -82,8 +81,10 @@ namespace NetworkCommunication
 		int m_nReconnectTimes;//允许重连次数
 		int m_nReconnectTimeSpan;//重连间隔时间
 		int m_nConnectTimeout;//连接超时时间
+		TcpDataSendType m_sendType;//tcp数据发送方式
+		CTimerT<CProtocolMgr>* m_timer;//心跳包定时器
 
-	private:
+	protected:
 		//************************************
 		// Method:    初始化心跳包
 		// FullName:  NetworkCommunication::CProtocolMgr::InitKeepAlive
@@ -93,7 +94,6 @@ namespace NetworkCommunication
 		//************************************
 		void InitKeepAlive();
 
-	protected:
 		//************************************
 		// Method:    关联包类型到包管理器
 		// FullName:  NetworkCommunication::CProtocolMgr<TPackageType, TPackageBase>::AssoicatePackageType
@@ -154,7 +154,7 @@ namespace NetworkCommunication
 		virtual void StartUnpacket();
 
 		//************************************
-		// Method:    分析包,表示是否交由调用者处理包
+		// Method:    分析包
 		// FullName:  CServer3Mgr::AnalyticsPackage
 		// Access:    public 
 		// Returns:   是否交由调用者处理
@@ -163,15 +163,6 @@ namespace NetworkCommunication
 		// Parameter: 包体结构体指针
 		//************************************
 		virtual bool AnalyticsPackage(int type, LPPackageBase data);
-
-		//************************************
-		// Method:    清理线程
-		// FullName:  NetworkCommunication::CProtocolMgr::CleanThread
-		// Access:    protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		void CleanThread();
 
 		//************************************
 		// Method:    收到tcp事件处理
@@ -203,22 +194,13 @@ namespace NetworkCommunication
 		virtual void OnTcpConnectFail();
 
 		//************************************
-		// Method:    连接服务端成功事件处理
-		// FullName:  NetworkCommunication::CProtocolMgr::OnConnectServerSuccsss
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void OnConnectServerSuccsss();
-
-		//************************************
 		// Method:    连接服务端失败事件处理
 		// FullName:  NetworkCommunication::CProtocolMgr::OnConnectServerFail
 		// Access:    virtual protected 
 		// Returns:   void
 		// Qualifier:
 		//************************************
-		virtual void OnConnectServerFail();
+		void OnConnectServerFail();
 
 		//************************************
 		// Method:    发送协议事件
@@ -254,15 +236,6 @@ namespace NetworkCommunication
 		virtual bool OnRecvBufReadyCmp(BYTE* buf, int len);
 
 		//************************************
-		// Method:    开始心跳包
-		// FullName:  NetworkCommunication::CProtocolMgr::StartKeepAlive
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		void StartKeepAlive();
-
-		//************************************
 		// Method:    是否指定了心跳包
 		// FullName:  NetworkCommunication::CProtocolMgr::IsAssignedKeepAlive
 		// Access:    protected 
@@ -270,6 +243,12 @@ namespace NetworkCommunication
 		// Qualifier:
 		//************************************
 		bool IsAssignedKeepAlive();
+
+		//开始心跳包处理
+		void StartKeepAlive();
+
+		//心跳包超时事件处理
+		bool OnKeepAliveTimeout();
 
 	public:
 		CProtocolMgr();
@@ -333,15 +312,9 @@ namespace NetworkCommunication
 		// Parameter: 完整包缓冲区指针
 		// Parameter: 缓冲区长度
 		//************************************
-		virtual LPPackageBase Unpacket(BYTE buf[], int len);
+		LPPackageBase Unpacket(BYTE buf[], int len);
 
-		//************************************
-		// Method:    获取包头长度
-		// FullName:  Protocol3::CProtocol3Handle::GetHeadLen
-		// Access:    public 
-		// Returns:   包头长度
-		// Qualifier:
-		//************************************
+		//获取包头长度
 		virtual int GetHeadLen();
 
 		//************************************
@@ -374,7 +347,7 @@ namespace NetworkCommunication
 		// Qualifier:
 		// Parameter: 包类型
 		//************************************
-		virtual IPackageMgr* GetPackageMgr(int type);
+		IPackageMgr* GetPackageMgr(int type);
 
 		//************************************
 		// Method:    获取包体缓冲区指针
@@ -385,18 +358,7 @@ namespace NetworkCommunication
 		// Parameter: 包缓冲区指针 
 		// Parameter: 包缓冲区长度
 		//************************************
-		virtual BYTE* GetDataBuf(BYTE* buf, int len);
-
-		//************************************
-		// Method:    释放包体结构体
-		// FullName:  CServer3Mgr::ReleasePackage
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: 包类型
-		// Parameter: 包体结构体指针
-		//************************************
-		virtual void ReleasePackage(int type, LPPackageBase data);
+		BYTE* GetDataBuf(BYTE* buf, int len);
 
 		//************************************
 		// Method:    发包
@@ -407,7 +369,7 @@ namespace NetworkCommunication
 		// Parameter: 包类型
 		// Parameter: 包体结构体指针
 		//************************************
-		virtual bool SendData(int type, LPPackageBase data);
+		bool SendData(int type, LPPackageBase data);
 
 		//************************************
 		// Method:    关闭连接
@@ -416,7 +378,7 @@ namespace NetworkCommunication
 		// Returns:   void
 		// Qualifier:
 		//************************************
-		virtual void CloseConnect();
+		void CloseConnect();
 
 		//************************************
 		// Method:    连接服务端
@@ -425,7 +387,7 @@ namespace NetworkCommunication
 		// Returns:   void
 		// Qualifier:
 		//************************************
-		virtual void Connect();
+		void Connect();
 
 		//************************************
 		// Method:    获取tcp客户端对象
@@ -434,7 +396,7 @@ namespace NetworkCommunication
 		// Returns:   NetworkCommunication::CTcpClientT*
 		// Qualifier:
 		//************************************
-		virtual CTcpClient GetTcpClientObj();
+		CTcpClient GetTcpClientObj();
 
 		//************************************
 		// Method:    模拟一次服务端发包
@@ -445,16 +407,7 @@ namespace NetworkCommunication
 		// Parameter: 包类型
 		// Parameter: 包体结构体指针
 		//************************************
-		virtual void SimulateServerData(int type, LPPackageBase data);
-
-		//************************************
-		// Method:    心跳包定时器事件发生(由CProtocolMgr或其派生类调用,客户端无需调用)
-		// FullName:  NetworkCommunication::CProtocolMgr::OnTimerKeepAlive
-		// Access:    virtual public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void OnTimerKeepAlive();
+		void SimulateServerData(int type, LPPackageBase data);
 
 		//************************************
 		// Method:    对方是否在线
@@ -464,5 +417,16 @@ namespace NetworkCommunication
 		// Qualifier:
 		//************************************
 		bool IsOnline();
+
+		//************************************
+		// Method:    释放包体结构体
+		// FullName:  CServer3Mgr::ReleasePackage
+		// Access:    public 
+		// Returns:   void
+		// Qualifier:
+		// Parameter: 包类型
+		// Parameter: 包体结构体指针
+		//************************************
+		void ReleasePackage(int type, LPPackageBase data);
 	};
 }

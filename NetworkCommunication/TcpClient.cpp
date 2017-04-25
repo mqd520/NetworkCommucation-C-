@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TcpClient.h"
-#include "NetTool.h"
-#include "StringHandle.h"
+#include "OtherTool.h"
+#include "MemoryTool.h"
 
 namespace NetworkCommunication
 {
@@ -196,6 +196,7 @@ namespace NetworkCommunication
 				}
 				else if (len == -1)//Õ¯¬Áπ ’œ
 				{
+					int n = WSAGetLastError();
 					SendTcpEvt(disconnected, _T("Net trouble happended! \n"));
 				}
 				if (m_nAllowReconnectCount != -1)//‘ –Ì÷ÿ¡¨

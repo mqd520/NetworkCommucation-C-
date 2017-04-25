@@ -1,139 +1,189 @@
 #pragma once
 
+#include <string>
+
+using namespace std;
+
 namespace NetworkCommunication
 {
-	//字节流对象:
-	//从开始出读取(读取后后面的数据依次向前平移),从结尾处写入
-	class CByteStream
-	{
-	private:
-		int m_nStreamLen;//字节流长度
-		BYTE* m_buf;//缓冲区指针
-		int m_nDataEndPos;//数据结尾索引
+	//************************************
+	// Method:    多字节字符串转UTF8字符串
+	// FullName:  Common::MultiByteToUTF8
+	// Access:    public 
+	// Returns:   std::wstring
+	// Qualifier:
+	// Parameter: const char * str
+	//************************************
+	wstring MultiByteToUTF8(const char* str);
 
-	public:
-		CByteStream(int len);
+	//************************************
+	// Method:    UTF8字符串转多字节字符串
+	// FullName:  Common::UTF8ToMultiByte
+	// Access:    public 
+	// Returns:   std::string
+	// Qualifier:
+	// Parameter: const wchar_t * str
+	//************************************
+	string UTF8ToMultiByte(const wchar_t* str);
 
-	protected:
-		//************************************
-		// Method:    向左平移
-		// FullName:  MemoryTool::CByteStreamTransform::Left
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: 开始索引
-		// Parameter: 需要平移的字节长度
-		// Parameter: 平移距离
-		//************************************
-		void Left(int start, int len, int space);
+	//************************************
+	// Method:    获取多字节字符串字节数
+	// FullName:  NetTool::GetStrByteCount
+	// Access:    public 
+	// Returns:   int
+	// Qualifier:
+	// Parameter: TCHAR * str
+	//************************************
+	int GetAStrByteCount(char* str);
 
-	public:
-		~CByteStream();
+	//************************************
+	// Method:    获取宽字节字符串字节数
+	// FullName:  NetTool::GetStrByteCount
+	// Access:    public 
+	// Returns:   int
+	// Qualifier:
+	// Parameter: TCHAR * str
+	//************************************
+	int GetWStrByteCount(wchar_t* str);
 
-		//************************************
-		// Method:    获取当前流数据长度
-		// FullName:  MemoryTool::CByteStream::GetDataLen
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		int GetDataLen();
+	//************************************
+	// Method:    获取字符串字节数
+	// FullName:  Common::GetStrByteCount
+	// Access:    public 
+	// Returns:   int
+	// Qualifier:
+	// Parameter: TCHAR * str
+	//************************************
+	int GetStrByteCount(TCHAR* str);
 
-		//************************************
-		// Method:    获取字节流大小
-		// FullName:  NetworkCommunication::CByteStream::GetBufLen
-		// Access:    public 
-		// Returns:   int
-		// Qualifier:
-		//************************************
-		int GetBufLen();
+	//************************************
+	// Method:    获取指定值的第一个字节
+	// FullName:  ProtocolTool::GetFstByteFromInt
+	// Access:    public 
+	// Returns:   BYTE
+	// Qualifier:
+	// Parameter: int n
+	//************************************
+	BYTE GetFstByteFromInt(int n);
 
-		//************************************
-		// Method:    获取当前流对象缓冲区指针
-		// FullName:  MemoryTool::CByteStream::GetBuf
-		// Access:    public 
-		// Returns:   BYTE*
-		// Qualifier:
-		//************************************
-		BYTE* GetBuf();
+	//************************************
+	// Method:    获取指定值的第二个字节
+	// FullName:  ProtocolTool::GetSecByteFromInt
+	// Access:    public 
+	// Returns:   BYTE
+	// Qualifier:
+	// Parameter: int n
+	//************************************
+	BYTE GetSecByteFromInt(int n);
 
-		//************************************
-		// Method:    从当前流中开始位置读取指定长度的数据,实际读取长度可能小于预计读取长度
-		// FullName:  MemoryTool::CByteStream::Read
-		// Access:    public 
-		// Returns:   读取到的缓冲区指针
-		// Qualifier:
-		// Parameter: 预计读取的数据长度
-		// Parameter: 实际读取的数据长度(输出)
-		//************************************
-		BYTE* Read(int len, int* actualLen);
+	//************************************
+	// Method:    获取指定值的第三个字节
+	// FullName:  ProtocolTool::GetTrdByteFromInt
+	// Access:    public 
+	// Returns:   BYTE
+	// Qualifier:
+	// Parameter: int n
+	//************************************
+	BYTE GetTrdByteFromInt(int n);
 
-		//************************************
-		// Method:    从当前流中开始位置读取指定长度的数据,如果数据长度不够,不进行读取动作
-		// FullName:  MemoryTool::CByteStream::Read
-		// Access:    public 
-		// Returns:   读取到的缓冲区指针
-		// Qualifier:
-		// Parameter: 数据长度
-		//************************************
-		BYTE* Read(int len);
+	//************************************
+	// Method:    获取指定值的第四个字节
+	// FullName:  ProtocolTool::GetFouthByteFromInt
+	// Access:    public 
+	// Returns:   BYTE
+	// Qualifier:
+	// Parameter: int n
+	//************************************
+	BYTE GetFouthByteFromInt(int n);
 
-		//************************************
-		// Method:    向流末尾写入数据
-		// FullName:  MemoryTool::CByteStream::Write
-		// Access:    public 
-		// Returns:   实际写入字节长度
-		// Qualifier:
-		// Parameter: BYTE buf
-		// Parameter: int len
-		//************************************
-		int Write(BYTE buf[], int len);
+	//************************************
+	// Method:    合并字节到int
+	// FullName:  ProtocolTool::MergeByte
+	// Access:    public 
+	// Returns:   int
+	// Qualifier:
+	// Parameter: BYTE fouth
+	// Parameter: BYTE trd
+	// Parameter: BYTE sec
+	// Parameter: BYTE fst
+	//************************************
+	int MergeByte(BYTE fouth = 0, BYTE trd = 0, BYTE sec = 0, BYTE fst = 0);
 
-		//************************************
-		// Method:    从指定流对象读取数据写入到当前流对象结尾
-		// FullName:  MemoryTool::CByteStream::Write
-		// Access:    public 
-		// Returns:   实际写入字节长度
-		// Qualifier:
-		// Parameter: 字节流对象
-		//************************************
-		int Write(CByteStream* p);
+	//************************************
+	// Method:    从多字节字符串缓冲区中获取字符个数
+	// FullName:  ProtocolTool::GetLenFromMultiByteBuf
+	// Access:    public 
+	// Returns:   int
+	// Qualifier:
+	// Parameter: 多字节字符串缓冲区
+	// Parameter: 起始位置
+	// Parameter: 结束位置
+	//************************************
+	int GetLenFromMultiByteBuf(BYTE* buf, int start, int end);
 
-		//************************************
-		// Method:    清空流
-		// FullName:  NetworkCommunication::CByteStream::Clean
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		void Clean();
+	//************************************
+	// Method:    写入int类型数据到缓冲区
+	// FullName:  NetworkCommunication::ReadValue
+	// Access:    public 
+	// Returns:   缓冲区
+	// Qualifier:
+	// Parameter: 值
+	// Parameter: 是否使用小字节序(网络字节序)
+	//************************************
+	BYTE* WriteIntToBuf(int val, bool bLittleEndian = true);
 
-		//************************************
-		// Method:    删除从开始位置指定长度的字节数据,后面数据自动平移
-		// FullName:  NetworkCommunication::CByteStream::Detele
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: 指定长度
-		//************************************
-		void Detele(int len);
+	//************************************
+	// Method:    写入short类型数据到缓冲区
+	// FullName:  NetworkCommunication::ReadValue
+	// Access:    public 
+	// Returns:   缓冲区
+	// Qualifier:
+	// Parameter: 值
+	// Parameter: 是否使用小字节序(网络字节序)
+	//************************************
+	BYTE* WriteShortToBuf(short val, bool bLittleEndian = true);
 
-		//************************************
-		// Method:    流中数据是否已满
-		// FullName:  NetworkCommunication::CByteStream::IsFull
-		// Access:    public 
-		// Returns:   bool
-		// Qualifier:
-		//************************************
-		bool IsFull();
+	//************************************
+	// Method:    从字节数组中读取多字节字符串
+	// FullName:  NetTool::ReadMultiByteStr
+	// Access:    public 
+	// Returns:   std::string
+	// Qualifier:
+	// Parameter: 字节数组
+	// Parameter: 字节数组长度
+	//************************************
+	string ReadMultiByteStr(BYTE buf[], int len);
 
-		//************************************
-		// Method:    获取流中可写入字节长度
-		// FullName:  NetworkCommunication::CByteStream::GetWriteLen
-		// Access:    public 
-		// Returns:   int
-		// Qualifier:
-		//************************************
-		int GetWriteLen();
-	};
+	//************************************
+	// Method:    从字节数组中读取UTF8字符串
+	// FullName:  NetTool::ReadUTF8Str
+	// Access:    public 
+	// Returns:   std::wstring
+	// Qualifier:
+	// Parameter: 字节数组
+	// Parameter: 字节数组长度
+	//************************************
+	wstring ReadUTF8Str(BYTE buf[], int len);
+
+	//************************************
+	// Method:    写入多字节字符串到字节数组
+	// FullName:  NetTool::WriteMultiByteStr
+	// Access:    public 
+	// Returns:   BYTE*
+	// Qualifier:
+	// Parameter: 多字节字符串
+	// Parameter: 字节数组长度(输出)
+	//************************************
+	BYTE* WriteMultiByteStr(char* str, int* size);
+
+	//************************************
+	// Method:    写入UTF8字符串到字节数组
+	// FullName:  NetTool::WriteUTF8Str
+	// Access:    public 
+	// Returns:   BYTE*
+	// Qualifier:
+	// Parameter: UTF8字符串
+	// Parameter: 字节数组长度(输出)
+	//************************************
+	BYTE* WriteUTF8Str(wchar_t* str, int* size);
 }

@@ -5,15 +5,11 @@
 
 namespace NetworkCommunication
 {
-	//开始心跳包线程
-	DWORD WINAPI StartTimer(LPVOID lpParam);
-
 	CProtocolMgr::CProtocolMgr() :
 		m_lpfnRecvData(NULL),
 		m_stream(NULL),
 		m_nPackageHeadLen(0),
 		m_nKeepAlive(PackageTypeNullVal),
-		m_tiTimer({ 0 }),
 		m_nKeepAliveTimespan(2 * 1000),
 		m_bRecvKeepAlive(false),
 		m_nKeepAliveFailCount(0),
@@ -31,14 +27,15 @@ namespace NetworkCommunication
 		m_bAutoReconnect(true),
 		m_nReconnectTimes(0),
 		m_nReconnectTimeSpan(1500),
-		m_nConnectTimeout(2000)
+		m_nConnectTimeout(2000),
+		m_sendType(TcpDataSendType::que),
+		m_timer(NULL)
 	{
 		m_hMutexStream = ::CreateMutex(NULL, false, NULL);
 	};
 
 	CProtocolMgr::~CProtocolMgr()
 	{
-		CleanThread();
 		if (m_hMutexStream)
 		{
 			::CloseHandle(m_hMutexStream);
@@ -52,6 +49,19 @@ namespace NetworkCommunication
 		{
 			delete m_pKeepAliveBuf;
 			m_pKeepAliveBuf = NULL;
+		}
+		if (m_timer)
+		{
+			delete m_timer;
+			m_timer = NULL;
+		}
+		if (m_pKeepAlive)
+		{
+			delete m_pKeepAlive;
+		}
+		if (m_pKeepAliveBuf)
+		{
+			delete m_pKeepAliveBuf;
 		}
 		for (vector<PackageMgrInfo>::iterator it = m_vecPackageMgr.begin(); it < m_vecPackageMgr.end(); ++it)
 		{
@@ -69,7 +79,7 @@ namespace NetworkCommunication
 
 	bool CProtocolMgr::ValidateKeepAlivePackage(LPPackageBase data)
 	{
-		return true;
+		return false;
 	}
 
 	bool CProtocolMgr::ValidatePackageHead(BYTE buf[])
@@ -201,8 +211,11 @@ namespace NetworkCommunication
 			m_lpfnRecvData = lpfnRecvData;
 			m_lpfnRecvProtocolEvt = lpfnRecvProtocolEvt;
 			AssociatePackageType();//关联包类型和包管理器
-			InitKeepAlive();//初始化心跳包
-			m_tcp.Init(ip, port, TcpDataSendType::que, m_nTcpBufLen, m_nReconnectTimes, m_nReconnectTimeSpan, m_nConnectTimeout);
+			if (IsAssignedKeepAlive())//指定了心跳包
+			{
+				InitKeepAlive();//初始化心跳包
+			}
+			m_tcp.Init(ip, port, m_sendType, m_nTcpBufLen, m_nReconnectTimes, m_nReconnectTimeSpan, m_nConnectTimeout);
 			m_tcp.SetCallbackT(this, &CProtocolMgr::OnRecvData, &CProtocolMgr::OnRecvTcpEvt);
 		}
 	}
@@ -267,7 +280,7 @@ namespace NetworkCommunication
 
 	int CProtocolMgr::GetPackageType(BYTE buf[], int len)
 	{
-		return -999;
+		return PackageTypeNullVal;
 	}
 
 	IPackageMgr* CProtocolMgr::GetPackageMgr(int type)
@@ -306,16 +319,19 @@ namespace NetworkCommunication
 	{
 		int len = 0;
 		BYTE* buf = Packet(type, data, &len);
-		OnSendBufReadyCmp(buf, len);
-		bool b = m_tcp.SendData(buf, len);
-		delete buf;
-		return b;
+		if (buf != NULL)
+		{
+			OnSendBufReadyCmp(buf, len);
+			bool b = m_tcp.SendData(buf, len);
+			delete buf;
+			return b;
+		}
+		return false;
 	}
 
 	void CProtocolMgr::CloseConnect()
 	{
 		m_tcp.CloseConnect();
-		CleanThread();
 	}
 
 	void CProtocolMgr::Connect()
@@ -336,84 +352,13 @@ namespace NetworkCommunication
 		delete buf;
 	}
 
-	void CProtocolMgr::CleanThread()
-	{
-		if (m_tiTimer.hThread)
-		{
-			::TerminateThread(m_tiTimer.hThread, 0);
-			::CloseHandle(m_tiTimer.hThread);
-			m_tiTimer = { 0 };
-			m_nKeepAliveFailCount = 0;
-			m_nReconnectServerCount = 0;
-		}
-	}
-
-	void CProtocolMgr::OnTimerKeepAlive()
-	{
-		m_nKeepAliveFailCount = -1;
-		m_bIsOfflineCallEvt = false;
-		m_bIsOnlineCallEvt = false;
-		while (true)
-		{
-			m_tcp.SendData(m_pKeepAliveBuf, m_nKeepAliveBufLen);//向对方发送心跳包
-
-			::Sleep(m_nKeepAliveTimespan);
-
-			if (m_nKeepAliveFailCount <= m_nKeepAliveFailMaxCount)//如果对方在线,则验证对方是否在线并向对方发送心跳包
-			{
-				if (m_nKeepAliveFailCount > 0 || m_nKeepAliveFailCount == -1)//没有收到心跳包
-				{
-					if (m_nKeepAliveFailCount <= m_nKeepAliveFailMaxCount)//未超过允许失败最大值
-					{
-						if (m_nKeepAliveFailCount == -1)//初始值
-						{
-							m_nKeepAliveFailCount = 1;
-						}
-						else
-						{
-							m_nKeepAliveFailCount++;
-						}
-					}
-					SendProtocolEvt(ProtocolEvtType::keepAliveFail, _T("心跳包检测失败: \n"));
-				}
-				else//已收到心跳包
-				{
-					if (!m_bIsOnlineCallEvt)//上线事件是否已触发
-					{
-						m_bIsOnlineCallEvt = true;//只触发一次(tcp连接有效的情况下)
-						OnConnectServerSuccsss();
-					}
-					m_nKeepAliveFailCount = -1;
-				}
-			}
-			else
-			{
-				if (!m_bIsOfflineCallEvt)//掉线事件是否已触发
-				{
-					m_bIsOfflineCallEvt = true;//只触发一次(tcp连接有效的情况下)
-					OnConnectServerFail();
-				}
-			}
-		}
-	}
-
 	void CProtocolMgr::InitKeepAlive()
 	{
-		if (m_nKeepAlive != PackageTypeNullVal&&m_pKeepAlive)//客户端指定了心跳包
+		IPackageMgr* mgr = GetPackageMgr(m_nKeepAlive);
+		if (mgr)
 		{
-			IPackageMgr* mgr = GetPackageMgr(m_nKeepAlive);
-			if (mgr)
-			{
-				m_pKeepAliveBuf = Packet(m_nKeepAlive, m_pKeepAlive, &m_nKeepAliveBufLen);
-			}
+			m_pKeepAliveBuf = Packet(m_nKeepAlive, m_pKeepAlive, &m_nKeepAliveBufLen);
 		}
-	}
-
-	DWORD WINAPI StartTimer(LPVOID lpParam)
-	{
-		CProtocolMgr* mgr = (CProtocolMgr*)lpParam;
-		mgr->OnTimerKeepAlive();
-		return 0;
 	}
 
 	bool CProtocolMgr::OnRecvTcpEvt(TcpEvtType type, TCHAR* msg)
@@ -435,16 +380,57 @@ namespace NetworkCommunication
 
 	void CProtocolMgr::OnTcpConnectSuccess()
 	{
-		OutputDebugString(_T("success to connect server: \n"));
+		Printf(_T("success to connect server: \n"));
+	}
+
+	void CProtocolMgr::StartKeepAlive()
+	{
 		if (IsAssignedKeepAlive())
 		{
-			StartKeepAlive();
+			if (m_timer == NULL)
+			{
+				m_timer = new CTimerT<CProtocolMgr>(m_nKeepAliveTimespan);//创建定时器
+				m_timer->SetCallbackT(&CProtocolMgr::OnKeepAliveTimeout, this);
+			}
+			m_nKeepAliveFailCount = -1;
+			m_timer->Start();
+		}
+	}
+
+	bool CProtocolMgr::OnKeepAliveTimeout()
+	{
+		m_tcp.SendData(m_pKeepAliveBuf, m_nKeepAliveBufLen);//向对方发送心跳包
+		if (m_nKeepAliveFailCount <= m_nKeepAliveFailMaxCount)//失败次数低于允许失败次数
+		{
+			if (m_nKeepAliveFailCount == 0)//已收到心跳包,重置失败次数为-1
+			{
+				m_nKeepAliveFailCount = -1;
+			}
+			else
+			{
+				if (m_nKeepAliveFailCount > 0)//上次未检测到心跳包,本次应+1
+				{
+					m_nKeepAliveFailCount++;
+				}
+				else//上次成功检测到心跳包,本次没检测到心跳包,失败次数计数应为1
+				{
+					m_nKeepAliveFailCount = 1;
+				}
+				Printf(_T("check keepalive package failed \n"));
+			}
+			return true;
+		}
+		else
+		{
+			m_nKeepAliveFailCount = -1;
+			OnConnectServerFail();
+			return false;
 		}
 	}
 
 	void CProtocolMgr::OnTcpConnectFail()
 	{
-		OutputDebugString(_T("failed to connect server: \n"));
+		Printf(_T("failed to connect server: \n"));
 	}
 
 	void CProtocolMgr::SendProtocolEvt(ProtocolEvtType type, TCHAR* msg)
@@ -459,24 +445,18 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CProtocolMgr::OnConnectServerSuccsss()
-	{
-		SendProtocolEvt(ProtocolEvtType::online, _T("服务端已上线: \n"));
-	}
-
 	void CProtocolMgr::OnConnectServerFail()
 	{
 		SendProtocolEvt(ProtocolEvtType::offline, _T("服务端已掉线: \n"));
-		if (m_nReconnectServerMaxCount != 0 && m_nReconnectServerCount > m_nReconnectServerMaxCount)//超过允许连接最大值
+		CloseConnect();//关闭连接
+		if (m_nReconnectServerMaxCount == 0 ||
+			(m_nReconnectServerMaxCount > 0 && m_nReconnectServerCount <= m_nReconnectServerMaxCount))//允许再次连接服务端
 		{
-			CloseConnect();
+			Connect();//连接服务端
 		}
-		else
+		else//已超过允许连接服务端次数
 		{
 			m_nReconnectServerCount++;
-			m_bIsOnlineCallEvt = false;
-			m_bIsOfflineCallEvt = false;
-			m_nKeepAliveFailCount = -1;
 		}
 	}
 
@@ -488,14 +468,6 @@ namespace NetworkCommunication
 	bool CProtocolMgr::OnRecvBufReadyCmp(BYTE* buf, int len)
 	{
 		return true;
-	}
-
-	void CProtocolMgr::StartKeepAlive()
-	{
-		if (m_tiTimer.hThread == 0)
-		{
-			m_tiTimer.hThread = ::CreateThread(NULL, 0, StartTimer, this, NULL, &(m_tiTimer.dwThreadID));
-		}
 	}
 
 	bool CProtocolMgr::IsAssignedKeepAlive()
