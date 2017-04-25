@@ -12,9 +12,15 @@ namespace NetworkCommunication
 	//协议管理事件类型
 	enum ProtocolEvtType
 	{
-		tcpError = TcpEvtType::error,//发生了tcp错误
-		online = 10,//服务端在线
-		offline = 11//服务端不在线
+		fatal,//严重错误
+		tcpfailed,//tcp连接失败
+		tcpsuccess,//tcp连接成功
+		NetError,//网络错误
+		serverdis,//服务端断开连接
+		Info,//消息
+		LoginSuccess,//协议登录成功
+		LoginFailed,//协议登录失败
+		LoseServer//失去服务端(心跳包检测失败)
 	};
 
 	//协议管理
@@ -35,11 +41,11 @@ namespace NetworkCommunication
 		// Method:    收到协议事件处理
 		// FullName:  NetworkCommunication::CProtocolMgr::LPOnRecvProtocolEvt
 		// Access:    protected 
-		// Returns:   是否已处理事件
+		// Returns:   void
 		// Qualifier: 事件类型
 		// Parameter: 消息
 		//************************************
-		typedef bool(*LPOnRecvProtocolEvt)(ProtocolEvtType type, TCHAR* msg);
+		typedef void(*LPOnRecvProtocolEvt)(ProtocolEvtType type, TCHAR* msg);
 
 		//包管理信息
 		typedef struct tagPackageMgrInfo
@@ -173,34 +179,19 @@ namespace NetworkCommunication
 		// Parameter: TcpClientEvtType type
 		// Parameter: TCHAR * msg
 		//************************************
-		bool OnRecvTcpEvt(TcpEvtType type, TCHAR* msg);
+		void OnRecvTcpEvt(TcpEvtType type, TCHAR* msg);
 
-		//************************************
-		// Method:    tcp连接成功事件处理
-		// FullName:  NetworkCommunication::CProtocolMgr::OnTcpConnectSuccess
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void OnTcpConnectSuccess();
+		//tcp连接成功事件处理
+		virtual void OnTcpConnectSuccess(TCHAR* msg);
 
-		//************************************
-		// Method:    tcp连接失败事件处理
-		// FullName:  NetworkCommunication::CProtocolMgr::OnTcpConnectFail
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		virtual void OnTcpConnectFail();
+		//tcp连接失败事件处理
+		virtual void OnTcpConnectFail(TCHAR* msg);
 
-		//************************************
-		// Method:    连接服务端失败事件处理
-		// FullName:  NetworkCommunication::CProtocolMgr::OnConnectServerFail
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
-		//************************************
-		void OnConnectServerFail();
+		//服务端断开连接事件处理
+		virtual void OnServerDisconnect(TCHAR* msg);
+
+		//失去服务端事件处理
+		virtual void OnLoseServer();
 
 		//************************************
 		// Method:    发送协议事件

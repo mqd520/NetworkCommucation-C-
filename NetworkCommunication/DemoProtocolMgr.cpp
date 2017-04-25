@@ -115,7 +115,7 @@ namespace NetworkCommunication
 		return m_entrypy.DeEncrypt(buf + GetHeadLen(), len - GetHeadLen(), code);
 	}
 
-	void CDemoProtocolMgr::OnTcpConnectSuccess()
+	void CDemoProtocolMgr::OnTcpConnectSuccess(TCHAR* msg)
 	{
 		char pwd[8] = "abcdefg";//协议密码
 		int len = 0;
@@ -128,8 +128,8 @@ namespace NetworkCommunication
 		pack1.cbRequestServerID = 1;
 		pack1.nVersion = 0x007;
 		pack1.strGuid = "";
-		SendData(DemoPackageType::ProtocolLogin, &pack1);//发送协议登录包
-		CProtocolMgr::OnTcpConnectSuccess();
+		//SendData(DemoPackageType::ProtocolLogin, &pack1);//发送协议登录包
+		CProtocolMgr::OnTcpConnectSuccess(msg);
 	}
 
 	bool CDemoProtocolMgr::AnalyticsPackage(int type, LPPackageBase data)

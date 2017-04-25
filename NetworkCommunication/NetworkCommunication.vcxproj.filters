@@ -106,7 +106,4 @@
       <Filter>01 工具</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="NetworkCommunication.rc" />
-  </ItemGroup>
 </Project>

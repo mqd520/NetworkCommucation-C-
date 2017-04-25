@@ -20,7 +20,7 @@ namespace NetworkCommunication
 		bool ValidatePackageType(int type);
 		void OnSendBufReadyCmp(BYTE* buf, int len);
 		bool OnRecvBufReadyCmp(BYTE* buf, int len);
-		void OnTcpConnectSuccess();
+		void OnTcpConnectSuccess(TCHAR* msg);
 		bool AnalyticsPackage(int type, LPPackageBase data);
 
 	public:

@@ -23,11 +23,11 @@ namespace NetworkCommunication
 		// Method:    收到tcp事件函数指针
 		// FullName:  NetworkCommunication::LPOnRecvNotifyEvt
 		// Access:    public 
-		// Returns:   是否已处理
+		// Returns:   void
 		// Qualifier: 事件类型
 		// Parameter: 消息
 		//************************************
-		typedef bool(T::*LPOnRecvTcpEvtT)(TcpEvtType type, TCHAR* msg);
+		typedef void(T::*LPOnRecvTcpEvtT)(TcpEvtType type, TCHAR* msg);
 
 	protected:
 		T* m_pInstanceT;//调用方实例
@@ -54,13 +54,11 @@ namespace NetworkCommunication
 		{
 			if (m_lpfnRecvTcpEvt)
 			{
-				if (!((m_pInstanceT->*m_lpfnRecvTcpEvt)(type, msg)))
-				{
-					if (msg)
-					{
-						Printf(msg);
-					}
-				}
+				(m_pInstanceT->*m_lpfnRecvTcpEvt)(type, msg);
+			}
+			else
+			{
+				Printf(msg);
 			}
 		};
 

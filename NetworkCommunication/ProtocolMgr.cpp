@@ -361,26 +361,43 @@ namespace NetworkCommunication
 		}
 	}
 
-	bool CProtocolMgr::OnRecvTcpEvt(TcpEvtType type, TCHAR* msg)
+	void CProtocolMgr::OnRecvTcpEvt(TcpEvtType type, TCHAR* msg)
 	{
-		if (type == TcpEvtType::connected)
+		if (type == TcpEvtType::connectsuccess)
 		{
-			OnTcpConnectSuccess();
+			OnTcpConnectSuccess(msg);
 		}
-		else if (type == TcpEvtType::disconnected)
+		else if (type == TcpEvtType::connfailed)
 		{
-			OnTcpConnectFail();
+			OnTcpConnectFail(msg);
+		}
+		else if (type == TcpEvtType::disconnect)
+		{
+			OnServerDisconnect(msg);
+		}
+		else if (type == TcpEvtType::TcpInfo)
+		{
+			SendProtocolEvt(ProtocolEvtType::Info, msg);
 		}
 		else
 		{
-			SendProtocolEvt(ProtocolEvtType::tcpError, msg);
+			SendProtocolEvt(ProtocolEvtType::fatal, msg);
 		}
-		return true;
 	}
 
-	void CProtocolMgr::OnTcpConnectSuccess()
+	void CProtocolMgr::OnTcpConnectSuccess(TCHAR* msg)
 	{
-		Printf(_T("success to connect server: \n"));
+		SendProtocolEvt(ProtocolEvtType::tcpsuccess, msg);
+	}
+
+	void CProtocolMgr::OnTcpConnectFail(TCHAR* msg)
+	{
+		SendProtocolEvt(ProtocolEvtType::tcpfailed, msg);
+	}
+
+	void CProtocolMgr::OnServerDisconnect(TCHAR* msg)
+	{
+		SendProtocolEvt(ProtocolEvtType::serverdis, msg);
 	}
 
 	void CProtocolMgr::StartKeepAlive()
@@ -423,36 +440,31 @@ namespace NetworkCommunication
 		else
 		{
 			m_nKeepAliveFailCount = -1;
-			OnConnectServerFail();
+			OnLoseServer();
 			return false;
 		}
-	}
-
-	void CProtocolMgr::OnTcpConnectFail()
-	{
-		Printf(_T("failed to connect server: \n"));
 	}
 
 	void CProtocolMgr::SendProtocolEvt(ProtocolEvtType type, TCHAR* msg)
 	{
 		if (m_lpfnRecvProtocolEvt)
 		{
-			if (!m_lpfnRecvProtocolEvt(type, msg))
-			{
-				//自己处理
-				OutputDebugString(msg);
-			}
+			m_lpfnRecvProtocolEvt(type, msg);
+		}
+		else
+		{
+			Printf(msg);
 		}
 	}
 
-	void CProtocolMgr::OnConnectServerFail()
+	void CProtocolMgr::OnLoseServer()
 	{
-		SendProtocolEvt(ProtocolEvtType::offline, _T("服务端已掉线: \n"));
+		SendProtocolEvt(ProtocolEvtType::LoseServer, _T("失去服务端连接: %s:%d \n"));
 		CloseConnect();//关闭连接
 		if (m_nReconnectServerMaxCount == 0 ||
 			(m_nReconnectServerMaxCount > 0 && m_nReconnectServerCount <= m_nReconnectServerMaxCount))//允许再次连接服务端
 		{
-			Connect();//连接服务端
+			Connect();//重新连接连接服务端
 		}
 		else//已超过允许连接服务端次数
 		{

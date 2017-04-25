@@ -16,8 +16,11 @@ namespace NetworkCommunication
 	enum TcpEvtType
 	{
 		error,//错误
-		disconnected,//失去服务端连接
-		connected//连接上服务端
+		connfailed,//连接失败
+		connectsuccess,//连接成功,
+		disconnect,//服务器断开连接,
+		Net,//网络错误,
+		TcpInfo//消息
 	};
 
 	//tcp数据发送方式
@@ -49,11 +52,11 @@ namespace NetworkCommunication
 	// Method:    收到tcp事件函数指针
 	// FullName:  NetworkCommunication::LPOnRecvTcpEvt
 	// Access:    public 
-	// Returns:   是否已处理
+	// Returns:   void
 	// Qualifier: 事件类型
 	// Parameter: 消息
 	//************************************
-	typedef bool(*LPOnRecvTcpEvt)(TcpEvtType type, TCHAR* msg);
+	typedef void(*LPOnRecvTcpEvt)(TcpEvtType type, TCHAR* msg);
 
 	//tcp客户端
 	class CTcpClient
@@ -72,7 +75,6 @@ namespace NetworkCommunication
 		int m_nServerPort;//服务端端口
 		SOCKADDR_IN m_addrSrv;//服务端地址
 		SOCKET m_socket;//客户端Socket
-		bool m_bSocketClosed;//客户端socket是否已关闭
 		bool m_bInited;//是否初始化
 		LPOnRecvTcpData m_lpfnOnRecvTcpData;//接收tcp数据回调函数
 		int m_nRecvTcpBufLen;//接收tcp缓冲区总长度
@@ -83,6 +85,7 @@ namespace NetworkCommunication
 		int m_nAllowReconnectCount;//允许重连计数(-1:不允许重连,0:无限制,>0:允许次数)
 		int m_nReconnectCount;//已重连计数(连接成功后立即重置0)
 		int m_nConnectTimeout;//连接超时时间(0:无限制等待,>0:限制指定时间)
+		bool m_bAllowReconnect;//连接断开后是否允许连接
 		ThreadInfo m_tiConnect;//连接线程信息
 		ThreadInfo m_tiReadTcpData;//读取tcp数据线程信息
 		CTimerT<CTcpClient>* m_timer;//连接超时对象
@@ -195,6 +198,9 @@ namespace NetworkCommunication
 		//************************************
 		void OnMulti(BYTE buf[], int len);
 
+		//连接断开后重新连接
+		void Reconnect();
+
 	public:
 		CTcpClient();
 		~CTcpClient();
@@ -213,8 +219,8 @@ namespace NetworkCommunication
 		// Parameter: 重连事件间隔
 		// Parameter: 连接超时时间
 		//************************************
-		void Init(const TCHAR* ip, int port, TcpDataSendType type = TcpDataSendType::que, int socketBufLen = 1024, int allowReconnectCount = 0,
-			int reconnectTimeSpan = 2000, int connectTimeout = 2000);
+		void Init(const TCHAR* ip, int port, TcpDataSendType type = TcpDataSendType::single, int socketBufLen = 1024, int allowReconnectCount = 0,
+			int reconnectTimeSpan = 2000, int connectTimeout = 2000, bool allowReconnect = true);
 
 		//************************************
 		// Method:    设置回调函数
@@ -225,7 +231,7 @@ namespace NetworkCommunication
 		// Parameter: 接收tcp数据回调函数
 		// Parameter: 接收tcp事件回调函数
 		//************************************
-		virtual void SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData, LPOnRecvTcpEvt lpfnOnRecvTcpEvt = NULL);
+		void SetCallback(LPOnRecvTcpData lpfnOnRecvTcpData, LPOnRecvTcpEvt lpfnOnRecvTcpEvt = NULL);
 
 		//开始连接
 		void Connect();
@@ -275,7 +281,7 @@ namespace NetworkCommunication
 		// Parameter: int len
 		//************************************
 		void MultiSendTcpData(BYTE buf[], int len);
-		
+
 		//读取队列线程入口(无需调用)
 		void ReadQueue();
 	};
