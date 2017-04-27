@@ -75,8 +75,6 @@ namespace NetworkCommunication
 		int m_nKeepAliveFailMaxCount;//心跳包失败计数最大值,超过值后认为对方已掉线
 		int m_nReconnectServerMaxCount;//失去服务端连接(非tcp连接,检测不到指定次数的心跳包),自动重连的最大值(0:无限制)
 		int m_nReconnectServerCount;//失去服务端连接后,已连接服务端的次数
-		bool m_bIsOnlineCallEvt;//是否已触发掉线事件
-		bool m_bIsOfflineCallEvt;//是否已触发上线事件
 		LPPackageBase m_pKeepAlive;//心跳包指针
 		BYTE* m_pKeepAliveBuf;//心跳包缓冲区
 		int m_nKeepAliveBufLen;//心跳包缓冲区长度
@@ -128,6 +126,14 @@ namespace NetworkCommunication
 		// Parameter: 缓冲区
 		//************************************
 		virtual bool ValidatePackageHead(BYTE buf[]);
+			
+		//包头无效事件处理
+		//return: 是否继续解析包
+		virtual void OnPackageHeadInvalid();
+
+		//解析包失败事件处理
+		//return: 是否继续解析包
+		virtual void OnParsePackageFail();
 
 		//************************************
 		// Method:    验证包类型是否有效
@@ -240,6 +246,9 @@ namespace NetworkCommunication
 
 		//心跳包超时事件处理
 		bool OnKeepAliveTimeout();
+
+		//重新连接
+		void Reconnect();
 
 	public:
 		CProtocolMgr();

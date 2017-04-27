@@ -22,6 +22,7 @@ namespace NetworkCommunication
 		bool OnRecvBufReadyCmp(BYTE* buf, int len);
 		void OnTcpConnectSuccess(TCHAR* msg);
 		bool AnalyticsPackage(int type, LPPackageBase data);
+		void OnPackageHeadInvalid();
 
 	public:
 		CDemoProtocolMgr();

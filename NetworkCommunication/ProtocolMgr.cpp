@@ -16,8 +16,6 @@ namespace NetworkCommunication
 		m_nKeepAliveFailMaxCount(3),
 		m_nReconnectServerCount(0),
 		m_nReconnectServerMaxCount(3),
-		m_bIsOnlineCallEvt(false),
-		m_bIsOfflineCallEvt(false),
 		m_pKeepAlive(NULL),
 		m_pKeepAliveBuf(NULL),
 		m_nKeepAliveBufLen(0),
@@ -26,13 +24,13 @@ namespace NetworkCommunication
 		m_nTcpBufLen(1024),
 		m_bAutoReconnect(true),
 		m_nReconnectTimes(0),
-		m_nReconnectTimeSpan(1500),
+		m_nReconnectTimeSpan(2000),
 		m_nConnectTimeout(2000),
-		m_sendType(TcpDataSendType::que),
+		m_sendType(TcpDataSendType::single),
 		m_timer(NULL)
 	{
 		m_hMutexStream = ::CreateMutex(NULL, false, NULL);
-	};
+	}
 
 	CProtocolMgr::~CProtocolMgr()
 	{
@@ -75,7 +73,7 @@ namespace NetworkCommunication
 	void CProtocolMgr::AssociatePackageType()
 	{
 
-	};
+	}
 
 	bool CProtocolMgr::ValidateKeepAlivePackage(LPPackageBase data)
 	{
@@ -141,6 +139,7 @@ namespace NetworkCommunication
 			{
 				m_stream->Detele(m_nPackageHeadLen);//删除无效包头数据
 				::ReleaseMutex(m_hMutexStream);//解锁
+				OnPackageHeadInvalid();//包头无效事件处理
 				continue;//继续下次循环
 			}
 			int type = GetPackageType(m_stream->GetBuf(), m_nPackageHeadLen);//获取包类型
@@ -148,6 +147,7 @@ namespace NetworkCommunication
 			{
 				m_stream->Detele(m_nPackageHeadLen);//删除无效包头数据
 				::ReleaseMutex(m_hMutexStream);//解锁
+				OnPackageHeadInvalid();//包头无效事件处理
 				continue;//继续下次循环
 			}
 			int datalen = GetDataLen(m_stream->GetBuf(), m_nPackageHeadLen);//获取包体数据长度
@@ -156,9 +156,10 @@ namespace NetworkCommunication
 			{
 				m_stream->Detele(m_nPackageHeadLen);//删除无效包头数据
 				::ReleaseMutex(m_hMutexStream);//解锁
+				OnPackageHeadInvalid();//包头无效事件处理
 				continue;//继续下次循环
 			}
-			BYTE* buf = m_stream->Read(packgetlen);//从字节流对象中读取一个完整包数据
+			BYTE* buf = m_stream->Read(packgetlen);//从字节流对象中读取一个完整包数据,长度不够返回NULL
 			::ReleaseMutex(m_hMutexStream);//解锁
 			if (buf != NULL)
 			{
@@ -170,6 +171,11 @@ namespace NetworkCommunication
 				}
 				void* data = Unpacket(buf, packgetlen);//解包
 				delete buf;
+				if (data == NULL)//解包失败
+				{
+					OnParsePackageFail();//包解析失败事件处理
+					continue;
+				}
 				if (AnalyticsPackage(type, (LPPackageBase)data))//分析包是否交由调用者处理
 				{
 					if (m_lpfnRecvData)
@@ -215,7 +221,7 @@ namespace NetworkCommunication
 			{
 				InitKeepAlive();//初始化心跳包
 			}
-			m_tcp.Init(ip, port, m_sendType, m_nTcpBufLen, m_nReconnectTimes, m_nReconnectTimeSpan, m_nConnectTimeout);
+			m_tcp.Init(ip, port, m_sendType, m_nTcpBufLen, m_nReconnectTimes, m_nReconnectTimeSpan, m_nConnectTimeout, false);
 			m_tcp.SetCallbackT(this, &CProtocolMgr::OnRecvData, &CProtocolMgr::OnRecvTcpEvt);
 		}
 	}
@@ -387,6 +393,7 @@ namespace NetworkCommunication
 
 	void CProtocolMgr::OnTcpConnectSuccess(TCHAR* msg)
 	{
+		m_stream->Clean();//清空可能存在的数据
 		SendProtocolEvt(ProtocolEvtType::tcpsuccess, msg);
 	}
 
@@ -398,6 +405,8 @@ namespace NetworkCommunication
 	void CProtocolMgr::OnServerDisconnect(TCHAR* msg)
 	{
 		SendProtocolEvt(ProtocolEvtType::serverdis, msg);
+		m_stream->Clean();//清空可能存在的数据
+		Reconnect();
 	}
 
 	void CProtocolMgr::StartKeepAlive()
@@ -416,7 +425,7 @@ namespace NetworkCommunication
 
 	bool CProtocolMgr::OnKeepAliveTimeout()
 	{
-		m_tcp.SendData(m_pKeepAliveBuf, m_nKeepAliveBufLen);//向对方发送心跳包
+		SendData(m_nKeepAlive, m_pKeepAlive);
 		if (m_nKeepAliveFailCount <= m_nKeepAliveFailMaxCount)//失败次数低于允许失败次数
 		{
 			if (m_nKeepAliveFailCount == 0)//已收到心跳包,重置失败次数为-1
@@ -460,16 +469,7 @@ namespace NetworkCommunication
 	void CProtocolMgr::OnLoseServer()
 	{
 		SendProtocolEvt(ProtocolEvtType::LoseServer, _T("失去服务端连接: %s:%d \n"));
-		CloseConnect();//关闭连接
-		if (m_nReconnectServerMaxCount == 0 ||
-			(m_nReconnectServerMaxCount > 0 && m_nReconnectServerCount <= m_nReconnectServerMaxCount))//允许再次连接服务端
-		{
-			Connect();//重新连接连接服务端
-		}
-		else//已超过允许连接服务端次数
-		{
-			m_nReconnectServerCount++;
-		}
+		Reconnect();
 	}
 
 	void CProtocolMgr::OnSendBufReadyCmp(BYTE* buf, int len)
@@ -485,5 +485,29 @@ namespace NetworkCommunication
 	bool CProtocolMgr::IsAssignedKeepAlive()
 	{
 		return m_nKeepAlive != -999;
+	}
+
+	void CProtocolMgr::OnPackageHeadInvalid()
+	{
+
+	}
+
+	void CProtocolMgr::OnParsePackageFail()
+	{
+
+	}
+
+	void CProtocolMgr::Reconnect()
+	{
+		m_tcp.CloseConnect();//关闭tcp连接
+		if (m_nReconnectServerMaxCount == 0 ||
+			(m_nReconnectServerMaxCount > 0 && m_nReconnectServerCount <= m_nReconnectServerMaxCount))//允许再次连接服务端
+		{
+			Connect();//重新连接服务端
+		}
+		else//已超过允许连接服务端次数
+		{
+			m_nReconnectServerCount++;
+		}
 	}
 }

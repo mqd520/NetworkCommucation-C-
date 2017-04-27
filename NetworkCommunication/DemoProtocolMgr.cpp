@@ -16,7 +16,7 @@ namespace NetworkCommunication
 		m_nKeepAlive = DemoPackageType::KeepAlive;//指定心跳包类型(非-999)
 		m_pKeepAlive = new KeepAlivePackage();//指定心跳包
 		m_nKeepAliveFailMaxCount = 3;//指定心跳包允许失败最大值
-		m_nKeepAliveTimespan = 2 * 1000;//指定心跳包间隔时间
+		m_nKeepAliveTimespan = 5 * 1000;//指定心跳包间隔时间
 	}
 
 	CDemoProtocolMgr::~CDemoProtocolMgr()
@@ -28,9 +28,7 @@ namespace NetworkCommunication
 	{
 		m_vecPackageMgr.push_back({ DemoPackageType::KeepAlive, new CCommonPackageMgr<KeepAlivePackage>() });
 		m_vecPackageMgr.push_back({ DemoPackageType::ProtocolLogin, new CProtocolLoginPackageMgr() });
-
-		m_vecPackageMgr.push_back({ DemoPackageType::Login, new CCommonPackageMgr<LoginPackage>() });
-		m_vecPackageMgr.push_back({ DemoPackageType::LoginReply, new CCommonPackageMgr<LoginReplyPackage>() });
+		m_vecPackageMgr.push_back({ DemoPackageType::ProtocolLoginReply, new CProtocolLoginReplyPackageMgr() });
 	}
 
 	BYTE* CDemoProtocolMgr::GetPackageHeadBuf(int type, int len)
@@ -39,7 +37,7 @@ namespace NetworkCommunication
 		CByteStream s(20);
 		s.WriteShort(32616);
 		s.WriteShort(type);
-		s.WriteShort(len);
+		s.WriteShort(len + m_nPackageHeadLen);
 		s.WriteByte(0);
 		memcpy(buf, s.GetBuf(), m_nPackageHeadLen);
 		return buf;
@@ -49,7 +47,7 @@ namespace NetworkCommunication
 	{
 		if (len >= m_nPackageHeadLen)
 		{
-			return MergeByte(buf[4], buf[5]);
+			return MergeByte(buf[4], buf[5]) - m_nPackageHeadLen;
 		}
 		else
 		{
@@ -75,7 +73,7 @@ namespace NetworkCommunication
 		LPKeepAlivePackage p = (LPKeepAlivePackage)data;
 		if (p)
 		{
-			return p->n == 0 ? true : false;
+			return p->n == 1 ? true : false;
 		}
 		return false;
 	}
@@ -95,7 +93,7 @@ namespace NetworkCommunication
 		bool b = false;
 		if (true)//具体根据包类型来验证
 		{
-			if (type == Login || type == LoginReply || type == KeepAlive)
+			if (type == ProtocolLogin || type == ProtocolLoginReply || type == KeepAlive)
 			{
 				b = true;
 			}
@@ -117,6 +115,8 @@ namespace NetworkCommunication
 
 	void CDemoProtocolMgr::OnTcpConnectSuccess(TCHAR* msg)
 	{
+		CProtocolMgr::OnTcpConnectSuccess(msg);
+
 		char pwd[8] = "abcdefg";//协议密码
 		int len = 0;
 		BYTE* buf = WriteMultiByteStr(pwd, &len);
@@ -128,16 +128,22 @@ namespace NetworkCommunication
 		pack1.cbRequestServerID = 1;
 		pack1.nVersion = 0x007;
 		pack1.strGuid = "";
-		//SendData(DemoPackageType::ProtocolLogin, &pack1);//发送协议登录包
-		CProtocolMgr::OnTcpConnectSuccess(msg);
+		SendData(DemoPackageType::ProtocolLogin, &pack1);//发送协议登录包
 	}
 
 	bool CDemoProtocolMgr::AnalyticsPackage(int type, LPPackageBase data)
 	{
-		if (type == -1)
+		if (type == DemoPackageType::ProtocolLoginReply)
 		{
-			return true;
+			SendProtocolEvt(ProtocolEvtType::Info, _T("Login server success! \n"));
+			StartKeepAlive();
+			return false;//无需客户端处理
 		}
 		return CProtocolMgr::AnalyticsPackage(type, data);
+	}
+
+	void CDemoProtocolMgr::OnPackageHeadInvalid()
+	{
+		CProtocolMgr::OnPackageHeadInvalid();
 	}
 }

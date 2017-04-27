@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DemoProtocol.h"
 #include "ByteStream.h"
+#include "MemoryTool.h"
 
 namespace NetworkCommunication
 {
@@ -41,6 +42,45 @@ namespace NetworkCommunication
 		if (p)
 		{
 			delete p;
+		}
+	}
+
+	BYTE* CProtocolLoginReplyPackageMgr::Unparse(void* data, int* len)
+	{
+		BYTE* buf = NULL;
+		LPProtocolLoginReplyPackage p = (LPProtocolLoginReplyPackage)data;
+		if (p)
+		{
+			CByteStream s(100);
+			s.WriteByte(p->cbVerifyCode);
+			s.WriteInt(p->nServerID);
+			buf = new BYTE[s.GetDataLen()];
+			memcpy(buf, s.GetBuf(), s.GetDataLen());
+			if (len != NULL)
+			{
+				*len = s.GetDataLen();
+			}
+		}
+		return buf;
+	}
+
+	void* CProtocolLoginReplyPackageMgr::Parse(BYTE* buf, int len)
+	{
+		LPProtocolLoginReplyPackage p = NULL;
+		if (len > 0)
+		{
+			p = new ProtocolLoginReplyPackage();
+			p->cbVerifyCode = buf[0];
+			p->nServerID = MergeByte(buf[1], buf[2], buf[3], buf[4]);
+		}
+		return (void*)p;
+	}
+
+	void CProtocolLoginReplyPackageMgr::Release(void* data)
+	{
+		if (data != NULL)
+		{
+			delete data;
 		}
 	}
 }

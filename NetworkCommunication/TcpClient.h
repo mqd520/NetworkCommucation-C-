@@ -85,13 +85,14 @@ namespace NetworkCommunication
 		int m_nAllowReconnectCount;//允许重连计数(-1:不允许重连,0:无限制,>0:允许次数)
 		int m_nReconnectCount;//已重连计数(连接成功后立即重置0)
 		int m_nConnectTimeout;//连接超时时间(0:无限制等待,>0:限制指定时间)
-		bool m_bAllowReconnect;//连接断开后是否允许连接
+		bool m_bAllowReconnect;//连接断开后是否允许重新连接
 		ThreadInfo m_tiConnect;//连接线程信息
 		ThreadInfo m_tiReadTcpData;//读取tcp数据线程信息
 		CTimerT<CTcpClient>* m_timer;//连接超时对象
 		TcpDataSendType m_sendType;//tcp数据发送方式
 		queue<BufInfo> m_queue;//队列对象
 		ThreadInfo m_tiQueue;//队列线程信息
+		bool m_bSocketAvaliabled;//socket是否可用
 
 	protected:
 		//初始化socket环境
@@ -236,17 +237,8 @@ namespace NetworkCommunication
 		//开始连接
 		void Connect();
 
-		//连接服务端线程入口(无需调用)
-		void ConnectServer();
-
 		//关闭连接
 		void CloseConnect();
-
-		//获取服务端Socket
-		SOCKET GetClientSocket();
-
-		//读取tcp数据线程入口(无需调用)
-		void ReadTcpData();
 
 		//************************************
 		// Method:    发送数据
@@ -271,6 +263,12 @@ namespace NetworkCommunication
 		//************************************
 		void SimulateServerData(BYTE* buf, int len);
 
+		//读取队列线程入口(无需调用)
+		void ReadQueue();
+		//连接服务端线程入口(无需调用)
+		void ConnectServer();
+		//读取tcp数据线程入口(无需调用)
+		void ReadTcpData();
 		//************************************
 		// Method:    多线程处理接收的tcp数据线程入口(无需调用)
 		// FullName:  NetworkCommunication::CTcpClient::MultiSendTcpData
@@ -281,8 +279,5 @@ namespace NetworkCommunication
 		// Parameter: int len
 		//************************************
 		void MultiSendTcpData(BYTE buf[], int len);
-
-		//读取队列线程入口(无需调用)
-		void ReadQueue();
 	};
 }

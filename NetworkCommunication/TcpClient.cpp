@@ -41,7 +41,8 @@ namespace NetworkCommunication
 		m_timer(NULL),
 		m_sendType(TcpDataSendType::single),
 		m_tiQueue({ 0 }),
-		m_bAllowReconnect(true)
+		m_bAllowReconnect(true),
+		m_bSocketAvaliabled(false)
 	{
 
 	}
@@ -111,7 +112,12 @@ namespace NetworkCommunication
 		m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (m_socket == INVALID_SOCKET)
 		{
+			m_bSocketAvaliabled = false;
 			SendTcpEvt(TcpEvtType::error, _T("创建Socket失败! \n"));
+		}
+		else
+		{
+			m_bSocketAvaliabled = true;
 		}
 	}
 
@@ -119,7 +125,7 @@ namespace NetworkCommunication
 	{
 		m_nReconnectCount = 0;
 		TCHAR msg[100];
-		wsprintf(msg, _T("success to connect server: %s:%d \n"), m_strServerIP, m_nServerPort);
+		wsprintf(msg, _T("successed to connect server: %s:%d \n"), m_strServerIP, m_nServerPort);
 		SendTcpEvt(TcpEvtType::connectsuccess, msg);
 		if (m_tiReadTcpData.hThread == 0)//启动读取tcp数据线程
 		{
@@ -158,13 +164,8 @@ namespace NetworkCommunication
 	void CTcpClient::CloseConnect()
 	{
 		CloseSocket();
+		m_timer->Stop();
 		PauseThread(&m_tiConnect, true);
-		PauseThread(&m_tiReadTcpData, true);
-	}
-
-	SOCKET CTcpClient::GetClientSocket()
-	{
-		return m_socket;
 	}
 
 	DWORD WINAPI ReadTcpData(LPVOID lpParam)
@@ -179,32 +180,39 @@ namespace NetworkCommunication
 		while (true)
 		{
 			memset(m_pRecvTcpBuf, 0, m_nRecvTcpBufLen);//接收缓冲区清零
-			int len = recv(m_socket, m_pRecvTcpBuf, m_nRecvTcpBufLen, 0);
-			if (len > 0 && m_bHaslpfnRecvTcpData)
+			if (!m_bSocketAvaliabled)//socket不可用(被关闭)
 			{
-				BYTE* buf = new BYTE[len];
-				memcpy(buf, m_pRecvTcpBuf, len);
-				OnRecvTcpData(buf, len);
+				PauseThread(&m_tiReadTcpData, true);//暂停接收线程
 			}
 			else
 			{
-				if (len == 0)//连接被关闭
+				int len = recv(m_socket, m_pRecvTcpBuf, m_nRecvTcpBufLen, 0);
+				if (len > 0 && m_bHaslpfnRecvTcpData)
 				{
-					TCHAR msg[100];
-					wsprintf(msg, _T("server disconnect the connection: %s:%d \n"), m_strServerIP, m_nServerPort);
-					SendTcpEvt(disconnect, msg);
-				}
-				else if (len == -1)//网络故障
-				{
-					SendTcpEvt(Net, _T("Net trouble occurred! \n"));
-				}
-				if (m_bAllowReconnect)//允许重连
-				{
-					Reconnect();//重新连接
+					BYTE* buf = new BYTE[len];
+					memcpy(buf, m_pRecvTcpBuf, len);
+					OnRecvTcpData(buf, len);//接收到tcp数据事件处理
 				}
 				else
 				{
-					PauseThread(&m_tiReadTcpData, true);//挂起读取tcp数据线程
+					if (len == 0)//连接被关闭
+					{
+						TCHAR msg[100];
+						wsprintf(msg, _T("server disconnect the connection: %s:%d \n"), m_strServerIP, m_nServerPort);
+						SendTcpEvt(disconnect, msg);
+					}
+					else if (len == -1)//网络故障
+					{
+						SendTcpEvt(Net, _T("Net trouble occurred! \n"));
+					}
+					if (m_bAllowReconnect)//允许重连
+					{
+						Reconnect();//重新连接
+					}
+					else
+					{
+						PauseThread(&m_tiReadTcpData, true);//挂起读取tcp数据线程
+					}
 				}
 			}
 		}
@@ -325,7 +333,7 @@ namespace NetworkCommunication
 			}
 
 			TCHAR msg1[100];
-			wsprintf(msg1, _T("conecting to the server: %s:%d \n"), m_strServerIP, m_nServerPort);
+			wsprintf(msg1, _T("connecting to the server: %s:%d \n"), m_strServerIP, m_nServerPort);
 			SendTcpEvt(TcpInfo, msg1);
 
 			int result = ::connect(m_socket, (SOCKADDR*)&m_addrSrv, sizeof(m_addrSrv));
@@ -417,6 +425,7 @@ namespace NetworkCommunication
 	void CTcpClient::CloseSocket()
 	{
 		::closesocket(m_socket);
+		m_bSocketAvaliabled = false;
 	}
 
 	DWORD WINAPI MultiSendRecvData(LPVOID lpParam)

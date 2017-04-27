@@ -7,14 +7,14 @@
     <Filter Include="03 协议管理">
       <UniqueIdentifier>{311cddd5-6596-48f2-9b74-2a1e97957bae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02 Tcp管理">
-      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04 DemoProtocol管理">
       <UniqueIdentifier>{4f6957ea-8ed9-43ff-8f1e-7bd0cea9bfa8}</UniqueIdentifier>
     </Filter>
     <Filter Include="05 其它">
       <UniqueIdentifier>{386534d3-12d0-48f5-b9f7-5d159a020830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 Tcp管理">
+      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
