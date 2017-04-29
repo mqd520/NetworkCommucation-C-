@@ -50,6 +50,7 @@ namespace NetworkCommunication
 		}
 		if (m_timer)
 		{
+			m_timer->Stop();
 			delete m_timer;
 			m_timer = NULL;
 		}

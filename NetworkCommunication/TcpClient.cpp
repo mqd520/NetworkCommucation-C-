@@ -49,7 +49,7 @@ namespace NetworkCommunication
 
 	CTcpClient::~CTcpClient()
 	{
-		CloseConnect();
+		CloseSocket();
 		CleanThread();
 		WSACleanup();
 		if (m_pRecvTcpBuf)
@@ -59,6 +59,7 @@ namespace NetworkCommunication
 		}
 		if (m_timer)
 		{
+			m_timer->Stop();
 			delete m_timer;
 		}
 	}
@@ -164,7 +165,10 @@ namespace NetworkCommunication
 	void CTcpClient::CloseConnect()
 	{
 		CloseSocket();
-		m_timer->Stop();
+		if (m_timer)
+		{
+			m_timer->Stop();
+		}
 		PauseThread(&m_tiConnect, true);
 	}
 

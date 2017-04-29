@@ -6,7 +6,7 @@ namespace NetworkCommunication
 	//从开始出读取(读取后后面的数据依次向前平移),从结尾处写入
 	class CByteStream
 	{
-	private:
+	protected:
 		int m_nStreamLen;//字节流长度
 		BYTE* m_buf;//缓冲区指针
 		int m_nDataEndPos;//数据结尾索引
@@ -98,38 +98,6 @@ namespace NetworkCommunication
 		// Parameter: 缓冲区长度
 		//************************************
 		int Write(BYTE buf[], int len);
-
-		//************************************
-		// Method:    写入一个字节数据
-		// FullName:  NetworkCommunication::CByteStream::WriteByte
-		// Access:    public 
-		// Returns:   实际写入长度
-		// Qualifier:
-		// Parameter: 字节值
-		//************************************
-		int WriteByte(BYTE val);
-
-		//************************************
-		// Method:    写入一个有符号int
-		// FullName:  NetworkCommunication::CByteStream::WriteInt
-		// Access:    public 
-		// Returns:   实际写入长度
-		// Qualifier:
-		// Parameter: int val
-		// Parameter: 是否使用小字节序(网络字节序)
-		//************************************
-		int WriteInt(int val, bool bLittleEndian = true);
-
-		//************************************
-		// Method:    写入一个有符号short
-		// FullName:  NetworkCommunication::CByteStream::WriteShort
-		// Access:    public 
-		// Returns:   实际写入长度
-		// Qualifier:
-		// Parameter: 值
-		// Parameter: 是否使用小字节序(网络字节序)
-		//************************************
-		int WriteShort(short val, bool bLittleEndian = true);
 
 		//************************************
 		// Method:    从指定流对象读取数据写入到当前流对象结尾

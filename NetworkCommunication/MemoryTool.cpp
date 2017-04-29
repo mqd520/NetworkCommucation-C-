@@ -25,7 +25,7 @@ namespace NetworkCommunication
 
 	int GetAStrByteCount(char* str)
 	{
-		wstring wstr = MultiByteToUTF8((char*)str);
+		wstring wstr = MultiByteToUTF8(str);
 		int nlen = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
 		return nlen;
 	}
@@ -98,31 +98,6 @@ namespace NetworkCommunication
 		return len;
 	}
 
-	BYTE* WriteIntToBuf(int val, bool bLittleEndian)
-	{
-		int len = sizeof(int);
-		BYTE* buf = new BYTE[len];
-		if (bLittleEndian)
-		{
-			for (int i = 0; i < len; i++)
-			{
-				int left = (len - (1 + i)) * 8;//向左平移位数
-				int right = 3 * 8;//向右平移位数
-				buf[i] = (val << left) >> right;
-			}
-		}
-		else
-		{
-			for (int i = 0; i < len; i++)
-			{
-				int left = i * 8;//向左平移位数
-				int right = 3 * 8;//向右平移位数
-				buf[i] = (val << left) >> right;
-			}
-		}
-		return buf;
-	}
-
 	string ReadMultiByteStr(BYTE buf[], int len)
 	{
 		char* str = new char[len + 1];
@@ -133,7 +108,7 @@ namespace NetworkCommunication
 		return result;
 	}
 
-	wstring ReadUTF8Str(BYTE buf[], int len)
+	wstring ReadUTF8ByteStr(BYTE buf[], int len)
 	{
 		int size = len / 2;
 		wchar_t* strUTF8 = new wchar_t[size + 1];

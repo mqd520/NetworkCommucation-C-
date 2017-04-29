@@ -163,7 +163,7 @@ namespace NetworkCommunication
 	// Parameter: 字节数组
 	// Parameter: 字节数组长度
 	//************************************
-	wstring ReadUTF8Str(BYTE buf[], int len);
+	wstring ReadUTF8ByteStr(BYTE buf[], int len);
 
 	//************************************
 	// Method:    写入多字节字符串到字节数组

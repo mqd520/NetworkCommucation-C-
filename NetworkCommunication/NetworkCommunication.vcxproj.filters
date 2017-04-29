@@ -7,9 +7,6 @@
     <Filter Include="03 协议管理">
       <UniqueIdentifier>{311cddd5-6596-48f2-9b74-2a1e97957bae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04 DemoProtocol管理">
-      <UniqueIdentifier>{4f6957ea-8ed9-43ff-8f1e-7bd0cea9bfa8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05 其它">
       <UniqueIdentifier>{386534d3-12d0-48f5-b9f7-5d159a020830}</UniqueIdentifier>
     </Filter>
@@ -30,9 +27,6 @@
     <ClInclude Include="MemoryTool.h">
       <Filter>01 工具</Filter>
     </ClInclude>
-    <ClInclude Include="DemoProtocolMgr.h">
-      <Filter>04 DemoProtocol管理</Filter>
-    </ClInclude>
     <ClInclude Include="TcpClient.h">
       <Filter>02 Tcp管理</Filter>
     </ClInclude>
@@ -41,12 +35,6 @@
     </ClInclude>
     <ClInclude Include="ProtocolMgr.h">
       <Filter>03 协议管理</Filter>
-    </ClInclude>
-    <ClInclude Include="Def.h">
-      <Filter>03 协议管理</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoProtocol.h">
-      <Filter>04 DemoProtocol管理</Filter>
     </ClInclude>
     <ClInclude Include="EncryptBuffer.h">
       <Filter>01 工具</Filter>
@@ -57,7 +45,6 @@
     <ClInclude Include="TcpServer.h">
       <Filter>02 Tcp管理</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="SocketMgr.h">
       <Filter>02 Tcp管理</Filter>
     </ClInclude>
@@ -65,6 +52,18 @@
       <Filter>01 工具</Filter>
     </ClInclude>
     <ClInclude Include="OtherTool.h">
+      <Filter>01 工具</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>05 其它</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketBase.h">
+      <Filter>03 协议管理</Filter>
+    </ClInclude>
+    <ClInclude Include="Def.h">
+      <Filter>03 协议管理</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkStream.h">
       <Filter>01 工具</Filter>
     </ClInclude>
   </ItemGroup>
@@ -75,9 +74,6 @@
     <ClCompile Include="MemoryTool.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
-    <ClCompile Include="DemoProtocolMgr.cpp">
-      <Filter>04 DemoProtocol管理</Filter>
-    </ClCompile>
     <ClCompile Include="TcpClient.cpp">
       <Filter>02 Tcp管理</Filter>
     </ClCompile>
@@ -86,9 +82,6 @@
     </ClCompile>
     <ClCompile Include="EncryptBuffer.cpp">
       <Filter>01 工具</Filter>
-    </ClCompile>
-    <ClCompile Include="DemoProtocolPackMgr.cpp">
-      <Filter>04 DemoProtocol管理</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>01 工具</Filter>
@@ -103,6 +96,12 @@
       <Filter>01 工具</Filter>
     </ClCompile>
     <ClCompile Include="OtherTool.cpp">
+      <Filter>01 工具</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketBase.cpp">
+      <Filter>03 协议管理</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkStream.cpp">
       <Filter>01 工具</Filter>
     </ClCompile>
   </ItemGroup>

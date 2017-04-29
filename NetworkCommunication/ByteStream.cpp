@@ -143,41 +143,4 @@ namespace NetworkCommunication
 	{
 		return m_nStreamLen - GetDataLen();
 	}
-
-	int CByteStream::WriteByte(BYTE val)
-	{
-		int nlen = CalcActualLen(sizeof(BYTE));
-		if (nlen > 0)
-		{
-			m_nDataEndPos += sizeof(BYTE);
-			m_buf[m_nDataEndPos] = val;
-		}
-		return nlen;
-	}
-
-	int CByteStream::WriteInt(int val, bool bLittleEndian)
-	{
-		int nlen = CalcActualLen(sizeof(int));
-		if (nlen > 0)
-		{
-			BYTE* buf = WriteIntToBuf(val, bLittleEndian);
-			memcpy(m_buf + m_nDataEndPos + 1, buf, nlen);
-			m_nDataEndPos += nlen;
-			delete buf;
-		}
-		return nlen;
-	}
-
-	int CByteStream::WriteShort(short val, bool bLittleEndian)
-	{
-		int nlen = CalcActualLen(sizeof(short));
-		if (nlen > 0)
-		{
-			BYTE* buf = WriteShortToBuf(val, bLittleEndian);
-			memcpy(m_buf + m_nDataEndPos + 1, buf, nlen);
-			m_nDataEndPos += nlen;
-			delete buf;
-		}
-		return nlen;
-	}
 }
