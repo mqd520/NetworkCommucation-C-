@@ -17,8 +17,6 @@ namespace NetworkCommunication
 		m_nReconnectServerCount(0),
 		m_nReconnectServerMaxCount(3),
 		m_pKeepAlive(NULL),
-		m_pKeepAliveBuf(NULL),
-		m_nKeepAliveBufLen(0),
 		m_lpfnRecvProtocolEvt(NULL),
 		m_nStreamBufLen(1024),
 		m_nTcpBufLen(1024),
@@ -28,9 +26,11 @@ namespace NetworkCommunication
 		m_nConnectTimeout(2000),
 		m_sendType(TcpDataRecvType::single),
 		m_pHead(NULL),
+		m_nServerPort(0),
 		m_timer(NULL)
 	{
 		m_hMutexStream = ::CreateMutex(NULL, false, NULL);
+		memset(m_strServerIP, 0, 20);
 	}
 
 	CProtocolClientMgr::~CProtocolClientMgr()
@@ -48,11 +48,6 @@ namespace NetworkCommunication
 			delete m_stream;
 			m_stream = NULL;
 		}
-		if (m_pKeepAliveBuf)
-		{
-			delete m_pKeepAliveBuf;
-			m_pKeepAliveBuf = NULL;
-		}
 		if (m_timer)
 		{
 			m_timer->Stop();
@@ -63,22 +58,6 @@ namespace NetworkCommunication
 		{
 			delete m_pKeepAlive;
 		}
-		if (m_pKeepAliveBuf)
-		{
-			delete m_pKeepAliveBuf;
-		}
-		for (vector<PackageMgrInfo>::iterator it = m_vecPackageMgr.begin(); it < m_vecPackageMgr.end(); ++it)
-		{
-			if (it->mgr)
-			{
-				delete it->mgr;
-			}
-		}
-	}
-
-	bool CProtocolClientMgr::ValidateKeepAlivePacket(PacketBase* data)
-	{
-		return true;
 	}
 
 	bool CProtocolClientMgr::OnRecvData(BYTE buf[], int len)
@@ -171,6 +150,9 @@ namespace NetworkCommunication
 		if (IsAssignedKeepAlive() && cmd == m_nKeepAlive)//启用了心跳包并且已收到心跳包
 		{
 			m_nKeepAliveFailCount = 0;//已收到心跳包
+			TCHAR str[50];
+			wsprintf(str, _T("Recive keepalive packet: %s:%d \n"), m_strServerIP, m_nServerPort);
+			Printf(str);
 			return false;
 		}
 		return true;
@@ -195,6 +177,13 @@ namespace NetworkCommunication
 	{
 		if (m_stream == NULL)//只初始化一次
 		{
+#ifdef _UNICODE
+			wcscpy((wchar_t*)m_strServerIP, ip);
+#else
+			strcpy((char*)m_strServerIP, ip);
+#endif // _UNICODE
+			m_nServerPort = port;
+			m_nPackageHeadLen = m_pHead->GetHeadLen();
 			m_stream = new CByteStream(m_nStreamBufLen);//创建接收缓冲区字节流对象
 			m_lpfnRecvData = lpfnRecvData;
 			m_lpfnRecvProtocolEvt = lpfnRecvProtocolEvt;
@@ -202,26 +191,6 @@ namespace NetworkCommunication
 			m_tcp.SetCallbackT(this, &CProtocolClientMgr::OnRecvData, &CProtocolClientMgr::OnRecvTcpEvt);
 		}
 	}
-
-	//BYTE* CProtocolClientMgr::PacketFromBuf(int type, BYTE buf[], int bufLen, int* packetLen)
-	//{
-	//	*packetLen = m_nPackageHeadLen + bufLen;
-	//	BYTE* data = new BYTE[*packetLen];
-	//	BYTE* bufHead = GetPackageHeadBuf(type, bufLen);
-	//	memcpy(data, bufHead, m_nPackageHeadLen);//拷贝包头数据
-	//	delete bufHead;
-	//	memcpy(data + m_nPackageHeadLen, buf, bufLen);//拷贝包体数据
-	//	return data;
-	//}
-
-	//BYTE* CProtocolClientMgr::GetDataBuf(BYTE* buf, int len)
-	//{
-	//	int datalen = GetDataLen(buf, len);
-	//	int headlen = GetHeadLen();
-	//	BYTE* result = new BYTE[datalen];
-	//	memcpy(result, buf + headlen, datalen);
-	//	return result;
-	//}
 
 	BYTE* CProtocolClientMgr::Pack(PacketBase* data, int * len)
 	{
@@ -338,14 +307,14 @@ namespace NetworkCommunication
 				m_timer->SetCallbackT(&CProtocolClientMgr::OnKeepAliveTimeout, this);
 			}
 			m_nKeepAliveFailCount = -1;
+			SendKeepAlivePack();//发送心跳包
 			m_timer->Start();
 		}
 	}
 
 	bool CProtocolClientMgr::OnKeepAliveTimeout()
 	{
-		SendPack(m_pKeepAlive);
-		if (m_nKeepAliveFailCount <= m_nKeepAliveFailMaxCount)//失败次数低于允许失败次数
+		if (m_nKeepAliveFailCount < m_nKeepAliveFailMaxCount)//失败次数低于允许失败次数
 		{
 			if (m_nKeepAliveFailCount == 0)//已收到心跳包,重置失败次数为-1
 			{
@@ -361,8 +330,11 @@ namespace NetworkCommunication
 				{
 					m_nKeepAliveFailCount = 1;
 				}
-				Printf(_T("check keepalive package failed \n"));
+				TCHAR str[50];
+				wsprintf(str, _T("Check keepalive package failed: %s:%d \n"), m_strServerIP, m_nServerPort);
+				Printf(str);
 			}
+			SendKeepAlivePack();//发送心跳包
 			return true;
 		}
 		else
@@ -387,13 +359,17 @@ namespace NetworkCommunication
 
 	void CProtocolClientMgr::OnLoseServer()
 	{
-		SendProtocolEvt(ProtocolEvtType::LoseServer, _T("Lose connect with server: %s:%d \n"));
+		TCHAR str[50];
+		wsprintf(str, _T("Lose connect with server: %s:%d \n"), m_strServerIP, m_nServerPort);
+		SendProtocolEvt(ProtocolEvtType::LoseServer, str);
 		Reconnect();
 	}
 
 	void CProtocolClientMgr::OnBeforeSendPack(int cmd, BYTE* buf, int len)
 	{
-		Printf(_T("Prepare to send packet to server! \n"));
+		TCHAR str[50];
+		wsprintf(str, _T("Prepare to send packet to server: %s:%d \n"), m_strServerIP, m_nServerPort);
+		Printf(str);
 	}
 
 	bool CProtocolClientMgr::OnRecvCmpPacket(BYTE* buf, int len)
@@ -423,5 +399,13 @@ namespace NetworkCommunication
 		{
 			m_nReconnectServerCount++;
 		}
+	}
+
+	void CProtocolClientMgr::SendKeepAlivePack()
+	{
+		TCHAR str[50];
+		wsprintf(str, _T("Send keepalive packet: %s:%d \n"), m_strServerIP, m_nServerPort);
+		Printf(str);
+		SendPack(m_pKeepAlive);
 	}
 }

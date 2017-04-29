@@ -32,20 +32,28 @@ namespace NetworkCommunication
 		//写入32位int数据
 		bool WriteInt32(int val);
 
+		bool WriteSignInt32(int val);
+
+		//写入64位int数据
+		bool WriteInt64(INT64 val);
+
 		//写入short数据
 		bool WriteShort(short val);
 
 		//从流中读取缓冲区数据
-		int ReadBuf(BYTE* buf, int len);
+		int Read(BYTE* buf, int len);
 
 		//写入缓冲区数据
-		int WriteBuf(BYTE* buf, int len);
+		int Write(BYTE* buf, int len);
 
 		//读取BYTE数据
 		BYTE ReadByte();
 
 		//读取int32数据
 		int ReadInt32();
+
+		//读取int64数据
+		int ReadInt64();
 
 		//读取short数据
 		short ReadShort();
@@ -61,12 +69,5 @@ namespace NetworkCommunication
 
 		//从指定长度中读取UTF8字符串
 		wchar_t* ReadUTF8Str(int len);
-	};
-
-	class MyClass
-	{
-	public:
-		MyClass();
-		~MyClass();
 	};
 }

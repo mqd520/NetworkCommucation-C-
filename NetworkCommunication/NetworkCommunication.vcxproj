@@ -86,15 +86,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ByteStream.h" />
-    <ClInclude Include="Def.h" />
     <ClInclude Include="EncryptBuffer.h" />
     <ClInclude Include="NetworkStream.h" />
     <ClInclude Include="PacketBase.h" />
+    <ClInclude Include="PacketHeadBase.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SocketMgr.h" />
     <ClInclude Include="TcpServer.h" />
     <ClInclude Include="Timer.h" />
-    <ClInclude Include="ProtocolMgr.h" />
+    <ClInclude Include="ProtocolClientMgr.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="OtherTool.h" />
     <ClInclude Include="TcpClientT.h" />
@@ -107,7 +107,8 @@
     <ClCompile Include="EncryptBuffer.cpp" />
     <ClCompile Include="NetworkStream.cpp" />
     <ClCompile Include="PacketBase.cpp" />
-    <ClCompile Include="ProtocolMgr.cpp" />
+    <ClCompile Include="PacketHeadBase.cpp" />
+    <ClCompile Include="ProtocolClientMgr.cpp" />
     <ClCompile Include="SocketMgr.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="OtherTool.cpp" />

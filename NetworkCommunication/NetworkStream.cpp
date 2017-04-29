@@ -65,6 +65,38 @@ namespace NetworkCommunication
 		return false;
 	}
 
+	bool CNetworkStream::WriteSignInt32(int val)
+	{
+		if (sizeof(int) <= AvaliableWrite())
+		{
+			m_pBuf[m_nEndIndex + 1] = (BYTE)((val << (3 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 2] = (BYTE)((val << (2 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 3] = (BYTE)((val << (1 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 4] = (BYTE)((val << (0 * 8)) >> (3 * 8));
+			m_nEndIndex += 4;
+			return true;
+		}
+		return false;
+	}
+
+	bool CNetworkStream::WriteInt64(INT64 val)
+	{
+		if (sizeof(INT64) <= AvaliableWrite())
+		{
+			m_pBuf[m_nEndIndex + 1] = (BYTE)((val << (7 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 2] = (BYTE)((val << (6 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 3] = (BYTE)((val << (5 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 4] = (BYTE)((val << (4 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 5] = (BYTE)((val << (3 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 6] = (BYTE)((val << (2 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 7] = (BYTE)((val << (1 * 8)) >> (3 * 8));
+			m_pBuf[m_nEndIndex + 8] = (BYTE)((val << (0 * 8)) >> (3 * 8));
+			m_nEndIndex += 8;
+			return true;
+		}
+		return false;
+	}
+
 	bool CNetworkStream::WriteShort(short val)
 	{
 		if (sizeof(short) <= AvaliableWrite())
@@ -77,7 +109,7 @@ namespace NetworkCommunication
 		return false;
 	}
 
-	int CNetworkStream::ReadBuf(BYTE* buf, int len)
+	int CNetworkStream::Read(BYTE* buf, int len)
 	{
 		int nlen = len > AvaliableRead() ? AvaliableRead() : len;//实际读取长度
 		if (nlen > 0)
@@ -89,7 +121,7 @@ namespace NetworkCommunication
 		return nlen;
 	}
 
-	int CNetworkStream::WriteBuf(BYTE* buf, int len)
+	int CNetworkStream::Write(BYTE* buf, int len)
 	{
 		int nlen = len > AvaliableWrite() ? AvaliableWrite() : len;//实际写入长度
 		if (nlen > 0)
@@ -116,6 +148,22 @@ namespace NetworkCommunication
 		result += ((int)m_pBuf[m_nStartIndex + 2]) << (2 * 8);
 		result += ((int)m_pBuf[m_nStartIndex + 3]) << (3 * 8);
 		m_nStartIndex += 4;
+		Reset();
+		return result;
+	}
+
+	int CNetworkStream::ReadInt64()
+	{
+		int result = 0;
+		result += ((INT64)m_pBuf[m_nStartIndex + 0]) << (0 * 8);
+		result += ((INT64)m_pBuf[m_nStartIndex + 1]) << (1 * 8);
+		result += ((INT64)m_pBuf[m_nStartIndex + 2]) << (2 * 8);
+		result += ((INT64)m_pBuf[m_nStartIndex + 3]) << (3 * 8);
+		result += ((INT64)m_pBuf[m_nStartIndex + 4]) << (4 * 8);
+		result += ((INT64)m_pBuf[m_nStartIndex + 5]) << (5 * 8);
+		result += ((INT64)m_pBuf[m_nStartIndex + 6]) << (6 * 8);
+		result += ((INT64)m_pBuf[m_nStartIndex + 7]) << (7 * 8);
+		m_nStartIndex += 8;
 		Reset();
 		return result;
 	}

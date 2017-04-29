@@ -21,5 +21,8 @@ namespace NetworkCommunication
 		//buf:	网络缓冲区
 		//len	网络缓冲区长度
 		virtual void Write(BYTE* buf, int len);
+
+		//释放资源
+		virtual void Release();
 	};
 }

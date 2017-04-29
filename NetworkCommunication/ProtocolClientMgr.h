@@ -1,12 +1,10 @@
 #pragma once
 
 #include <tchar.h>
-#include <vector>
 #include "ByteStream.h"
 #include "PacketBase.h"
 #include "PacketHeadBase.h"
 #include "OtherTool.h"
-#include "Def.h"
 #include "TcpClientT.h"
 
 namespace NetworkCommunication
@@ -45,13 +43,6 @@ namespace NetworkCommunication
 		//************************************
 		typedef void(*LPOnRecvProtocolEvt)(ProtocolEvtType type, TCHAR* msg);
 
-		//包管理信息
-		typedef struct tagPackageMgrInfo
-		{
-			int type;//包类型
-			IPackageMgr* mgr;//包管理器
-		}PackageMgrInfo, *LPPackageMgrInfo;
-
 		//线程信息
 		typedef struct tagThreadInfo
 		{
@@ -64,8 +55,7 @@ namespace NetworkCommunication
 		CByteStream* m_stream;//字节流对象
 		LPOnRecvPack m_lpfnRecvData;//收到包体数据函数指针
 		int m_nPackageHeadLen;//包头长度
-		int m_nKeepAlive;//心跳包类型
-		vector<PackageMgrInfo> m_vecPackageMgr;//包管理器集合
+		int m_nKeepAlive;//心跳包命令
 		HANDLE m_hMutexStream;//字节流互斥对象
 		int m_nKeepAliveTimespan;//心跳包间隔时间
 		bool m_bRecvKeepAlive;//是否已收到心跳包
@@ -75,8 +65,6 @@ namespace NetworkCommunication
 		int m_nReconnectServerCount;//失去服务端连接后,已连接服务端的次数
 		PacketBase* m_pKeepAlive;//心跳包指针
 		PacketHeadBase* m_pHead;//包头指针
-		BYTE* m_pKeepAliveBuf;//心跳包缓冲区
-		int m_nKeepAliveBufLen;//心跳包缓冲区长度
 		LPOnRecvProtocolEvt m_lpfnRecvProtocolEvt;//收到协议事件函数指针
 		int m_nStreamBufLen;//流缓冲区长度
 		int m_nTcpBufLen;//tcp接收缓冲区长度
@@ -86,15 +74,10 @@ namespace NetworkCommunication
 		int m_nConnectTimeout;//连接超时时间
 		TcpDataRecvType m_sendType;//tcp数据发送方式
 		CTimerT<CProtocolClientMgr>* m_timer;//心跳包定时器
+		TCHAR m_strServerIP[20];//服务端IP
+		int m_nServerPort;//服务端端口
 
 	protected:
-		//************************************
-		// Method:    验证心跳包是否合法
-		// Returns:   是否合法
-		// Parameter: 心跳包
-		//************************************
-		virtual bool ValidateKeepAlivePacket(PacketBase* data);
-
 		//************************************
 		// Method:    包头无效事件处理
 		//************************************
@@ -213,6 +196,9 @@ namespace NetworkCommunication
 		// Method:    重新连接
 		//************************************
 		void Reconnect();
+
+		//发送心跳包
+		virtual void SendKeepAlivePack();
 
 	public:
 		CProtocolClientMgr();

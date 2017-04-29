@@ -23,8 +23,8 @@ namespace NetworkCommunication
 		TcpInfo//消息
 	};
 
-	//tcp数据发送方式
-	enum TcpDataSendType
+	//tcp数据接收方式
+	enum TcpDataRecvType
 	{
 		que,//队列
 		single,//单线程(接收线程)
@@ -71,7 +71,8 @@ namespace NetworkCommunication
 		}ThreadInfo, *LPThreadInfo;
 
 	protected:
-		const TCHAR* m_strServerIP;//服务端IP
+		//const TCHAR* m_strServerIP;//服务端IP
+		TCHAR m_strServerIP[20];//服务端IP
 		int m_nServerPort;//服务端端口
 		SOCKADDR_IN m_addrSrv;//服务端地址
 		SOCKET m_socket;//客户端Socket
@@ -89,7 +90,7 @@ namespace NetworkCommunication
 		ThreadInfo m_tiConnect;//连接线程信息
 		ThreadInfo m_tiReadTcpData;//读取tcp数据线程信息
 		CTimerT<CTcpClient>* m_timer;//连接超时对象
-		TcpDataSendType m_sendType;//tcp数据发送方式
+		TcpDataRecvType m_sendType;//tcp数据发送方式
 		queue<BufInfo> m_queue;//队列对象
 		ThreadInfo m_tiQueue;//队列线程信息
 		bool m_bSocketAvaliabled;//socket是否可用
@@ -105,11 +106,7 @@ namespace NetworkCommunication
 		void CreateSocket();
 
 		//************************************
-		// Method:    发送通知事件
-		// FullName:  NetworkCommunication::CTcpClient::SendTcpEvt
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
+		// Method:    发送tcp事件
 		// Parameter: 事件类型
 		// Parameter: 消息
 		//************************************
@@ -120,19 +117,12 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    连接超时事件处理
-		// FullName:  NetworkCommunication::CTcpClient::OnConnectTimeout
-		// Access:    protected 
 		// Returns:   是否继续计时
-		// Qualifier:
 		//************************************
 		bool OnConnectTimeout();
 
 		//************************************
 		// Method:    暂停(恢复)指定线程
-		// FullName:  NetworkCommunication::CTcpClient::PauseThread
-		// Access:    protected 
-		// Returns:   void
-		// Qualifier:
 		// Parameter: 线程信息指针
 		// Parameter: 暂停与否
 		//************************************
@@ -146,10 +136,6 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    收到tcp数据事件处理
-		// FullName:  NetworkCommunication::CTcpClient::OnRecvTcpData
-		// Access:    virtual public 
-		// Returns:   void
-		// Qualifier:
 		// Parameter: 缓冲区
 		// Parameter: 缓冲区长度
 		//************************************
@@ -157,10 +143,6 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    发送接收到的tcp数据
-		// FullName:  NetworkCommunication::CTcpClient::SendTcpData
-		// Access:    virtual protected 
-		// Returns:   void
-		// Qualifier:
 		// Parameter: 缓冲区
 		// Parameter: 缓冲区长度
 		//************************************
@@ -168,10 +150,6 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    单线程处理接收到的数据
-		// FullName:  NetworkCommunication::CTcpClient::OnSingle
-		// Access:    protected 
-		// Returns:   void
-		// Qualifier:
 		// Parameter: 缓冲区
 		// Parameter: 缓冲区长度
 		//************************************
@@ -179,10 +157,6 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    队列处理接收到的数据
-		// FullName:  NetworkCommunication::CTcpClient::OnQueue
-		// Access:    protected 
-		// Returns:   void
-		// Qualifier:
 		// Parameter: 缓冲区
 		// Parameter: 缓冲区长度
 		//************************************
@@ -190,10 +164,6 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    多线程处理接收到的数据
-		// FullName:  NetworkCommunication::CTcpClient::OnMulti
-		// Access:    protected 
-		// Returns:   void
-		// Qualifier:
 		// Parameter: 缓冲区
 		// Parameter: 缓冲区长度
 		//************************************
@@ -208,19 +178,16 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    初始化
-		// FullName:  NetworkCommunication::CTcpClient::Init
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
 		// Parameter: 服务端IP
 		// Parameter: 服务端端口
 		// Parameter: 发送接收到的tcp数据方式
 		// Parameter: 接收缓冲区长度
 		// Parameter: 允许重连计数(-1:不允许重连,0:无限制,>0:允许次数)
-		// Parameter: 重连事件间隔
+		// Parameter: 重连间隔
 		// Parameter: 连接超时时间
+		// Parameter: 断开后是否允许重连
 		//************************************
-		void Init(const TCHAR* ip, int port, TcpDataSendType type = TcpDataSendType::single, int socketBufLen = 1024, int allowReconnectCount = 0,
+		void Init(TCHAR* ip, int port, TcpDataRecvType type = TcpDataRecvType::single, int socketBufLen = 1024, int allowReconnectCount = 0,
 			int reconnectTimeSpan = 2000, int connectTimeout = 2000, bool allowReconnect = true);
 
 		//************************************
@@ -242,10 +209,7 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    发送数据
-		// FullName:  NetworkCommunication::CTcpClient::SendData
-		// Access:    public 
-		// Returns:   bool
-		// Qualifier:
+		// Returns:   是否发送成功
 		// Parameter: 字节数组
 		// Parameter: 字节数组长度
 		// Parameter: 实际发送长度
@@ -254,10 +218,6 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    模拟一次服务端发包
-		// FullName:  NetworkCommunication::CTcpClient::SimulateServerData
-		// Access:    virtual public 
-		// Returns:   void
-		// Qualifier:
 		// Parameter: 缓冲区
 		// Parameter: 缓冲区长度
 		//************************************
@@ -265,18 +225,17 @@ namespace NetworkCommunication
 
 		//读取队列线程入口(无需调用)
 		void ReadQueue();
+
 		//连接服务端线程入口(无需调用)
 		void ConnectServer();
+
 		//读取tcp数据线程入口(无需调用)
 		void ReadTcpData();
+
 		//************************************
 		// Method:    多线程处理接收的tcp数据线程入口(无需调用)
-		// FullName:  NetworkCommunication::CTcpClient::MultiSendTcpData
-		// Access:    public 
-		// Returns:   void
-		// Qualifier:
-		// Parameter: BYTE buf[]
-		// Parameter: int len
+		// Parameter: 缓冲区
+		// Parameter: 缓冲区长度
 		//************************************
 		void MultiSendTcpData(BYTE buf[], int len);
 	};

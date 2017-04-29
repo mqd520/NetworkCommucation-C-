@@ -27,7 +27,6 @@ namespace NetworkCommunication
 	CTcpClient::CTcpClient() :
 		m_nRecvTcpBufLen(0),
 		m_pRecvTcpBuf(NULL),
-		m_strServerIP(NULL),
 		m_nServerPort(0),
 		m_socket(0),
 		m_addrSrv({ 0 }),
@@ -39,12 +38,12 @@ namespace NetworkCommunication
 		m_nConnectTimeout(2 * 1000),
 		m_tiConnect({ 0 }),
 		m_timer(NULL),
-		m_sendType(TcpDataSendType::single),
+		m_sendType(TcpDataRecvType::single),
 		m_tiQueue({ 0 }),
 		m_bAllowReconnect(true),
 		m_bSocketAvaliabled(false)
 	{
-
+		memset(m_strServerIP, 0, 20);
 	}
 
 	CTcpClient::~CTcpClient()
@@ -64,7 +63,7 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CTcpClient::Init(const TCHAR* ip, int port, TcpDataSendType type, int socketBufLen, int allowReconnectCount, int reconnectTimeSpan,
+	void CTcpClient::Init(TCHAR* ip, int port, TcpDataRecvType type, int socketBufLen, int allowReconnectCount, int reconnectTimeSpan,
 		int connectTimeout, bool allowReconnect)
 	{
 		if (!m_bInited)
@@ -76,14 +75,18 @@ namespace NetworkCommunication
 			m_bAllowReconnect = allowReconnect;
 			m_nRecvTcpBufLen = socketBufLen;
 			m_pRecvTcpBuf = new char[socketBufLen];
-			m_strServerIP = ip;
+#ifdef _UNICODE
+			wcscpy((wchar_t*)m_strServerIP, ip);
+#else
+			strcpy((char*)m_strServerIP, ip);
+#endif // _UNICODE
 			m_nServerPort = port;
 			if (connectTimeout > 0)//连接有超时时间
 			{
 				m_timer = new CTimerT<CTcpClient>(connectTimeout);
 				m_timer->SetCallbackT(&CTcpClient::OnConnectTimeout, this);
 			}
-			if (m_sendType == TcpDataSendType::que)//创建队列线程
+			if (m_sendType == TcpDataRecvType::que)//创建队列线程
 			{
 				m_tiQueue.hThread = ::CreateThread(NULL, 0, NetworkCommunication::ReadQueue, this, NULL, &m_tiQueue.dwThreadID);
 			}

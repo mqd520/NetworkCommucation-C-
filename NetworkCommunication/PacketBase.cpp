@@ -27,4 +27,9 @@ namespace NetworkCommunication
 	{
 
 	}
+
+	void PacketBase::Release()
+	{
+
+	}
 }
