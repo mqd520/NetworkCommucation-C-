@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TcpClient.h"
+#include "OtherTool.h"
 
 namespace NetworkCommunication
 {
