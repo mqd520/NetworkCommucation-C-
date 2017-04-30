@@ -123,6 +123,11 @@ namespace NetworkCommunication
 				OnPackageHeadInvalid();//包头无效事件处理
 				continue;//继续下次循环
 			}
+
+			TCHAR s[50];
+			wsprintf(s, _T("Recv packet cmd: %d \n"), cmd);
+			Printf(s);
+
 			BYTE* buf = m_stream->Read(packetTotalLen);//从字节流对象中读取一个完整包数据,长度不够返回NULL
 			::ReleaseMutex(m_hMutexStream);//解锁
 			if (buf != NULL)

@@ -22,8 +22,8 @@ namespace NetworkCommunication
 			NetError,//网络错误
 			serverdis,//服务端断开连接
 			Info,//消息
-			LoginSuccess,//协议登录成功
-			LoginFailed,//协议登录失败
+			LoginServerSuccess,//协议登录成功
+			LoginServerFailed,//协议登录失败
 			LoseServer//失去服务端(心跳包检测失败)
 		};
 
