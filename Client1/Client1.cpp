@@ -75,7 +75,7 @@ BOOL CClient1App::InitInstance()
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
 
-	TCHAR ip[20];
+	TCHAR ip[20] = { 0 };
 	if (GetLocalIP(ip))
 	{
 		//m_tcp.Init(_T("192.168.0.10"), 8080);
@@ -116,6 +116,7 @@ BOOL CClient1App::InitInstance()
 
 bool OnRecvData(BYTE buf[], int len)
 {
+	theApp.m_tcp.CloseConnect();
 	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_CUSTOM_MESSAGE1, (WPARAM)buf, len);
 	return false;
 }

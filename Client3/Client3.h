@@ -9,9 +9,9 @@
 #endif
 
 #include "resource.h"		// 主符号
-#include "DemoProtocolMgr.h"
+#include "DemoProtocolClient.h"
+using namespace DemoProtocolMgr;
 
-using namespace NetworkCommunication;
 
 #define WM_CUSTOM_MESSAGE1	(WM_USER+1)
 
@@ -27,7 +27,7 @@ public:
 	// 重写
 public:
 	virtual BOOL InitInstance();
-	CDemoProtocolMgr m_demoProtocol;//demo协议管理对象
+	CDemoProtocolClient m_demoProtocol;//demo协议管理对象
 
 	// 实现
 

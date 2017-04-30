@@ -9,14 +9,15 @@ namespace DemoProtocolMgr
 	CDemoProtocolClient::CDemoProtocolClient()
 	{
 		//必需
-		m_nPackageHeadLen = DemoPacketHead_Len;//指定包头长度
 		m_pHead = new DemoPacketHead();//指定包头
 
 		//非必需
-		m_nKeepAlive = DemoPacketCmd::KeepAlive;//指定心跳包类型(非-999)
+		m_nKeepAlive = DemoPacketCmd::KeepAlive;//指定心跳包命令
 		m_pKeepAlive = new KeepAlivePack();//指定心跳包
 		m_nKeepAliveFailMaxCount = 3;//指定心跳包允许失败最大值
-		m_nKeepAliveTimespan = 5 * 1000;//指定心跳包间隔时间
+		m_nKeepAliveTimespan = 2 * 1000;//指定心跳包间隔时间
+		m_nReconnectServerMaxCount = 3;//指定服务器断线后重连次数
+
 	}
 
 	CDemoProtocolClient::~CDemoProtocolClient()
@@ -61,7 +62,11 @@ namespace DemoProtocolMgr
 	{
 		if (cmd == DemoPacketCmd::ServiceLoginReply)
 		{
-			SendProtocolEvt(ProtocolEvtType::Info, _T("Success to login server! \n"));
+			TCHAR str[50];
+			wsprintf(str, _T("Success to login server: %s:%d \n"), m_strServerIP, m_nServerPort);
+			Printf(str);
+			StartKeepAlive();//开始心跳
+			SendProtocolEvt(CProtocolClientMgr::LoginServerSuccess, NULL);
 			return false;
 		}
 		return CProtocolClientMgr::PreprocessPack(cmd, buf, len);

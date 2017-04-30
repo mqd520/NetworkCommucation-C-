@@ -8,20 +8,6 @@
 
 using namespace std;
 
-class MyClass
-{
-public:
-	MyClass(){};
-	~MyClass(){};
-
-	static vector<int> m_vec;
-
-	static void Init()
-	{
-		m_vec.push_back(1);
-	};
-};
-
 // CClient3Dlg ¶Ô»°¿ò
 class CClient3Dlg : public CDialogEx
 {

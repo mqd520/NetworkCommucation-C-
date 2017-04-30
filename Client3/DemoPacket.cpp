@@ -5,6 +5,7 @@
 
 namespace DemoProtocolMgr
 {
+	//////////////////////////////////包头////////////////////////////////////////
 	DemoPacketHead::DemoPacketHead()
 	{
 
@@ -70,28 +71,16 @@ namespace DemoProtocolMgr
 	}
 
 #define Packet_Implement_Constructor(classname)\
-	classname::classname()\
-					{\
-	\
-					}
+	classname::classname(){}
 
 #define Packet_Implement_Unconstructor(classname)\
-	classname::~classname()\
-					{\
-	\
-					}
+	classname::~classname(){}
 
 #define Packet_Implement_GetCmd(classname,cmd)\
-	int classname::GetCmd()\
-					{\
-		return cmd;\
-					}
+	int classname::GetCmd(){return cmd;}
 
 #define Packet_Implement_Release(classname)\
-	void classname::Release()\
-					{\
-	\
-					}
+	void classname::Release(){}
 
 	//////////////////////////////////心跳包////////////////////////////////////////
 	Packet_Implement_Constructor(KeepAlivePack)
@@ -126,16 +115,16 @@ namespace DemoProtocolMgr
 	}
 	BYTE* ServiceLoginPack::Read(int* len)
 	{
-		int nByte = GetAStrByteCount(strGuid);
-		int nlen = sizeof(BYTE) + sizeof(BYTE) + sizeof(BYTE) + sizeof(int) + sizeof(int) + nByte;
-		BYTE* buf = new BYTE[nlen];
 		CNetworkStream s;
 		s.WriteByte(cbCurrentServerType);
 		s.WriteByte(cbRequestServerID);
 		s.WriteByte(cbKeepAlive);
 		s.WriteInt32(nVersion);
+		int nByte = GetAStrByteCount(strGuid);
 		s.WriteInt32(nByte);
 		s.WriteMultiStr(strGuid);
+		int nlen = s.AvaliableRead();
+		BYTE* buf = new BYTE[nlen];
 		s.Read(buf, nlen);
 		if (len != NULL)
 		{
@@ -162,11 +151,11 @@ namespace DemoProtocolMgr
 		Packet_Implement_Release(ServiceLoginReplyPack)
 		BYTE* ServiceLoginReplyPack::Read(int* len)
 	{
-		int nlen = sizeof(BYTE) + sizeof(int);
-		BYTE* buf = new BYTE[nlen];
 		CNetworkStream s;
 		s.WriteByte(cbVerifyCode);
 		s.WriteInt32(nServerID);
+		int nlen = s.AvaliableRead();
+		BYTE* buf = new BYTE[nlen];
 		s.Read(buf, nlen);
 		if (len != NULL)
 		{
@@ -180,5 +169,60 @@ namespace DemoProtocolMgr
 		s.Write(buf, len);
 		cbVerifyCode = s.ReadByte();
 		nServerID = s.ReadInt32();
+	}
+
+	//////////////////////////////////荷官登陆包////////////////////////////////////////
+	Packet_Implement_Constructor(DealerLoginPack)
+		Packet_Implement_GetCmd(DealerLoginPack, DemoPacketCmd::DealerLogin)
+		Packet_Implement_Unconstructor(DealerLoginPack)
+		Packet_Implement_Release(DealerLoginPack)
+		BYTE* DealerLoginPack::Read(int* len)
+	{
+		CNetworkStream s;
+		int nStrNameLen = GetWStrByteCount(strName);//用户名字符串字节长度
+		s.WriteInt32(nStrNameLen);
+		s.WriteUTF8Str(strName);
+		int nStrPwdLen = GetWStrByteCount(strPwd);//密码字符串字节长度
+		s.WriteInt32(nStrPwdLen);
+		s.WriteUTF8Str(strPwd);
+		s.WriteInt32(nTableID);
+		s.WriteInt32((int)vecMac.size());
+		for (vector<wchar_t*>::iterator it = vecMac.begin(); it < vecMac.end(); it++)
+		{
+			int strlen = GetWStrByteCount(*it);//字符串字节长度
+			s.WriteInt32(strlen);
+			s.WriteUTF8Str(*it);
+		}
+		s.WriteInt64(DealerSSID);
+		int nlen = s.AvaliableRead();
+		BYTE* buf = new BYTE[nlen];
+		s.Read(buf, nlen);
+		if (len != NULL)
+		{
+			*len = nlen;
+		}
+		return buf;
+	}
+	void DealerLoginPack::Write(BYTE* buf, int len)
+	{
+
+	}
+
+	//////////////////////////////////荷官登陆结果包////////////////////////////////////////
+	Packet_Implement_Constructor(DealerLoginResultPack)
+		Packet_Implement_GetCmd(DealerLoginResultPack, DemoPacketCmd::DealerLoginResult)
+		Packet_Implement_Unconstructor(DealerLoginResultPack)
+		Packet_Implement_Release(DealerLoginResultPack)
+		BYTE* DealerLoginResultPack::Read(int* len)
+	{
+		return NULL;
+	}
+	void DealerLoginResultPack::Write(BYTE* buf, int len)
+	{
+		CNetworkStream s;
+		s.Write(buf, len);
+		nTableID = s.ReadInt32();
+		nResult = s.ReadInt32();
+		nReloginCode = s.ReadInt32();
 	}
 }

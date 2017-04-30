@@ -5,16 +5,18 @@
 #include "stdafx.h"
 #include "Client3.h"
 #include "Client3Dlg.h"
-#include "MemoryTool.h"
+#include "NetworkStream.h"
+#include "DemoPacket.h"
+using namespace DemoProtocolMgr;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 //收到包数据处理
-void OnRecvPackage(int type, LPPackageBase data);
+void OnRecvPacket(int cmd, BYTE* buf, int len);
 //收到事件处理
-bool OnRecvEvt(ProtocolEvtType type, TCHAR* msg);
+void OnRecvEvt(CProtocolClientMgr::ProtocolEvtType type, TCHAR* msg);
 
 // CClient3App
 
@@ -75,7 +77,7 @@ BOOL CClient3App::InitInstance()
 	if (GetLocalIP(ip))
 	{
 		//m_demoProtocol.Init(ip, 8080, OnRecvPackage, OnRecvEvt);
-		m_demoProtocol.Init(_T("192.168.0.113"), 7000, OnRecvPackage, OnRecvEvt);
+		m_demoProtocol.Init(_T("192.168.0.113"), 7000, OnRecvPacket, OnRecvEvt);
 		m_demoProtocol.Connect();
 	}
 
@@ -115,15 +117,31 @@ int CClient3App::ExitInstance()
 	return CWinApp::ExitInstance();
 }
 
-void OnRecvPackage(int type, LPPackageBase data)
+void OnRecvPacket(int cmd, BYTE* buf, int len)
 {
-	LPPackageBase packet = NULL;
-	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_CUSTOM_MESSAGE1, (WPARAM)(int)type, (LPARAM)data);
-	//theApp.m_demoProtocol.ReleasePackage(type, (LPPackageBase)data);
+	//SendMessage(theApp.m_pMainWnd->m_hWnd, WM_CUSTOM_MESSAGE1, (WPARAM)(int)type, (LPARAM)data);
+	if (cmd == DemoPacketCmd::DealerLoginResult)
+	{
+		DealerLoginResultPack pack;
+		pack.Write(buf, len);
+		int n1 = pack.nTableID;
+	}
+	delete buf;
 }
 
-bool OnRecvEvt(ProtocolEvtType type, TCHAR* msg)
+void OnRecvEvt(CProtocolClientMgr::ProtocolEvtType type, TCHAR* msg)
 {
+	if (type == CProtocolClientMgr::ProtocolEvtType::LoginServerSuccess)//登陆服务器成功
+	{
+		DealerLoginPack pack;
+		pack.strPwd = L"123456";
+		pack.strName = L"30001";
+		pack.nTableID = 0;
+		vector<wchar_t*> vec;
+		vec.push_back(L"44-6D-57-B6-32-8D");
+		pack.vecMac = vec;
+		pack.DealerSSID = 0;
+		bool b = theApp.m_demoProtocol.SendPack(&pack);
+	}
 	OutputDebugString(msg);
-	return true;
 }

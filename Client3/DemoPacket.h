@@ -1,9 +1,10 @@
 #pragma once
 
-#include <minwindef.h>
+#include <vector>
 #include "PacketBase.h"
 #include "PacketHeadBase.h"
 
+using namespace std;
 using namespace NetworkCommunication;
 
 namespace DemoProtocolMgr
@@ -16,7 +17,10 @@ namespace DemoProtocolMgr
 		{
 			KeepAlive = 1,//心跳包
 			ServiceLogin = 8,//服务登录
-			ServiceLoginReply = 9//服务登录应答
+			ServiceLoginReply = 9,//服务登录应答
+
+			DealerLogin = 511,//荷官登陆
+			DealerLoginResult = 512//荷官登陆
 		};
 	};
 
@@ -47,8 +51,7 @@ namespace DemoProtocolMgr
 
 	/////////////////////////////////包体定义/////////////////////////////////////////
 #define Packet_Declare_Begin(classname)\
-	class classname:public PacketBase\
-								{\
+	class classname:public PacketBase{\
 	public:\
 		classname();\
 		~classname();\
@@ -60,12 +63,11 @@ namespace DemoProtocolMgr
 		int GetCmd();\
 		BYTE* Read(int* len);\
 		void Write(BYTE* buf, int len);\
-		void Release();\
-								};
+		void Release();};
 
 	//心跳包
 	Packet_Declare_Begin(KeepAlivePack)
-		BYTE n;
+		BYTE n = 0;
 	Packet_Declare_End
 
 		//服务登陆包
@@ -81,5 +83,21 @@ namespace DemoProtocolMgr
 		Packet_Declare_Begin(ServiceLoginReplyPack)
 		BYTE cbVerifyCode;//验证码
 	int nServerID;//服务器ID
+	Packet_Declare_End
+
+		//荷官登录包
+		Packet_Declare_Begin(DealerLoginPack)
+		wchar_t* strName;//用户名
+	wchar_t* strPwd;//密码
+	int nTableID;//台面ID
+	vector<wchar_t*> vecMac;//mac地址集合
+	INT64 DealerSSID;//ssid
+	Packet_Declare_End
+
+		//荷官登录结果包
+		Packet_Declare_Begin(DealerLoginResultPack)
+	int nTableID;//台面ID
+	int nResult;//登陆结果
+	int nReloginCode;//重新登陆码
 	Packet_Declare_End
 }

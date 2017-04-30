@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="00 DemoProtocol管理">
+      <UniqueIdentifier>{2c47f82c-fa82-480e-80ff-c13df0f79433}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -33,6 +36,12 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DemoPacket.h">
+      <Filter>00 DemoProtocol管理</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoProtocolClient.h">
+      <Filter>00 DemoProtocol管理</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client3.cpp">
@@ -43,6 +52,12 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoPacket.cpp">
+      <Filter>00 DemoProtocol管理</Filter>
+    </ClCompile>
+    <ClCompile Include="DemoProtocolClient.cpp">
+      <Filter>00 DemoProtocol管理</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
