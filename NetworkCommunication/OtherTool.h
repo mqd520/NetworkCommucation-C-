@@ -8,6 +8,14 @@ using namespace std;
 
 namespace NetworkCommunication
 {
+	//线程信息
+	typedef struct tagThreadInfo
+	{
+		HANDLE hThread;//线程句柄
+		DWORD dwThreadID;//线程ID
+		bool bPause;//线程状态(暂停与否)
+	}ThreadInfo, *LPThreadInfo;
+
 	//************************************
 	// Method:    打印信息
 	// FullName:  NetworkCommunication::Printf
@@ -27,4 +35,6 @@ namespace NetworkCommunication
 	// Parameter: TCHAR * ip
 	//************************************
 	bool GetLocalIP(TCHAR* ip);
+
+	void PauseThread(ThreadInfo* info, bool pause);
 }

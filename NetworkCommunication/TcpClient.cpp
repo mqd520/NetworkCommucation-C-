@@ -43,7 +43,7 @@ namespace NetworkCommunication
 		m_bAllowReconnect(true),
 		m_bSocketAvaliabled(false)
 	{
-		memset(m_strServerIP, 0, 20);
+		memset(m_strServerIP, 0, 20 * sizeof(TCHAR));
 	}
 
 	CTcpClient::~CTcpClient()

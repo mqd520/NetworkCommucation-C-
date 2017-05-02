@@ -1,17 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="01 工具">
-      <UniqueIdentifier>{43f7a872-35aa-4517-b49f-994aa00f3b79}</UniqueIdentifier>
+    <Filter Include="02 Socket管理">
+      <UniqueIdentifier>{1e438d53-0a93-4d9f-b78b-08c6ad56bcff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03 协议管理">
+    <Filter Include="03 Tcp管理">
+      <UniqueIdentifier>{971cee1d-991d-45d3-a7c3-6b64ac59e86d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 通信协议管理">
+      <UniqueIdentifier>{e91db0c6-7780-42f1-b0c8-4d5e2b01204c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 Tcp管理\01 Tcp客户端">
+      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 Tcp管理\02 Tcp服务端">
+      <UniqueIdentifier>{bc7a4d26-2d09-44af-bd90-fdab95bddefe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 通信协议管理\01 通信协议客户端">
       <UniqueIdentifier>{311cddd5-6596-48f2-9b74-2a1e97957bae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 通信协议管理\02 通信协议服务端">
+      <UniqueIdentifier>{59492ddf-af1d-41a9-a77d-a225145921af}</UniqueIdentifier>
     </Filter>
     <Filter Include="05 其它">
       <UniqueIdentifier>{386534d3-12d0-48f5-b9f7-5d159a020830}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02 Tcp管理">
-      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
+    <Filter Include="01 通用">
+      <UniqueIdentifier>{43f7a872-35aa-4517-b49f-994aa00f3b79}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -25,46 +40,49 @@
       <Filter>05 其它</Filter>
     </ClInclude>
     <ClInclude Include="MemoryTool.h">
-      <Filter>01 工具</Filter>
+      <Filter>01 通用</Filter>
     </ClInclude>
     <ClInclude Include="TcpClient.h">
-      <Filter>02 Tcp管理</Filter>
+      <Filter>03 Tcp管理\01 Tcp客户端</Filter>
     </ClInclude>
     <ClInclude Include="TcpClientT.h">
-      <Filter>02 Tcp管理</Filter>
+      <Filter>03 Tcp管理\01 Tcp客户端</Filter>
     </ClInclude>
     <ClInclude Include="EncryptBuffer.h">
-      <Filter>01 工具</Filter>
+      <Filter>01 通用</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>01 工具</Filter>
-    </ClInclude>
-    <ClInclude Include="TcpServer.h">
-      <Filter>02 Tcp管理</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketMgr.h">
-      <Filter>02 Tcp管理</Filter>
+      <Filter>01 通用</Filter>
     </ClInclude>
     <ClInclude Include="ByteStream.h">
-      <Filter>01 工具</Filter>
+      <Filter>01 通用</Filter>
     </ClInclude>
     <ClInclude Include="OtherTool.h">
-      <Filter>01 工具</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>05 其它</Filter>
-    </ClInclude>
-    <ClInclude Include="PacketBase.h">
-      <Filter>03 协议管理</Filter>
+      <Filter>01 通用</Filter>
     </ClInclude>
     <ClInclude Include="NetworkStream.h">
-      <Filter>01 工具</Filter>
-    </ClInclude>
-    <ClInclude Include="PacketHeadBase.h">
-      <Filter>03 协议管理</Filter>
+      <Filter>01 通用</Filter>
     </ClInclude>
     <ClInclude Include="ProtocolClientMgr.h">
-      <Filter>03 协议管理</Filter>
+      <Filter>04 通信协议管理\01 通信协议客户端</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketMgr.h">
+      <Filter>02 Socket管理</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpServer.h">
+      <Filter>03 Tcp管理\02 Tcp服务端</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketBase.h">
+      <Filter>04 通信协议管理</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketHeadBase.h">
+      <Filter>04 通信协议管理</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpSession.h">
+      <Filter>03 Tcp管理\02 Tcp服务端</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpSessionMgr.h">
+      <Filter>03 Tcp管理\02 Tcp服务端</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -72,40 +90,46 @@
       <Filter>05 其它</Filter>
     </ClCompile>
     <ClCompile Include="MemoryTool.cpp">
-      <Filter>01 工具</Filter>
+      <Filter>01 通用</Filter>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp">
-      <Filter>02 Tcp管理</Filter>
+      <Filter>03 Tcp管理\01 Tcp客户端</Filter>
     </ClCompile>
     <ClCompile Include="EncryptBuffer.cpp">
-      <Filter>01 工具</Filter>
+      <Filter>01 通用</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>01 工具</Filter>
-    </ClCompile>
-    <ClCompile Include="TcpServer.cpp">
-      <Filter>02 Tcp管理</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketMgr.cpp">
-      <Filter>02 Tcp管理</Filter>
+      <Filter>01 通用</Filter>
     </ClCompile>
     <ClCompile Include="ByteStream.cpp">
-      <Filter>01 工具</Filter>
+      <Filter>01 通用</Filter>
     </ClCompile>
     <ClCompile Include="OtherTool.cpp">
-      <Filter>01 工具</Filter>
-    </ClCompile>
-    <ClCompile Include="PacketBase.cpp">
-      <Filter>03 协议管理</Filter>
+      <Filter>01 通用</Filter>
     </ClCompile>
     <ClCompile Include="NetworkStream.cpp">
-      <Filter>01 工具</Filter>
-    </ClCompile>
-    <ClCompile Include="PacketHeadBase.cpp">
-      <Filter>03 协议管理</Filter>
+      <Filter>01 通用</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolClientMgr.cpp">
-      <Filter>03 协议管理</Filter>
+      <Filter>04 通信协议管理\01 通信协议客户端</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketMgr.cpp">
+      <Filter>02 Socket管理</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpServer.cpp">
+      <Filter>03 Tcp管理\02 Tcp服务端</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketBase.cpp">
+      <Filter>04 通信协议管理</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketHeadBase.cpp">
+      <Filter>04 通信协议管理</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpSession.cpp">
+      <Filter>03 Tcp管理\02 Tcp服务端</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpSessionMgr.cpp">
+      <Filter>03 Tcp管理\02 Tcp服务端</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

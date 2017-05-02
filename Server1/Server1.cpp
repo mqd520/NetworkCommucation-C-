@@ -3,34 +3,27 @@
 
 #include "stdafx.h"
 #include "MyTcp.h"
-#include "SocketMgr.h"
-
-using namespace NetworkCommunication;
 
 #define ListenPort	8080
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	//StartListen(_T("192.168.0.10"), ListenPort);
+	StartListen(_T("192.168.0.17"), ListenPort);
 
-	//_tprintf(_T("输入exit退出程序!\n"));
-	//TCHAR input[5];
-	//while (true)
-	//{
-	//	_tscanf(_T("%4s"), input, 5);
-	//	if (strcmp(input, _T("exit")) == 0)
-	//	{
-	//		break;
-	//	}
-	//	else
-	//	{
-	//		_tprintf(_T("无法识别命令!\n"));
-	//	}
-	//}
-	//Clean();
-
-
-
+	_tprintf(_T("输入exit退出程序!\n"));
+	TCHAR input[5];
+	while (true)
+	{
+		_tscanf(_T("%4s"), input, 5);
+		if (strcmp(input, _T("exit")) == 0)
+		{
+			break;
+		}
+		else
+		{
+			_tprintf(_T("无法识别命令!\n"));
+		}
+	}
 	return 0;
 }
 

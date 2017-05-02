@@ -52,4 +52,25 @@ namespace NetworkCommunication
 
 		return true;
 	}
+
+	void PauseThread(ThreadInfo* info, bool pause)
+	{
+		if (info->hThread != 0)
+		{
+			if (pause)
+			{
+				if (!info->bPause)
+				{
+					::SuspendThread(info->hThread);
+				}
+			}
+			else
+			{
+				if (info->bPause)
+				{
+					::ResumeThread(info->hThread);
+				}
+			}
+		}
+	}
 }

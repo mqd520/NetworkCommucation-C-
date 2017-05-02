@@ -5,7 +5,7 @@
 #define new new(__FILE__, __LINE__)
 #endif
 
-#define ClientCount 2
+#define ClientCount 100
 
 //Socket信息
 typedef struct tagSocketInfo
@@ -198,6 +198,15 @@ DWORD WINAPI Recv(LPVOID lpParam)
 		if (len > 0)
 		{
 			_tprintf(_T("收到数据：%s\n"), buf);
+		}
+		else if (len == -1)
+		{
+			_tprintf(_T("网络错误! \n"));
+			//Sleep(1 * 1000);
+		}
+		else
+		{
+			_tprintf(_T("socket关闭! \n"));
 		}
 	}
 }

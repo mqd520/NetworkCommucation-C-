@@ -24,12 +24,9 @@ namespace NetworkCommunication
 
 	bool CSocketMgr::Init()
 	{
-		m_bErr = false;
 		WSADATA wsaData;
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
-			m_bErr = true;
-			m_strMsg = _T("create socket failed! \n");
 			return false;
 		}
 		return true;
@@ -57,12 +54,10 @@ namespace NetworkCommunication
 
 	SOCKET CSocketMgr::CreateTcpSocket()
 	{
-		m_bErr = false;
 		SOCKET socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (socket == INVALID_SOCKET)
 		{
-			m_bErr = true;
-			m_strMsg = _T("创建Socket失败!\n");
+
 		}
 		return socket;
 	}
@@ -82,22 +77,14 @@ namespace NetworkCommunication
 		return addr;
 	}
 
-	bool CSocketMgr::Connect(SOCKET socket, SOCKADDR_IN* addr)
+	bool CSocketMgr::Connect(SOCKET socket, TCHAR* ip, int port)
 	{
 		m_bErr = false;
-		int result = ::connect(socket, (SOCKADDR*)addr, sizeof(addr));
+		SOCKADDR_IN addr = GetSockAddr(ip, port);
+		int result = ::connect(socket, (SOCKADDR*)&addr, sizeof(addr));
 		if (result == SOCKET_ERROR)
 		{
 			m_bErr = true;
-			TCHAR str[100];
-			char*  ip = ::inet_ntoa(addr->sin_addr);
-#ifdef _UNICODE
-			wstring str1 = MultiByteToUTF8(ip);
-			wsprintf(str, _T("failed to connect kserver: %s:%d\n"), str1.c_str(), addr->sin_port);
-#else
-			wsprintf(str, _T("failed to connect server: %s:%d\n"), ip, 8070);
-#endif
-			SaveErr(str);
 		}
 		return !m_bErr;
 	}
@@ -117,5 +104,100 @@ namespace NetworkCommunication
 
 		}
 		return 0;
+	}
+
+	bool CSocketMgr::Bind(SOCKET socket, TCHAR* ip, int port)
+	{
+		SOCKADDR_IN addr = GetSockAddr(ip, port);
+		int result = bind(socket, (SOCKADDR*)&addr, sizeof(addr));
+		if (result == 0)
+		{
+			return true;
+		}
+		else
+		{
+			//错误处理
+			return false;
+		}
+	}
+
+	bool CSocketMgr::Listen(SOCKET socket)
+	{
+		int result = ::listen(socket, SOMAXCONN);
+		if (result == 0)
+		{
+			return true;
+		}
+		else
+		{
+			//错误处理
+			return false;
+		}
+	}
+
+	void CSocketMgr::SetNonBlock(SOCKET socket)
+	{
+		u_long mode = 1;//打开异步
+		ioctlsocket(socket, FIONBIO, &mode);
+	}
+
+	SOCKET CSocketMgr::Accept(SOCKET socket, TCHAR* ip, int port)
+	{
+		SOCKADDR_IN addr = GetSockAddr(ip, port);
+		SOCKET client = ::accept(socket, (SOCKADDR*)&addr, NULL);
+		if (client == INVALID_SOCKET)
+		{
+			//错误处理
+			return 0;
+		}
+		else
+		{
+			return client;
+		}
+	}
+
+	SOCKADDR_IN CSocketMgr::GetSockAddr(TCHAR* ip, int port)
+	{
+		SOCKADDR_IN addr;
+		addr.sin_family = AF_INET;
+		addr.sin_port = htons(port);
+		if (ip == NULL)
+		{
+			addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);//绑定本地任意IP地址
+		}
+		else
+		{
+#ifdef _UNICODE
+			string str = UTF8ToMultiByte((wchar_t*)ip);
+			addr.sin_addr.S_un.S_addr = inet_addr(str.c_str());//绑定指定IP地址
+#else
+			addr.sin_addr.S_un.S_addr = inet_addr((char*)ip);//绑定指定IP地址
+#endif // _UNICODE
+		}
+		return addr;
+	}
+
+	void CSocketMgr::GetIpAndPort(SOCKET socket, TCHAR* ip, int* port)
+	{
+		SOCKADDR_IN addr;
+		int len = sizeof(addr);
+		int result = ::getpeername(socket, (SOCKADDR*)&addr, &len);
+		if (result != SOCKET_ERROR)
+		{
+			if (ip != NULL)
+			{
+				char* ipTmp = ::inet_ntoa(addr.sin_addr);
+#ifdef _UNICODE
+				wstring wstr = MultiByteToUTF8(ipTmp);
+				wcscpy(ip, wstr.c_str());
+#else
+				strcpy(ip, ipTmp);
+#endif // _UNICODE
+			}
+			if (port != NULL)
+			{
+				*port = ntohs(addr.sin_port);
+			}
+		}
 	}
 }
