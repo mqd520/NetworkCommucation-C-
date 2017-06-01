@@ -26,8 +26,10 @@ namespace NetworkCommunication
 		bool m_bListening;//是否正在监听
 		ThreadInfo m_tiAccept;//接受客户端连接线程信息
 		CTcpSessionMgr m_sessionMgr;//tcp会话管理
-		int m_nMaxConnectionCount;//允许最大客户端连接计数
+		int m_nMaxConnectionCount;//允许最大客户端连接计数,0:无限制
 		int m_nConnectedCount;//已连接客户端计数
+		ThreadInfo m_tiSelect;//
+		FD_SET m_fdRead;//
 
 	protected:
 		void CleanThread();
@@ -36,10 +38,11 @@ namespace NetworkCommunication
 		CTcpServer();
 		~CTcpServer();
 
-		void Init(TCHAR* ip, int port, int maxConn = SOMAXCONN);
+		void Init(TCHAR* ip, int port, int maxConn = 0);
 		void Listen();
 
 		//不需要调用
 		void StartAccept();
+		void StartSelect();
 	};
 }

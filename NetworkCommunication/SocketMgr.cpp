@@ -89,9 +89,10 @@ namespace NetworkCommunication
 		return !m_bErr;
 	}
 
-	void CSocketMgr::CloseSocket(SOCKET socket)
+	bool CSocketMgr::CloseSocket(SOCKET socket)
 	{
-		::closesocket(socket);
+		int result = ::closesocket(socket);
+		return true;
 	}
 
 	int CSocketMgr::Read(SOCKET socket, char* buf, int len)
@@ -121,9 +122,9 @@ namespace NetworkCommunication
 		}
 	}
 
-	bool CSocketMgr::Listen(SOCKET socket)
+	bool CSocketMgr::Listen(SOCKET socket, int max)
 	{
-		int result = ::listen(socket, SOMAXCONN);
+		int result = ::listen(socket, max);
 		if (result == 0)
 		{
 			return true;

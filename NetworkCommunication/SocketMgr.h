@@ -45,16 +45,18 @@ namespace NetworkCommunication
 
 		int Read(SOCKET socket, char* buf, int len);
 
-		void CloseSocket(SOCKET socket);
+		bool CloseSocket(SOCKET socket);
 
 		bool Bind(SOCKET socket, TCHAR* ip, int port);
 
-		bool Listen(SOCKET socket);
+		bool Listen(SOCKET socket, int max = SOMAXCONN);
 
 		void SetNonBlock(SOCKET socket);
 
 		SOCKET Accept(SOCKET socket, TCHAR* ip, int port);
 
 		void GetIpAndPort(SOCKET socket, TCHAR* ip, int* port);
+
+		//void Select();
 	};
 }

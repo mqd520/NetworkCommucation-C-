@@ -9,7 +9,7 @@ namespace NetworkCommunication
 {
 	class CTcpSessionMgr
 	{
-	protected:
+	public:
 		vector<CTcpSession> m_vecSessionList;
 
 	public:
@@ -17,5 +17,7 @@ namespace NetworkCommunication
 		~CTcpSessionMgr();
 
 		void Push(CTcpSession session);
+
+		void OnSelectReturn();
 	};
 }
