@@ -85,15 +85,32 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Accept.h" />
     <ClInclude Include="ByteStream.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="ServerSocketMgr.h" />
+    <ClInclude Include="TFunPointer.h" />
     <ClInclude Include="EncryptBuffer.h" />
+    <ClInclude Include="LinkList.h" />
+    <ClInclude Include="NetCommuMgr.h" />
     <ClInclude Include="NetworkStream.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="PacketBase.h" />
     <ClInclude Include="PacketHeadBase.h" />
+    <ClInclude Include="Queue.h" />
+    <ClInclude Include="SafeLock.h" />
+    <ClInclude Include="Select.h" />
     <ClInclude Include="SocketMgr.h" />
     <ClInclude Include="TcpServer.h" />
-    <ClInclude Include="TcpSession.h" />
-    <ClInclude Include="TcpSessionMgr.h" />
+    <ClInclude Include="TcpConnection.h" />
+    <ClInclude Include="TcpConnectionMgr.h" />
+    <ClInclude Include="Thread.h" />
+    <ClInclude Include="ThreadEvent.h" />
+    <ClInclude Include="ThreadLock.h" />
+    <ClInclude Include="ThreadMgr.h" />
+    <ClInclude Include="ThreadMutex.h" />
+    <ClInclude Include="ThreadMutexHelper.h" />
+    <ClInclude Include="ThreadSemaphore.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="ProtocolClientMgr.h" />
     <ClInclude Include="MemoryTool.h" />
@@ -104,12 +121,20 @@
     <ClInclude Include="TcpClient.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Accept.cpp" />
     <ClCompile Include="ByteStream.cpp" />
+    <ClCompile Include="Common.cpp" />
     <ClCompile Include="EncryptBuffer.cpp" />
+    <ClCompile Include="LinkList.cpp" />
+    <ClCompile Include="NetCommuMgr.cpp" />
     <ClCompile Include="NetworkStream.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="PacketBase.cpp" />
     <ClCompile Include="PacketHeadBase.cpp" />
     <ClCompile Include="ProtocolClientMgr.cpp" />
+    <ClCompile Include="SafeLock.cpp" />
+    <ClCompile Include="Select.cpp" />
+    <ClCompile Include="ServerSocketMgr.cpp" />
     <ClCompile Include="SocketMgr.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="OtherTool.cpp" />
@@ -119,8 +144,15 @@
     </ClCompile>
     <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="TcpServer.cpp" />
-    <ClCompile Include="TcpSession.cpp" />
-    <ClCompile Include="TcpSessionMgr.cpp" />
+    <ClCompile Include="TcpConnection.cpp" />
+    <ClCompile Include="TcpConnectionMgr.cpp" />
+    <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="ThreadEvent.cpp" />
+    <ClCompile Include="ThreadLock.cpp" />
+    <ClCompile Include="ThreadMgr.cpp" />
+    <ClCompile Include="ThreadMutex.cpp" />
+    <ClCompile Include="ThreadMutexHelper.cpp" />
+    <ClCompile Include="ThreadSemaphore.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

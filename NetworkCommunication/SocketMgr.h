@@ -29,10 +29,10 @@ namespace NetworkCommunication
 		TCHAR* GetLastErr();
 
 		//初始化socket环境
-		bool Init();
+		static bool Init();
 
 		//释放资源
-		void Release();
+		static void Release();
 
 		//创建一个socket(tcp)
 		SOCKET CreateTcpSocket();
@@ -41,9 +41,9 @@ namespace NetworkCommunication
 
 		SOCKADDR_IN CreateSocketAddr(TCHAR* ip, int port);
 
-		bool Connect(SOCKET socket, TCHAR* ip, int port);
+		bool Connect1(SOCKET socket, TCHAR* ip, int port);
 
-		int Read(SOCKET socket, char* buf, int len);
+		int Recv(SOCKET socket, BYTE* buf, int len);
 
 		bool CloseSocket(SOCKET socket);
 
@@ -55,8 +55,10 @@ namespace NetworkCommunication
 
 		SOCKET Accept(SOCKET socket, TCHAR* ip, int port);
 
+		SOCKET Accept(SOCKET socket, SOCKADDR_IN addr);
+
 		void GetIpAndPort(SOCKET socket, TCHAR* ip, int* port);
 
-		//void Select();
+		int Select(int nfds, fd_set* readfds, fd_set *writefds, fd_set *exceptfds, const struct timeval *timeout);
 	};
 }

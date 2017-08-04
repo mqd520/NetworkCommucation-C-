@@ -25,8 +25,20 @@
     <Filter Include="05 其它">
       <UniqueIdentifier>{386534d3-12d0-48f5-b9f7-5d159a020830}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01 通用">
+    <Filter Include="02 线程">
+      <UniqueIdentifier>{70334d3c-252a-46e3-b266-d02ff6ed6c8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00 通用">
       <UniqueIdentifier>{43f7a872-35aa-4517-b49f-994aa00f3b79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01 链表">
+      <UniqueIdentifier>{4d838a66-b907-4aa7-88cb-aa2e8949700b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 队列">
+      <UniqueIdentifier>{2c591acd-0de3-4647-a0f0-fddd207ad25e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 Tcp管理\03 Tcp连接管理">
+      <UniqueIdentifier>{f6490646-483b-4fd3-bb32-12879705b7f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,7 +52,7 @@
       <Filter>05 其它</Filter>
     </ClInclude>
     <ClInclude Include="MemoryTool.h">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClInclude>
     <ClInclude Include="TcpClient.h">
       <Filter>03 Tcp管理\01 Tcp客户端</Filter>
@@ -49,19 +61,19 @@
       <Filter>03 Tcp管理\01 Tcp客户端</Filter>
     </ClInclude>
     <ClInclude Include="EncryptBuffer.h">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClInclude>
     <ClInclude Include="ByteStream.h">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClInclude>
     <ClInclude Include="OtherTool.h">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClInclude>
     <ClInclude Include="NetworkStream.h">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClInclude>
     <ClInclude Include="ProtocolClientMgr.h">
       <Filter>04 通信协议管理\01 通信协议客户端</Filter>
@@ -78,11 +90,60 @@
     <ClInclude Include="PacketHeadBase.h">
       <Filter>04 通信协议管理</Filter>
     </ClInclude>
-    <ClInclude Include="TcpSession.h">
+    <ClInclude Include="Node.h">
+      <Filter>01 链表</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkList.h">
+      <Filter>01 链表</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>02 队列</Filter>
+    </ClInclude>
+    <ClInclude Include="Select.h">
+      <Filter>03 Tcp管理</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>02 线程</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadEvent.h">
+      <Filter>02 线程</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadLock.h">
+      <Filter>02 线程</Filter>
+    </ClInclude>
+    <ClInclude Include="SafeLock.h">
+      <Filter>02 线程</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadMutex.h">
+      <Filter>02 线程</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadMutexHelper.h">
+      <Filter>02 线程</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSemaphore.h">
+      <Filter>02 线程</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadMgr.h">
+      <Filter>02 线程</Filter>
+    </ClInclude>
+    <ClInclude Include="NetCommuMgr.h" />
+    <ClInclude Include="TFunPointer.h">
+      <Filter>00 通用</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSocketMgr.h">
       <Filter>03 Tcp管理\02 Tcp服务端</Filter>
     </ClInclude>
-    <ClInclude Include="TcpSessionMgr.h">
+    <ClInclude Include="Common.h">
+      <Filter>00 通用</Filter>
+    </ClInclude>
+    <ClInclude Include="Accept.h">
       <Filter>03 Tcp管理\02 Tcp服务端</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpConnection.h">
+      <Filter>03 Tcp管理\03 Tcp连接管理</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpConnectionMgr.h">
+      <Filter>03 Tcp管理\03 Tcp连接管理</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -90,25 +151,25 @@
       <Filter>05 其它</Filter>
     </ClCompile>
     <ClCompile Include="MemoryTool.cpp">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp">
       <Filter>03 Tcp管理\01 Tcp客户端</Filter>
     </ClCompile>
     <ClCompile Include="EncryptBuffer.cpp">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClCompile>
     <ClCompile Include="ByteStream.cpp">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClCompile>
     <ClCompile Include="OtherTool.cpp">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClCompile>
     <ClCompile Include="NetworkStream.cpp">
-      <Filter>01 通用</Filter>
+      <Filter>00 通用</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolClientMgr.cpp">
       <Filter>04 通信协议管理\01 通信协议客户端</Filter>
@@ -125,11 +186,54 @@
     <ClCompile Include="PacketHeadBase.cpp">
       <Filter>04 通信协议管理</Filter>
     </ClCompile>
-    <ClCompile Include="TcpSession.cpp">
+    <ClCompile Include="Node.cpp">
+      <Filter>01 链表</Filter>
+    </ClCompile>
+    <ClCompile Include="LinkList.cpp">
+      <Filter>01 链表</Filter>
+    </ClCompile>
+    <ClCompile Include="Select.cpp">
+      <Filter>03 Tcp管理</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>02 线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadEvent.cpp">
+      <Filter>02 线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadLock.cpp">
+      <Filter>02 线程</Filter>
+    </ClCompile>
+    <ClCompile Include="SafeLock.cpp">
+      <Filter>02 线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadMutex.cpp">
+      <Filter>02 线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadMutexHelper.cpp">
+      <Filter>02 线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadSemaphore.cpp">
+      <Filter>02 线程</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadMgr.cpp">
+      <Filter>02 线程</Filter>
+    </ClCompile>
+    <ClCompile Include="NetCommuMgr.cpp" />
+    <ClCompile Include="ServerSocketMgr.cpp">
       <Filter>03 Tcp管理\02 Tcp服务端</Filter>
     </ClCompile>
-    <ClCompile Include="TcpSessionMgr.cpp">
+    <ClCompile Include="Common.cpp">
+      <Filter>00 通用</Filter>
+    </ClCompile>
+    <ClCompile Include="Accept.cpp">
       <Filter>03 Tcp管理\02 Tcp服务端</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpConnection.cpp">
+      <Filter>03 Tcp管理\03 Tcp连接管理</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpConnectionMgr.cpp">
+      <Filter>03 Tcp管理\03 Tcp连接管理</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

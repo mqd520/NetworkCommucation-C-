@@ -25,7 +25,7 @@ namespace NetworkCommunication
 	bool CSocketMgr::Init()
 	{
 		WSADATA wsaData;
-		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
+		if (::WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
 			return false;
 		}
@@ -34,7 +34,7 @@ namespace NetworkCommunication
 
 	void CSocketMgr::Release()
 	{
-		WSACleanup();
+		::WSACleanup();
 	}
 
 	void CSocketMgr::SaveErr(TCHAR* msg)
@@ -77,7 +77,7 @@ namespace NetworkCommunication
 		return addr;
 	}
 
-	bool CSocketMgr::Connect(SOCKET socket, TCHAR* ip, int port)
+	bool CSocketMgr::Connect1(SOCKET socket, TCHAR* ip, int port)
 	{
 		m_bErr = false;
 		SOCKADDR_IN addr = GetSockAddr(ip, port);
@@ -95,16 +95,16 @@ namespace NetworkCommunication
 		return true;
 	}
 
-	int CSocketMgr::Read(SOCKET socket, char* buf, int len)
+	int CSocketMgr::Recv(SOCKET socket, BYTE* buf, int len)
 	{
 		m_bErr = false;
-		int len1 = ::recv(socket, buf, len, 0);
+		int len1 = ::recv(socket, (char*)buf, len, 0);
 		if (len1 == SOCKET_ERROR)
 		{
 			m_bErr = true;
 
 		}
-		return 0;
+		return len1;
 	}
 
 	bool CSocketMgr::Bind(SOCKET socket, TCHAR* ip, int port)
@@ -145,6 +145,11 @@ namespace NetworkCommunication
 	SOCKET CSocketMgr::Accept(SOCKET socket, TCHAR* ip, int port)
 	{
 		SOCKADDR_IN addr = GetSockAddr(ip, port);
+		return Accept(socket, addr);
+	}
+
+	SOCKET CSocketMgr::Accept(SOCKET socket, SOCKADDR_IN addr)
+	{
 		SOCKET client = ::accept(socket, (SOCKADDR*)&addr, NULL);
 		if (client == INVALID_SOCKET)
 		{
@@ -200,5 +205,11 @@ namespace NetworkCommunication
 				*port = ntohs(addr.sin_port);
 			}
 		}
+	}
+
+	int CSocketMgr::Select(int nfds, fd_set* readfds, fd_set* writefds, fd_set* exceptfds, const struct timeval* timeout)
+	{
+		int result = ::select(nfds, readfds, writefds, exceptfds, timeout);
+		return result;
 	}
 }

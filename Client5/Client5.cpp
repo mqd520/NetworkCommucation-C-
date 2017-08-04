@@ -5,8 +5,11 @@
 #include "TcpClient.h"
 #include "OtherTool.h"
 #include "MemoryTool.h"
+#include "SocketMgr.h"
 
 using namespace NetworkCommunication;
+
+CSocketMgr mgr;
 
 bool OnRecvData(BYTE buf[], int len);
 void OnRecvEvt(TcpEvtType type, TCHAR* msg);
