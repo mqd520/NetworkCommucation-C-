@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "SocketMgr.h"
+#include "SocketAPI.h"
 
 using namespace NetworkCommunication;
 

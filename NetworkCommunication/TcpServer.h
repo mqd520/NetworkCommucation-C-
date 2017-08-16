@@ -1,32 +1,50 @@
 #pragma once
 
-#include "SocketMgr.h"
+#include "SocketAPI.h"
 #include "TcpConnectionMgr.h"
 #include "Thread.h"
 #include "NetCommuMgr.h"
+#include "Def.h"
+#include "TcpServer.h"
 
 namespace NetworkCommunication
 {
 	//tcp服务端
-	class CTcpServer
+	class CTcpServer : public CTcpService
 	{
 	protected:
-		CSocketMgr m_socketMgr;//socket管理对象
-		TCHAR m_strServerIP[20];//服务端IP
+		CSocketAPI m_socketMgr;//socket管理对象
+		char m_strServerIP[20];//服务端IP
 		int m_nServerPort;//服务端端口
 		bool m_bInited;//是否已初始化
 		SOCKET m_serverSocket;
 		bool m_bListening;//是否正在监听
-		CTcpConnectionMgr m_sessionMgr;//tcp会话管理
-		int m_nMaxConnectionCount;//允许最大客户端连接计数,0:无限制
-		int m_nConnectedCount;//已连接客户端计数
-		FD_SET m_fdRead;//
+		ServerSocketData m_socketData;//服务端socket数据
 
 	public:
 		CTcpServer();
 		~CTcpServer();
 
-		void Init(TCHAR* ip, int port, int maxConn = 0);
+		//************************************
+		// Method:    初始化
+		// Parameter: ip
+		// Parameter: 端口
+		//************************************
+		void Init(char* ip, int port);
+
+		//************************************
+		// Method:    开始监听
+		// Returns:   是否成功
+		//************************************
 		bool Listen();
+
+		//************************************
+		// Method:    获取服务端socket数据
+		//************************************
+		ServerSocketData GetServerSocketData();
+
+		void OnRecvNewConnection(ServerSocketData server, PeerSocketData client);
+
+		void SendData(SOCKET client, BYTE buf[], int len);
 	};
 }

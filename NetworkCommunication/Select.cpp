@@ -3,6 +3,8 @@
 #include "TcpConnectionMgr.h"
 #include "Thread.h"
 #include "NetCommuMgr.h"
+#include "Def.h"
+#include "Common.h"
 
 namespace NetworkCommunication
 {
@@ -11,7 +13,7 @@ namespace NetworkCommunication
 	CSelect::CSelect() :
 		m_bExit(false),
 		m_threadSelect(NULL),
-		m_bSleep(true)
+		m_selectTimeout({ 0, 0 })
 	{
 
 	}
@@ -24,16 +26,9 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CSelect::AddListenSocket(SOCKET socket)
+	void CSelect::AddSocket(SOCKET socket, int type)
 	{
-		m_quListenSocket.push(socket);
-		m_bSleep = false;
-	}
-
-	void CSelect::AddPeerSocket(SOCKET socket)
-	{
-		m_quPeerSocket.push(socket);
-		m_bSleep = false;
+		m_vecSocket.push_back({ socket, type });
 	}
 
 	void CSelect::Run()
@@ -48,7 +43,7 @@ namespace NetworkCommunication
 
 	void OnSelectThreadStart()
 	{
-		_tprintf(_T("Select thread started \n"));
+		Printf1("Select thread started");
 		CNetworkCommuMgr::GetSelect()->ThreadEntry();
 	}
 
@@ -63,57 +58,83 @@ namespace NetworkCommunication
 		{
 			//Sleep(2 * 1000);
 
-			fd_set readSet;
-			FD_ZERO(&readSet);
+			CalcSocketGroup();//对socket进行分组
 
-			int readCount = 0;//可读socket计数
-
-			if (CNetworkCommuMgr::GetSrvType() != CNetworkCommuMgr::EServiceType::Client)
+			if (m_group.size() > 0)
 			{
-				//遍历服务端socket
-				for (int i = 0; i < (int)m_quListenSocket.size(); i++)
+				for (int i = 0; i < (int)m_group.size(); i++)
 				{
-					SOCKET socket = m_quListenSocket.front();
-					FD_SET(socket, &readSet);
-					readCount++;
-				}
-			}
+					FD_ZERO(&m_readSet);
 
-			//遍历对端socket
-			for (int i = 0; i < (int)m_quPeerSocket.size(); i++)
-			{
-				SOCKET socket = m_quPeerSocket.front();
-				FD_SET(socket, &readSet);
-				readCount++;
-			}
-
-			timeval selectTimeout;
-			selectTimeout.tv_sec = 0;
-			selectTimeout.tv_usec = 0;
-
-			m_socMgr.Select(0, &readSet, NULL, NULL, &selectTimeout);
-
-			//遍历可读socket
-			for (int i = 0; i < readCount; i++)
-			{
-				SOCKET socket = readSet.fd_array[i];
-				int result = FD_ISSET(socket, &readSet);
-				if (result > 0)
-				{
-					if (i == 0)
+					for (int j = 0; j < (int)m_group[i].size(); j++)
 					{
-						CNetworkCommuMgr::GetAccept()->OnRecvNewSocket(socket);//通知Accept层进行新连接的处理
+						FD_SET(m_group[i][j].socket, &m_readSet);
 					}
-					else
+
+					m_socketAPI.Select(0, &m_readSet, NULL, NULL, &m_selectTimeout);
+
+					if (m_readSet.fd_count > 0)
 					{
-						CNetworkCommuMgr::GetTcpConnectionMgr()->OnSocketRead(socket);//通知TcpConnectionMgr层进行接收数据处理
+						//遍历分组socket，检查socket信号
+						for (int k = 0; k < (int)m_group[i].size(); k++)
+						{
+							SelectSocketData socketData = m_group[i][k];
+							CheckSocketSingal(socketData);
+						}
 					}
 				}
 			}
-
-			if (m_bSleep)
+			else
 			{
 				Sleep(10);
+			}
+		}
+	}
+
+	void CSelect::CalcSocketGroup()
+	{
+		m_group.clear();
+
+		int nSocketCount = (int)m_vecSocket.size();//socket总数
+		int nGroupCount = nSocketCount / FD_SETSIZE + (nSocketCount % FD_SETSIZE == 0 ? 0 : 1);//分组数
+		for (int i = 0; i < nGroupCount; i++)
+		{
+			vector<SelectSocketData> vec;
+			m_group.push_back(vec);
+		}
+
+		//遍历所有socket
+		for (int i = 0; i < (int)m_vecSocket.size(); i++)
+		{
+			int groupIndex = (i + 1) / FD_SETSIZE + ((i + 1) % FD_SETSIZE == 0 ? 0 : 1) - 1;//计算当前socket所在分组索引
+			m_group[groupIndex].push_back(m_vecSocket[i]);//将socket填入对应的组中
+		}
+	}
+
+	void CSelect::CheckSocketSingal(SelectSocketData socketData)
+	{
+		int result = FD_ISSET(socketData.socket, &m_readSet);
+		if (result > 0)
+		{
+			if (socketData.type == ESelectSocketType::Server)//指示服务端socket
+			{
+				CNetworkCommuMgr::GetAccept()->OnSocketCanRead(socketData.socket);//通知Accept层进行新客户端连接的处理
+			}
+			else//指示对端socket
+			{
+				CNetworkCommuMgr::GetTcpConnectionMgr()->OnSocketCanRead(socketData.socket);//通知TcpConnectionMgr层进行接收数据的处理
+			}
+		}
+	}
+
+	void CSelect::RemoveSocket(SOCKET socket)
+	{
+		for (vector<SelectSocketData>::iterator it = m_vecSocket.begin(); it < m_vecSocket.end(); it++)
+		{
+			if (it->socket == socket)
+			{
+				m_vecSocket.erase(it);
+				break;
 			}
 		}
 	}

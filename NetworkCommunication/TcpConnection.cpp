@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TcpConnection.h"
 #include "MemoryTool.h"
+#include "Common.h"
 
 namespace NetworkCommunication
 {
@@ -34,30 +35,12 @@ namespace NetworkCommunication
 
 	bool CTcpConnection::SendData(BYTE buf[], int len)
 	{
-		return true;
+		return m_mgr.Send(m_peerSocket, buf, len);
 	}
 
-	bool CTcpConnection::SendPacket(PacketBase* pack)
+	void CTcpConnection::OnRecvData(SocketRecvData data)
 	{
-		return true;
-	}
-
-	bool CTcpConnection::BatchSendPacket(vector<PacketBase*> packs)
-	{
-		return true;
-	}
-
-	void CTcpConnection::OnReadData()
-	{
-		int result = m_mgr.Recv(GetPeerSocket(), m_pRecvBuf, m_nRecvBufLen);
-		if (result > 0)
-		{
-			_tprintf(_T("Recv data from %d, size: %d \n"), GetPeerSocket(), result);
-		}
-		else
-		{
-
-		}
+		delete data.pBuf;
 	}
 
 	SOCKET CTcpConnection::GetLocalSocket()

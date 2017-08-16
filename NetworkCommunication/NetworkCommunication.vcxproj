@@ -86,9 +86,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Accept.h" />
+    <ClInclude Include="AcceptNewConnAction.h" />
     <ClInclude Include="ByteStream.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Def.h" />
+    <ClInclude Include="PeerCloseAction.h" />
+    <ClInclude Include="PeerSocketDataMgr.h" />
     <ClInclude Include="ServerSocketMgr.h" />
+    <ClInclude Include="Tcp.h" />
+    <ClInclude Include="TcpAction.h" />
+    <ClInclude Include="TcpService.h" />
+    <ClInclude Include="TcpServiceMgr.h" />
     <ClInclude Include="TFunPointer.h" />
     <ClInclude Include="EncryptBuffer.h" />
     <ClInclude Include="LinkList.h" />
@@ -100,7 +108,7 @@
     <ClInclude Include="Queue.h" />
     <ClInclude Include="SafeLock.h" />
     <ClInclude Include="Select.h" />
-    <ClInclude Include="SocketMgr.h" />
+    <ClInclude Include="SocketAPI.h" />
     <ClInclude Include="TcpServer.h" />
     <ClInclude Include="TcpConnection.h" />
     <ClInclude Include="TcpConnectionMgr.h" />
@@ -122,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Accept.cpp" />
+    <ClCompile Include="AcceptNewConnAction.cpp" />
     <ClCompile Include="ByteStream.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="EncryptBuffer.cpp" />
@@ -131,21 +140,27 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="PacketBase.cpp" />
     <ClCompile Include="PacketHeadBase.cpp" />
+    <ClCompile Include="PeerCloseAction.cpp" />
+    <ClCompile Include="PeerSocketDataMgr.cpp" />
     <ClCompile Include="ProtocolClientMgr.cpp" />
     <ClCompile Include="SafeLock.cpp" />
     <ClCompile Include="Select.cpp" />
     <ClCompile Include="ServerSocketMgr.cpp" />
-    <ClCompile Include="SocketMgr.cpp" />
+    <ClCompile Include="SocketAPI.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="OtherTool.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Tcp.cpp" />
+    <ClCompile Include="TcpAction.cpp" />
     <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="TcpServer.cpp" />
     <ClCompile Include="TcpConnection.cpp" />
     <ClCompile Include="TcpConnectionMgr.cpp" />
+    <ClCompile Include="TcpService.cpp" />
+    <ClCompile Include="TcpServiceMgr.cpp" />
     <ClCompile Include="Thread.cpp" />
     <ClCompile Include="ThreadEvent.cpp" />
     <ClCompile Include="ThreadLock.cpp" />

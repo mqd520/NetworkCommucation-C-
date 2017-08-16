@@ -3,6 +3,8 @@
 #include "NetCommuMgr.h"
 #include "TcpConnectionMgr.h"
 #include "TcpConnection.h"
+#include "AcceptNewConnAction.h"
+#include "Common.h"
 
 namespace NetworkCommunication
 {
@@ -22,20 +24,19 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CAccept::OnRecvNewSocket(SOCKET socket)
+	void CAccept::OnSocketCanRead(SOCKET server)
 	{
-		ServerSocketData data = CNetworkCommuMgr::GetServerSocketMgr()->GetDataBySocket(socket);//获取服务端socket关联数据
-		if (data.socket != NULL)
+		ServerSocketData data = CNetworkCommuMgr::GetServerSocketMgr()->GetDataBySocket(server);//获取服务端socket关联数据
+		SOCKET client = m_socketAPI.Accept(server, data.addr);
+		if (client > 0)
 		{
-			SOCKET client = m_socMgr.Accept(socket, data.addr);//接收新连接
-			m_quSocket.push({ socket, client });
-			_tprintf(_T("Accept a new connection from %s:%d, client: %d \n"), data.ip, data.port, client);
+			m_quSocket.push({ server, client });
 		}
 	}
 
 	void OnAcceptThreadStart()
 	{
-		_tprintf(_T("Accept thread started \n"));
+		Printf1("Accept thread started");
 		CNetworkCommuMgr::GetAccept()->ThreadEntry();
 	}
 
@@ -68,10 +69,31 @@ namespace NetworkCommunication
 	{
 		for (int i = 0; i < (int)m_quSocket.size(); i++)
 		{
-			SocketPair data = m_quSocket.front();
+			SocketPair pair = m_quSocket.front();
 			m_quSocket.pop();
-			CTcpConnection* conn = new CTcpConnection(data.local, data.peer);
-			CNetworkCommuMgr::GetTcpConnectionMgr()->Push(conn);
+
+			if (FilterClientSocket(pair))
+			{
+				//创建tcp连接对象
+				CTcpConnection* conn = new CTcpConnection(pair.local, pair.peer);
+				CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
+
+				//创建接收新客户端连接动作
+				CAcceptNewConnAction* pAction = new CAcceptNewConnAction(pair.local, pair.peer);
+				CPeerSocketDataMgr::Create(pair.peer, pair.local);//创建并增加一个对端socket数据
+				CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpAction(pAction);//加入tcp动作
+			}
 		}
+	}
+
+	bool CAccept::FilterClientSocket(SocketPair pair)
+	{
+		bool result = true;
+
+		//ServerSocketRelationData* data = CNetworkCommuMgr::GetServerSocketMgr()->GetDataBySocket(pair.local);//获取服务端socket关联数据
+
+		//_tprintf(_T("Accept a new connection from %s:%d, client: %d \n"), data->ip, data->port, pair.peer);
+
+		return result;
 	}
 }

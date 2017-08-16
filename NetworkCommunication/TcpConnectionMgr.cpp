@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "TcpConnectionMgr.h"
 #include "NetCommuMgr.h"
+#include "Common.h"
+#include "PeerCloseAction.h"
 
 namespace NetworkCommunication
 {
 	void OnRWThreadStart();
 
-	CTcpConnectionMgr::CTcpConnectionMgr():
+	CTcpConnectionMgr::CTcpConnectionMgr() :
 		m_threadRW(NULL)
 	{
 
@@ -17,31 +19,35 @@ namespace NetworkCommunication
 
 	}
 
-	void CTcpConnectionMgr::Push(CTcpConnection* session)
+	void CTcpConnectionMgr::PushTcpConn(CTcpConnection* session)
 	{
-		m_vecConnectionList.push_back(session);
+		m_vecTcpConnection.push_back(session);
 		SOCKET socket = session->GetPeerSocket();//获取tcp连接中对端的socket
-		CNetworkCommuMgr::GetSelect()->AddPeerSocket(socket);//加入对端socket队列
+		CNetworkCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Peer);//加入select队列
 	}
 
-	void CTcpConnectionMgr::OnSocketRead(SOCKET socket)
+	void CTcpConnectionMgr::OnSocketCanRead(SOCKET socket)
 	{
-		BYTE* p = new BYTE[1024];
-		int result = m_socMgr.Recv(socket, p, 1024);
-		if (result > 0)
+		BYTE* buf = new BYTE[TCPBUFFERSIZE];
+		int len = m_socketAPI.Recv(socket, buf, TCPBUFFERSIZE);
+		if (len > 0)//指示读取数据成功
 		{
-			_tprintf(_T("Recv data from %d, size: %d \n"), socket, result);
+			m_quSocketRecvData.push({ socket, buf, len });
+		}
+		else if (len == 0)//指示对端主动关闭了socket
+		{
+			RemoveTcpConnByPeerSocket(socket);//删除关联的tcp连接
+			delete buf;
 		}
 		else
 		{
 
 		}
-		delete p;
 	}
 
 	void OnRWThreadStart()
 	{
-		_tprintf(_T("Rw thread started \n"));
+		Printf1("Tcp connection thread started");
 		CNetworkCommuMgr::GetTcpConnectionMgr()->ThreadEntry();
 	}
 
@@ -49,15 +55,16 @@ namespace NetworkCommunication
 	{
 		while (true)
 		{
-			if (m_quSocket.size() > 0)
+			if (m_quSocketRecvData.size() > 0)
 			{
-				SOCKET socket = m_quSocket.front();
-				m_quSocket.pop();
-				for (int i = 0; i < (int)m_vecConnectionList.size(); i++)
+				SocketRecvData data = m_quSocketRecvData.front();
+				m_quSocketRecvData.pop();
+
+				for (int i = 0; i < (int)m_vecTcpConnection.size(); i++)
 				{
-					if (m_vecConnectionList[i]->GetPeerSocket() == socket)
+					if (m_vecTcpConnection[i]->GetPeerSocket() == data.peer)//找到对应的tcp连接层
 					{
-						m_vecConnectionList[i]->OnReadData();
+						m_vecTcpConnection[i]->OnRecvData(data);//通知tcp连接层进行处理
 						break;
 					}
 				}
@@ -77,5 +84,49 @@ namespace NetworkCommunication
 			m_threadRW->SetCallback(OnRWThreadStart);
 			m_threadRW->Start();
 		}
+	}
+
+	void CTcpConnectionMgr::RemoveByPeer(SOCKET peer)
+	{
+		for (int i = 0; i < (int)m_vecTcpConnection.size(); i++)
+		{
+			if (m_vecTcpConnection[i]->GetPeerSocket() == peer)
+			{
+				m_vecTcpConnection.erase(m_vecTcpConnection.begin() + i);
+				break;
+			}
+		}
+	}
+
+	CTcpConnection* CTcpConnectionMgr::GetTcpConnByPeerSocket(SOCKET peer)
+	{
+		for (int i = 0; i < (int)m_vecTcpConnection.size(); i++)
+		{
+			if (m_vecTcpConnection[i]->GetPeerSocket() == peer)
+			{
+				return m_vecTcpConnection[i];
+			}
+		}
+		return NULL;
+	}
+
+	void CTcpConnectionMgr::RemoveTcpConnByPeerSocket(SOCKET peer)
+	{
+		//删除tcp连接
+		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it < m_vecTcpConnection.end(); it++)
+		{
+			if ((*it)->GetPeerSocket() == peer)
+			{
+				m_vecTcpConnection.erase(it);
+				break;
+			}
+		}
+
+		//删除select中相关socket
+		CNetworkCommuMgr::GetSelect()->RemoveSocket(peer);
+	
+		//生成tcp动作: 对端主动关闭
+		CPeerCloseAction* pAction = new CPeerCloseAction(peer);
+		CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpAction(pAction);
 	}
 }

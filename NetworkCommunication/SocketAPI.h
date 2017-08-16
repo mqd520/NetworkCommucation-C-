@@ -8,7 +8,7 @@
 namespace NetworkCommunication
 {
 	//socket管理
-	class CSocketMgr
+	class CSocketAPI
 	{
 	protected:
 		bool m_bErr;//是否产生错误
@@ -19,8 +19,8 @@ namespace NetworkCommunication
 		void SaveErr(TCHAR* msg);
 
 	public:
-		CSocketMgr();
-		~CSocketMgr();
+		CSocketAPI();
+		~CSocketAPI();
 
 		//是否产生了错误
 		bool IsErr();
@@ -37,28 +37,28 @@ namespace NetworkCommunication
 		//创建一个socket(tcp)
 		SOCKET CreateTcpSocket();
 
-		SOCKADDR_IN GetSockAddr(TCHAR* ip, int port);
+		SOCKADDR_IN GetSocketAddr(char* ip, int port);
 
-		SOCKADDR_IN CreateSocketAddr(TCHAR* ip, int port);
-
-		bool Connect1(SOCKET socket, TCHAR* ip, int port);
+		bool Connect1(SOCKET socket, char* ip, int port);
 
 		int Recv(SOCKET socket, BYTE* buf, int len);
 
 		bool CloseSocket(SOCKET socket);
 
-		bool Bind(SOCKET socket, TCHAR* ip, int port);
+		bool Bind(SOCKET socket, char* ip, int port);
 
 		bool Listen(SOCKET socket, int max = SOMAXCONN);
 
 		void SetNonBlock(SOCKET socket);
 
-		SOCKET Accept(SOCKET socket, TCHAR* ip, int port);
+		SOCKET Accept(SOCKET socket, char* ip, int port);
 
 		SOCKET Accept(SOCKET socket, SOCKADDR_IN addr);
 
-		void GetIpAndPort(SOCKET socket, TCHAR* ip, int* port);
+		void GetIpAndPort(SOCKET socket, char* ip, int* port);
 
 		int Select(int nfds, fd_set* readfds, fd_set *writefds, fd_set *exceptfds, const struct timeval *timeout);
+
+		bool Send(SOCKET s, BYTE buf[], int len);
 	};
 }

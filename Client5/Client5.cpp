@@ -5,7 +5,7 @@
 #include "TcpClient.h"
 #include "OtherTool.h"
 #include "MemoryTool.h"
-#include "SocketMgr.h"
+#include "SocketAPI.h"
 
 using namespace NetworkCommunication;
 

@@ -4,28 +4,27 @@
 #include "Accept.h"
 #include "ServerSocketMgr.h"
 #include "TcpConnectionMgr.h"
+#include "Tcp.h"
+#include "TcpServiceMgr.h"
+#include "PeerSocketDataMgr.h"
 
 namespace NetworkCommunication
 {
 	class CNetworkCommuMgr
 	{
-	public:
-		//服务类型
-		enum EServiceType
-		{
-			Client,//客户端
-			Server,//服务端
-			Both//二者同时具备
-		};
+	private:
+		static CThreadMgr* m_threadMgr;//线程管理对象
+		static CSelect* m_Select;//select对象
+		static CAccept* m_accept;//接收socket对象
+		static CServerSocketDataMgr* m_serverSocketDataMgr;//服务端socket数据管理对象
+		static CPeerSocketDataMgr* m_peerSocketDataMgr;//对端socket数据管理对象
+		static int m_srvType;//服务类型
+		static CTcpConnectionMgr* m_tcpConnMgr;//tcp连接管理对象
+		static CTcp* m_tcp;//tcp对象
+		static CTcpServiceMgr* m_tcpSrvMgr;//tcp服务管理对象
 
 	private:
 		CNetworkCommuMgr();
-		static CThreadMgr* m_threadMgr;
-		static CSelect* m_Select;
-		static CAccept* m_accept;
-		static CServerSocketMgr* m_serverSockerMgr;
-		static EServiceType m_srvType;
-		static CTcpConnectionMgr* m_tcpConnMgr;
 
 	public:
 		~CNetworkCommuMgr();
@@ -33,7 +32,7 @@ namespace NetworkCommunication
 		//************************************
 		// Method:    初始化
 		//************************************
-		static void Init(EServiceType type);
+		static void Init();
 
 		//************************************
 		// Method:    退出
@@ -56,18 +55,33 @@ namespace NetworkCommunication
 		static CAccept* GetAccept();
 
 		//************************************
-		// Method:    获取socket数据管理对象
+		// Method:    获取服务端socket数据管理对象
 		//************************************
-		static CServerSocketMgr* GetServerSocketMgr();
+		static CServerSocketDataMgr* GetServerSocketMgr();
+
+		//************************************
+		// Method:    获取对端socket数据管理对象
+		//************************************
+		static CPeerSocketDataMgr* GetPeerSocketDataMgr();
 
 		//************************************
 		// Method:    获取服务类型
 		//************************************
-		static EServiceType GetSrvType();
+		static int GetSrvType();
 
 		//************************************
 		// Method:    获取TcpConnectionMgr对象
 		//************************************
 		static CTcpConnectionMgr* GetTcpConnectionMgr();
+
+		//************************************
+		// Method:    获取tcp对象
+		//************************************
+		static CTcp* GetTcp();
+
+		//************************************
+		// Method:    获取tcp服务管理对象
+		//************************************
+		static CTcpServiceMgr* GetTcpServiceMgr();
 	};
 }

@@ -1,7 +1,8 @@
 #pragma once
-#include "SocketMgr.h"
+#include "SocketAPI.h"
 #include "PacketBase.h"
 #include <vector>
+#include "Def.h"
 
 using namespace std;
 
@@ -11,7 +12,7 @@ namespace NetworkCommunication
 	class CTcpConnection
 	{
 	private:
-		CSocketMgr m_mgr;
+		CSocketAPI m_mgr;
 
 	protected:
 		SOCKET m_peerSocket;//对端socket
@@ -39,22 +40,9 @@ namespace NetworkCommunication
 		bool SendData(BYTE buf[], int len);
 
 		//************************************
-		// Method:    发送单个网络包(同步)
-		// Returns:   是否成功
-		// Parameter: 网络包
+		// Method:    接收数据
+		// Parameter: socket接收数据
 		//************************************
-		bool SendPacket(PacketBase* pack);
-
-		//************************************
-		// Method:    批量发送网络包(同步)
-		// Returns:   是否成功
-		// Parameter: 网络包集合
-		//************************************
-		bool BatchSendPacket(vector<PacketBase*> packs);
-
-		//************************************
-		// Method:    有数据可读
-		//************************************
-		void OnReadData();
+		void OnRecvData(SocketRecvData data);
 	};
 }

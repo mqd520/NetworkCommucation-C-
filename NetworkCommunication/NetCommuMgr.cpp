@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "NetCommuMgr.h"
-#include "SocketMgr.h"
+#include "SocketAPI.h"
 #include "ThreadMgr.h"
 
 namespace NetworkCommunication
@@ -8,25 +8,25 @@ namespace NetworkCommunication
 	CThreadMgr* CNetworkCommuMgr::m_threadMgr = NULL;
 	CSelect* CNetworkCommuMgr::m_Select = NULL;
 	CAccept* CNetworkCommuMgr::m_accept = NULL;
-	CServerSocketMgr* CNetworkCommuMgr::m_serverSockerMgr = NULL;
-	CNetworkCommuMgr::EServiceType CNetworkCommuMgr::m_srvType = CNetworkCommuMgr::EServiceType::Server;
+	CServerSocketDataMgr* CNetworkCommuMgr::m_serverSocketDataMgr = NULL;
+	CPeerSocketDataMgr* CNetworkCommuMgr::m_peerSocketDataMgr = NULL;
+	int CNetworkCommuMgr::m_srvType = ETcpServiceType::Server;
 	CTcpConnectionMgr* CNetworkCommuMgr::m_tcpConnMgr = NULL;
+	CTcp* CNetworkCommuMgr::m_tcp = NULL;
+	CTcpServiceMgr* CNetworkCommuMgr::m_tcpSrvMgr = NULL;
 
-	void CNetworkCommuMgr::Init(EServiceType type)
+	void CNetworkCommuMgr::Init()
 	{
-		m_srvType = type;
-		CSocketMgr::Init();
-		if (type == EServiceType::Server || type == EServiceType::Both)
-		{
-			GetAccept()->Run();//开启accept线程
-		}
-		GetSelect()->Run();//开启select线程
-		GetTcpConnectionMgr()->Run();//开启socket读写线程
+		CSocketAPI::Init();
+		//Accept线程在TcpServiceMgr类中启动
+		GetSelect()->Run();//运行select线程
+		GetTcpConnectionMgr()->Run();//运行tcp连接线程
+		GetTcpServiceMgr()->Run();//运行tcp动作线程
 	}
 
 	void CNetworkCommuMgr::Exit()
 	{
-		CSocketMgr::Release();
+		CSocketAPI::Release();
 		if (m_threadMgr)
 		{
 			delete m_threadMgr;
@@ -64,16 +64,25 @@ namespace NetworkCommunication
 		return m_accept;
 	}
 
-	CServerSocketMgr* CNetworkCommuMgr::GetServerSocketMgr()
+	CServerSocketDataMgr* CNetworkCommuMgr::GetServerSocketMgr()
 	{
-		if (m_serverSockerMgr == NULL)
+		if (m_serverSocketDataMgr == NULL)
 		{
-			m_serverSockerMgr = new CServerSocketMgr();
+			m_serverSocketDataMgr = new CServerSocketDataMgr();
 		}
-		return m_serverSockerMgr;
+		return m_serverSocketDataMgr;
 	}
 
-	CNetworkCommuMgr::EServiceType CNetworkCommuMgr::GetSrvType()
+	CPeerSocketDataMgr* CNetworkCommuMgr::GetPeerSocketDataMgr()
+	{
+		if (m_peerSocketDataMgr == NULL)
+		{
+			m_peerSocketDataMgr = new CPeerSocketDataMgr();
+		}
+		return m_peerSocketDataMgr;
+	}
+
+	int CNetworkCommuMgr::GetSrvType()
 	{
 		return m_srvType;
 	}
@@ -85,5 +94,23 @@ namespace NetworkCommunication
 			m_tcpConnMgr = new CTcpConnectionMgr();
 		}
 		return m_tcpConnMgr;
+	}
+
+	CTcp* CNetworkCommuMgr::GetTcp()
+	{
+		if (m_tcp == NULL)
+		{
+			m_tcp = new CTcp();
+		}
+		return m_tcp;
+	}
+
+	CTcpServiceMgr* CNetworkCommuMgr::GetTcpServiceMgr()
+	{
+		if (m_tcpSrvMgr == NULL)
+		{
+			m_tcpSrvMgr = new CTcpServiceMgr();
+		}
+		return m_tcpSrvMgr;
 	}
 }

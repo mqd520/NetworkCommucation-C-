@@ -3,14 +3,19 @@
 
 #include "stdafx.h"
 #include "TcpServer.h"
+#include "MemoryTool.h"
+#include "Common.h"
+
+#include <stdio.h>
 
 using namespace NetworkCommunication;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	CNetworkCommuMgr::Init(CNetworkCommuMgr::Server);
+	CNetworkCommuMgr::Init();
 	CTcpServer server;
-	server.Init(_T("192.168.0.68"), 8040);
+	CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpService((CTcpService*)&server);
+	server.Init("192.168.0.68", 8040);
 	server.Listen();
 
 	_tprintf(_T("输入exit退出程序!\n"));
@@ -24,7 +29,11 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		else
 		{
-			_tprintf(_T("无法识别命令!\n"));
+			int len = 0;
+			//BYTE* buf = WriteUTF8Str(L"Leon520汉字汉字", &len);
+			BYTE* buf = WriteMultiByteStr("Leon520汉字汉字", &len);
+			int socket = ::atoi(input);
+			server.SendData((SOCKET)socket, buf, len);
 		}
 	}
 

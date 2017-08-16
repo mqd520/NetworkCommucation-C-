@@ -1,25 +1,19 @@
 #pragma once
-#include "SocketMgr.h"
+#include "SocketAPI.h"
 #include <queue>
 #include "Thread.h"
+#include "Def.h"
 
 using namespace std;
 
 namespace NetworkCommunication
 {
-	//关联socket对数据
-	typedef struct tagSocketPair
-	{
-		SOCKET local;//本地socket
-		SOCKET peer;//对端socket
-	}SocketPair;
-
 	class CAccept
 	{
 	private:
 		queue<SocketPair> m_quSocket;//接收到的新的socket连接队列
 		CThread* m_threadAccept;//处理新socket连接的线程
-		CSocketMgr m_socMgr;
+		CSocketAPI m_socketAPI;
 
 	private:
 		//************************************
@@ -27,15 +21,17 @@ namespace NetworkCommunication
 		//************************************
 		void ProcessAcceptQueue();
 
+		bool FilterClientSocket(SocketPair pair);
+
 	public:
 		CAccept();
 		~CAccept();
 
 		//************************************
-		// Method:    接收到新的socket
-		// Parameter: 新的socket
+		// Method:    有新的客户端可接收
+		// Parameter: 服务端socket
 		//************************************
-		void OnRecvNewSocket(SOCKET socket);
+		void OnSocketCanRead(SOCKET server);
 
 		//************************************
 		// Method:    运行处理新连接线程

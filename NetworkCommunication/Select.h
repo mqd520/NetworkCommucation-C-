@@ -1,7 +1,8 @@
 #pragma once
-#include <queue>
-#include "SocketMgr.h"
+#include <vector>
+#include "SocketAPI.h"
 #include "Thread.h"
+#include "Def.h"
 
 using namespace std;
 
@@ -10,12 +11,14 @@ namespace NetworkCommunication
 	class CSelect
 	{
 	private:
-		CSocketMgr m_socMgr;
-		queue<SOCKET> m_quListenSocket;//服务端socket队列
-		queue<SOCKET> m_quPeerSocket;//对端socket队列
+		CSocketAPI m_socketAPI;
+		vector<SelectSocketData> m_vecSocket;//需要监听的socket集合
 		bool m_bExit;//指示线程是否应该结束
 		CThread* m_threadSelect;
 		bool m_bSleep;//select线程是否间隔sleep
+		fd_set m_readSet;
+		vector<vector<SelectSocketData>> m_group;
+		timeval m_selectTimeout;
 
 	private:
 		//************************************
@@ -23,21 +26,25 @@ namespace NetworkCommunication
 		//************************************
 		void StartSelect();
 
+		// 对所有socket进行分组
+		void CalcSocketGroup();
+
+		//检查指定socket信号
+		void CheckSocketSingal(SelectSocketData socket);
+
 	public:
 		CSelect();
 		~CSelect();
 
 		//************************************
-		// Method:    添加一个服务端监听socket
+		// Method:    添加socket
 		// Parameter: socket
+		// Parameter: 类型
 		//************************************
-		void AddListenSocket(SOCKET socket);
+		void AddSocket(SOCKET socket, int type); 
 
-		//************************************
-		// Method:    添加一个对端socket(用于读写)
-		// Parameter: socket
-		//************************************
-		void AddPeerSocket(SOCKET socket);
+		// 移除指定socket
+		void RemoveSocket(SOCKET socket);
 
 		//************************************
 		// Method:    开启select线程
