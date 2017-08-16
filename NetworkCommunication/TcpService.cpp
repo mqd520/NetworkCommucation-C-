@@ -36,4 +36,10 @@ namespace NetworkCommunication
 	{
 		Printf1("[%s:%d] close the socket", data.ip, data.port);
 	}
+
+	bool CTcpService::OnRecvPeerData(BYTE buf[], int len, PeerSocketData data)
+	{
+		Printf1("Recv from [%s:%d] data, size: %d", data.ip, data.port, len);
+		return true;
+	}
 }

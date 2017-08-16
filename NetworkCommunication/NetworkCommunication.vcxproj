@@ -92,6 +92,7 @@
     <ClInclude Include="Def.h" />
     <ClInclude Include="PeerCloseAction.h" />
     <ClInclude Include="PeerSocketDataMgr.h" />
+    <ClInclude Include="RecvPeerDataAction.h" />
     <ClInclude Include="ServerSocketMgr.h" />
     <ClInclude Include="Tcp.h" />
     <ClInclude Include="TcpAction.h" />
@@ -143,6 +144,7 @@
     <ClCompile Include="PeerCloseAction.cpp" />
     <ClCompile Include="PeerSocketDataMgr.cpp" />
     <ClCompile Include="ProtocolClientMgr.cpp" />
+    <ClCompile Include="RecvPeerDataAction.cpp" />
     <ClCompile Include="SafeLock.cpp" />
     <ClCompile Include="Select.cpp" />
     <ClCompile Include="ServerSocketMgr.cpp" />

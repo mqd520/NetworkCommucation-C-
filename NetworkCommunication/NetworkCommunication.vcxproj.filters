@@ -186,6 +186,9 @@
     <ClInclude Include="SocketAPI.h">
       <Filter>04 Socket管理</Filter>
     </ClInclude>
+    <ClInclude Include="RecvPeerDataAction.h">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -298,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="SocketAPI.cpp">
       <Filter>04 Socket管理</Filter>
+    </ClCompile>
+    <ClCompile Include="RecvPeerDataAction.cpp">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

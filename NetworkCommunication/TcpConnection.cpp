@@ -2,6 +2,8 @@
 #include "TcpConnection.h"
 #include "MemoryTool.h"
 #include "Common.h"
+#include "RecvPeerDataAction.h"
+#include "NetCommuMgr.h"
 
 namespace NetworkCommunication
 {
@@ -40,7 +42,9 @@ namespace NetworkCommunication
 
 	void CTcpConnection::OnRecvData(SocketRecvData data)
 	{
-		delete data.pBuf;
+		//´´½¨
+		CRecvPeerDataAction* pAction = new CRecvPeerDataAction(data);
+		CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpAction(pAction);
 	}
 
 	SOCKET CTcpConnection::GetLocalSocket()

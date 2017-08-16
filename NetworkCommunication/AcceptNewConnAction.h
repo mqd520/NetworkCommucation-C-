@@ -7,9 +7,6 @@ namespace NetworkCommunication
 {
 	class CAcceptNewConnAction : public CTcpAction
 	{
-	private:
-		CSocketAPI m_socketAPI;
-
 	public:
 		CAcceptNewConnAction(SOCKET server, SOCKET client);
 		~CAcceptNewConnAction();

@@ -3,6 +3,7 @@
 #include "Def.h"
 #include "AcceptNewConnAction.h"
 #include "PeerCloseAction.h"
+#include "RecvPeerDataAction.h"
 
 #include <queue>
 using namespace std;
@@ -34,6 +35,12 @@ namespace NetworkCommunication
 		// Parameter: tcp动作
 		//************************************
 		void ProcessPeerCloseAction(CPeerCloseAction* pAction);
+
+		//************************************
+		// Method:    处理收到对端socket数据动作
+		// Parameter: tcp动作
+		//************************************
+		void ProcessRecvPeerDataAction(CRecvPeerDataAction* pAction);
 
 	public:
 		CTcpServiceMgr();

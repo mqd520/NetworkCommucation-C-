@@ -79,6 +79,9 @@ namespace NetworkCommunication
 			case ETcpActionType::PeerClose://对端主动关闭
 				ProcessPeerCloseAction((CPeerCloseAction*)pAction);
 				break;
+			case ETcpActionType::RecvPeerData://收到对端socket数据
+				ProcessRecvPeerDataAction((CRecvPeerDataAction*)pAction);
+				break;
 			}
 		}
 	}
@@ -107,6 +110,15 @@ namespace NetworkCommunication
 			CTcpService* srv = m_vecTcpService[i];
 			PeerSocketData data = CNetworkCommuMgr::GetPeerSocketDataMgr()->GetDataByPeer(pAction->GetPeerSocket());
 			srv->OnPeerCloseSocket(data);
+		}
+	}
+
+	void CTcpServiceMgr::ProcessRecvPeerDataAction(CRecvPeerDataAction* pAction)
+	{
+		for (int i = 0; i < (int)m_vecTcpService.size(); i++)
+		{
+			CTcpService* srv = m_vecTcpService[i];
+			PeerSocketData data = CNetworkCommuMgr::GetPeerSocketDataMgr()->GetDataByPeer(pAction->GetPeerSocket());
 		}
 	}
 

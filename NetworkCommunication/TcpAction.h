@@ -7,6 +7,7 @@ namespace NetworkCommunication
 	class CTcpAction
 	{
 	private:
+		CSocketAPI m_socketAPI;
 		SOCKET m_local;//±¾µØsocket
 		SOCKET m_peer;//¶Ô¶Ësocket
 

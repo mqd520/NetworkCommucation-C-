@@ -65,6 +65,7 @@ public:
 	{
 		AcceptNewConnection,//接收到新的客户端连接
 		PeerClose,//对端主动关闭
+		RecvPeerData,//收到对端socket数据
 		SendData//向对端发送数据
 	};
 };
