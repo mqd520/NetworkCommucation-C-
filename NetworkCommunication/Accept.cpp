@@ -24,7 +24,7 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CAccept::OnSocketCanRead(SOCKET server)
+	void CAccept::OnServerSocketCanRead(SOCKET server)
 	{
 		ServerSocketData data = CNetworkCommuMgr::GetServerSocketMgr()->GetDataBySocket(server);//获取服务端socket关联数据
 		SOCKET client = m_socketAPI.Accept(server, data.addr);
@@ -75,13 +75,18 @@ namespace NetworkCommunication
 			if (FilterClientSocket(pair))
 			{
 				//创建tcp连接对象
-				CTcpConnection* conn = new CTcpConnection(pair.local, pair.peer);
-				CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
+				{
+					CTcpService* pTcpSrv = CNetworkCommuMgr::GetTcpServiceMgr()->GetTcpSrvByLocalSocket(pair.local);//获取本地socket关联的tcp服务对象
+					CTcpConnection* conn = new CTcpConnection(pair.local, pair.peer, pTcpSrv);
+					CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
+				}
 
 				//创建接收新客户端连接动作
-				CAcceptNewConnAction* pAction = new CAcceptNewConnAction(pair.local, pair.peer);
-				CPeerSocketDataMgr::Create(pair.peer, pair.local);//创建并增加一个对端socket数据
-				CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpAction(pAction);//加入tcp动作
+				{
+					CAcceptNewConnAction* pAction = new CAcceptNewConnAction(pair.local, pair.peer);
+					CPeerSocketDataMgr::Create(pair.peer, pair.local);//创建并增加一个对端socket数据
+					CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpAction(pAction);//加入tcp动作
+				}
 			}
 		}
 	}

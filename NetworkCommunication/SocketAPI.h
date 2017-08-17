@@ -59,6 +59,6 @@ namespace NetworkCommunication
 
 		int Select(int nfds, fd_set* readfds, fd_set *writefds, fd_set *exceptfds, const struct timeval *timeout);
 
-		bool Send(SOCKET s, BYTE buf[], int len);
+		bool Send(SOCKET s, BYTE buf[], int len, int* actualLen = NULL);
 	};
 }

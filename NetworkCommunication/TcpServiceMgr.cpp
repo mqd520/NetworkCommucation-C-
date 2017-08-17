@@ -82,7 +82,12 @@ namespace NetworkCommunication
 			case ETcpActionType::RecvPeerData://收到对端socket数据
 				ProcessRecvPeerDataAction((CRecvPeerDataAction*)pAction);
 				break;
+			case ETcpActionType::SendPeerDataResult://收到对端socket数据
+				ProcessSendPeerDataResultAction((CSendPeerDataResultAction*)pAction);
+				break;
 			}
+
+			delete pAction;
 		}
 	}
 
@@ -91,14 +96,11 @@ namespace NetworkCommunication
 		for (int i = 0; i < (int)m_vecTcpService.size(); i++)
 		{
 			CTcpService* srv = m_vecTcpService[i];
-			if (srv->GetSrvType() == ETcpServiceType::Server)//服务端对象才能处理此动作
+			if (srv->GetSrvType() == ETcpServiceType::Server && srv->GetLocalSocket() == pAction->GetLocalSocket())//找到对应的tcp服务端对象,只有tcp服务端对象才能处理此动作
 			{
 				ServerSocketData serverSocketData = srv->GetServerSocketData();//获取服务端socket数据
-				if (serverSocketData.socket == pAction->GetLocalSocket())//找到对应的tcp服务端对象
-				{
-					PeerSocketData clientSocketData = CNetworkCommuMgr::GetPeerSocketDataMgr()->GetDataByPeer(pAction->GetPeerSocket());//获取对端socket数据
-					srv->OnRecvNewConnection(serverSocketData, clientSocketData);//通知tcp服务端对象处理动作
-				}
+				PeerSocketData clientSocketData = CNetworkCommuMgr::GetPeerSocketDataMgr()->GetDataByPeer(pAction->GetPeerSocket());//获取对端socket数据
+				srv->OnRecvNewConnection(serverSocketData, clientSocketData);//通知tcp服务端对象处理动作
 			}
 		}
 	}
@@ -108,8 +110,12 @@ namespace NetworkCommunication
 		for (int i = 0; i < (int)m_vecTcpService.size(); i++)
 		{
 			CTcpService* srv = m_vecTcpService[i];
-			PeerSocketData data = CNetworkCommuMgr::GetPeerSocketDataMgr()->GetDataByPeer(pAction->GetPeerSocket());
-			srv->OnPeerCloseSocket(data);
+			if (srv->GetLocalSocket() == pAction->GetLocalSocket())//找到对应的tcp服务对象
+			{
+				PeerSocketData data = CNetworkCommuMgr::GetPeerSocketDataMgr()->GetDataByPeer(pAction->GetPeerSocket());
+				srv->OnPeerCloseSocket(data);//通知tcp服务对象处理动作
+				break;
+			}
 		}
 	}
 
@@ -118,21 +124,39 @@ namespace NetworkCommunication
 		for (int i = 0; i < (int)m_vecTcpService.size(); i++)
 		{
 			CTcpService* srv = m_vecTcpService[i];
-			PeerSocketData data = CNetworkCommuMgr::GetPeerSocketDataMgr()->GetDataByPeer(pAction->GetPeerSocket());
-		}
-	}
-
-	bool CTcpServiceMgr::IsHasServer()
-	{
-		bool flag = false;
-		for (int i = 0; i < (int)m_vecTcpService.size(); i++)
-		{
-			if (m_vecTcpService[i]->GetSrvType() == ETcpServiceType::Server)
+			if (srv->GetLocalSocket() == pAction->GetLocalSocket())//找到对应的tcp服务对象
 			{
-				flag = true;
+				PeerSocketData peerSocketData = CNetworkCommuMgr::GetPeerSocketDataMgr()->GetDataByPeer(pAction->GetPeerSocket());//获取对端socket数据
+				SocketRecvData recvData = pAction->GetRecvData();//获取接收数据
+				srv->OnRecvPeerData(recvData.pBuf, recvData.len, peerSocketData);//通知tcp服务对象处理动作
 				break;
 			}
 		}
-		return flag;
+	}
+
+	void CTcpServiceMgr::ProcessSendPeerDataResultAction(CSendPeerDataResultAction* pAction)
+	{
+		for (int i = 0; i < (int)m_vecTcpService.size(); i++)
+		{
+			CTcpService* srv = m_vecTcpService[i];
+			if (srv->GetLocalSocket() == pAction->GetLocalSocket())//找到对应的tcp服务对象
+			{
+				SendPeerDataResult result = pAction->GetResult();//获取结果
+				srv->OnSendPeerDataCompleted(result);//通知tcp服务对象处理动作
+				break;
+			}
+		}
+	}
+
+	CTcpService* CTcpServiceMgr::GetTcpSrvByLocalSocket(SOCKET local)
+	{
+		for (int i = 0; i < (int)m_vecTcpService.size(); i++)
+		{
+			if (m_vecTcpService[i]->GetLocalSocket() == local)
+			{
+				return m_vecTcpService[i];
+			}
+		}
+		return NULL;
 	}
 }

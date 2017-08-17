@@ -3,8 +3,8 @@
 
 namespace NetworkCommunication
 {
-	CPeerCloseAction::CPeerCloseAction(SOCKET peer) :
-		CTcpAction(NULL, peer)
+	CPeerCloseAction::CPeerCloseAction(SOCKET local, SOCKET peer) :
+		CTcpAction(local, peer)
 	{
 		
 	}

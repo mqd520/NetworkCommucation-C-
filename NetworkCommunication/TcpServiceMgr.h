@@ -4,6 +4,7 @@
 #include "AcceptNewConnAction.h"
 #include "PeerCloseAction.h"
 #include "RecvPeerDataAction.h"
+#include "SendPeerDataResultAction.h"
 
 #include <queue>
 using namespace std;
@@ -42,11 +43,14 @@ namespace NetworkCommunication
 		//************************************
 		void ProcessRecvPeerDataAction(CRecvPeerDataAction* pAction);
 
+		//************************************
+		// Method:    处理发送对端socket数据结果动作
+		// Parameter: tcp动作
+		//************************************
+		void ProcessSendPeerDataResultAction(CSendPeerDataResultAction* pAction);
+
 	public:
 		CTcpServiceMgr();
-		
-		//增加一个tcp服务对象
-		void PushTcpService(CTcpService* srv);
 
 		//启动tcp动作线程
 		void Run();
@@ -54,13 +58,20 @@ namespace NetworkCommunication
 		//线程入口
 		void ThreadEntry();
 
+		//增加一个tcp服务对象
+		void PushTcpService(CTcpService* srv);
+
 		//************************************
 		// Method:    加入一个tcp动作
 		// Parameter: tcp动作
 		//************************************
 		void PushTcpAction(CTcpAction* pAction);
 
-		//是否包含服务端对象
-		bool IsHasServer();
+		//************************************
+		// Method:    获取指定本地socket的tcp服务对象
+		// Return:	  tcp连接对象
+		// Parameter: 本地socket
+		//************************************
+		CTcpService* GetTcpSrvByLocalSocket(SOCKET local);
 	};
 }

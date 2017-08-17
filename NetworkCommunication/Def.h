@@ -12,12 +12,24 @@ using namespace std;
 #define TCPBUFFERSIZE	2048	//tcp缓冲区大小
 #endif 
 
+//socket发送接收类型
+class ESocketSendRecvType
+{
+public:
+	enum
+	{
+		Recv,	//接收数据
+		Send	//发送数据
+	};
+};
+
 //socket接收数据
 typedef struct tagSocketRecvData
 {
 	SOCKET peer;//对端socket
 	BYTE* pBuf;//接收到的数据
 	int len;//接收到的数据长度
+	int type;//socket发送接收类型
 }SocketRecvData;
 
 //服务端socket关联数据
@@ -66,6 +78,7 @@ public:
 		AcceptNewConnection,//接收到新的客户端连接
 		PeerClose,//对端主动关闭
 		RecvPeerData,//收到对端socket数据
+		SendPeerDataResult,//发送数据结果
 		SendData//向对端发送数据
 	};
 };
@@ -81,8 +94,19 @@ public:
 	};
 };
 
+//select队列socket数据结构
 typedef struct tagSelectSocketData
 {
 	SOCKET	socket;//socket
 	int		type;  //select监听socket类型
 }SelectSocketData;
+
+//发送对端socket数据结果
+typedef struct tagSendPeerDataResult
+{
+	char ip[20];//对端IP
+	int port;//对端端口
+	bool success;//是否成功
+	int len;//发送数据字节长度
+	SOCKET peer;//对端socket
+}SendPeerDataResult;

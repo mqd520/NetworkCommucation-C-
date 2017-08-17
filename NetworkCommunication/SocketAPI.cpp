@@ -157,26 +157,26 @@ namespace NetworkCommunication
 		}
 	}
 
-//	SOCKADDR_IN CSocketAPI::GetSockAddr(char* ip, int port)
-//	{
-//		SOCKADDR_IN addr;
-//		addr.sin_family = AF_INET;
-//		addr.sin_port = htons(port);
-//		if (ip == NULL)
-//		{
-//			addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);//绑定本地任意IP地址
-//		}
-//		else
-//		{
-//#ifdef _UNICODE
-//			string str = UTF8ToMultiByte((wchar_t*)ip);
-//			addr.sin_addr.S_un.S_addr = inet_addr(str.c_str());//绑定指定IP地址
-//#else
-//			addr.sin_addr.S_un.S_addr = inet_addr((char*)ip);//绑定指定IP地址
-//#endif // _UNICODE
-//		}
-//		return addr;
-//	}
+	//	SOCKADDR_IN CSocketAPI::GetSockAddr(char* ip, int port)
+	//	{
+	//		SOCKADDR_IN addr;
+	//		addr.sin_family = AF_INET;
+	//		addr.sin_port = htons(port);
+	//		if (ip == NULL)
+	//		{
+	//			addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);//绑定本地任意IP地址
+	//		}
+	//		else
+	//		{
+	//#ifdef _UNICODE
+	//			string str = UTF8ToMultiByte((wchar_t*)ip);
+	//			addr.sin_addr.S_un.S_addr = inet_addr(str.c_str());//绑定指定IP地址
+	//#else
+	//			addr.sin_addr.S_un.S_addr = inet_addr((char*)ip);//绑定指定IP地址
+	//#endif // _UNICODE
+	//		}
+	//		return addr;
+	//	}
 
 	void CSocketAPI::GetIpAndPort(SOCKET socket, char* ip, int* port)
 	{
@@ -203,7 +203,7 @@ namespace NetworkCommunication
 		return result;
 	}
 
-	bool CSocketAPI::Send(SOCKET s, BYTE buf[], int len)
+	bool CSocketAPI::Send(SOCKET s, BYTE buf[], int len, int* actualLen)
 	{
 		bool result = false;
 		int sended = 0;
@@ -216,6 +216,7 @@ namespace NetworkCommunication
 
 				if (sended == len)
 				{
+					result = true;
 					break;
 				}
 				else
@@ -227,6 +228,10 @@ namespace NetworkCommunication
 			{
 				break;
 			}
+		}
+		if (actualLen != NULL)
+		{
+			*actualLen = sended;
 		}
 		return result;
 	}

@@ -11,12 +11,18 @@ namespace NetworkCommunication
 		SocketRecvData m_recvData;
 
 	public:
-		CRecvPeerDataAction(SocketRecvData data);
+		//************************************
+		// Method:    构造函数
+		// Parameter: 接收到的对端数据
+		// Parameter: 本地socket
+		//************************************
+		CRecvPeerDataAction(SocketRecvData data, SOCKET local);
 		~CRecvPeerDataAction();
 
 		//获取tcp动作类型
 		int GetActionType();
 
-		BYTE* GetBuf();
+		//获取接收数据
+		SocketRecvData GetRecvData();
 	};
 }

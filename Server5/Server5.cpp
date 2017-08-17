@@ -30,10 +30,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		else
 		{
 			int len = 0;
-			//BYTE* buf = WriteUTF8Str(L"Leon520ºº×Öºº×Ö", &len);
-			BYTE* buf = WriteMultiByteStr("Leon520ºº×Öºº×Ö", &len);
+			BYTE* buf = WriteMultiByteStr("Leon520ºº×Ö~!@#$%^&*()-=_+[]{};'\\:\"|,./<>?", &len);
 			int socket = ::atoi(input);
-			server.SendData((SOCKET)socket, buf, len);
+			//bool result = server.SendData((SOCKET)socket, buf, len);//Í¬²½·¢ËÍ
+			server.UnasyncSendData((SOCKET)socket, buf, len);//Òì²½·¢ËÍ
 		}
 	}
 

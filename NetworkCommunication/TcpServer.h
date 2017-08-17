@@ -13,11 +13,7 @@ namespace NetworkCommunication
 	class CTcpServer : public CTcpService
 	{
 	protected:
-		CSocketAPI m_socketMgr;//socket管理对象
-		char m_strServerIP[20];//服务端IP
-		int m_nServerPort;//服务端端口
-		bool m_bInited;//是否已初始化
-		SOCKET m_serverSocket;
+		CSocketAPI m_socketAPI;//socket管理对象
 		bool m_bListening;//是否正在监听
 		ServerSocketData m_socketData;//服务端socket数据
 
@@ -44,7 +40,5 @@ namespace NetworkCommunication
 		ServerSocketData GetServerSocketData();
 
 		void OnRecvNewConnection(ServerSocketData server, PeerSocketData client);
-
-		void SendData(SOCKET client, BYTE buf[], int len);
 	};
 }

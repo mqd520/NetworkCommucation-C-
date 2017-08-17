@@ -6,6 +6,7 @@
 #include "Client1.h"
 #include "Client1Dlg.h"
 #include "OtherTool.h"
+#include "SocketAPI.h"
 
 using namespace NetworkCommunication;
 
@@ -73,6 +74,19 @@ BOOL CClient1App::InitInstance()
 	// TODO:  应适当修改该字符串，
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
+
+	CSocketAPI api;
+	CSocketAPI::Init();
+	SOCKET socket = api.CreateTcpSocket();
+	TRACE("本地socket: %d \n", socket);
+	SOCKADDR_IN addr = api.GetSocketAddr("192.168.0.68", 8040);
+	int result = ::connect(socket, (SOCKADDR*)&addr, sizeof(addr));
+	TRACE("新socket: %d \n", result);
+	::Sleep(2 * 1000);
+	char buf[] = "12345";
+	::send(socket, buf, 6, 0);
+	::Sleep(2 * 1000);
+	::closesocket(socket);
 
 
 	TCHAR ip[20] = { 0 };

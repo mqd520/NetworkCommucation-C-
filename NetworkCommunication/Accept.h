@@ -28,10 +28,10 @@ namespace NetworkCommunication
 		~CAccept();
 
 		//************************************
-		// Method:    有新的客户端可接收
+		// Method:    服务端socket有数据可读事件处理
 		// Parameter: 服务端socket
 		//************************************
-		void OnSocketCanRead(SOCKET server);
+		void OnServerSocketCanRead(SOCKET server);
 
 		//************************************
 		// Method:    运行处理新连接线程

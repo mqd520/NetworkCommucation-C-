@@ -56,7 +56,7 @@ namespace NetworkCommunication
 	{
 		while (true)
 		{
-			//Sleep(2 * 1000);
+			//Sleep(2 * 1000);//调试时使用,无意义,可注释掉
 
 			CalcSocketGroup();//对socket进行分组
 
@@ -118,11 +118,11 @@ namespace NetworkCommunication
 		{
 			if (socketData.type == ESelectSocketType::Server)//指示服务端socket
 			{
-				CNetworkCommuMgr::GetAccept()->OnSocketCanRead(socketData.socket);//通知Accept层进行新客户端连接的处理
+				CNetworkCommuMgr::GetAccept()->OnServerSocketCanRead(socketData.socket);//通知Accept层进行新客户端连接的处理
 			}
 			else//指示对端socket
 			{
-				CNetworkCommuMgr::GetTcpConnectionMgr()->OnSocketCanRead(socketData.socket);//通知TcpConnectionMgr层进行接收数据的处理
+				CNetworkCommuMgr::GetTcpConnectionMgr()->OnPeerSocketCanRead(socketData.socket);//通知TcpConnectionMgr层进行接收数据的处理
 			}
 		}
 	}

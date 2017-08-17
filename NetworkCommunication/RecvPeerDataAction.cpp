@@ -4,8 +4,8 @@
 
 namespace NetworkCommunication
 {
-	CRecvPeerDataAction::CRecvPeerDataAction(SocketRecvData data) :
-		CTcpAction(NULL, data.peer),
+	CRecvPeerDataAction::CRecvPeerDataAction(SocketRecvData data, SOCKET local) :
+		CTcpAction(local, data.peer),
 		m_recvData(data)
 	{
 
@@ -19,5 +19,10 @@ namespace NetworkCommunication
 	int CRecvPeerDataAction::GetActionType()
 	{
 		return ETcpActionType::RecvPeerData;
+	}
+
+	SocketRecvData CRecvPeerDataAction::GetRecvData()
+	{
+		return m_recvData;
 	}
 }

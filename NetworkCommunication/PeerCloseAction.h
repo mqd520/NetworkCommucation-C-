@@ -9,7 +9,7 @@ namespace NetworkCommunication
 	class CPeerCloseAction : public CTcpAction
 	{
 	public:
-		CPeerCloseAction(SOCKET peer);
+		CPeerCloseAction(SOCKET local, SOCKET peer);
 		~CPeerCloseAction();
 
 		//获取tcp动作类型
