@@ -8,8 +8,8 @@ using namespace std;
 #define MAXCLIENTCOUNT	65535	//最大客户端连接数
 #endif 
 
-#ifndef TCPBUFFERSIZE
-#define TCPBUFFERSIZE	2048	//tcp缓冲区大小
+#ifndef TCPRECVBUFFERSIZE
+#define TCPRECVBUFFERSIZE	2048	//tcp接收缓冲区大小
 #endif 
 
 //socket发送接收类型
@@ -23,25 +23,45 @@ public:
 	};
 };
 
-//socket接收数据
-typedef struct tagSocketRecvData
+//对端接收数据
+typedef struct tagPeerData
 {
-	SOCKET peer;//对端socket
+	SOCKET socket;//接收数据的socket
 	BYTE* pBuf;//接收到的数据
 	int len;//接收到的数据长度
-	int type;//socket发送接收类型
-}SocketRecvData;
+	char ip[20];//服务端IP
+	int port;//服务端端口
+}PeerData;
 
-//服务端socket关联数据
-typedef struct tagServerSocketRelationData
+//服务端socket数据
+typedef struct tagServerSocket
 {
 	SOCKET socket;//服务端socket
 	char ip[20];//监听的IP
 	int port;//监听的端口
 	SOCKADDR_IN addr;//服务端地址
 	vector<TCHAR*> vecAllowIP;//允许指定IP连接服务端
-	void* tcpServer;
-}ServerSocketData;
+	void* tcpServer;//关联的tcp服务对象
+}ServerSocket;
+
+//服务端关联的客户端socket数据结构
+typedef struct tagServerClientSocket
+{
+	SOCKET client;//服务客户端socket
+	char ip[20];//客户端IP
+	int	port;//客户端端口
+	SOCKET server;//关联的服务端socket
+}ServerClientSocket;
+
+//客户端socket数据结构
+typedef struct tagClientSocket
+{
+	SOCKET client;//客户端socket
+	char clientIP[20];//客户端IP
+	int clientPort;//客户端端口
+	char serverIP[20];//服务端IP
+	int serverPort;//服务端端口
+}ClientSocket;
 
 //tcp连接两端socket数据
 typedef struct tagSocketPair
@@ -49,14 +69,6 @@ typedef struct tagSocketPair
 	SOCKET local;//本地socket
 	SOCKET peer;//对端socket
 }SocketPair;
-
-typedef struct tagPeerSocketData
-{
-	SOCKET peer;//对端socket
-	char ip[20];//对端IP
-	int	port;//对端端口
-	SOCKET local;//关联的本地socket
-}PeerSocketData;
 
 //tcp服务类型
 class ETcpServiceType
@@ -77,7 +89,7 @@ public:
 	{
 		AcceptNewConnection,//接收到新的客户端连接
 		PeerClose,//对端主动关闭
-		RecvPeerData,//收到对端socket数据
+		RecvPeerData,//收到对端数据
 		SendPeerDataResult,//发送数据结果
 		SendData//向对端发送数据
 	};
@@ -89,8 +101,8 @@ class ESelectSocketType
 public:
 	enum
 	{
-		Server,//服务端socket
-		Peer//对端socket
+		RecvConn,//指示用于接收新连接的socket
+		ReadWriteData//指示用于读写数据的socket
 	};
 };
 

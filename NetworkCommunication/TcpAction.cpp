@@ -3,9 +3,9 @@
 
 namespace NetworkCommunication
 {
-	CTcpAction::CTcpAction(SOCKET local /*= NULL*/, SOCKET peer /*= NULL*/) :
-		m_local(local),
-		m_peer(peer)
+	CTcpAction::CTcpAction(SOCKET local /*= NULL*/, SOCKET socket /*= NULL*/) :
+		m_localSocket(local),
+		m_socket(socket)
 	{
 
 	}
@@ -22,11 +22,6 @@ namespace NetworkCommunication
 
 	SOCKET CTcpAction::GetLocalSocket()
 	{
-		return m_local;
-	}
-
-	SOCKET CTcpAction::GetPeerSocket()
-	{
-		return m_peer;
+		return m_localSocket;
 	}
 }

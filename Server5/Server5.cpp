@@ -32,8 +32,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			int len = 0;
 			BYTE* buf = WriteMultiByteStr("Leon520汉字~!@#$%^&*()-=_+[]{};'\\:\"|,./<>?", &len);
 			int socket = ::atoi(input);
-			//bool result = server.SendData((SOCKET)socket, buf, len);//同步发送
-			server.UnasyncSendData((SOCKET)socket, buf, len);//异步发送
+			bool result = server.SendData((SOCKET)socket, buf, len);//同步发送
+			//server.AsyncSendData((SOCKET)socket, buf, len);//异步发送
 		}
 	}
 

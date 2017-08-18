@@ -7,28 +7,33 @@
 
 namespace NetworkCommunication
 {
-	void StrCopy(TCHAR* dest, TCHAR* src)
+	void MyPrintf(int type, char* format, ...)
 	{
-#ifdef UNICODE
-		wcscpy(dest, src);
-#else
-		
-#endif // UNICODE
-
-	}
-
-	void Printf1(char* format, ...)
-	{
-		char msg1[1024] = { 0 };
+		char msg1[PRINTFMAXLEN] = { 0 };
 		va_list  argPtr;
 		va_start(argPtr, format);
 		vsprintf_s(msg1, 1024 - 1, format, argPtr);
 		va_end(argPtr);
 
-		char dest[100] = { 0 };
+		char dest[PRINTFMAXLEN] = { 0 };
 		SYSTEMTIME st = { 0 };
 		GetLocalTime(&st);
 		sprintf(dest, "[%d-%02d-%02d %02d:%02d:%02d] %s \n", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, msg1);
+		dest[PRINTFMAXLEN - 1] = 0;
+
+		WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+		switch (type)
+		{
+		case EInfoType::Info:
+			break;
+		case EInfoType::Debug:
+			color = FOREGROUND_BLUE | FOREGROUND_GREEN;
+			break;
+		case EInfoType::Error:
+			color = FOREGROUND_RED;
+			break;
+		}
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 		printf(dest);
 	}
 }

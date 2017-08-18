@@ -7,16 +7,16 @@ using namespace std;
 
 namespace NetworkCommunication
 {
-	//服务端socket关联数据管理
-	class CServerSocketDataMgr
+	//服务端socket管理
+	class CServerSocketMgr
 	{
 	private:
 		CSocketAPI m_socketAPI;
-		vector<ServerSocketData> m_vecData;
+		vector<ServerSocket> m_vecData;
 
 	public:
-		CServerSocketDataMgr();
-		~CServerSocketDataMgr();
+		CServerSocketMgr();
+		~CServerSocketMgr();
 
 		//************************************
 		// Method:    创建一个服务端socket数据
@@ -25,26 +25,26 @@ namespace NetworkCommunication
 		// Parameter: socket地址
 		// Parameter: tcp服务端对象
 		//************************************
-		static ServerSocketData Create(char* ip, int port, SOCKET socket, void* server);
+		static ServerSocket Create(char* ip, int port, SOCKET socket, void* server);
 
 		//************************************
 		// Method:    增加服务端socket数据
 		// Parameter: socket关联数据
 		//************************************
-		void PushServerSocketData(ServerSocketData data);
+		void PushServerSocketData(ServerSocket data);
 
 		//************************************
 		// Method:    获取指定socket的关联数据
 		// Parameter: socket
 		// Return:	  socket关联数据
 		//************************************
-		ServerSocketData GetDataBySocket(SOCKET socket);
+		ServerSocket GetDataBySocket(SOCKET socket);
 
 		//************************************
 		// Method:    获取指定tcp服务端的关联数据
 		// Parameter: tcp服务端对象
 		// Return:	  socket关联数据
 		//************************************
-		ServerSocketData GetDataByServer(void* server);
+		ServerSocket GetDataByServer(void* server);
 	};
 }

@@ -24,7 +24,7 @@ namespace NetworkCommunication
 		return m_nSrvType;
 	}
 
-	ServerSocketData CTcpService::GetServerSocketData()
+	ServerSocket CTcpService::GetServerSocketData()
 	{
 		return{ 0 };
 	}
@@ -34,22 +34,21 @@ namespace NetworkCommunication
 		return m_localSocket;
 	}
 
-	void CTcpService::OnRecvNewConnection(ServerSocketData server, PeerSocketData client)
+	void CTcpService::OnRecvNewConnection(ServerSocket server, ServerClientSocket client)
 	{
-		//Printf1("[%s:%d] recv a new connection: [%s:%d]", server.ip, server.port, client.ip, client.port);
-		Printf1("[%s:%d:%d] recv a new connection: [%s:%d:%d]", server.ip, server.port, server.socket, client.ip, client.port, client.peer);
+		PrintfInfo("recv a new connection: [%s:%d]", client.ip, client.port);
 	}
 
-	void CTcpService::OnPeerCloseSocket(PeerSocketData data)
+	void CTcpService::OnPeerCloseSocket(ServerClientSocket data)
 	{
 		//Printf1("[%s:%d] close the socket", data.ip, data.port);
-		Printf1("[%s:%d] close the socket: %d", data.ip, data.port, data.peer);
+		PrintfInfo("[%s:%d] close the socket: %d", data.ip, data.port, data.client);
 	}
 
-	bool CTcpService::OnRecvPeerData(BYTE buf[], int len, PeerSocketData data)
+	bool CTcpService::OnRecvPeerData(PeerData* data)
 	{
 		//Printf1("Recv from [%s:%d] data, size: %d", data.ip, data.port, len);
-		Printf1("Recv [%s:%d] data, size: %d, socket: %d", data.ip, data.port, len, data.peer);
+		//Printf1("Recv [%s:%d] data, size: %d, socket: %d", data.ip, data.port, len, data.client);
 		return true;
 	}
 
@@ -57,14 +56,14 @@ namespace NetworkCommunication
 	{
 		if (result.success)
 		{
-			Printf1("Send data to [%s:%d] success, size: %d", result.ip, result.port, result.len);
+			PrintfInfo("Send data to [%s:%d] success, size: %d", result.ip, result.port, result.len);
 		}
 		else
 		{
-			Printf1("Send data to [%s:%d] failed", result.ip, result.port);
+			PrintfInfo("Send data to [%s:%d] failed", result.ip, result.port);
 			if (m_nSrvType == ETcpServiceType::Server)//指示tcp服务端对象
 			{
-				CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveTcpConnByPeerSocket(result.peer);
+				CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(result.peer);
 				m_socketAPI.CloseSocket(result.peer);//关闭socket
 			}
 			else//tcp客户端对象
@@ -79,7 +78,7 @@ namespace NetworkCommunication
 		CTcpConnection* conn = NULL;
 		if (m_nSrvType == ETcpServiceType::Server)//指示tcp服务端对象
 		{
-			conn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetTcpConnByPeerSocket(socket);//获取指定对端socket的tcp连接对象
+			conn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);//获取指定对端socket的tcp连接对象
 		}
 		else
 		{
@@ -93,8 +92,8 @@ namespace NetworkCommunication
 		return false;
 	}
 
-	void CTcpService::UnasyncSendData(SOCKET socket, BYTE buf[], int len, int* actualLen)
+	void CTcpService::AsyncSendData(SOCKET socket, BYTE buf[], int len, int* actualLen)
 	{
-		CNetworkCommuMgr::GetTcpConnectionMgr()->UnAsyncSend(socket, buf, len, actualLen);
+		//CNetworkCommuMgr::GetTcpConnectionMgr()->AsyncSend(socket, buf, len, actualLen);
 	}
 }

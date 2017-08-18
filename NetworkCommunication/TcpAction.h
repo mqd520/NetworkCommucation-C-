@@ -6,22 +6,19 @@ namespace NetworkCommunication
 	//tcp动作
 	class CTcpAction
 	{
-	private:
-		CSocketAPI m_socketAPI;
-		SOCKET m_local;//本地socket
-		SOCKET m_peer;//对端socket
+	protected:
+		CSocketAPI m_socketAPI;//socket api
+		SOCKET m_localSocket;//本地socket,服务端socket或者客户端socket
+		SOCKET m_socket;//附属的socket,具体作用由派生类决定
 
 	public:
-		CTcpAction(SOCKET local = NULL, SOCKET peer = NULL);
+		CTcpAction(SOCKET local = NULL, SOCKET socket = NULL);
 		~CTcpAction();
-
-		//获取本地socket
-		SOCKET GetLocalSocket();
-
-		//获取对端socket
-		SOCKET GetPeerSocket();
 
 		//获取tcp动作类型
 		virtual int GetActionType();
+
+		//获取本地socket
+		SOCKET GetLocalSocket();
 	};
 }

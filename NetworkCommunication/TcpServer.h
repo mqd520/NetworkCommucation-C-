@@ -15,7 +15,7 @@ namespace NetworkCommunication
 	protected:
 		CSocketAPI m_socketAPI;//socket管理对象
 		bool m_bListening;//是否正在监听
-		ServerSocketData m_socketData;//服务端socket数据
+		ServerSocket m_socketData;//服务端socket数据
 
 	public:
 		CTcpServer();
@@ -37,8 +37,8 @@ namespace NetworkCommunication
 		//************************************
 		// Method:    获取服务端socket数据
 		//************************************
-		ServerSocketData GetServerSocketData();
+		ServerSocket GetServerSocketData();
 
-		void OnRecvNewConnection(ServerSocketData server, PeerSocketData client);
+		void OnRecvNewConnection(ServerSocket server, ServerClientSocket client);
 	};
 }

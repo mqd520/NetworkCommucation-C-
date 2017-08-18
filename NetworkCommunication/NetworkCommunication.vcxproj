@@ -85,17 +85,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Accept.h" />
-    <ClInclude Include="AcceptNewConnAction.h" />
+    <ClInclude Include="Tcp.h" />
+    <ClInclude Include="RecvNewConnAction.h" />
     <ClInclude Include="ByteStream.h" />
+    <ClInclude Include="ClientSocketMgr.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="PeerCloseAction.h" />
-    <ClInclude Include="PeerSocketDataMgr.h" />
+    <ClInclude Include="ServerClientSocketMgr.h" />
     <ClInclude Include="RecvPeerDataAction.h" />
     <ClInclude Include="SendPeerDataResultAction.h" />
     <ClInclude Include="ServerSocketMgr.h" />
-    <ClInclude Include="Tcp.h" />
+    <ClInclude Include="ServerTcpConnection.h" />
     <ClInclude Include="TcpAction.h" />
     <ClInclude Include="TcpService.h" />
     <ClInclude Include="TcpServiceMgr.h" />
@@ -131,9 +132,10 @@
     <ClInclude Include="TcpClient.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Accept.cpp" />
-    <ClCompile Include="AcceptNewConnAction.cpp" />
+    <ClCompile Include="Tcp.cpp" />
+    <ClCompile Include="RecvNewConnAction.cpp" />
     <ClCompile Include="ByteStream.cpp" />
+    <ClCompile Include="ClientSocketMgr.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="EncryptBuffer.cpp" />
     <ClCompile Include="LinkList.cpp" />
@@ -143,13 +145,14 @@
     <ClCompile Include="PacketBase.cpp" />
     <ClCompile Include="PacketHeadBase.cpp" />
     <ClCompile Include="PeerCloseAction.cpp" />
-    <ClCompile Include="PeerSocketDataMgr.cpp" />
+    <ClCompile Include="ServerClientSocketMgr.cpp" />
     <ClCompile Include="ProtocolClientMgr.cpp" />
     <ClCompile Include="RecvPeerDataAction.cpp" />
     <ClCompile Include="SafeLock.cpp" />
     <ClCompile Include="Select.cpp" />
     <ClCompile Include="SendPeerDataResultAction.cpp" />
     <ClCompile Include="ServerSocketMgr.cpp" />
+    <ClCompile Include="ServerTcpConnection.cpp" />
     <ClCompile Include="SocketAPI.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="OtherTool.cpp" />
@@ -157,7 +160,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Tcp.cpp" />
     <ClCompile Include="TcpAction.cpp" />
     <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="TcpServer.cpp" />

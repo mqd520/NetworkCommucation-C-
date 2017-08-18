@@ -34,25 +34,26 @@ namespace NetworkCommunication
 			m_socketAPI.SetNonBlock(m_localSocket);
 			m_socketAPI.Bind(m_localSocket, m_strLocalIP, m_nLocalPort);
 			m_socketAPI.Listen(m_localSocket);
-			Printf1("Listen success: %s:%d", m_strLocalIP, m_nLocalPort);
+			PrintfDebug("listen success: %s:%d, socket: %d", m_strLocalIP, m_nLocalPort, m_localSocket);
+			PrintfInfo("listen success: %s:%d", m_strLocalIP, m_nLocalPort);
 
 			//创建并增加一个服务端socket数据
-			m_socketData = CServerSocketDataMgr::Create(m_strLocalIP, m_nLocalPort, m_localSocket, this);
+			m_socketData = CServerSocketMgr::Create(m_strLocalIP, m_nLocalPort, m_localSocket, this);
 
 			//加入select队列
-			CNetworkCommuMgr::GetSelect()->AddSocket(m_localSocket, ESelectSocketType::Server);
+			CNetworkCommuMgr::GetSelect()->AddSocket(m_localSocket, ESelectSocketType::RecvConn);
 
 			return true;
 		}
 		return true;
 	}
 
-	ServerSocketData CTcpServer::GetServerSocketData()
+	ServerSocket CTcpServer::GetServerSocketData()
 	{
 		return m_socketData;
 	}
 
-	void CTcpServer::OnRecvNewConnection(ServerSocketData server, PeerSocketData client)
+	void CTcpServer::OnRecvNewConnection(ServerSocket server, ServerClientSocket client)
 	{
 		__super::OnRecvNewConnection(server, client);
 	}

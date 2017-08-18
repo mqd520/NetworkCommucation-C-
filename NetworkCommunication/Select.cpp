@@ -43,7 +43,7 @@ namespace NetworkCommunication
 
 	void OnSelectThreadStart()
 	{
-		Printf1("Select thread started");
+		PrintfInfo("select thread started");
 		CNetworkCommuMgr::GetSelect()->ThreadEntry();
 	}
 
@@ -56,7 +56,7 @@ namespace NetworkCommunication
 	{
 		while (true)
 		{
-			//Sleep(2 * 1000);//调试时使用,无意义,可注释掉
+			Sleep(2 * 1000);//调试时使用,无意义,可注释掉
 
 			CalcSocketGroup();//对socket进行分组
 
@@ -72,7 +72,7 @@ namespace NetworkCommunication
 					}
 
 					m_socketAPI.Select(0, &m_readSet, NULL, NULL, &m_selectTimeout);
-
+					CNetworkCommuMgr::GetTcp()->OnServerSocketCanRead(m_group[i][0].socket);
 					if (m_readSet.fd_count > 0)
 					{
 						//遍历分组socket，检查socket信号
@@ -116,13 +116,13 @@ namespace NetworkCommunication
 		int result = FD_ISSET(socketData.socket, &m_readSet);
 		if (result > 0)
 		{
-			if (socketData.type == ESelectSocketType::Server)//指示服务端socket
+			if (socketData.type == ESelectSocketType::RecvConn)//指示socket用于接收新连接
 			{
-				CNetworkCommuMgr::GetAccept()->OnServerSocketCanRead(socketData.socket);//通知Accept层进行新客户端连接的处理
+				CNetworkCommuMgr::GetTcp()->OnServerSocketCanRead(socketData.socket);
 			}
-			else//指示对端socket
+			else//指示socket用于读写数据
 			{
-				CNetworkCommuMgr::GetTcpConnectionMgr()->OnPeerSocketCanRead(socketData.socket);//通知TcpConnectionMgr层进行接收数据的处理
+				CNetworkCommuMgr::GetTcp()->OnReadWriteSocketCanRead(socketData.socket);
 			}
 		}
 	}
@@ -133,7 +133,15 @@ namespace NetworkCommunication
 		{
 			if (it->socket == socket)
 			{
-				m_vecSocket.erase(it);
+				if (it->type == ESelectSocketType::ReadWriteData)
+				{
+					m_vecSocket.erase(it);
+					//m_socketAPI.CloseSocket(socket);//关闭socket
+				}
+				else
+				{
+					m_vecSocket.erase(it);
+				}
 				break;
 			}
 		}

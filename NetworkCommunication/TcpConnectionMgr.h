@@ -13,46 +13,38 @@ namespace NetworkCommunication
 	class CTcpConnectionMgr
 	{
 	private:
-		CSocketAPI m_socketAPI;
+		CSocketAPI m_socketAPI;//socket api
 		vector<CTcpConnection*> m_vecTcpConnection;//tcp连接集合
-		CThread* m_threadRW;//读写线程
-		queue<SocketRecvData> m_quSocketSendRecvData;//socket发送接收数据队列
 
 	public:
 		CTcpConnectionMgr();
 		~CTcpConnectionMgr();
 
-		//线程入口
-		void ThreadEntry();
-
-		//启动线程
-		void Run();
-
 		//增加一个tcp连接
-		void PushTcpConn(CTcpConnection* session);
+		void PushTcpConn(CTcpConnection* conn);
 
 		//************************************
-		// Method:    移除指定对端socket的tcp连接对象
-		// Parameter: 对端socket
+		// Method:    移除指定收发数据的socket关联的tcp连接对象
+		// Parameter: 收发数据的socket
 		//************************************
-		void RemoveTcpConnByPeerSocket(SOCKET peer);
+		void RemoveBySendRecvSocket(SOCKET socket);
 
 		//************************************
-		// Method:    对端socket有数据可读事件处理
-		// Parameter: 对端socket
-		//************************************
-		void OnPeerSocketCanRead(SOCKET peer);
-
-		//************************************
-		// Method:    通过对端socket获取tcp连接对象
-		// Parameter: 对端socket
+		// Method:    获取指定收发数据的socket关联的tcp连接对象
+		// Parameter: 收发数据的socket
 		// Return:	  tcp连接对象
 		//************************************
-		CTcpConnection* GetTcpConnByPeerSocket(SOCKET peer);
+		CTcpConnection* GetBySendRecvSocket(SOCKET socket);
+
+		//void AsyncSend(SOCKET socket, BYTE buf[], int len, int* actualLen);
+
+		//************************************
+		// Method:    接收到对端数据事件处理
+		// Parameter: 对端数据
+		//************************************
+		void OnRecvPeerData(PeerData* data);
 
 		//对端主动关闭事件处理
 		void OnPeerClose(SOCKET peer);
-
-		void UnAsyncSend(SOCKET socket, BYTE buf[], int len, int* actualLen);
 	};
 }

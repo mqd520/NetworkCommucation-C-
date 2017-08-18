@@ -6,48 +6,54 @@ using namespace std;
 
 namespace NetworkCommunication
 {
-	//tcp会话
+	//tcp连接
 	class CTcpConnection
 	{
-	private:
-		CSocketAPI m_socketAPI;
-		SOCKET m_peerSocket;//对端socket
-		SOCKET m_localSocket;//本地socket
+	protected:
+		CSocketAPI m_socketAPI;//socket api
 		CTcpService* m_pTcpSrv;//tcp服务对象
-
-	private:
-		//获取可以发送数据的socket
-		SOCKET GetSendSocket();
+		SOCKET m_sendrecvSocket;//用于发送(接收)数据的socket
 
 	public:
-		CTcpConnection(SOCKET localSocket, SOCKET peerSocket = NULL, CTcpService* pSrv = NULL);
+		//************************************
+		// Method:    构造函数
+		// Parameter: tcp服务对象
+		// Parameter: 用于发送(接收)数据的socket
+		//************************************
+		CTcpConnection(CTcpService* pSrv, SOCKET sendrecv);
 		~CTcpConnection();
 
-		// 湖区本地socket
-		SOCKET GetLocalSocket();
+		//************************************
+		// Method:    获取用于发送(接收)数据的socket
+		// Returns:   socket
+		//************************************
+		SOCKET GetSendRecvSocket();
 
-		//获取对端socket
-		SOCKET GetPeerSocket();
+		//************************************
+		// Method:    获取关联的tcp服务对象
+		// Returns:   tcp服务对象
+		//************************************
+		CTcpService* GetTcpService();
+
+		//************************************
+		// Method:    接收到对端数据事件处理
+		// Parameter: 对端数据
+		//************************************
+		void OnRecvPeerData(PeerData* data);
+
+		//************************************
+		// Method:    对端主动关闭socket事件处理
+		// Parameter: 关联到的本地socket
+		//************************************
+		void OnPeerCloseSocket(SOCKET socket);
 
 		//************************************
 		// Method:    发送数据(同步)
 		// Returns:   是否成功
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
-		// Parameter: 实际发送长度
+		// Parameter: 实际发送字节长度
 		//************************************
 		bool SendData(BYTE buf[], int len, int* actualLen = NULL);
-
-		//************************************
-		// Method:    接收到对端数据事件处理
-		// Parameter: socket接收数据
-		//************************************
-		void OnRecvPeerData(SocketRecvData data);
-
-		//************************************
-		// Method:    对端关闭事件处理
-		// Parameter: 对端socket
-		//************************************
-		void OnPeerClose(SOCKET peer);
 	};
 }

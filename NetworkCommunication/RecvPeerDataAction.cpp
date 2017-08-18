@@ -4,16 +4,19 @@
 
 namespace NetworkCommunication
 {
-	CRecvPeerDataAction::CRecvPeerDataAction(SocketRecvData data, SOCKET local) :
-		CTcpAction(local, data.peer),
-		m_recvData(data)
+	CRecvPeerDataAction::CRecvPeerDataAction(PeerData* pData) :
+		CTcpAction(pData->socket),
+		m_recvData(pData)
 	{
 
 	}
 
 	CRecvPeerDataAction::~CRecvPeerDataAction()
 	{
-
+		if (m_recvData)
+		{
+			delete m_recvData;
+		}
 	}
 
 	int CRecvPeerDataAction::GetActionType()
@@ -21,7 +24,7 @@ namespace NetworkCommunication
 		return ETcpActionType::RecvPeerData;
 	}
 
-	SocketRecvData CRecvPeerDataAction::GetRecvData()
+	PeerData* CRecvPeerDataAction::GetPeerData()
 	{
 		return m_recvData;
 	}

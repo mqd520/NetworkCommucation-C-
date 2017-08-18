@@ -28,7 +28,7 @@ namespace NetworkCommunication
 		//************************************
 		// Method:    获取服务端socket数据
 		//************************************
-		virtual ServerSocketData GetServerSocketData();
+		virtual ServerSocket GetServerSocketData();
 
 		//************************************
 		// Method:    获取本地socket
@@ -40,23 +40,16 @@ namespace NetworkCommunication
 		// Parameter: 服务端socket	
 		// Parameter: 对端socket数据
 		//************************************
-		virtual void OnRecvNewConnection(ServerSocketData server, PeerSocketData client);
+		virtual void OnRecvNewConnection(ServerSocket server, ServerClientSocket client);
 
 		//************************************
 		// Method:    对端主动关闭事件处理
 		// Parameter: 服务端socket	
 		// Parameter: 对端socket数据
 		//************************************
-		virtual void OnPeerCloseSocket(PeerSocketData data);
+		virtual void OnPeerCloseSocket(ServerClientSocket data);
 
-		//************************************
-		// Method:    接收到对端socket数据事件处理(调用放释放缓冲区指针)
-		// Parameter: 缓冲区指针
-		// Parameter: 缓冲区字节长度
-		// Parameter: 对端socket数据
-		// Return:	  是否已处理完毕
-		//************************************
-		virtual bool OnRecvPeerData(BYTE buf[], int len, PeerSocketData data);
+		virtual bool OnRecvPeerData(PeerData* data);
 
 		//************************************
 		// Method:    发送对端数据完成事件处理
@@ -82,6 +75,6 @@ namespace NetworkCommunication
 		// Parameter: 缓冲区字节长度
 		// Parameter: 实际发送字节长度
 		//************************************
-		void UnasyncSendData(SOCKET client, BYTE buf[], int len, int* actualLen = NULL);
+		void AsyncSendData(SOCKET client, BYTE buf[], int len, int* actualLen = NULL);
 	};
 }

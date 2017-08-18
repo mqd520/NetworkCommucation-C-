@@ -4,20 +4,20 @@
 
 namespace NetworkCommunication
 {
-	CServerSocketDataMgr::CServerSocketDataMgr()
+	CServerSocketMgr::CServerSocketMgr()
 	{
 
 	}
 
-	CServerSocketDataMgr::~CServerSocketDataMgr()
+	CServerSocketMgr::~CServerSocketMgr()
 	{
 
 	}
 
-	ServerSocketData CServerSocketDataMgr::Create(char* ip, int port, SOCKET socket, void* server)
+	ServerSocket CServerSocketMgr::Create(char* ip, int port, SOCKET socket, void* server)
 	{
 		CSocketAPI api;
-		ServerSocketData data = { 0 };
+		ServerSocket data = { 0 };
 		strcpy(data.ip, ip);
 		data.port = port;
 		data.addr = api.GetSocketAddr(data.ip, data.port);
@@ -27,14 +27,14 @@ namespace NetworkCommunication
 		return data;
 	}
 
-	void CServerSocketDataMgr::PushServerSocketData(ServerSocketData data)
+	void CServerSocketMgr::PushServerSocketData(ServerSocket data)
 	{
 		m_vecData.push_back(data);
 	}
 
-	ServerSocketData CServerSocketDataMgr::GetDataBySocket(SOCKET socket)
+	ServerSocket CServerSocketMgr::GetDataBySocket(SOCKET socket)
 	{
-		ServerSocketData result = { 0 };
+		ServerSocket result = { 0 };
 		for (int i = 0; i < (int)m_vecData.size(); i++)
 		{
 			if (m_vecData[i].socket == socket)
@@ -46,9 +46,9 @@ namespace NetworkCommunication
 		return result;
 	}
 
-	ServerSocketData CServerSocketDataMgr::GetDataByServer(void* server)
+	ServerSocket CServerSocketMgr::GetDataByServer(void* server)
 	{
-		ServerSocketData result = { 0 };
+		ServerSocket result = { 0 };
 		for (int i = 0; i < (int)m_vecData.size(); i++)
 		{
 			if (m_vecData[i].tcpServer == server)

@@ -153,12 +153,6 @@
     <ClInclude Include="Def.h">
       <Filter>05 Tcp管理\00 Common</Filter>
     </ClInclude>
-    <ClInclude Include="Accept.h">
-      <Filter>05 Tcp管理\01 Tcp</Filter>
-    </ClInclude>
-    <ClInclude Include="Tcp.h">
-      <Filter>05 Tcp管理\01 Tcp</Filter>
-    </ClInclude>
     <ClInclude Include="Select.h">
       <Filter>05 Tcp管理\01 Tcp</Filter>
     </ClInclude>
@@ -171,17 +165,8 @@
     <ClInclude Include="TcpServiceMgr.h">
       <Filter>05 Tcp管理\04 Tcp服务</Filter>
     </ClInclude>
-    <ClInclude Include="AcceptNewConnAction.h">
-      <Filter>05 Tcp管理\02 Tcp动作</Filter>
-    </ClInclude>
     <ClInclude Include="PeerCloseAction.h">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
-    </ClInclude>
-    <ClInclude Include="PeerSocketDataMgr.h">
-      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerSocketMgr.h">
-      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
     </ClInclude>
     <ClInclude Include="SocketAPI.h">
       <Filter>04 Socket管理</Filter>
@@ -191,6 +176,24 @@
     </ClInclude>
     <ClInclude Include="SendPeerDataResultAction.h">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerTcpConnection.h">
+      <Filter>05 Tcp管理\03 Tcp连接</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSocketMgr.h">
+      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerClientSocketMgr.h">
+      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSocketMgr.h">
+      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
+    </ClInclude>
+    <ClInclude Include="RecvNewConnAction.h">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClInclude>
+    <ClInclude Include="Tcp.h">
+      <Filter>05 Tcp管理\01 Tcp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -272,12 +275,6 @@
     <ClCompile Include="NetCommuMgr.cpp">
       <Filter>05 Tcp管理\00 Common</Filter>
     </ClCompile>
-    <ClCompile Include="Accept.cpp">
-      <Filter>05 Tcp管理\01 Tcp</Filter>
-    </ClCompile>
-    <ClCompile Include="Tcp.cpp">
-      <Filter>05 Tcp管理\01 Tcp</Filter>
-    </ClCompile>
     <ClCompile Include="Select.cpp">
       <Filter>05 Tcp管理\01 Tcp</Filter>
     </ClCompile>
@@ -290,16 +287,10 @@
     <ClCompile Include="TcpServiceMgr.cpp">
       <Filter>05 Tcp管理\04 Tcp服务</Filter>
     </ClCompile>
-    <ClCompile Include="AcceptNewConnAction.cpp">
-      <Filter>05 Tcp管理\02 Tcp动作</Filter>
-    </ClCompile>
     <ClCompile Include="PeerCloseAction.cpp">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClCompile>
     <ClCompile Include="ServerSocketMgr.cpp">
-      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
-    </ClCompile>
-    <ClCompile Include="PeerSocketDataMgr.cpp">
       <Filter>05 Tcp管理\07 Socket数据管理</Filter>
     </ClCompile>
     <ClCompile Include="SocketAPI.cpp">
@@ -310,6 +301,21 @@
     </ClCompile>
     <ClCompile Include="SendPeerDataResultAction.cpp">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerTcpConnection.cpp">
+      <Filter>05 Tcp管理\03 Tcp连接</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerClientSocketMgr.cpp">
+      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSocketMgr.cpp">
+      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
+    </ClCompile>
+    <ClCompile Include="RecvNewConnAction.cpp">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClCompile>
+    <ClCompile Include="Tcp.cpp">
+      <Filter>05 Tcp管理\01 Tcp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
