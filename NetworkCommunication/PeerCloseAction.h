@@ -9,10 +9,16 @@ namespace NetworkCommunication
 	class CPeerCloseAction : public CTcpAction
 	{
 	public:
-		CPeerCloseAction(SOCKET local);
+		//************************************
+		// Method:    构造函数
+		// Parameter: 接收对端数据的socket
+		//************************************
+		CPeerCloseAction(SOCKET recv);
 		~CPeerCloseAction();
 
-		//获取tcp动作类型
+		//************************************
+		// Method:    获取tcp动作类型
+		//************************************
 		int GetActionType();
 	};
 }

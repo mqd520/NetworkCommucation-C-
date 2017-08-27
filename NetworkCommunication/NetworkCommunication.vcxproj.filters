@@ -195,6 +195,15 @@
     <ClInclude Include="Tcp.h">
       <Filter>05 Tcp管理\01 Tcp</Filter>
     </ClInclude>
+    <ClInclude Include="NetErrorAction.h">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClInclude>
+    <ClInclude Include="AsyncSendDataAction.h">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClInclude>
+    <ClInclude Include="RefuseNewConnAction.h">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -316,6 +325,15 @@
     </ClCompile>
     <ClCompile Include="Tcp.cpp">
       <Filter>05 Tcp管理\01 Tcp</Filter>
+    </ClCompile>
+    <ClCompile Include="NetErrorAction.cpp">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClCompile>
+    <ClCompile Include="AsyncSendDataAction.cpp">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClCompile>
+    <ClCompile Include="RefuseNewConnAction.cpp">
+      <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

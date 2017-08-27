@@ -1,6 +1,7 @@
 #pragma once
 #include "SocketAPI.h"
 #include "TcpService.h"
+#include "SendPeerDataResultAction.h"
 
 using namespace std;
 
@@ -36,24 +37,34 @@ namespace NetworkCommunication
 		CTcpService* GetTcpService();
 
 		//************************************
-		// Method:    接收到对端数据事件处理
-		// Parameter: 对端数据
-		//************************************
-		void OnRecvPeerData(PeerData* data);
-
-		//************************************
-		// Method:    对端主动关闭socket事件处理
-		// Parameter: 关联到的本地socket
-		//************************************
-		void OnPeerCloseSocket(SOCKET socket);
-
-		//************************************
-		// Method:    发送数据(同步)
+		// Method:    发送数据
 		// Returns:   是否成功
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
 		// Parameter: 实际发送字节长度
 		//************************************
 		bool SendData(BYTE buf[], int len, int* actualLen = NULL);
+
+		//************************************
+		// Method:    收到对端数据事件处理
+		// Parameter: 对端数据
+		//************************************
+		virtual void OnRecvPeerData(PeerData* pData);
+
+		//************************************
+		// Method:    对端主动关闭socket事件处理
+		//************************************
+		virtual void OnPeerCloseConn();
+
+		//************************************
+		// Method:    发送对端数据完成事件处理
+		// Parameter: 发送对端数据结果
+		//************************************
+		virtual void OnSendDataCompleted(SendPeerDataResult* pResult);
+
+		//************************************
+		// Method:    网络错误事件处理
+		//************************************
+		virtual void OnNetError();
 	};
 }

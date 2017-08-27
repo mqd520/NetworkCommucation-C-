@@ -34,17 +34,6 @@ namespace NetworkCommunication
 		// Parameter: 收发数据的socket
 		// Return:	  tcp连接对象
 		//************************************
-		CTcpConnection* GetBySendRecvSocket(SOCKET socket);
-
-		//void AsyncSend(SOCKET socket, BYTE buf[], int len, int* actualLen);
-
-		//************************************
-		// Method:    接收到对端数据事件处理
-		// Parameter: 对端数据
-		//************************************
-		void OnRecvPeerData(PeerData* data);
-
-		//对端主动关闭事件处理
-		void OnPeerClose(SOCKET peer);
+		CTcpConnection* GetBySendRecvSocket(SOCKET sendrecv);
 	};
 }

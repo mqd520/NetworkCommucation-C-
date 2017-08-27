@@ -5,6 +5,7 @@
 #include "NetCommuMgr.h"
 #include "Def.h"
 #include "Common.h"
+#include "NetErrorAction.h"
 
 namespace NetworkCommunication
 {
@@ -13,7 +14,8 @@ namespace NetworkCommunication
 	CSelect::CSelect() :
 		m_bExit(false),
 		m_threadSelect(NULL),
-		m_selectTimeout({ 0, 0 })
+		m_selectTimeout({ 0, 0 }),
+		m_nBufLen(TCPRECVBUFFERSIZE)
 	{
 
 	}
@@ -24,11 +26,6 @@ namespace NetworkCommunication
 		{
 			delete m_threadSelect;
 		}
-	}
-
-	void CSelect::AddSocket(SOCKET socket, int type)
-	{
-		m_vecSocket.push_back({ socket, type });
 	}
 
 	void CSelect::Run()
@@ -52,11 +49,36 @@ namespace NetworkCommunication
 		StartSelect();
 	}
 
+	void CSelect::AddSocket(SOCKET socket, int type)
+	{
+		m_vecSocket.push_back({ socket, type });
+	}
+
+	void CSelect::RemoveSocket(SOCKET socket)
+	{
+		for (vector<SelectSocketData>::iterator it = m_vecSocket.begin(); it < m_vecSocket.end(); it++)
+		{
+			if (it->socket == socket)
+			{
+				if (it->type == ESelectSocketType::ReadWriteData)
+				{
+					m_vecSocket.erase(it);
+					m_socketAPI.CloseSocket(socket);//关闭socket
+				}
+				else
+				{
+					m_vecSocket.erase(it);
+				}
+				break;
+			}
+		}
+	}
+
 	void CSelect::StartSelect()
 	{
 		while (true)
 		{
-			Sleep(2 * 1000);//调试时使用,无意义,可注释掉
+			//Sleep(2 * 1000);//调试时使用,无意义,可注释掉
 
 			CalcSocketGroup();//对socket进行分组
 
@@ -72,7 +94,7 @@ namespace NetworkCommunication
 					}
 
 					m_socketAPI.Select(0, &m_readSet, NULL, NULL, &m_selectTimeout);
-					CNetworkCommuMgr::GetTcp()->OnServerSocketCanRead(m_group[i][0].socket);
+
 					if (m_readSet.fd_count > 0)
 					{
 						//遍历分组socket，检查socket信号
@@ -104,7 +126,7 @@ namespace NetworkCommunication
 		}
 
 		//遍历所有socket
-		for (int i = 0; i < (int)m_vecSocket.size(); i++)
+		for (int i = 0; i < nSocketCount; i++)
 		{
 			int groupIndex = (i + 1) / FD_SETSIZE + ((i + 1) % FD_SETSIZE == 0 ? 0 : 1) - 1;//计算当前socket所在分组索引
 			m_group[groupIndex].push_back(m_vecSocket[i]);//将socket填入对应的组中
@@ -118,31 +140,54 @@ namespace NetworkCommunication
 		{
 			if (socketData.type == ESelectSocketType::RecvConn)//指示socket用于接收新连接
 			{
-				CNetworkCommuMgr::GetTcp()->OnServerSocketCanRead(socketData.socket);
+				RecvNewConnection(socketData.socket);//接收新连接
 			}
 			else//指示socket用于读写数据
 			{
-				CNetworkCommuMgr::GetTcp()->OnReadWriteSocketCanRead(socketData.socket);
+				RecvPeerData(socketData.socket);
 			}
 		}
 	}
 
-	void CSelect::RemoveSocket(SOCKET socket)
+	void CSelect::RecvNewConnection(SOCKET server)
 	{
-		for (vector<SelectSocketData>::iterator it = m_vecSocket.begin(); it < m_vecSocket.end(); it++)
+		ServerSocket data = CNetworkCommuMgr::GetServerSocketMgr()->GetDataBySocket(server);//获取服务端socket数据
+		SOCKET client = m_socketAPI.Accept(server, data.addr);
+		if (client > 0)
 		{
-			if (it->socket == socket)
+			CRecvNewConnAction* pAction = new CRecvNewConnAction(server, client);//创建tcp动作
+			CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
+		}
+	}
+
+	void CSelect::RecvPeerData(SOCKET recv)
+	{
+		BYTE* pBuf = new BYTE[m_nBufLen];
+		int len = m_socketAPI.Recv(recv, pBuf, m_nBufLen);
+		if (len > 0)//指示接收数据成功
+		{
+			//创建接收到对端数据动作
+			PeerData* pData = new PeerData();
+			pData->len = len;
+			pData->pBuf = pBuf;
+			pData->socket = recv;
+			CRecvPeerDataAction* pAction = new CRecvPeerDataAction(pData);
+			CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
+		}
+		else
+		{
+			delete pBuf;
+			RemoveSocket(recv);//删除select中指定socket
+
+			if (len == 0)//指示对端主动关闭了连接
 			{
-				if (it->type == ESelectSocketType::ReadWriteData)
-				{
-					m_vecSocket.erase(it);
-					//m_socketAPI.CloseSocket(socket);//关闭socket
-				}
-				else
-				{
-					m_vecSocket.erase(it);
-				}
-				break;
+				CPeerCloseAction* pAction = new CPeerCloseAction(recv);
+				CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
+			}
+			else//指示发生了网络错误
+			{
+				CNetErrorAction* pAction = new CNetErrorAction(recv);
+				CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
 			}
 		}
 	}

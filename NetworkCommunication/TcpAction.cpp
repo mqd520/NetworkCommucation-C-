@@ -3,9 +3,9 @@
 
 namespace NetworkCommunication
 {
-	CTcpAction::CTcpAction(SOCKET local /*= NULL*/, SOCKET socket /*= NULL*/) :
-		m_localSocket(local),
-		m_socket(socket)
+	CTcpAction::CTcpAction(SOCKET sendrecv /*= NULL*/, SOCKET attachment /*= NULL*/) :
+		m_sendrecvSocket(sendrecv),
+		m_attachmentSocket(attachment)
 	{
 
 	}
@@ -20,8 +20,13 @@ namespace NetworkCommunication
 		return 0;
 	}
 
-	SOCKET CTcpAction::GetLocalSocket()
+	SOCKET CTcpAction::GetSendRecvSocket()
 	{
-		return m_localSocket;
+		return m_sendrecvSocket;
+	}
+
+	SOCKET CTcpAction::GetAttachmentSocket()
+	{
+		return m_attachmentSocket;
 	}
 }

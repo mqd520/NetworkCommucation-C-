@@ -4,7 +4,7 @@
 namespace NetworkCommunication
 {
 	CRecvNewConnAction::CRecvNewConnAction(SOCKET server, SOCKET sendrecv) :
-		CTcpAction(server, sendrecv)
+		CTcpAction(sendrecv, server)
 	{
 
 	}
@@ -16,16 +16,6 @@ namespace NetworkCommunication
 
 	int CRecvNewConnAction::GetActionType()
 	{
-		return ETcpActionType::AcceptNewConnection;
-	}
-
-	SOCKET CRecvNewConnAction::GetServerSocket()
-	{
-		return m_localSocket;
-	}
-
-	SOCKET CRecvNewConnAction::GetServerClientSocket()
-	{
-		return m_socket;
+		return ETcpActionType::RecvNewConnection;
 	}
 }

@@ -8,16 +8,20 @@ namespace NetworkCommunication
 	class CRecvPeerDataAction : public CTcpAction
 	{
 	private:
-		PeerData* m_recvData;
+		PeerData* m_pRecvData;//接收到的对端数据
 
 	public:
 		CRecvPeerDataAction(PeerData* pData);
 		~CRecvPeerDataAction();
 
-		//获取tcp动作类型
+		//************************************
+		// Method:    获取tcp动作类型
+		//************************************
 		int GetActionType();
 
-		//获取接收对端数据
+		//************************************
+		// Method:    获取接收到的对端数据
+		//************************************
 		PeerData* GetPeerData();
 	};
 }

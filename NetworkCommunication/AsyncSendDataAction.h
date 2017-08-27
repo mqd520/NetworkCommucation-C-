@@ -4,20 +4,19 @@
 
 namespace NetworkCommunication
 {
-	//发送对端数据结果动作
-	class CSendPeerDataResultAction : public CTcpAction
+	//异步发送数据动作
+	class CAsyncSendDataAction :public CTcpAction
 	{
 	private:
-		SendPeerDataResult* m_pResult;//发送结果
+		AsyncSendPeerData* m_pData;//发送数据
 
 	public:
 		//************************************
 		// Method:    构造函数
-		// Parameter: 发送数据结果
-		// Parameter: 发送数据的socket
+		// Parameter: 发送的数据
 		//************************************
-		CSendPeerDataResultAction(SendPeerDataResult* data, SOCKET send);
-		~CSendPeerDataResultAction();
+		CAsyncSendDataAction(AsyncSendPeerData* pData);
+		~CAsyncSendDataAction();
 
 		//************************************
 		// Method:    获取tcp动作类型
@@ -25,8 +24,8 @@ namespace NetworkCommunication
 		int GetActionType();
 
 		//************************************
-		// Method:    获取结果数据
+		// Method:    获取发送数据
 		//************************************
-		SendPeerDataResult* GetResult();
+		AsyncSendPeerData* GetSendData();
 	};
 }

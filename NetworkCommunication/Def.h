@@ -1,8 +1,10 @@
 #pragma once
 #include <vector>
 #include "SocketAPI.h"
+#include "TcpAction.h"
 
 using namespace std;
+using namespace NetworkCommunication;
 
 #ifndef MAXCLIENTCOUNT
 #define MAXCLIENTCOUNT	65535	//最大客户端连接数
@@ -29,8 +31,8 @@ typedef struct tagPeerData
 	SOCKET socket;//接收数据的socket
 	BYTE* pBuf;//接收到的数据
 	int len;//接收到的数据长度
-	char ip[20];//服务端IP
-	int port;//服务端端口
+	char ip[20];//对端IP
+	int port;//对端端口
 }PeerData;
 
 //服务端socket数据
@@ -47,7 +49,7 @@ typedef struct tagServerSocket
 //服务端关联的客户端socket数据结构
 typedef struct tagServerClientSocket
 {
-	SOCKET client;//服务客户端socket
+	SOCKET scClient;//服务客户端socket
 	char ip[20];//客户端IP
 	int	port;//客户端端口
 	SOCKET server;//关联的服务端socket
@@ -62,13 +64,6 @@ typedef struct tagClientSocket
 	char serverIP[20];//服务端IP
 	int serverPort;//服务端端口
 }ClientSocket;
-
-//tcp连接两端socket数据
-typedef struct tagSocketPair
-{
-	SOCKET local;//本地socket
-	SOCKET peer;//对端socket
-}SocketPair;
 
 //tcp服务类型
 class ETcpServiceType
@@ -87,11 +82,13 @@ class ETcpActionType
 public:
 	enum
 	{
-		AcceptNewConnection,//接收到新的客户端连接
-		PeerClose,//对端主动关闭
+		RecvNewConnection,//收到新连接
 		RecvPeerData,//收到对端数据
-		SendPeerDataResult,//发送数据结果
-		SendData//向对端发送数据
+		PeerCloseConn,//对端主动关闭连接
+		AsyncSendData,//异步发送数据
+		SendDataResult,//发送数据结果
+		NetError,//发生了网络错误
+		RefuseNewConn//拒绝客户端连接
 	};
 };
 
@@ -113,12 +110,23 @@ typedef struct tagSelectSocketData
 	int		type;  //select监听socket类型
 }SelectSocketData;
 
-//发送对端socket数据结果
+//向对端发送数据结果
 typedef struct tagSendPeerDataResult
 {
 	char ip[20];//对端IP
 	int port;//对端端口
 	bool success;//是否成功
 	int len;//发送数据字节长度
-	SOCKET peer;//对端socket
+	int actualLen;//实际发送字节长度
 }SendPeerDataResult;
+
+//异步发送对端数据
+typedef struct tagAsyncSendPeerData
+{
+	int len;//发送数据字节长度
+	BYTE* pBuf;//缓冲区指针
+	SOCKET send;//发送数据的socket
+}AsyncSendPeerData;
+
+//tcp事件回调函数指针
+typedef void(*LPTcpEventCallback)(CTcpAction* action);

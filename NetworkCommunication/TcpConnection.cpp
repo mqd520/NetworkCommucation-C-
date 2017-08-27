@@ -32,53 +32,45 @@ namespace NetworkCommunication
 
 	bool CTcpConnection::SendData(BYTE buf[], int len, int* actualLen)
 	{
-		bool result = m_socketAPI.Send(GetSendRecvSocket(), buf, len, actualLen);
-
-		//创建发送数据结果动作
-		SendPeerDataResult data;
-		data.success = result;
-		data.len = len;
-		data.peer = m_sendrecvSocket;
-		ServerClientSocket peerData = CNetworkCommuMgr::GetServerClientSocketMgr()->GetDataByServerClientSocket(m_sendrecvSocket);//获取对端socket数据
-		strcpy(data.ip, peerData.ip);
-		data.port = peerData.port;
-		CSendPeerDataResultAction* pAction = new CSendPeerDataResultAction(data, m_sendrecvSocket);
-
-		if (!result)//发送失败
+		int len1 = 0;//实际发送长度
+		bool result = m_socketAPI.Send(m_sendrecvSocket, buf, len, &len1);
+		if (actualLen != NULL)
 		{
-			if (m_pTcpSrv != NULL && m_pTcpSrv->GetSrvType() == ETcpServiceType::Server)//指示tcp服务端对象
-			{
-				CNetworkCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//从select中移除对端socket
-			}
-			else
-			{
-
-			}
+			*actualLen = len1;
 		}
+
+		//创建发送结果动作
+		SendPeerDataResult* pData = new SendPeerDataResult();
+		pData->success = result;
+		pData->len = len;
+		pData->actualLen = len1;
+		CSendPeerDataResultAction* pAction = new CSendPeerDataResultAction(pData, m_sendrecvSocket);
+		CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
+
 		return result;
 	}
 
-	void CTcpConnection::OnRecvPeerData(PeerData* data)
+	void CTcpConnection::OnRecvPeerData(PeerData* pData)
 	{
-		if (m_pTcpSrv)
-		{
-			if (m_pTcpSrv->GetSrvType() == ETcpServiceType::Server)
-			{
-				ServerClientSocket scData = CNetworkCommuMgr::GetServerClientSocketMgr()->GetDataByServerClientSocket(data->socket);
-				ServerSocket sData = CNetworkCommuMgr::GetServerSocketMgr()->GetDataBySocket(scData.server);
-				PrintfDebug("[%s:%d] recv [%s:%d] data, size: %d, socket: %d,%d", sData.ip, sData.port, scData.ip, scData.port, sData.socket, scData.client);
-			}
+		m_pTcpSrv->OnRecvPeerData(pData);
+	}
 
-			m_pTcpSrv->OnRecvPeerData(data);
+	void CTcpConnection::OnPeerCloseConn()
+	{
+		CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除指定发送(接收)数据的socket关联的tcp连接
+	}
+
+	void CTcpConnection::OnSendDataCompleted(SendPeerDataResult* pResult)
+	{
+		if (!pResult->success)
+		{
+			CNetworkCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//删除select中指定socket
+			CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除指定发送(接收)数据的socket关联的tcp连接
 		}
 	}
 
-	void CTcpConnection::OnPeerCloseSocket(SOCKET peer)
+	void CTcpConnection::OnNetError()
 	{
-		////生成tcp动作: 对端主动关闭
-		//CPeerCloseAction* pAction = new CPeerCloseAction(m_localSocket, peer);
-		//CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpAction(pAction);
-
-		//CNetworkCommuMgr::GetTcpConnectionMgr()->OnPeerClose(peer);//通知tcp连接管理,对端主动关闭
+		CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除指定发送(接收)数据的socket关联的tcp连接
 	}
 }

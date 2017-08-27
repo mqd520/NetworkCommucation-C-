@@ -85,6 +85,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AsyncSendDataAction.h" />
+    <ClInclude Include="NetErrorAction.h" />
+    <ClInclude Include="RefuseNewConnAction.h" />
     <ClInclude Include="Tcp.h" />
     <ClInclude Include="RecvNewConnAction.h" />
     <ClInclude Include="ByteStream.h" />
@@ -132,6 +135,9 @@
     <ClInclude Include="TcpClient.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AsyncSendDataAction.cpp" />
+    <ClCompile Include="NetErrorAction.cpp" />
+    <ClCompile Include="RefuseNewConnAction.cpp" />
     <ClCompile Include="Tcp.cpp" />
     <ClCompile Include="RecvNewConnAction.cpp" />
     <ClCompile Include="ByteStream.cpp" />

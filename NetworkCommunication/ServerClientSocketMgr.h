@@ -21,9 +21,7 @@ namespace NetworkCommunication
 		// Method:    增加一个accept socket数据
 		// Parameter: accept socket数据
 		//************************************
-		void PushAcceptSocketData(ServerClientSocket data);
-
-		static ServerClientSocket Create(SOCKET peer, SOCKET local);
+		void PushSocketData(ServerClientSocket data);
 
 		//************************************
 		// Method:    获取指定服务端客户端socket相关数据
@@ -35,6 +33,6 @@ namespace NetworkCommunication
 		// Method:    获取指定本地socket的相关数据
 		// Parameter: 本地socket	
 		//************************************
-		ServerClientSocket GetDataByLocal(SOCKET local);
+		ServerClientSocket GetDataByLocalSocket(SOCKET local);
 	};
 }

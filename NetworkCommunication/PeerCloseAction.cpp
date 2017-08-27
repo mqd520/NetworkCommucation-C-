@@ -3,8 +3,8 @@
 
 namespace NetworkCommunication
 {
-	CPeerCloseAction::CPeerCloseAction(SOCKET local) :
-		CTcpAction(local)
+	CPeerCloseAction::CPeerCloseAction(SOCKET recv) :
+		CTcpAction(recv, NULL)
 	{
 
 	}
@@ -16,6 +16,6 @@ namespace NetworkCommunication
 
 	int CPeerCloseAction::GetActionType()
 	{
-		return ETcpActionType::PeerClose;
+		return ETcpActionType::PeerCloseConn;
 	}
 }

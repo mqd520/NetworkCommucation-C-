@@ -6,6 +6,11 @@
 #include "TcpAction.h"
 #include "RecvNewConnAction.h"
 #include "RecvPeerDataAction.h"
+#include "PeerCloseAction.h"
+#include "SendPeerDataResultAction.h"
+#include "NetErrorAction.h"
+#include "AsyncSendDataAction.h"
+#include "RefuseNewConnAction.h"
 
 using namespace std;
 
@@ -18,8 +23,6 @@ namespace NetworkCommunication
 		queue<CTcpAction*> m_quTcpAction;//tcp动作队列
 		CThread* m_threadAccept;//处理新socket连接的线程
 		CSocketAPI m_socketAPI;//socket api
-		BYTE* m_pBuf;//接收缓冲区指针
-		int m_nBufLen;//接收缓冲区字节最大长度
 
 	private:
 		//************************************
@@ -28,10 +31,10 @@ namespace NetworkCommunication
 		void ProcessQueue();
 
 		//************************************
-		// Method:    处理接收新连接动作
-		// Parameter: 新连接动作
+		// Method:    处理收到新连接动作
+		// Parameter: 收到新连接动作
 		//************************************
-		void ProcessAcceptNewConnection(CRecvNewConnAction* pAction);
+		void ProcessRecvNewConnection(CRecvNewConnAction* pAction);
 
 		//************************************
 		// Method:    处理收到对端数据动作
@@ -40,10 +43,34 @@ namespace NetworkCommunication
 		void ProcessRecvPeerData(CRecvPeerDataAction* pAction);
 
 		//************************************
-		// Method:    过滤指定客户端连接
-		// Returns:   是否继续
+		// Method:    处理对端主动关闭连接动作
+		// Parameter: 对端主动关闭连接动作
 		//************************************
-		bool FilterClientSocket(SOCKET server, SOCKET client);
+		void ProcessPeerCloseConn(CPeerCloseAction* pAction);
+
+		//************************************
+		// Method:    处理异步发送数据动作
+		// Parameter: 异步发送数据动作
+		//************************************
+		void ProcessAsyncSendData(CAsyncSendDataAction* pAction);
+
+		//************************************
+		// Method:    处理发送对端数据结果动作
+		// Parameter: 发送对端数据结果动作
+		//************************************
+		void ProcessSendPeerDataResult(CSendPeerDataResultAction* pAction);
+
+		//************************************
+		// Method:    处理网络错误
+		// Parameter: 网络错误动作
+		//************************************
+		void ProcessNetError(CNetErrorAction* pAction);
+
+		//************************************
+		// Method:    处理拒绝新客户端连接动作
+		// Parameter: 拒绝新客户端连接动作
+		//************************************
+		void ProcessRefuseNewConn(CRefuseNewConnAction* pAction);
 
 	public:
 		CTcp();
@@ -60,15 +87,9 @@ namespace NetworkCommunication
 		void ThreadEntry();
 
 		//************************************
-		// Method:    服务端socket有数据可读事件处理
-		// Parameter: 服务端socket
+		// Method:    增加一个tcp动作
+		// Parameter: tcp动作
 		//************************************
-		void OnServerSocketCanRead(SOCKET server);
-
-		//************************************
-		// Method:    读写socket有数据可读事件处理
-		// Parameter: 读写socket
-		//************************************
-		void OnReadWriteSocketCanRead(SOCKET server);
+		void PushTcpAction(CTcpAction* pAction);
 	};
 }

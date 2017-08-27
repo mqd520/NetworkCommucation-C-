@@ -21,11 +21,11 @@ namespace NetworkCommunication
 		m_vecTcpConnection.push_back(conn);
 	}
 
-	CTcpConnection* CTcpConnectionMgr::GetBySendRecvSocket(SOCKET peer)
+	CTcpConnection* CTcpConnectionMgr::GetBySendRecvSocket(SOCKET sendrecv)
 	{
 		for (int i = 0; i < (int)m_vecTcpConnection.size(); i++)
 		{
-			if (m_vecTcpConnection[i]->GetSendRecvSocket() == peer)
+			if (m_vecTcpConnection[i]->GetSendRecvSocket() == sendrecv)
 			{
 				return m_vecTcpConnection[i];
 			}
@@ -43,22 +43,5 @@ namespace NetworkCommunication
 				break;
 			}
 		}
-	}
-
-	void CTcpConnectionMgr::OnRecvPeerData(PeerData* data)
-	{
-		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it < m_vecTcpConnection.end(); it++)
-		{
-			if ((*it)->GetSendRecvSocket() == data->socket)
-			{
-				(*it)->OnRecvPeerData(data);
-				break;
-			}
-		}
-	}
-
-	void CTcpConnectionMgr::OnPeerClose(SOCKET peer)
-	{
-		//RemoveBySendRecvSocket(peer);
 	}
 }

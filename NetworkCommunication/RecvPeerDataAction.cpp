@@ -6,16 +6,20 @@ namespace NetworkCommunication
 {
 	CRecvPeerDataAction::CRecvPeerDataAction(PeerData* pData) :
 		CTcpAction(pData->socket),
-		m_recvData(pData)
+		m_pRecvData(pData)
 	{
 
 	}
 
 	CRecvPeerDataAction::~CRecvPeerDataAction()
 	{
-		if (m_recvData)
+		if (m_pRecvData)
 		{
-			delete m_recvData;
+			if (m_pRecvData->pBuf)
+			{
+				delete m_pRecvData->pBuf;
+			}
+			delete m_pRecvData;
 		}
 	}
 
@@ -26,6 +30,6 @@ namespace NetworkCommunication
 
 	PeerData* CRecvPeerDataAction::GetPeerData()
 	{
-		return m_recvData;
+		return m_pRecvData;
 	}
 }

@@ -14,7 +14,7 @@ namespace NetworkCommunication
 
 	}
 
-	void CServerClientSocketMgr::PushAcceptSocketData(ServerClientSocket data)
+	void CServerClientSocketMgr::PushSocketData(ServerClientSocket data)
 	{
 		m_vec.push_back(data);
 	}
@@ -23,7 +23,7 @@ namespace NetworkCommunication
 	{
 		for (int i = 0; i < (int)m_vec.size(); i++)
 		{
-			if (m_vec[i].client == peer)
+			if (m_vec[i].scClient == peer)
 			{
 				return m_vec[i];
 				break;
@@ -32,7 +32,7 @@ namespace NetworkCommunication
 		return{ 0 };
 	}
 
-	ServerClientSocket CServerClientSocketMgr::GetDataByLocal(SOCKET local)
+	ServerClientSocket CServerClientSocketMgr::GetDataByLocalSocket(SOCKET local)
 	{
 		for (int i = 0; i < (int)m_vec.size(); i++)
 		{
@@ -43,16 +43,5 @@ namespace NetworkCommunication
 			}
 		}
 		return{ 0 };
-	}
-
-	ServerClientSocket CServerClientSocketMgr::Create(SOCKET peer, SOCKET local)
-	{
-		CSocketAPI api;
-		ServerClientSocket data = { 0 };
-		data.client = peer;
-		data.server = local;
-		api.GetIpAndPort(peer, data.ip, &data.port);
-		CNetworkCommuMgr::GetServerClientSocketMgr()->PushAcceptSocketData(data);
-		return data;
 	}
 }

@@ -55,7 +55,7 @@ namespace NetworkCommunication
 
 		SOCKET Accept(SOCKET socket, SOCKADDR_IN addr);
 
-		void GetIpAndPort(SOCKET socket, char* ip, int* port);
+		void GetPeerIpAndPort(SOCKET socket, char* ip, int* port);
 
 		int Select(int nfds, fd_set* readfds, fd_set *writefds, fd_set *exceptfds, const struct timeval *timeout);
 

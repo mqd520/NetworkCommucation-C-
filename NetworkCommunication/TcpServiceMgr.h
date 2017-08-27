@@ -25,34 +25,10 @@ namespace NetworkCommunication
 		void PushTcpService(CTcpService* srv);
 
 		//************************************
-		// Method:    获取指定本地socket的tcp服务对象
-		// Return:	  tcp连接对象
-		// Parameter: 本地socket
+		// Method:    获取指定socket关联的tcp服务对象
+		// Return:	  tcp服务对象
+		// Parameter: socket
 		//************************************
-		CTcpService* GetTcpSrvByLocalSocket(SOCKET local);
-
-		//************************************
-		// Method:    收到新连接事件处理
-		// Parameter: tcp动作
-		//************************************
-		void OnRecvNewConnection(CRecvNewConnAction* pAction);
-
-		//************************************
-		// Method:    收到对端数据事件处理
-		// Parameter: tcp动作
-		//************************************
-		//void OnRecvPeerData(CRecvPeerDataAction* pAction);
-
-		//************************************
-		// Method:    对端主动关闭事件处理
-		// Parameter: tcp动作
-		//************************************
-		void OnPeerClose(CPeerCloseAction* pAction);
-
-		//************************************
-		// Method:    向对端发送数据完成事件处理
-		// Parameter: tcp动作
-		//************************************
-		void OnSendPeerDataCompleted(CSendPeerDataResultAction* pAction);
+		CTcpService* GetTcpSrvBySocket(SOCKET socket);
 	};
 }

@@ -9,6 +9,7 @@ namespace NetworkCommunication
 	{
 		Info,//普通信息
 		Debug,//调试信息
+		Warning,//警告信息
 		Error//错误信息
 	};
 
@@ -18,5 +19,6 @@ namespace NetworkCommunication
 #ifdef _DEBUG
 #define PrintfDebug(format,...)	MyPrintf(EInfoType::Debug,format,__VA_ARGS__)
 #endif // _DEBUG
+#define PrintfWarning(format,...)	MyPrintf(EInfoType::Warning,format,__VA_ARGS__)
 #define PrintfError(format,...)	MyPrintf(EInfoType::Error,format,__VA_ARGS__)
 }

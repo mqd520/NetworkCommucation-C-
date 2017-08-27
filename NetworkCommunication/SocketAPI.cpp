@@ -178,7 +178,7 @@ namespace NetworkCommunication
 	//		return addr;
 	//	}
 
-	void CSocketAPI::GetIpAndPort(SOCKET socket, char* ip, int* port)
+	void CSocketAPI::GetPeerIpAndPort(SOCKET socket, char* ip, int* port)
 	{
 		SOCKADDR_IN addr;
 		int len = sizeof(addr);

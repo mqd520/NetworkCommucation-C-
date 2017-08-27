@@ -3,25 +3,28 @@
 
 namespace NetworkCommunication
 {
-	CSendPeerDataResultAction::CSendPeerDataResultAction(SendPeerDataResult data, SOCKET local) :
-		CTcpAction(local, data.peer),
-		m_result(data)
+	CSendPeerDataResultAction::CSendPeerDataResultAction(SendPeerDataResult* data, SOCKET send) :
+		CTcpAction(send, NULL),
+		m_pResult(data)
 	{
 
 	}
 
 	CSendPeerDataResultAction::~CSendPeerDataResultAction()
 	{
-
+		if (m_pResult)
+		{
+			delete m_pResult;
+		}
 	}
 
 	int CSendPeerDataResultAction::GetActionType()
 	{
-		return ETcpActionType::SendPeerDataResult;
+		return ETcpActionType::SendDataResult;
 	}
 
-	SendPeerDataResult CSendPeerDataResultAction::GetResult()
+	SendPeerDataResult* CSendPeerDataResultAction::GetResult()
 	{
-		return m_result;
+		return m_pResult;
 	}
 }
