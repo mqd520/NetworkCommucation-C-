@@ -10,11 +10,7 @@ namespace NetworkCommunication
 		CTcpConnection(pTcpSrv, scSocket),
 		m_serverSocket(server)
 	{
-		ServerClientSocket data = { 0 };
-		data.scClient = scSocket;
-		data.server = server;
-		m_socketAPI.GetPeerIpAndPort(scSocket, data.ip, &data.port);
-		CNetworkCommuMgr::GetServerClientSocketMgr()->PushSocketData(data);
+
 	}
 
 	CServerTcpConnection::~CServerTcpConnection()
@@ -29,12 +25,10 @@ namespace NetworkCommunication
 
 	void CServerTcpConnection::OnRecvPeerData(PeerData* pData)
 	{
-		//获取服务端的客户端socket数据
-		ServerClientSocket scData = CNetworkCommuMgr::GetServerClientSocketMgr()->GetDataByServerClientSocket(pData->socket);
-		strcpy(pData->ip, scData.ip);
-		pData->port = scData.port;
-		PrintfDebug("[%s:%d][socket: %d] recved [%s:%d] data, size: %d, server client socket: %d",
-			m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), scData.ip, scData.port, pData->len, scData.scClient);
+#ifdef _DEBUG
+		PrintfDebug(_T("[%s:%d][socket: %d] recved [%s:%d] data, size: %d, client socket: %d"),
+			m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), pData->ip, pData->port, pData->len, m_sendrecvSocket);
+#endif // _DEBUG
 
 		__super::OnRecvPeerData(pData);
 	}
@@ -43,33 +37,42 @@ namespace NetworkCommunication
 	{
 		__super::OnPeerCloseConn();
 
-		//获取服务客户端socket数据
-		ServerClientSocket scData = CNetworkCommuMgr::GetServerClientSocketMgr()->GetDataByServerClientSocket(m_sendrecvSocket);
-		PrintfDebug("client [%s:%d] closed the connection, server: [%s:%d][socket: %d], server client socket: %d",
-			scData.ip, scData.port, m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), scData.scClient);
+		TCHAR ip[20];
+		int port = 0;
+		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
 
-		m_pTcpSrv->OnPeerCloseConn(scData.ip, scData.port);
+#ifdef _DEBUG
+		PrintfDebug(_T("client [%s:%d] closed the connection, server: [%s:%d][socket: %d], client socket: %d"),
+			ip, port, m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket);
+#endif // _DEBUG
+
+		m_pTcpSrv->OnPeerCloseConn(ip, port);
 	}
 
 	void CServerTcpConnection::OnSendDataCompleted(SendPeerDataResult* pResult)
 	{
 		__super::OnSendDataCompleted(pResult);
 
-		//获取服务客户端socket数据
-		ServerClientSocket scData = CNetworkCommuMgr::GetServerClientSocketMgr()->GetDataByServerClientSocket(m_sendrecvSocket);
+		TCHAR ip[20];
+		int port = 0;
+		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
+
+		_tcscpy(pResult->ip, ip);
+		pResult->port = port;
+
+#ifdef _DEBUG
 		if (pResult->success)
 		{
-			PrintfDebug("[%s:%d][socket: %d] send data to [%s:%d] successed, size: %d, server client socket: %d",
-				m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), scData.ip, scData.port, pResult->len, scData.scClient);
+			PrintfDebug(_T("[%s:%d][socket: %d] send data to [%s:%d] successed, size: %d, client socket: %d"),
+				m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), ip, port, pResult->len, m_sendrecvSocket);
 		}
 		else
 		{
-			PrintfDebug("[%s:%d][socket: %d] send data to [%s:%d] failed, size: %d, actual size: %d",
-				m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), scData.ip, scData.port, scData.scClient, pResult->len, pResult->actualLen);
+			PrintfDebug(_T("[%s:%d][socket: %d] send data to [%s:%d] failed, size: %d, actual size: %d"),
+				m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), ip, port, m_sendrecvSocket, pResult->len, pResult->actualLen);
 		}
+#endif // _DEBUG
 
-		strcpy(pResult->ip, scData.ip);
-		pResult->port = scData.port;
 		m_pTcpSrv->OnSendPeerDataCompleted(pResult);
 	}
 
@@ -77,10 +80,15 @@ namespace NetworkCommunication
 	{
 		__super::OnNetError();
 
-		//获取服务客户端socket数据
-		ServerClientSocket scData = CNetworkCommuMgr::GetServerClientSocketMgr()->GetDataByServerClientSocket(m_sendrecvSocket);
-		PrintfDebug("Net error, server: %s:%d[socket: %d, server client socket: %d], client: %s:%d",
-			m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket, scData.ip, scData.port);
-		m_pTcpSrv->OnNetError(scData.ip, scData.port);
+		TCHAR ip[20];
+		int port = 0;
+		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
+
+#ifdef _DEBUG
+		PrintfDebug(_T("Net error, server: %s:%d[socket: %d, server client socket: %d], client: %s:%d"),
+			m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket, ip, port);
+#endif // _DEBUG
+
+		m_pTcpSrv->OnNetError(ip, port);
 	}
 }

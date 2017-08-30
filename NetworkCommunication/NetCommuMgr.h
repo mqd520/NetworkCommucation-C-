@@ -2,23 +2,22 @@
 #include "ThreadMgr.h"
 #include "Select.h"
 #include "Tcp.h"
-#include "ServerSocketMgr.h"
-#include "ServerClientSocketMgr.h"
 #include "TcpConnectionMgr.h"
 #include "TcpServiceMgr.h"
+#include "TcpServerMgr.h"
 
 namespace NetworkCommunication
 {
+	//网络通信管理对象
 	class CNetworkCommuMgr
 	{
 	private:
 		static CThreadMgr* m_threadMgr;//线程管理对象
 		static CSelect* m_Select;//select对象
 		static CTcp* m_tcp;//tcp对象
-		static CServerSocketMgr* m_serverSocketMgr;//服务端socket数据管理对象
-		static CServerClientSocketMgr* m_serverCLientSocketMgr;//对端socket数据管理对象
 		static CTcpConnectionMgr* m_tcpConnMgr;//tcp连接管理对象
-		static CTcpServiceMgr* m_tcpSrvMgr;//tcp服务管理对象
+		static CTcpServiceMgr* m_tcpServiceMgr;//tcp服务管理对象
+		static CTcpServerMgr* m_tcpServerMgr;//tcp server管理对象
 
 	private:
 		CNetworkCommuMgr();
@@ -52,16 +51,6 @@ namespace NetworkCommunication
 		static CTcp* GetTcp();
 
 		//************************************
-		// Method:    获取服务端socket数据管理对象
-		//************************************
-		static CServerSocketMgr* GetServerSocketMgr();
-
-		//************************************
-		// Method:    获取服务客户端socket管理对象
-		//************************************
-		static CServerClientSocketMgr* GetServerClientSocketMgr();
-
-		//************************************
 		// Method:    获取TcpConnectionMgr对象
 		//************************************
 		static CTcpConnectionMgr* GetTcpConnectionMgr();
@@ -70,5 +59,10 @@ namespace NetworkCommunication
 		// Method:    获取tcp服务管理对象
 		//************************************
 		static CTcpServiceMgr* GetTcpServiceMgr();
+
+		//************************************
+		// Method:    获取tcp server管理对象
+		//************************************
+		static CTcpServerMgr* GetTcpServerMgr();
 	};
 }

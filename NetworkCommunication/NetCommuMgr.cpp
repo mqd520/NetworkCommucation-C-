@@ -7,10 +7,9 @@ namespace NetworkCommunication
 	CThreadMgr* CNetworkCommuMgr::m_threadMgr = NULL;
 	CSelect* CNetworkCommuMgr::m_Select = NULL;
 	CTcp* CNetworkCommuMgr::m_tcp = NULL;
-	CServerSocketMgr* CNetworkCommuMgr::m_serverSocketMgr = NULL;
-	CServerClientSocketMgr* CNetworkCommuMgr::m_serverCLientSocketMgr = NULL;
 	CTcpConnectionMgr* CNetworkCommuMgr::m_tcpConnMgr = NULL;
-	CTcpServiceMgr* CNetworkCommuMgr::m_tcpSrvMgr = NULL;
+	CTcpServiceMgr* CNetworkCommuMgr::m_tcpServiceMgr = NULL;
+	CTcpServerMgr* CNetworkCommuMgr::m_tcpServerMgr = NULL;
 
 	void CNetworkCommuMgr::Init()
 	{
@@ -59,24 +58,6 @@ namespace NetworkCommunication
 		return m_tcp;
 	}
 
-	CServerSocketMgr* CNetworkCommuMgr::GetServerSocketMgr()
-	{
-		if (m_serverSocketMgr == NULL)
-		{
-			m_serverSocketMgr = new CServerSocketMgr();
-		}
-		return m_serverSocketMgr;
-	}
-
-	CServerClientSocketMgr* CNetworkCommuMgr::GetServerClientSocketMgr()
-	{
-		if (m_serverCLientSocketMgr == NULL)
-		{
-			m_serverCLientSocketMgr = new CServerClientSocketMgr();
-		}
-		return m_serverCLientSocketMgr;
-	}
-
 	CTcpConnectionMgr* CNetworkCommuMgr::GetTcpConnectionMgr()
 	{
 		if (m_tcpConnMgr == NULL)
@@ -88,10 +69,19 @@ namespace NetworkCommunication
 
 	CTcpServiceMgr* CNetworkCommuMgr::GetTcpServiceMgr()
 	{
-		if (m_tcpSrvMgr == NULL)
+		if (m_tcpServiceMgr == NULL)
 		{
-			m_tcpSrvMgr = new CTcpServiceMgr();
+			m_tcpServiceMgr = new CTcpServiceMgr();
 		}
-		return m_tcpSrvMgr;
+		return m_tcpServiceMgr;
+	}
+
+	CTcpServerMgr* CNetworkCommuMgr::GetTcpServerMgr()
+	{
+		if (m_tcpServerMgr == NULL)
+		{
+			m_tcpServerMgr = new CTcpServerMgr();
+		}
+		return m_tcpServerMgr;
 	}
 }

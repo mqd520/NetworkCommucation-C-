@@ -40,7 +40,7 @@ namespace NetworkCommunication
 
 	void OnSelectThreadStart()
 	{
-		PrintfInfo("select thread started");
+		PrintfInfo(_T("select thread started"));
 		CNetworkCommuMgr::GetSelect()->ThreadEntry();
 	}
 
@@ -151,12 +151,15 @@ namespace NetworkCommunication
 
 	void CSelect::RecvNewConnection(SOCKET server)
 	{
-		ServerSocket data = CNetworkCommuMgr::GetServerSocketMgr()->GetDataBySocket(server);//获取服务端socket数据
-		SOCKET client = m_socketAPI.Accept(server, data.addr);
-		if (client > 0)
+		CTcpServer* pTcpServer = CNetworkCommuMgr::GetTcpServerMgr()->GetTcpServerByServerSocket(server);//获取指定socket关联的tcp server
+		if (pTcpServer)
 		{
-			CRecvNewConnAction* pAction = new CRecvNewConnAction(server, client);//创建tcp动作
-			CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
+			SOCKET client = m_socketAPI.Accept(server, pTcpServer->GetServerSocketAddr());
+			if (client > 0)
+			{
+				CRecvNewConnAction* pAction = new CRecvNewConnAction(server, client);//创建tcp动作
+				CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
+			}
 		}
 	}
 

@@ -37,25 +37,25 @@ namespace NetworkCommunication
 		//创建一个socket(tcp)
 		SOCKET CreateTcpSocket();
 
-		SOCKADDR_IN GetSocketAddr(char* ip, int port);
+		SOCKADDR_IN GetSocketAddr(TCHAR* ip, int port);
 
-		bool Connect1(SOCKET socket, char* ip, int port);
+		bool Connect1(SOCKET socket, TCHAR* ip, int port);
 
 		int Recv(SOCKET socket, BYTE* buf, int len);
 
 		bool CloseSocket(SOCKET socket);
 
-		bool Bind(SOCKET socket, char* ip, int port);
+		bool Bind(SOCKET socket, TCHAR* ip, int port);
 
 		bool Listen(SOCKET socket, int max = SOMAXCONN);
 
 		void SetNonBlock(SOCKET socket);
 
-		SOCKET Accept(SOCKET socket, char* ip, int port);
+		SOCKET Accept(SOCKET socket, TCHAR* ip, int port);
 
 		SOCKET Accept(SOCKET socket, SOCKADDR_IN addr);
 
-		void GetPeerIpAndPort(SOCKET socket, char* ip, int* port);
+		void GetPeerIpAndPort(SOCKET socket, TCHAR* ip, int* port);
 
 		int Select(int nfds, fd_set* readfds, fd_set *writefds, fd_set *exceptfds, const struct timeval *timeout);
 

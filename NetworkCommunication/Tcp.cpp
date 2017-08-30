@@ -28,7 +28,7 @@ namespace NetworkCommunication
 
 	void OnAcceptThreadStart()
 	{
-		PrintfInfo("tcp thread started");
+		PrintfInfo(_T("tcp thread started"));
 		CNetworkCommuMgr::GetTcp()->ThreadEntry();
 	}
 
@@ -102,8 +102,8 @@ namespace NetworkCommunication
 		SOCKET serverSocket = pAction->GetAttachmentSocket();//获取服务端socket
 		SOCKET sendrecvSocket = pAction->GetSendRecvSocket();//获取发送(接收)数据的socket
 
-		//获取对端信息
-		char ip[20];
+		//获取客户端信息
+		TCHAR ip[20];
 		int port = 0;
 		m_socketAPI.GetPeerIpAndPort(sendrecvSocket, ip, &port);
 
@@ -125,7 +125,7 @@ namespace NetworkCommunication
 			CServerTcpConnection* conn = new CServerTcpConnection(pTcpSrv, sendrecvSocket, serverSocket);
 			CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
 
-			PrintfDebug("[%s:%d][socket: %d] recv a new connection [%s:%d], server client socket: %d",
+			PrintfDebug(_T("[%s:%d][socket: %d] recv a new connection [%s:%d], server client socket: %d"),
 				pTcpSrv->GetLocalIP(), pTcpSrv->GetLocalPort(), pTcpSrv->GetSocket(), ip, port, sendrecvSocket);
 			pTcpSrv->OnRecvNewConnection(ip, port, sendrecvSocket);//通知tcp服务端对象处理动作
 		}
@@ -137,7 +137,13 @@ namespace NetworkCommunication
 		CTcpConnection* conn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(recv);//获取tcp连接对象
 		if (conn)
 		{
-			conn->OnRecvPeerData(pAction->GetPeerData());
+			PeerData* pData = pAction->GetPeerData();
+			TCHAR ip[20];
+			int port = 0;
+			m_socketAPI.GetPeerIpAndPort(recv, ip, &port);
+			_tcscpy(pData->ip, ip);
+			pData->port = port;
+			conn->OnRecvPeerData(pData);
 		}
 	}
 
@@ -191,7 +197,7 @@ namespace NetworkCommunication
 		CTcpService* pTcpSrv = CNetworkCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(serverSocket);
 		if (pTcpSrv)
 		{
-			PrintfDebug("server [%s:%d][socket: %d] refuse the connection: %s:%d, server client socket: %d",
+			PrintfDebug(_T("server [%s:%d][socket: %d] refuse the connection: %s:%d, server client socket: %d"),
 				pTcpSrv->GetLocalIP(), pTcpSrv->GetLocalPort(), pTcpSrv->GetSocket(), pAction->GetPeerIP(), pAction->GetPeerPort(), scSocket);
 
 			pTcpSrv->OnRefuseNewConn(pAction->GetPeerIP(), pAction->GetPeerPort());

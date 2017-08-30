@@ -8,7 +8,7 @@ namespace NetworkCommunication
 	class CRefuseNewConnAction :public CTcpAction
 	{
 	private:
-		char m_strIP[20];//对端IP
+		TCHAR m_strIP[20];//对端IP
 		int m_nPort;//对端端口
 
 	public:
@@ -17,7 +17,7 @@ namespace NetworkCommunication
 		// Parameter: 服务端socket
 		// Parameter: 服务端的客户端socket
 		//************************************
-		CRefuseNewConnAction(SOCKET server, SOCKET scSocket, char* ip, int port);
+		CRefuseNewConnAction(SOCKET server, SOCKET scSocket, TCHAR* ip, int port);
 		~CRefuseNewConnAction();
 
 		//************************************
@@ -28,7 +28,7 @@ namespace NetworkCommunication
 		//************************************
 		// Method:    获取对端IP
 		//************************************
-		char* GetPeerIP();
+		TCHAR* GetPeerIP();
 
 		//************************************
 		// Method:    获取对端端口

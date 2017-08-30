@@ -13,7 +13,7 @@ namespace NetworkCommunication
 		m_nLocalPort(0),
 		m_lpCallback(NULL)
 	{
-		memset(m_strLocalIP, 0, 20 * sizeof(char));
+		memset(m_strLocalIP, 0, 20 * sizeof(TCHAR));
 		CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpService(this);
 	}
 
@@ -27,17 +27,12 @@ namespace NetworkCommunication
 		return m_nSrvType;
 	}
 
-	ServerSocket CTcpService::GetServerSocketData()
-	{
-		return{ 0 };
-	}
-
 	SOCKET CTcpService::GetSocket()
 	{
 		return m_socket;
 	}
 
-	char* CTcpService::GetLocalIP()
+	TCHAR* CTcpService::GetLocalIP()
 	{
 		return m_strLocalIP;
 	}
@@ -88,9 +83,9 @@ namespace NetworkCommunication
 		m_lpCallback = lpCallback;
 	}
 
-	void CTcpService::OnRecvNewConnection(char* ip, int port, SOCKET scSocket)
+	void CTcpService::OnRecvNewConnection(TCHAR* ip, int port, SOCKET scSocket)
 	{
-		PrintfInfo("recved a new connection: [%s:%d]", ip, port);
+		PrintfInfo(_T("recved a new connection: [%s:%d]"), ip, port);
 		if (m_lpCallback)
 		{
 			CRecvNewConnAction* pAction = new CRecvNewConnAction(m_socket, scSocket);
@@ -101,34 +96,34 @@ namespace NetworkCommunication
 
 	bool CTcpService::OnRecvPeerData(PeerData* pData)
 	{
-		PrintfInfo("recved from [%s:%d] data, size: %d", pData->ip, pData->port, pData->len);
+		PrintfInfo(_T("recved from [%s:%d] data, size: %d"), pData->ip, pData->port, pData->len);
 		return true;
 	}
 
-	void CTcpService::OnPeerCloseConn(char* ip, int port)
+	void CTcpService::OnPeerCloseConn(TCHAR* ip, int port)
 	{
-		PrintfInfo("client [%s:%d] closed the connection", ip, port);
+		PrintfInfo(_T("client [%s:%d] closed the connection"), ip, port);
 	}
 
 	void CTcpService::OnSendPeerDataCompleted(SendPeerDataResult* result)
 	{
 		if (result->success)
 		{
-			PrintfInfo("Send data to [%s:%d] successed, size: %d", result->ip, result->port, result->len);
+			PrintfInfo(_T("Send data to [%s:%d] successed, size: %d"), result->ip, result->port, result->len);
 		}
 		else
 		{
-			PrintfInfo("Send data to [%s:%d] failed, size: %d, actual size: %d", result->ip, result->port, result->len, result->actualLen);
+			PrintfInfo(_T("Send data to [%s:%d] failed, size: %d, actual size: %d"), result->ip, result->port, result->len, result->actualLen);
 		}
 	}
 
-	void CTcpService::OnNetError(char* ip, int port)
+	void CTcpService::OnNetError(TCHAR* ip, int port)
 	{
-		PrintfError("Net error, %s:%d", ip, port);
+		PrintfError(_T("Net error, %s:%d"), ip, port);
 	}
 
-	void CTcpService::OnRefuseNewConn(char* ip, int port)
+	void CTcpService::OnRefuseNewConn(TCHAR* ip, int port)
 	{
-		PrintfWarning("server refuse a connection: %s:%d", ip, port);
+		PrintfWarning(_T("server refuse a connection: %s:%d"), ip, port);
 	}
 }

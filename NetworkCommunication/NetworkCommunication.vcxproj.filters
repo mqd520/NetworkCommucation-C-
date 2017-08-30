@@ -180,9 +180,6 @@
     <ClInclude Include="ServerTcpConnection.h">
       <Filter>05 Tcp管理\03 Tcp连接</Filter>
     </ClInclude>
-    <ClInclude Include="ServerSocketMgr.h">
-      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
-    </ClInclude>
     <ClInclude Include="ServerClientSocketMgr.h">
       <Filter>05 Tcp管理\07 Socket数据管理</Filter>
     </ClInclude>
@@ -203,6 +200,9 @@
     </ClInclude>
     <ClInclude Include="RefuseNewConnAction.h">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpServerMgr.h">
+      <Filter>05 Tcp管理\06 Tcp服务端</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -299,9 +299,6 @@
     <ClCompile Include="PeerCloseAction.cpp">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClCompile>
-    <ClCompile Include="ServerSocketMgr.cpp">
-      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
-    </ClCompile>
     <ClCompile Include="SocketAPI.cpp">
       <Filter>04 Socket管理</Filter>
     </ClCompile>
@@ -334,6 +331,9 @@
     </ClCompile>
     <ClCompile Include="RefuseNewConnAction.cpp">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpServerMgr.cpp">
+      <Filter>05 Tcp管理\06 Tcp服务端</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

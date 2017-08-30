@@ -1,11 +1,10 @@
 #pragma once
-
 #include "SocketAPI.h"
 #include "TcpConnectionMgr.h"
-#include "Thread.h"
-#include "NetCommuMgr.h"
 #include "Def.h"
-#include "TcpServer.h"
+#include <vector>
+
+using namespace std;
 
 namespace NetworkCommunication
 {
@@ -15,31 +14,37 @@ namespace NetworkCommunication
 	protected:
 		CSocketAPI m_socketAPI;//socket管理对象
 		bool m_bListening;//是否正在监听
-		ServerSocket m_socketData;//服务端socket数据
-		vector<char*> m_vecAllowIP;//允许的客户端IP
+		vector<TCHAR*> m_vecAllowIP;//允许的客户端IP
+		SOCKADDR_IN m_socketAddr;//socket addr
+		vector<SOCKET> m_vecClientSocket;
 
 	public:
 		CTcpServer();
 		~CTcpServer();
 
 		//************************************
-		// Method:    初始化
-		// Parameter: ip
-		// Parameter: 端口
+		// Method:    开始监听
+		// Parameter: 监听IP
+		// Parameter: 监听端口
 		//************************************
-		void Init(char* ip, int port);
+		bool Listen(TCHAR* ip, int port);
+
+		//************************************
+		// Method:    获取服务端socket addr
+		//************************************
+		SOCKADDR_IN GetServerSocketAddr();
 
 		//************************************
 		// Method:    增加一个允许IP
 		// Parameter: ip
 		//************************************
-		void AddAllowIP(char* ip);
+		void AddAllowIP(TCHAR* ip);
 
 		//************************************
 		// Method:    移除指定的允许IP
 		// Parameter: ip
 		//************************************
-		void RemoveAllowIP(char* ip);
+		void RemoveAllowIP(TCHAR* ip);
 
 		//************************************
 		// Method:    清除所有允许IP,表示允许所有IP
@@ -50,17 +55,6 @@ namespace NetworkCommunication
 		// Method:    指定IP是否被允许
 		// Parameter: ip
 		//************************************
-		bool IsAllow(char* ip);
-
-		//************************************
-		// Method:    开始监听
-		// Returns:   是否成功
-		//************************************
-		bool Listen();
-
-		//************************************
-		// Method:    获取服务端socket数据
-		//************************************
-		ServerSocket GetServerSocketData();
+		bool IsAllow(TCHAR* ip);
 	};
 }

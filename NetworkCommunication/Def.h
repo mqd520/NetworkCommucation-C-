@@ -31,39 +31,28 @@ typedef struct tagPeerData
 	SOCKET socket;//接收数据的socket
 	BYTE* pBuf;//接收到的数据
 	int len;//接收到的数据长度
-	char ip[20];//对端IP
+	TCHAR ip[20];//对端IP
 	int port;//对端端口
 }PeerData;
-
-//服务端socket数据
-typedef struct tagServerSocket
-{
-	SOCKET socket;//服务端socket
-	char ip[20];//监听的IP
-	int port;//监听的端口
-	SOCKADDR_IN addr;//服务端地址
-	vector<TCHAR*> vecAllowIP;//允许指定IP连接服务端
-	void* tcpServer;//关联的tcp服务对象
-}ServerSocket;
 
 //服务端关联的客户端socket数据结构
 typedef struct tagServerClientSocket
 {
 	SOCKET scClient;//服务客户端socket
-	char ip[20];//客户端IP
-	int	port;//客户端端口
 	SOCKET server;//关联的服务端socket
-}ServerClientSocket;
+	TCHAR ip[20];//客户端IP
+	int	port;//客户端端口
+}ClientSocketData;
 
 //客户端socket数据结构
-typedef struct tagClientSocket
-{
-	SOCKET client;//客户端socket
-	char clientIP[20];//客户端IP
-	int clientPort;//客户端端口
-	char serverIP[20];//服务端IP
-	int serverPort;//服务端端口
-}ClientSocket;
+//typedef struct tagClientSocket
+//{
+//	SOCKET client;//客户端socket
+//	TCHAR clientIP[20];//客户端IP
+//	int clientPort;//客户端端口
+//	TCHAR serverIP[20];//服务端IP
+//	int serverPort;//服务端端口
+//}ClientSocket;
 
 //tcp服务类型
 class ETcpServiceType
@@ -113,7 +102,7 @@ typedef struct tagSelectSocketData
 //向对端发送数据结果
 typedef struct tagSendPeerDataResult
 {
-	char ip[20];//对端IP
+	TCHAR ip[20];//对端IP
 	int port;//对端端口
 	bool success;//是否成功
 	int len;//发送数据字节长度

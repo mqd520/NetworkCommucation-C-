@@ -14,12 +14,12 @@ namespace NetworkCommunication
 
 	}
 
-	void CServerClientSocketMgr::PushSocketData(ServerClientSocket data)
+	void CServerClientSocketMgr::PushSocketData(ClientSocketData data)
 	{
 		m_vec.push_back(data);
 	}
 
-	ServerClientSocket CServerClientSocketMgr::GetDataByServerClientSocket(SOCKET peer)
+	ClientSocketData CServerClientSocketMgr::GetDataByServerClientSocket(SOCKET peer)
 	{
 		for (int i = 0; i < (int)m_vec.size(); i++)
 		{
@@ -32,7 +32,7 @@ namespace NetworkCommunication
 		return{ 0 };
 	}
 
-	ServerClientSocket CServerClientSocketMgr::GetDataByLocalSocket(SOCKET local)
+	ClientSocketData CServerClientSocketMgr::GetDataByLocalSocket(SOCKET local)
 	{
 		for (int i = 0; i < (int)m_vec.size(); i++)
 		{

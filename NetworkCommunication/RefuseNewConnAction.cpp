@@ -4,10 +4,10 @@
 
 namespace NetworkCommunication
 {
-	CRefuseNewConnAction::CRefuseNewConnAction(SOCKET server, SOCKET scSocket, char* ip, int port) :
+	CRefuseNewConnAction::CRefuseNewConnAction(SOCKET server, SOCKET scSocket, TCHAR* ip, int port) :
 		CTcpAction(scSocket, server)
 	{
-		strcpy(m_strIP, ip);
+		_tcscpy(m_strIP, ip);
 		m_nPort = port;
 	}
 
@@ -21,7 +21,7 @@ namespace NetworkCommunication
 		return ETcpActionType::RefuseNewConn;
 	}
 
-	char* CRefuseNewConnAction::GetPeerIP()
+	TCHAR* CRefuseNewConnAction::GetPeerIP()
 	{
 		return m_strIP;
 	}

@@ -12,10 +12,11 @@ using namespace NetworkCommunication;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	CNetworkCommuMgr::Init();
+	CNetworkCommuMgr::Init();//网络通信初始化
+
 	CTcpServer server;
-	CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpService((CTcpService*)&server);
 	server.Init("192.168.0.68", 8040);
+	server.AddAllowIP("192.168.0.68");
 	server.Listen();
 
 	_tprintf(_T("输入exit退出程序!\n"));
@@ -40,4 +41,3 @@ int _tmain(int argc, _TCHAR* argv[])
 	CNetworkCommuMgr::Exit();
 	return 0;
 }
-

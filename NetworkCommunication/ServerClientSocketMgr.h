@@ -11,7 +11,7 @@ namespace NetworkCommunication
 	class CServerClientSocketMgr
 	{
 	private:
-		vector<ServerClientSocket> m_vec;//accept socket数据集合
+		vector<ClientSocketData> m_vec;//accept socket数据集合
 
 	public:
 		CServerClientSocketMgr();
@@ -21,18 +21,18 @@ namespace NetworkCommunication
 		// Method:    增加一个accept socket数据
 		// Parameter: accept socket数据
 		//************************************
-		void PushSocketData(ServerClientSocket data);
+		void PushSocketData(ClientSocketData data);
 
 		//************************************
 		// Method:    获取指定服务端客户端socket相关数据
 		// Parameter: 服务端客户端socket	
 		//************************************
-		ServerClientSocket GetDataByServerClientSocket(SOCKET peer);
+		ClientSocketData GetDataByServerClientSocket(SOCKET peer);
 
 		//************************************
 		// Method:    获取指定本地socket的相关数据
 		// Parameter: 本地socket	
 		//************************************
-		ServerClientSocket GetDataByLocalSocket(SOCKET local);
+		ClientSocketData GetDataByLocalSocket(SOCKET local);
 	};
 }

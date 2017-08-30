@@ -12,6 +12,7 @@ namespace NetworkCommunication
 		m_strMsg(NULL), m_bErr(false)
 	{
 		m_strMsg = new TCHAR[100];
+		memset(m_strMsg, 0, sizeof(TCHAR));
 	}
 
 	CSocketAPI::~CSocketAPI()
@@ -62,25 +63,30 @@ namespace NetworkCommunication
 		return socket;
 	}
 
-	SOCKADDR_IN CSocketAPI::GetSocketAddr(char* ip, int port)
+	SOCKADDR_IN CSocketAPI::GetSocketAddr(TCHAR* ip, int port)
 	{
 		m_bErr = false;
 		SOCKADDR_IN addr;
 		addr.sin_family = AF_INET;
 		addr.sin_port = htons(port);
+#ifdef _UNICODE
+		string str = UTF8ToMultiByte(ip);
+		addr.sin_addr.S_un.S_addr = inet_addr(str.c_str());
+#else
 		addr.sin_addr.S_un.S_addr = inet_addr(ip);
+#endif // _UNICODE
 		return addr;
 	}
 
-	bool CSocketAPI::Connect1(SOCKET socket, char* ip, int port)
+	bool CSocketAPI::Connect1(SOCKET socket, TCHAR* ip, int port)
 	{
 		m_bErr = false;
-		SOCKADDR_IN addr = GetSocketAddr(ip, port);
-		int result = ::connect(socket, (SOCKADDR*)&addr, sizeof(addr));
-		if (result == SOCKET_ERROR)
-		{
-			m_bErr = true;
-		}
+		//SOCKADDR_IN addr = GetSocketAddr(ip, port);
+		//int result = ::connect(socket, (SOCKADDR*)&addr, sizeof(addr));
+		//if (result == SOCKET_ERROR)
+		//{
+		//	m_bErr = true;
+		//}
 		return !m_bErr;
 	}
 
@@ -102,7 +108,7 @@ namespace NetworkCommunication
 		return len1;
 	}
 
-	bool CSocketAPI::Bind(SOCKET socket, char* ip, int port)
+	bool CSocketAPI::Bind(SOCKET socket, TCHAR* ip, int port)
 	{
 		SOCKADDR_IN addr = GetSocketAddr(ip, port);
 		int result = bind(socket, (SOCKADDR*)&addr, sizeof(addr));
@@ -137,7 +143,7 @@ namespace NetworkCommunication
 		ioctlsocket(socket, FIONBIO, &mode);
 	}
 
-	SOCKET CSocketAPI::Accept(SOCKET socket, char* ip, int port)
+	SOCKET CSocketAPI::Accept(SOCKET socket, TCHAR* ip, int port)
 	{
 		SOCKADDR_IN addr = GetSocketAddr(ip, port);
 		return Accept(socket, addr);
@@ -157,28 +163,7 @@ namespace NetworkCommunication
 		}
 	}
 
-	//	SOCKADDR_IN CSocketAPI::GetSockAddr(char* ip, int port)
-	//	{
-	//		SOCKADDR_IN addr;
-	//		addr.sin_family = AF_INET;
-	//		addr.sin_port = htons(port);
-	//		if (ip == NULL)
-	//		{
-	//			addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);//绑定本地任意IP地址
-	//		}
-	//		else
-	//		{
-	//#ifdef _UNICODE
-	//			string str = UTF8ToMultiByte((wchar_t*)ip);
-	//			addr.sin_addr.S_un.S_addr = inet_addr(str.c_str());//绑定指定IP地址
-	//#else
-	//			addr.sin_addr.S_un.S_addr = inet_addr((char*)ip);//绑定指定IP地址
-	//#endif // _UNICODE
-	//		}
-	//		return addr;
-	//	}
-
-	void CSocketAPI::GetPeerIpAndPort(SOCKET socket, char* ip, int* port)
+	void CSocketAPI::GetPeerIpAndPort(SOCKET socket, TCHAR* ip, int* port)
 	{
 		SOCKADDR_IN addr;
 		int len = sizeof(addr);
@@ -188,7 +173,12 @@ namespace NetworkCommunication
 			if (ip != NULL)
 			{
 				char* ipTmp = ::inet_ntoa(addr.sin_addr);
+#ifdef _UNICODE
+				wstring str = MultiByteToUTF8(ipTmp);
+				wcscpy(ip, str.c_str());
+#else
 				strcpy(ip, ipTmp);
+#endif // _UNICODE
 			}
 			if (port != NULL)
 			{

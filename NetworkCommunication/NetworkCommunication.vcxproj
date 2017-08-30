@@ -98,9 +98,9 @@
     <ClInclude Include="ServerClientSocketMgr.h" />
     <ClInclude Include="RecvPeerDataAction.h" />
     <ClInclude Include="SendPeerDataResultAction.h" />
-    <ClInclude Include="ServerSocketMgr.h" />
     <ClInclude Include="ServerTcpConnection.h" />
     <ClInclude Include="TcpAction.h" />
+    <ClInclude Include="TcpServerMgr.h" />
     <ClInclude Include="TcpService.h" />
     <ClInclude Include="TcpServiceMgr.h" />
     <ClInclude Include="TFunPointer.h" />
@@ -157,7 +157,6 @@
     <ClCompile Include="SafeLock.cpp" />
     <ClCompile Include="Select.cpp" />
     <ClCompile Include="SendPeerDataResultAction.cpp" />
-    <ClCompile Include="ServerSocketMgr.cpp" />
     <ClCompile Include="ServerTcpConnection.cpp" />
     <ClCompile Include="SocketAPI.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
@@ -171,6 +170,7 @@
     <ClCompile Include="TcpServer.cpp" />
     <ClCompile Include="TcpConnection.cpp" />
     <ClCompile Include="TcpConnectionMgr.cpp" />
+    <ClCompile Include="TcpServerMgr.cpp" />
     <ClCompile Include="TcpService.cpp" />
     <ClCompile Include="TcpServiceMgr.cpp" />
     <ClCompile Include="Thread.cpp" />

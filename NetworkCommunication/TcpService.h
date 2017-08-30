@@ -12,7 +12,7 @@ namespace NetworkCommunication
 		CSocketAPI m_socketAPI;//socket api
 		int m_nSrvType;//服务类型
 		SOCKET m_socket;//socket,服务端(客户端)socket
-		char m_strLocalIP[20];//socket关联的本地IP
+		TCHAR m_strLocalIP[20];//socket关联的本地IP
 		int m_nLocalPort;//socket关联的本地端口
 		LPTcpEventCallback m_lpCallback;//tcp事件回调函数指针
 
@@ -26,11 +26,6 @@ namespace NetworkCommunication
 		int GetSrvType();
 
 		//************************************
-		// Method:    获取服务端socket数据
-		//************************************
-		virtual ServerSocket GetServerSocketData();
-
-		//************************************
 		// Method:    获取socket
 		//************************************
 		SOCKET GetSocket();
@@ -38,7 +33,7 @@ namespace NetworkCommunication
 		//************************************
 		// Method:    获取本地IP
 		//************************************
-		char* GetLocalIP();
+		TCHAR* GetLocalIP();
 
 		//************************************
 		// Method:    获取本地端口
@@ -76,7 +71,7 @@ namespace NetworkCommunication
 		// Parameter: 对端端口
 		// Parameter: 服务端客户端socket
 		//************************************
-		virtual void OnRecvNewConnection(char* ip, int port, SOCKET scSocket);
+		virtual void OnRecvNewConnection(TCHAR* ip, int port, SOCKET scSocket);
 
 		//************************************
 		// Method:    收到对端数据事件处理
@@ -89,7 +84,7 @@ namespace NetworkCommunication
 		// Parameter: 对端IP
 		// Parameter: 对端端口
 		//************************************
-		virtual void OnPeerCloseConn(char* ip, int port);
+		virtual void OnPeerCloseConn(TCHAR* ip, int port);
 
 		//************************************
 		// Method:    发送对端数据完成事件处理
@@ -102,13 +97,13 @@ namespace NetworkCommunication
 		// Parameter: 对端IP
 		// Parameter: 对端端口
 		//************************************
-		virtual void OnNetError(char* ip, int port);
+		virtual void OnNetError(TCHAR* ip, int port);
 
 		//************************************
 		// Method:    拒绝新客户端连接事件处理
 		// Parameter: 对端IP
 		// Parameter: 对端端口
 		//************************************
-		virtual void OnRefuseNewConn(char* ip, int port);
+		virtual void OnRefuseNewConn(TCHAR* ip, int port);
 	};
 }
