@@ -62,7 +62,7 @@ namespace NetworkCommunication
 		}
 		if (!exist)
 		{
-			TCHAR* strIP = new TCHAR[20]{0};
+			TCHAR* strIP = new TCHAR[MAXIPSTRELN]{0};
 			_tcscpy(strIP, ip);
 			m_vecAllowIP.push_back(strIP);
 		}

@@ -29,10 +29,17 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg void OnBnClickedButton2();
 	DECLARE_MESSAGE_MAP()
 protected:
 	afx_msg void OnBnClickedButton1();
 	afx_msg LRESULT OnRecvNewConnection(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnRecvPeerData(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnPeerClose(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnSendPeerDataResult(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnRefuseNewConnection(WPARAM wParam, LPARAM lParam);
+protected:
+	void ShowLog(CString strLog);
 protected:
 	// 服务端IP控件
 	CIPAddressCtrl m_ipServerIP;
@@ -41,4 +48,10 @@ protected:
 	CButton m_btnListen;
 	// 客户端数据控件
 	CListCtrl m_lcClientData;
+	CButton m_btnSend;
+protected:
+	// 接收数据文本框
+	CEdit m_editRecv;
+	// 发送文本框
+	CEdit m_editSend;
 };

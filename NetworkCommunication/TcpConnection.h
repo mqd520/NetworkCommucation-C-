@@ -2,6 +2,7 @@
 #include "SocketAPI.h"
 #include "TcpService.h"
 #include "SendPeerDataResultAction.h"
+#include "RecvPeerDataAction.h"
 
 using namespace std;
 
@@ -47,14 +48,14 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    收到对端数据事件处理
-		// Parameter: 对端数据
+		// Parameter: tcp事件
 		//************************************
-		virtual void OnRecvPeerData(PeerData* pData);
+		virtual void OnRecvPeerData(CRecvPeerDataAction* pAction);
 
 		//************************************
-		// Method:    对端主动关闭socket事件处理
+		// Method:    tcp连接断开事件处理
 		//************************************
-		virtual void OnPeerCloseConn();
+		virtual void OnTcpDisconnect(int reason);
 
 		//************************************
 		// Method:    发送对端数据完成事件处理

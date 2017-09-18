@@ -31,9 +31,6 @@
     <Filter Include="00 公共">
       <UniqueIdentifier>{43f7a872-35aa-4517-b49f-994aa00f3b79}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\03 Tcp连接">
-      <UniqueIdentifier>{f6490646-483b-4fd3-bb32-12879705b7f3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05 Tcp管理\01 Tcp">
       <UniqueIdentifier>{f396dfe6-e594-4801-bfe7-cd750aed8ca3}</UniqueIdentifier>
     </Filter>
@@ -43,16 +40,19 @@
     <Filter Include="05 Tcp管理\00 Common">
       <UniqueIdentifier>{84cf6a5d-912f-477b-9847-892bfca39bb9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\04 Tcp服务">
+    <Filter Include="05 Tcp管理\03 Tcp服务事件">
+      <UniqueIdentifier>{ea75656b-4c43-4df2-851b-ebad2d01f7b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05 Tcp管理\04 Tcp连接">
+      <UniqueIdentifier>{f6490646-483b-4fd3-bb32-12879705b7f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05 Tcp管理\05 Tcp服务">
       <UniqueIdentifier>{5fb097eb-90ed-44ce-a91c-ed3dddcb115d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\07 Socket数据管理">
-      <UniqueIdentifier>{c6fc97b1-7ba1-4d16-a247-ef587d65c0cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05 Tcp管理\05 Tcp客户端">
+    <Filter Include="05 Tcp管理\06 Tcp客户端">
       <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\06 Tcp服务端">
+    <Filter Include="05 Tcp管理\07 Tcp服务端">
       <UniqueIdentifier>{bc7a4d26-2d09-44af-bd90-fdab95bddefe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -69,12 +69,6 @@
     <ClInclude Include="MemoryTool.h">
       <Filter>00 公共</Filter>
     </ClInclude>
-    <ClInclude Include="TcpClient.h">
-      <Filter>05 Tcp管理\05 Tcp客户端</Filter>
-    </ClInclude>
-    <ClInclude Include="TcpClientT.h">
-      <Filter>05 Tcp管理\05 Tcp客户端</Filter>
-    </ClInclude>
     <ClInclude Include="EncryptBuffer.h">
       <Filter>00 公共</Filter>
     </ClInclude>
@@ -90,11 +84,8 @@
     <ClInclude Include="NetworkStream.h">
       <Filter>00 公共</Filter>
     </ClInclude>
-    <ClInclude Include="ProtocolClientMgr.h">
-      <Filter>06 通信协议管理\01 通信协议客户端</Filter>
-    </ClInclude>
     <ClInclude Include="TcpServer.h">
-      <Filter>05 Tcp管理\06 Tcp服务端</Filter>
+      <Filter>05 Tcp管理\07 Tcp服务端</Filter>
     </ClInclude>
     <ClInclude Include="PacketBase.h">
       <Filter>06 通信协议管理</Filter>
@@ -142,10 +133,10 @@
       <Filter>00 公共</Filter>
     </ClInclude>
     <ClInclude Include="TcpConnection.h">
-      <Filter>05 Tcp管理\03 Tcp连接</Filter>
+      <Filter>05 Tcp管理\04 Tcp连接</Filter>
     </ClInclude>
     <ClInclude Include="TcpConnectionMgr.h">
-      <Filter>05 Tcp管理\03 Tcp连接</Filter>
+      <Filter>05 Tcp管理\04 Tcp连接</Filter>
     </ClInclude>
     <ClInclude Include="NetCommuMgr.h">
       <Filter>05 Tcp管理\00 Common</Filter>
@@ -160,10 +151,10 @@
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClInclude>
     <ClInclude Include="TcpService.h">
-      <Filter>05 Tcp管理\04 Tcp服务</Filter>
+      <Filter>05 Tcp管理\05 Tcp服务</Filter>
     </ClInclude>
     <ClInclude Include="TcpServiceMgr.h">
-      <Filter>05 Tcp管理\04 Tcp服务</Filter>
+      <Filter>05 Tcp管理\05 Tcp服务</Filter>
     </ClInclude>
     <ClInclude Include="PeerCloseAction.h">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
@@ -178,13 +169,7 @@
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClInclude>
     <ClInclude Include="ServerTcpConnection.h">
-      <Filter>05 Tcp管理\03 Tcp连接</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerClientSocketMgr.h">
-      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientSocketMgr.h">
-      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
+      <Filter>05 Tcp管理\04 Tcp连接</Filter>
     </ClInclude>
     <ClInclude Include="RecvNewConnAction.h">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
@@ -198,11 +183,32 @@
     <ClInclude Include="AsyncSendDataAction.h">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClInclude>
-    <ClInclude Include="RefuseNewConnAction.h">
+    <ClInclude Include="TcpServerMgr.h">
+      <Filter>05 Tcp管理\07 Tcp服务端</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadEntry.h">
+      <Filter>03 线程</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpClient.h">
+      <Filter>05 Tcp管理\06 Tcp客户端</Filter>
+    </ClInclude>
+    <ClInclude Include="RecvNewConnEvt.h">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
+    </ClInclude>
+    <ClInclude Include="TcpSrvEvt.h">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
+    </ClInclude>
+    <ClInclude Include="RefuseNewConnEvt.h">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
+    </ClInclude>
+    <ClInclude Include="RecvPeerDataEvt.h">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketExceptAction.h">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClInclude>
-    <ClInclude Include="TcpServerMgr.h">
-      <Filter>05 Tcp管理\06 Tcp服务端</Filter>
+    <ClInclude Include="TcpDisconnectEvt.h">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -213,7 +219,7 @@
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp">
-      <Filter>05 Tcp管理\05 Tcp客户端</Filter>
+      <Filter>05 Tcp管理\06 Tcp客户端</Filter>
     </ClCompile>
     <ClCompile Include="EncryptBuffer.cpp">
       <Filter>00 公共</Filter>
@@ -230,11 +236,8 @@
     <ClCompile Include="NetworkStream.cpp">
       <Filter>00 公共</Filter>
     </ClCompile>
-    <ClCompile Include="ProtocolClientMgr.cpp">
-      <Filter>06 通信协议管理\01 通信协议客户端</Filter>
-    </ClCompile>
     <ClCompile Include="TcpServer.cpp">
-      <Filter>05 Tcp管理\06 Tcp服务端</Filter>
+      <Filter>05 Tcp管理\07 Tcp服务端</Filter>
     </ClCompile>
     <ClCompile Include="PacketBase.cpp">
       <Filter>06 通信协议管理</Filter>
@@ -276,10 +279,10 @@
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="TcpConnection.cpp">
-      <Filter>05 Tcp管理\03 Tcp连接</Filter>
+      <Filter>05 Tcp管理\04 Tcp连接</Filter>
     </ClCompile>
     <ClCompile Include="TcpConnectionMgr.cpp">
-      <Filter>05 Tcp管理\03 Tcp连接</Filter>
+      <Filter>05 Tcp管理\04 Tcp连接</Filter>
     </ClCompile>
     <ClCompile Include="NetCommuMgr.cpp">
       <Filter>05 Tcp管理\00 Common</Filter>
@@ -291,10 +294,10 @@
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClCompile>
     <ClCompile Include="TcpService.cpp">
-      <Filter>05 Tcp管理\04 Tcp服务</Filter>
+      <Filter>05 Tcp管理\05 Tcp服务</Filter>
     </ClCompile>
     <ClCompile Include="TcpServiceMgr.cpp">
-      <Filter>05 Tcp管理\04 Tcp服务</Filter>
+      <Filter>05 Tcp管理\05 Tcp服务</Filter>
     </ClCompile>
     <ClCompile Include="PeerCloseAction.cpp">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
@@ -309,13 +312,7 @@
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClCompile>
     <ClCompile Include="ServerTcpConnection.cpp">
-      <Filter>05 Tcp管理\03 Tcp连接</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerClientSocketMgr.cpp">
-      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientSocketMgr.cpp">
-      <Filter>05 Tcp管理\07 Socket数据管理</Filter>
+      <Filter>05 Tcp管理\04 Tcp连接</Filter>
     </ClCompile>
     <ClCompile Include="RecvNewConnAction.cpp">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
@@ -329,11 +326,29 @@
     <ClCompile Include="AsyncSendDataAction.cpp">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClCompile>
-    <ClCompile Include="RefuseNewConnAction.cpp">
+    <ClCompile Include="TcpServerMgr.cpp">
+      <Filter>05 Tcp管理\07 Tcp服务端</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadEntry.cpp">
+      <Filter>03 线程</Filter>
+    </ClCompile>
+    <ClCompile Include="RecvNewConnEvt.cpp">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpSrvEvt.cpp">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
+    </ClCompile>
+    <ClCompile Include="RefuseNewConnEvt.cpp">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
+    </ClCompile>
+    <ClCompile Include="RecvPeerDataEvt.cpp">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketExceptAction.cpp">
       <Filter>05 Tcp管理\02 Tcp动作</Filter>
     </ClCompile>
-    <ClCompile Include="TcpServerMgr.cpp">
-      <Filter>05 Tcp管理\06 Tcp服务端</Filter>
+    <ClCompile Include="TcpDisconnectEvt.cpp">
+      <Filter>05 Tcp管理\03 Tcp服务事件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

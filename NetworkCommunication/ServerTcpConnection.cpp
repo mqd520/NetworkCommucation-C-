@@ -6,8 +6,8 @@
 
 namespace NetworkCommunication
 {
-	CServerTcpConnection::CServerTcpConnection(CTcpService* pTcpSrv, SOCKET scSocket, SOCKET server) :
-		CTcpConnection(pTcpSrv, scSocket),
+	CServerTcpConnection::CServerTcpConnection(CTcpService* pTcpSrv, SOCKET client, SOCKET server) :
+		CTcpConnection(pTcpSrv, client),
 		m_serverSocket(server)
 	{
 
@@ -23,21 +23,21 @@ namespace NetworkCommunication
 		return m_serverSocket;
 	}
 
-	void CServerTcpConnection::OnRecvPeerData(PeerData* pData)
+	void CServerTcpConnection::OnRecvPeerData(CRecvPeerDataAction* pAction)
 	{
-#ifdef _DEBUG
-		PrintfDebug(_T("[%s:%d][socket: %d] recved [%s:%d] data, size: %d, client socket: %d"),
-			m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), pData->ip, pData->port, pData->len, m_sendrecvSocket);
-#endif // _DEBUG
+		TCHAR ip[MAXIPSTRELN];
+		int port = 0;
+		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
 
-		__super::OnRecvPeerData(pData);
+		PrintfInfo(_T("[%s:%d][socket: %d] recved [%s:%d] data, size: %d, client socket: %d"),
+			m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), ip, port, pAction->GetLen(), m_sendrecvSocket);
+
+		__super::OnRecvPeerData(pAction);
 	}
 
-	void CServerTcpConnection::OnPeerCloseConn()
+	void CServerTcpConnection::OnTcpDisconnect(int reason)
 	{
-		__super::OnPeerCloseConn();
-
-		TCHAR ip[20];
+		TCHAR ip[MAXIPSTRELN];
 		int port = 0;
 		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
 
@@ -46,14 +46,14 @@ namespace NetworkCommunication
 			ip, port, m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket);
 #endif // _DEBUG
 
-		m_pTcpSrv->OnPeerCloseConn(ip, port);
+		__super::OnTcpDisconnect(reason);
 	}
 
 	void CServerTcpConnection::OnSendDataCompleted(SendPeerDataResult* pResult)
 	{
 		__super::OnSendDataCompleted(pResult);
 
-		TCHAR ip[20];
+		TCHAR ip[MAXIPSTRELN];
 		int port = 0;
 		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
 
@@ -73,14 +73,14 @@ namespace NetworkCommunication
 		}
 #endif // _DEBUG
 
-		m_pTcpSrv->OnSendPeerDataCompleted(pResult);
+		//m_pTcpSrv->OnSendPeerDataCompleted(pResult);
 	}
 
 	void CServerTcpConnection::OnNetError()
 	{
 		__super::OnNetError();
 
-		TCHAR ip[20];
+		TCHAR ip[MAXIPSTRELN];
 		int port = 0;
 		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
 
@@ -89,6 +89,6 @@ namespace NetworkCommunication
 			m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket, ip, port);
 #endif // _DEBUG
 
-		m_pTcpSrv->OnNetError(ip, port);
+		//m_pTcpSrv->OnNetError(ip, port);
 	}
 }

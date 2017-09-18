@@ -13,10 +13,10 @@ namespace NetworkCommunication
 		//************************************
 		// Method:    构造函数
 		// Parameter: tcp服务对象
-		// Parameter: 服务端的客户端socket
+		// Parameter: 客户端socket
 		// Parameter: 服务端socket
 		//************************************
-		CServerTcpConnection(CTcpService* pTcpSrv, SOCKET scSocket, SOCKET server);
+		CServerTcpConnection(CTcpService* pTcpSrv, SOCKET client, SOCKET server);
 		~CServerTcpConnection();
 
 		//获取服务端socket
@@ -24,14 +24,14 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    收到对端数据事件处理
-		// Parameter: 对端数据
+		// Parameter: tcp事件
 		//************************************
-		void OnRecvPeerData(PeerData* pData);
+		void OnRecvPeerData(CRecvPeerDataAction* pAction);
 
 		//************************************
-		// Method:    对端主动关闭socket事件处理
+		// Method:    tcp连接断开事件处理
 		//************************************
-		void OnPeerCloseConn();
+		void OnTcpDisconnect(int reason);
 
 		//************************************
 		// Method:    发送对端数据完成事件处理

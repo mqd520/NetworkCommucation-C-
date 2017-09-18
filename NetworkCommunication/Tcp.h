@@ -10,25 +10,25 @@
 #include "SendPeerDataResultAction.h"
 #include "NetErrorAction.h"
 #include "AsyncSendDataAction.h"
-#include "RefuseNewConnAction.h"
+#include "SocketExceptAction.h"
 
 using namespace std;
 
 namespace NetworkCommunication
 {
-	//处理tcp动作
-	class CTcp
+	//tcp类,处理tcp各种事件
+	class CTcp : public CThreadEntry
 	{
 	private:
-		queue<CTcpAction*> m_quTcpAction;//tcp动作队列
-		CThread* m_threadAccept;//处理新socket连接的线程
+		queue<CTcpAction*> m_queueTcpAction;//tcp动作队列
+		CThread* m_thread;//线程对象
 		CSocketAPI m_socketAPI;//socket api
 
 	private:
 		//************************************
-		// Method:    处理tcp动作队列
+		// Method:    处理tcp动作
 		//************************************
-		void ProcessQueue();
+		void ProcessTcpAction();
 
 		//************************************
 		// Method:    处理收到新连接动作
@@ -67,24 +67,24 @@ namespace NetworkCommunication
 		void ProcessNetError(CNetErrorAction* pAction);
 
 		//************************************
-		// Method:    处理拒绝新客户端连接动作
-		// Parameter: 拒绝新客户端连接动作
+		// Method:    处理socket异常
+		// Parameter: socket异常动作
 		//************************************
-		void ProcessRefuseNewConn(CRefuseNewConnAction* pAction);
+		void ProcessSocketExcept(CSocketExcept* pAction);
 
 	public:
 		CTcp();
 		~CTcp();
 
 		//************************************
-		// Method:    运行处理新连接线程
+		// Method:    运行线程
 		//************************************
 		void Run();
 
 		//************************************
-		// Method:    accept线程入口点
+		// Method:    线程运行事件处理
 		//************************************
-		void ThreadEntry();
+		void OnThreadRun();
 
 		//************************************
 		// Method:    增加一个tcp动作

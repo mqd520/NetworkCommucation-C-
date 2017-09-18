@@ -5,6 +5,8 @@
 #include "RecvPeerDataAction.h"
 #include "NetCommuMgr.h"
 #include "SendPeerDataResultAction.h"
+#include "RecvPeerDataEvt.h"
+#include "TcpDisconnectEvt.h"
 
 namespace NetworkCommunication
 {
@@ -39,6 +41,11 @@ namespace NetworkCommunication
 			*actualLen = len1;
 		}
 
+		if (buf)
+		{
+			delete buf;
+		}
+
 		//创建发送结果动作
 		SendPeerDataResult* pData = new SendPeerDataResult();
 		pData->success = result;
@@ -50,13 +57,15 @@ namespace NetworkCommunication
 		return result;
 	}
 
-	void CTcpConnection::OnRecvPeerData(PeerData* pData)
+	void CTcpConnection::OnRecvPeerData(CRecvPeerDataAction* pAction)
 	{
-		m_pTcpSrv->OnRecvPeerData(pData);
+		CRecvPeerDataEvt* pEvent = new CRecvPeerDataEvt(m_pTcpSrv, m_sendrecvSocket, pAction->GetBuf(), pAction->GetLen());
+		CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpEvent(pEvent);
 	}
 
-	void CTcpConnection::OnPeerCloseConn()
+	void CTcpConnection::OnTcpDisconnect(int reason)
 	{
+		CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpEvent(new CTcpDisconnectEvt(reason, m_pTcpSrv, m_sendrecvSocket));
 		CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除指定发送(接收)数据的socket关联的tcp连接
 	}
 

@@ -27,14 +27,19 @@ TcpSessionData CTcpDataSessionDataMgr::GetDataByIndex(int index)
 	return m_vec[index];
 }
 
-void CTcpDataSessionDataMgr::RemoveByClientSocket(SOCKET client)
+int CTcpDataSessionDataMgr::RemoveByClientSocket(SOCKET client)
 {
+	int index = -1;
+	int i = 0;
 	for (vector<TcpSessionData>::iterator it = m_vec.begin(); it < m_vec.end(); it++)
 	{
 		if (it->client == client)
 		{
 			m_vec.erase(it);
+			index = i;
 			break;
 		}
+		i++;
 	}
+	return index;
 }

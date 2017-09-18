@@ -16,6 +16,7 @@ namespace NetworkCommunication
 		CSocketAPI::Init();
 		GetSelect()->Run();//启动select线程
 		GetTcp()->Run();//启动tcp线程
+		GetTcpServiceMgr()->Run();//启动tcp事件线程
 	}
 
 	void CNetworkCommuMgr::Exit()

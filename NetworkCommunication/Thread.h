@@ -1,135 +1,31 @@
 #pragma once
-
 #include "ThreadEvent.h"
 #include <process.h>
-
-typedef void (*LPThreadStart)();
+#include "ThreadEntry.h"
 
 namespace NetworkCommunication
 {
+	//线程类
 	class CThread
 	{
 	private:
 		CThreadEvent m_evtReady;
 		CThreadEvent m_evtGiven;
-		LPThreadStart m_lpfnThreadStart;
-		//T* m_pInstance;//回调函数指针所属成员对象
-		//ThreadStart m_lpfnThreadStart;//回调函数指针
+		CThreadEntry* m_pEntry;
 
 	private:
-		static unsigned WINAPI  Run(LPVOID lParam)
-		{
-			CThread* pThread = (CThread*)lParam;
-			if (pThread == NULL)
-			{
-				return 0;
-			}
-			pThread->Execute();
-			pThread->Free();
-			::_endthreadex(0);
-			return 0;
-		}
+		static unsigned WINAPI  Run(LPVOID lParam);
 
 	public:
-		CThread(){};
-		~CThread(){};
+		CThread(CThreadEntry* pEntry);
+		~CThread();
 
-		void SetCallback(LPThreadStart lpfn)
-		{
-			m_lpfnThreadStart = lpfn;
-		}
+		bool Run();
 
-		//void SetCallback(ThreadStart start, T* instance)
-		//{
-		//	m_lpfnThreadStart = start;
-		//	m_pInstance = instance;
-		//}
+		void Wait(int millsecond = 0);
 
-		bool Start()
-		{
-			HANDLE hThread = (HANDLE)_beginthreadex(0, 0, Run, this, 0, NULL);
-			if (hThread)
-			{
-				::CloseHandle(hThread);
-			}
-			return (hThread != 0);
-		}
+		int Execute();
 
-		void Wait()
-		{
-			m_evtReady.Wait();
-		}
-
-		int Execute()
-		{
-			//m_evtReady.Active();
-			//m_evtGiven.Wait();
-			if (m_lpfnThreadStart)
-			{
-				m_lpfnThreadStart();
-			}
-			return 0;
-		}
-
-		void Free()
-		{
-			//CNetworkCommuMgr::GetThreadMgr()->AddRecycleThread(this);
-		}
+		void Free();
 	};
-
-	//template<typename T>
-	//void CThread::SetCallback(ThreadStart start, T* instance)
-	//{
-	//	m_lpfnThreadStart = start;
-	//	m_pInstance = instance;
-	//}
-
-	//template<typename T>
-	//bool CThread::Start()
-	//{
-	//	HANDLE hThread = (HANDLE)_beginthreadex(0, 0, Run, this, 0, NULL);
-	//	if (hThread)
-	//	{
-	//		::CloseHandle(hThread);
-	//	}
-	//	return (hThread != 0);
-	//}
-
-	//template<typename T>
-	//unsigned WINAPI CThread::Run(LPVOID lParam)
-	//{
-	//	CThread* pThread = (CThread*)lParam;
-	//	if (pThread == NULL)
-	//	{
-	//		return 0;
-	//	}
-	//	pThread->Execute();
-	//	pThread->Free();
-	//	_endthreadex(0);
-	//	return 0;
-	//}
-
-	//template<typename T>
-	//void CThread::Free()
-	//{
-	//	CNetworkCommuMgr::GetThreadMgr()->AddRecycleThread(this);
-	//}
-
-	//template<typename T>
-	//void CThread::Wait()
-	//{
-	//	m_evtReady.Wait();
-	//}
-
-	//template<typename T>
-	//int CThread::Execute()
-	//{
-	//	m_evtReady.Active();
-	//	m_evtGiven.Wait();
-	//	if (m_lpfnThreadStart)
-	//	{
-	//		(m_pInstance->*m_lpfnThreadStart)();
-	//	}
-	//	return 0;
-	//}
 }

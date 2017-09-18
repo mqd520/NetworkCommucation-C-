@@ -1,73 +1,62 @@
 #include "stdafx.h"
-#include "tcp.h"
+#include "Common.h"
 #include "NetCommuMgr.h"
+#include "tcp.h"
 #include "TcpConnectionMgr.h"
 #include "TcpConnection.h"
-#include "RecvNewConnAction.h"
-#include "Common.h"
 #include "ServerTcpConnection.h"
+#include "TcpService.h"
 #include "TcpServer.h"
+#include "RecvNewConnEvt.h"
+#include "RefuseNewConnEvt.h"
 
 namespace NetworkCommunication
 {
-	void OnAcceptThreadStart();
-
-	CTcp::CTcp() :
-		m_threadAccept(NULL)
+	CTcp::CTcp()
 	{
-
+		m_thread = new CThread(this);
 	}
 
 	CTcp::~CTcp()
 	{
-		if (m_threadAccept)
+		if (m_thread)
 		{
-			delete m_threadAccept;
+			delete m_thread;
 		}
-	}
-
-	void OnAcceptThreadStart()
-	{
-		PrintfInfo(_T("tcp thread started"));
-		CNetworkCommuMgr::GetTcp()->ThreadEntry();
 	}
 
 	void CTcp::Run()
 	{
-		if (m_threadAccept == NULL)
+		if (true)
 		{
-			m_threadAccept = new CThread();
-			m_threadAccept->SetCallback(OnAcceptThreadStart);
-			m_threadAccept->Start();
+			m_thread->Run();
+			PrintfInfo(_T("Tcp thread started"));
 		}
 	}
 
-	void CTcp::ThreadEntry()
+	void CTcp::OnThreadRun()
 	{
-		while (true)
+		if (m_queueTcpAction.size() > 0)//队列不为空
 		{
-			if (m_quTcpAction.size() > 0)//队列不为空
-			{
-				ProcessQueue();
-			}
-			else
-			{
-				Sleep(10);
-			}
+			ProcessTcpAction();
+		}
+		else
+		{
+			m_thread->Wait(5);
 		}
 	}
 
 	void CTcp::PushTcpAction(CTcpAction* pAction)
 	{
-		m_quTcpAction.push(pAction);
+		m_queueTcpAction.push(pAction);
 	}
 
-	void CTcp::ProcessQueue()
+	void CTcp::ProcessTcpAction()
 	{
-		while ((int)m_quTcpAction.size() > 0)
+		while ((int)m_queueTcpAction.size() > 0)
 		{
-			CTcpAction* pAction = m_quTcpAction.front();
-			m_quTcpAction.pop();
+			CTcpAction* pAction = m_queueTcpAction.front();
+			m_queueTcpAction.pop();
 
 			switch (pAction->GetActionType())
 			{
@@ -89,10 +78,11 @@ namespace NetworkCommunication
 			case  ETcpActionType::NetError://网络错误动作
 				ProcessNetError((CNetErrorAction*)pAction);
 				break;
-			case ETcpActionType::RefuseNewConn://拒绝客户端连接动作
-				ProcessRefuseNewConn((CRefuseNewConnAction*)pAction);
+			case ETcpActionType::SocketExcept://socket异常动作
+				ProcessSocketExcept((CSocketExcept*)pAction);
 				break;
 			}
+
 			delete pAction;
 		}
 	}
@@ -100,12 +90,12 @@ namespace NetworkCommunication
 	void CTcp::ProcessRecvNewConnection(CRecvNewConnAction* pAction)
 	{
 		SOCKET serverSocket = pAction->GetAttachmentSocket();//获取服务端socket
-		SOCKET sendrecvSocket = pAction->GetSendRecvSocket();//获取发送(接收)数据的socket
+		SOCKET clientSocket = pAction->GetSendRecvSocket();//获取客户端socket
 
 		//获取客户端信息
-		TCHAR ip[20];
+		TCHAR ip[MAXIPSTRELN];
 		int port = 0;
-		m_socketAPI.GetPeerIpAndPort(sendrecvSocket, ip, &port);
+		m_socketAPI.GetPeerIpAndPort(clientSocket, ip, &port);
 
 		//获取服务端socket关联的tcp服务对象
 		CTcpService* pTcpSrv = CNetworkCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(serverSocket);
@@ -113,47 +103,48 @@ namespace NetworkCommunication
 		{
 			if (!((CTcpServer*)pTcpSrv)->IsAllow(ip))//判断客户端IP是否被服务端允许
 			{
-				m_socketAPI.CloseSocket(sendrecvSocket);
+				m_socketAPI.CloseSocket(clientSocket);
 
-				//创建拒绝客户端连接动作
-				CRefuseNewConnAction* pAction = new CRefuseNewConnAction(serverSocket, sendrecvSocket, ip, port);
-				PushTcpAction(pAction);
-				return;
+				PrintfInfo(_T("[%s:%d][socket: %d] refuse a new connection [%s:%d][socket: %d]"),
+					pTcpSrv->GetLocalIP(), pTcpSrv->GetLocalPort(), pTcpSrv->GetSocket(), ip, port, clientSocket);
+				CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpEvent(new CRefuseNewConnEvt(pTcpSrv, clientSocket, ip, port));
 			}
-
-			//创建tcp连接对象
-			CServerTcpConnection* conn = new CServerTcpConnection(pTcpSrv, sendrecvSocket, serverSocket);
-			CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
-
-			PrintfDebug(_T("[%s:%d][socket: %d] recv a new connection [%s:%d], server client socket: %d"),
-				pTcpSrv->GetLocalIP(), pTcpSrv->GetLocalPort(), pTcpSrv->GetSocket(), ip, port, sendrecvSocket);
-			pTcpSrv->OnRecvNewConnection(ip, port, sendrecvSocket);//通知tcp服务端对象处理动作
+			else
+			{
+				PrintfInfo(_T("[%s:%d][socket: %d] recv a new connection [%s:%d][socket: %d]"),
+					pTcpSrv->GetLocalIP(), pTcpSrv->GetLocalPort(), pTcpSrv->GetSocket(), ip, port, clientSocket);
+				CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpEvent(new CRecvNewConnEvt(pTcpSrv, clientSocket));
+			}
 		}
 	}
 
 	void CTcp::ProcessRecvPeerData(CRecvPeerDataAction* pAction)
 	{
 		SOCKET recv = pAction->GetSendRecvSocket();//获取接收数据的socket
-		CTcpConnection* conn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(recv);//获取tcp连接对象
-		if (conn)
+
+		CTcpService* pTcpSrv = NULL;//tcp服务对象
+		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(recv);//获取tcp连接对象
+		if (pConn)
 		{
-			PeerData* pData = pAction->GetPeerData();
-			TCHAR ip[20];
-			int port = 0;
-			m_socketAPI.GetPeerIpAndPort(recv, ip, &port);
-			_tcscpy(pData->ip, ip);
-			pData->port = port;
-			conn->OnRecvPeerData(pData);
+			pTcpSrv = pConn->GetTcpService();//获取tcp服务对象
+			pConn->OnRecvPeerData(pAction);
+		}
+		else
+		{
+			delete pAction->GetBuf();
 		}
 	}
 
 	void CTcp::ProcessPeerCloseConn(CPeerCloseAction* pAction)
 	{
-		SOCKET recv = pAction->GetSendRecvSocket();//获取接收数据的socket
-		CTcpConnection* conn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(recv);//获取tcp连接对象
-		if (conn)
+		SOCKET sendrecvSocket = pAction->GetSendRecvSocket();//获取发送(接收)数据的socket
+
+		CTcpService* pTcpSrv = NULL;//tcp服务对象
+		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(sendrecvSocket);//获取tcp连接对象
+		if (pConn)
 		{
-			conn->OnPeerCloseConn();
+			pTcpSrv = pConn->GetTcpService();//获取tcp服务对象
+			pConn->OnTcpDisconnect(ETcpDisconnectReason::Peer);
 		}
 	}
 
@@ -175,6 +166,8 @@ namespace NetworkCommunication
 		if (conn)
 		{
 			conn->OnSendDataCompleted(pAction->GetResult());
+
+			//CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpEvent(pAction);
 		}
 	}
 
@@ -188,19 +181,22 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CTcp::ProcessRefuseNewConn(CRefuseNewConnAction* pAction)
+	void CTcp::ProcessSocketExcept(CSocketExcept* pAction)
 	{
-		SOCKET serverSocket = pAction->GetAttachmentSocket();//获取服务端socket
-		SOCKET scSocket = pAction->GetSendRecvSocket();//获取被拒绝的服务端的客户端socket
+		PrintfError(_T("socket except: %d"), pAction->GetAttachmentSocket());
+		CNetworkCommuMgr::GetSelect()->RemoveSocket(pAction->GetAttachmentSocket());
 
-		//获取服务端socket关联的tcp服务对象
-		CTcpService* pTcpSrv = CNetworkCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(serverSocket);
-		if (pTcpSrv)
+		if (pAction->GetSendRecvSocket() == ESelectSocketType::ReadWriteData)
 		{
-			PrintfDebug(_T("server [%s:%d][socket: %d] refuse the connection: %s:%d, server client socket: %d"),
-				pTcpSrv->GetLocalIP(), pTcpSrv->GetLocalPort(), pTcpSrv->GetSocket(), pAction->GetPeerIP(), pAction->GetPeerPort(), scSocket);
+			CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(pAction->GetAttachmentSocket());//获取tcp连接对象
+			if (pConn)
+			{
+				pConn->OnTcpDisconnect(ETcpDisconnectReason::Except);
+			}
+		}
+		else if (pAction->GetSendRecvSocket() == ESelectSocketType::RecvConn)
+		{
 
-			pTcpSrv->OnRefuseNewConn(pAction->GetPeerIP(), pAction->GetPeerPort());
 		}
 	}
 }

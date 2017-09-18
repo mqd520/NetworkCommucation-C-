@@ -6,47 +6,88 @@
 #include "Def.h"
 #include "Common.h"
 #include "NetErrorAction.h"
+#include "SocketExceptAction.h"
 
 namespace NetworkCommunication
 {
-	void OnSelectThreadStart();
-
 	CSelect::CSelect() :
-		m_bExit(false),
-		m_threadSelect(NULL),
 		m_selectTimeout({ 0, 0 }),
 		m_nBufLen(TCPRECVBUFFERSIZE)
 	{
-
+		m_thread = new CThread(this);
 	}
 
 	CSelect::~CSelect()
 	{
-		if (m_threadSelect)
+		if (m_thread)
 		{
-			delete m_threadSelect;
+			delete m_thread;
 		}
 	}
 
 	void CSelect::Run()
 	{
-		if (m_threadSelect == NULL)
+		if (true)
 		{
-			m_threadSelect = new CThread();
-			m_threadSelect->SetCallback(OnSelectThreadStart);
-			m_threadSelect->Start();
+			m_thread->Run();
+			PrintfInfo(_T("Select thread started"));
 		}
 	}
 
-	void OnSelectThreadStart()
+	void CSelect::OnThreadRun()
 	{
-		PrintfInfo(_T("select thread started"));
-		CNetworkCommuMgr::GetSelect()->ThreadEntry();
+		if (m_vecSocket.size() > 0)
+		{
+			ProcessSocket();
+		}
+		else
+		{
+			m_thread->Wait(5);
+		}
 	}
 
-	void CSelect::ThreadEntry()
+	void CSelect::ProcessSocket()
 	{
-		StartSelect();
+		//Sleep(2 * 1000);//调试时使用,无意义,可注释掉
+
+		CalcSocketGroup();//对socket进行分组
+
+		if (m_group.size() > 0)
+		{
+			//遍历分组集合
+			for (int i = 0; i < (int)m_group.size(); i++)
+			{
+				FD_ZERO(&m_exceptFdSet);
+				FD_ZERO(&m_readFdSet);
+
+				//遍历分组,将socket分别加入异常集合和读写集合
+				for (int j = 0; j < (int)m_group[i].size(); j++)
+				{
+					FD_SET(m_group[i][j].socket, &m_exceptFdSet);
+					FD_SET(m_group[i][j].socket, &m_readFdSet);
+				}
+
+				m_socketAPI.Select(0, &m_readFdSet, NULL, &m_exceptFdSet, &m_selectTimeout);
+
+				//检查socket的"异常"信号
+				if (m_exceptFdSet.fd_count > 0)
+				{
+					for (int k = 0; k < (int)m_group[i].size(); k++)
+					{
+						CheckSocketExcept(m_group[i][k]);
+					}
+				}
+
+				//检查socket的"可读"信号
+				if (m_readFdSet.fd_count > 0)
+				{
+					for (int k = 0; k < (int)m_group[i].size(); k++)
+					{
+						CheckSocketCanRead(m_group[i][k]);
+					}
+				}
+			}
+		}
 	}
 
 	void CSelect::AddSocket(SOCKET socket, int type)
@@ -74,45 +115,6 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CSelect::StartSelect()
-	{
-		while (true)
-		{
-			//Sleep(2 * 1000);//调试时使用,无意义,可注释掉
-
-			CalcSocketGroup();//对socket进行分组
-
-			if (m_group.size() > 0)
-			{
-				for (int i = 0; i < (int)m_group.size(); i++)
-				{
-					FD_ZERO(&m_readSet);
-
-					for (int j = 0; j < (int)m_group[i].size(); j++)
-					{
-						FD_SET(m_group[i][j].socket, &m_readSet);
-					}
-
-					m_socketAPI.Select(0, &m_readSet, NULL, NULL, &m_selectTimeout);
-
-					if (m_readSet.fd_count > 0)
-					{
-						//遍历分组socket，检查socket信号
-						for (int k = 0; k < (int)m_group[i].size(); k++)
-						{
-							SelectSocketData socketData = m_group[i][k];
-							CheckSocketSingal(socketData);
-						}
-					}
-				}
-			}
-			else
-			{
-				Sleep(10);
-			}
-		}
-	}
-
 	void CSelect::CalcSocketGroup()
 	{
 		m_group.clear();
@@ -133,19 +135,29 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CSelect::CheckSocketSingal(SelectSocketData socketData)
+	void CSelect::CheckSocketCanRead(SelectSocketData socketData)
 	{
-		int result = FD_ISSET(socketData.socket, &m_readSet);
+		int result = FD_ISSET(socketData.socket, &m_readFdSet);
 		if (result > 0)
 		{
 			if (socketData.type == ESelectSocketType::RecvConn)//指示socket用于接收新连接
 			{
-				RecvNewConnection(socketData.socket);//接收新连接
+				RecvNewConnection(socketData.socket);
 			}
-			else//指示socket用于读写数据
+			else if (socketData.type == ESelectSocketType::ReadWriteData)//指示socket用于读写数据
 			{
 				RecvPeerData(socketData.socket);
 			}
+		}
+	}
+
+	void CSelect::CheckSocketExcept(SelectSocketData socketData)
+	{
+		int result = FD_ISSET(socketData.socket, &m_exceptFdSet);
+		if (result > 0)
+		{
+			CSocketExcept* pAction = new CSocketExcept(socketData.socket, socketData.type);
+			CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
 		}
 	}
 
@@ -161,6 +173,10 @@ namespace NetworkCommunication
 				CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
 			}
 		}
+		else
+		{
+
+		}
 	}
 
 	void CSelect::RecvPeerData(SOCKET recv)
@@ -169,12 +185,7 @@ namespace NetworkCommunication
 		int len = m_socketAPI.Recv(recv, pBuf, m_nBufLen);
 		if (len > 0)//指示接收数据成功
 		{
-			//创建接收到对端数据动作
-			PeerData* pData = new PeerData();
-			pData->len = len;
-			pData->pBuf = pBuf;
-			pData->socket = recv;
-			CRecvPeerDataAction* pAction = new CRecvPeerDataAction(pData);
+			CRecvPeerDataAction* pAction = new CRecvPeerDataAction(recv, pBuf, len);
 			CNetworkCommuMgr::GetTcp()->PushTcpAction(pAction);
 		}
 		else

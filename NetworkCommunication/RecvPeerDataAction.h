@@ -8,10 +8,11 @@ namespace NetworkCommunication
 	class CRecvPeerDataAction : public CTcpAction
 	{
 	private:
-		PeerData* m_pRecvData;//接收到的对端数据
+		BYTE* m_pBuf;//接收到的数据缓冲区指针
+		int m_nLen;//数据长度
 
 	public:
-		CRecvPeerDataAction(PeerData* pData);
+		CRecvPeerDataAction(SOCKET recv, BYTE buf[], int len);
 		~CRecvPeerDataAction();
 
 		//************************************
@@ -20,8 +21,13 @@ namespace NetworkCommunication
 		int GetActionType();
 
 		//************************************
-		// Method:    获取接收到的对端数据
+		// Method:    获取数据长度
 		//************************************
-		PeerData* GetPeerData();
+		int GetLen();
+
+		//************************************
+		// Method:    获取数据缓冲区指针
+		//************************************
+		BYTE* GetBuf();
 	};
 }

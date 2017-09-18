@@ -6,17 +6,19 @@
 #include "Server6.h"
 #include "Server6Dlg.h"
 #include "NetCommuMgr.h"
+#include "RecvNewConnEvt.h"
+#include "RefuseNewConnEvt.h"
+#include "RecvPeerDataEvt.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
 //************************************
 // Method:    tcp事件处理
-// Parameter: tcp动作
+// Parameter: tcp事件
 //************************************
-void OnRecvTcpEvent(CTcpAction* pAction);
+void OnRecvTcpEvent(CTcpSrvEvt* pEvent);
 
 // CServer6App
 
@@ -120,15 +122,67 @@ int CServer6App::ExitInstance()
 	return CWinApp::ExitInstance();
 }
 
-void OnRecvTcpEvent(CTcpAction* pAction)
+void OnRecvTcpEvent(CTcpSrvEvt* pEvent)
 {
-	switch (pAction->GetActionType())
+	CSocketAPI api;
+	TCHAR ip[20];
+	int port = 0;
+	api.GetPeerIpAndPort(pEvent->GetSendRecvSocket(), ip, &port);
+
+	switch (pEvent->GetEvtType())
 	{
-	case ETcpActionType::RecvNewConnection:
-		CRecvNewConnAction* pRecvAction = (CRecvNewConnAction*)pAction;
-		int index = theApp.m_sessionMgr.Push({ 0, pRecvAction->GetSendRecvSocket(), _T("192.168.0.68"), 8080 });
-		TRACE(_T("recv as new connection: %s:%d, socket: %d"), _T("192.168.0.68"), 8080, pRecvAction->GetSendRecvSocket());
+	case ETcpSrvEvent::RecvNewConnection:
+	{
+		CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
+
+		//pRecvEvent->m_bRefuse = true;
+		//return;
+
+		//if (_tcscmp(ip, _T("192.168.0.2")) == 0)
+		//{
+		//	pRecvEvent->m_bRefuse = true;
+		//	return;
+		//}
+
+		TcpSessionData data;
+		data.server = theApp.m_tcpSrv.GetSocket();
+		data.client = pRecvEvent->GetSendRecvSocket();
+		_tcscpy(data.ip, ip);
+		data.port = port;
+		int index = theApp.m_sessionMgr.Push(data);
 		PostMessage(theApp.m_pMainWnd->m_hWnd, WM_RECVNEWCONNECTION, index, 0);
-		break;
+	}
+	break;
+	case ETcpSrvEvent::RefuseNewConnection:
+	{
+		CRefuseNewConnEvt* pRefuseEvt = (CRefuseNewConnEvt*)pEvent;
+		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_REFUSENEWCONNECTION, (WPARAM)pRefuseEvt->GetClientIP(), pRefuseEvt->GetClientPort());
+	}
+	break;
+	case  ETcpSrvEvent::RecvPeerData:
+	{
+		CRecvPeerDataEvt* pRecvPeerDataEvt = (CRecvPeerDataEvt*)pEvent;
+		PeerData* pData = new PeerData();
+		pData->buf = pRecvPeerDataEvt->GetRecvBuf();
+		pData->len = pRecvPeerDataEvt->GetBufLen();
+		_tcscpy(pData->ip, ip);
+		pData->port = port;
+		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_RECVPEERDATA, (WPARAM)pData, 0);
+		delete pData;
+	}
+	break;
+	case ETcpSrvEvent::TcpDisconnect:
+	{
+		int index = theApp.m_sessionMgr.RemoveByClientSocket(pEvent->GetSendRecvSocket());
+		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_PEERCLOSE, (WPARAM)index, NULL);
+	}
+	break;
+	case  ETcpSrvEvent::AsyncSendDataResult:
+	{
+		//CSendPeerDataResultAction* pSendAction = (CSendPeerDataResultAction*)pEvent;
+		//SendPeerDataResult* pResult = pSendAction->GetResult();
+		//SendMessage(theApp.m_pMainWnd->m_hWnd, WM_SENDPEERDATARESULT, (WPARAM)pResult, NULL);
+	}
+	break;
 	}
 }

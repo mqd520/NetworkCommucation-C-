@@ -8,30 +8,39 @@ using namespace std;
 
 namespace NetworkCommunication
 {
-	class CSelect
+	//select类
+	class CSelect : public CThreadEntry
 	{
 	private:
 		CSocketAPI m_socketAPI;//socket api
 		vector<SelectSocketData> m_vecSocket;//需要监听的socket集合
-		bool m_bExit;//指示线程是否应该结束
-		CThread* m_threadSelect;//线程对象
-		bool m_bSleep;//select线程是否间隔sleep
-		fd_set m_readSet;//读数据fd
+		CThread* m_thread;//线程对象
+		fd_set m_readFdSet;
+		fd_set m_exceptFdSet;
 		vector<vector<SelectSocketData>> m_group;//socket分组
 		timeval m_selectTimeout;//
 		int m_nBufLen;//接收缓冲区字节最大长度
 
 	private:
 		//************************************
-		// Method:    开始查询socket状态
+		// Method:    处理等待监听的socket
 		//************************************
-		void StartSelect();
+		void ProcessSocket();
 
 		// 对所有socket进行分组
 		void CalcSocketGroup();
 
-		//检查指定socket信号
-		void CheckSocketSingal(SelectSocketData socket);
+		//************************************
+		// Method:    检查指定socket是否可读
+		// Parameter: 监听socket关联数据
+		//************************************
+		void CheckSocketCanRead(SelectSocketData socketData);
+
+		//************************************
+		// Method:    检查指定socket是否异常
+		// Parameter: 监听socket关联数据
+		//************************************
+		void CheckSocketExcept(SelectSocketData socketData);
 
 		//************************************
 		// Method:    接收新连接
@@ -50,23 +59,23 @@ namespace NetworkCommunication
 		~CSelect();
 
 		//************************************
-		// Method:    添加socket
-		// Parameter: socket
-		// Parameter: 类型
-		//************************************
-		void AddSocket(SOCKET socket, int type); 
-
-		// 移除指定socket
-		void RemoveSocket(SOCKET socket);
-
-		//************************************
-		// Method:    开启select线程
+		// Method:    运行线程
 		//************************************
 		void Run();
 
 		//************************************
-		// Method:    select线程入口点
+		// Method:    线程运行事件处理
 		//************************************
-		void ThreadEntry();
+		void OnThreadRun();
+
+		//************************************
+		// Method:    添加socket
+		// Parameter: socket
+		// Parameter: 类型
+		//************************************
+		void AddSocket(SOCKET socket, int type);
+
+		// 移除指定socket
+		void RemoveSocket(SOCKET socket);
 	};
 }

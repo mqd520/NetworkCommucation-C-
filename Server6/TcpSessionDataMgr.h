@@ -30,5 +30,5 @@ public:
 	// Method:    移除指定客户端的socket的tcp会话数据
 	// Parameter: 客户端的socket
 	//************************************
-	void RemoveByClientSocket(SOCKET client);
+	int RemoveByClientSocket(SOCKET client);
 };

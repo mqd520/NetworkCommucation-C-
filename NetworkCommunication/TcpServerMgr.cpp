@@ -5,7 +5,7 @@ namespace NetworkCommunication
 {
 	CTcpServerMgr::CTcpServerMgr()
 	{
-		CTcpServer server;
+		
 	}
 
 	CTcpServerMgr::~CTcpServerMgr()
@@ -22,7 +22,7 @@ namespace NetworkCommunication
 	{
 		for (int i = 0; i < (int)m_vecTcpServer.size(); i++)
 		{
-			if (m_vecTcpServer[i]->GetLocalPort() == server)
+			if (m_vecTcpServer[i]->GetSocket() == server)
 			{
 				return m_vecTcpServer[i];
 			}

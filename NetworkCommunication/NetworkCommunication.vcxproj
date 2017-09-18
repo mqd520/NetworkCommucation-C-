@@ -86,23 +86,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AsyncSendDataAction.h" />
+    <ClInclude Include="TcpDisconnectEvt.h" />
     <ClInclude Include="NetErrorAction.h" />
-    <ClInclude Include="RefuseNewConnAction.h" />
+    <ClInclude Include="RecvNewConnEvt.h" />
+    <ClInclude Include="RecvPeerDataEvt.h" />
+    <ClInclude Include="RefuseNewConnEvt.h" />
+    <ClInclude Include="SocketExceptAction.h" />
     <ClInclude Include="Tcp.h" />
     <ClInclude Include="RecvNewConnAction.h" />
     <ClInclude Include="ByteStream.h" />
-    <ClInclude Include="ClientSocketMgr.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="PeerCloseAction.h" />
-    <ClInclude Include="ServerClientSocketMgr.h" />
     <ClInclude Include="RecvPeerDataAction.h" />
     <ClInclude Include="SendPeerDataResultAction.h" />
     <ClInclude Include="ServerTcpConnection.h" />
     <ClInclude Include="TcpAction.h" />
+    <ClInclude Include="TcpClient.h" />
     <ClInclude Include="TcpServerMgr.h" />
     <ClInclude Include="TcpService.h" />
     <ClInclude Include="TcpServiceMgr.h" />
+    <ClInclude Include="TcpSrvEvt.h" />
     <ClInclude Include="TFunPointer.h" />
     <ClInclude Include="EncryptBuffer.h" />
     <ClInclude Include="LinkList.h" />
@@ -119,6 +123,7 @@
     <ClInclude Include="TcpConnection.h" />
     <ClInclude Include="TcpConnectionMgr.h" />
     <ClInclude Include="Thread.h" />
+    <ClInclude Include="ThreadEntry.h" />
     <ClInclude Include="ThreadEvent.h" />
     <ClInclude Include="ThreadLock.h" />
     <ClInclude Include="ThreadMgr.h" />
@@ -126,22 +131,22 @@
     <ClInclude Include="ThreadMutexHelper.h" />
     <ClInclude Include="ThreadSemaphore.h" />
     <ClInclude Include="Timer.h" />
-    <ClInclude Include="ProtocolClientMgr.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="OtherTool.h" />
-    <ClInclude Include="TcpClientT.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TcpClient.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AsyncSendDataAction.cpp" />
+    <ClCompile Include="TcpDisconnectEvt.cpp" />
     <ClCompile Include="NetErrorAction.cpp" />
-    <ClCompile Include="RefuseNewConnAction.cpp" />
+    <ClCompile Include="RecvNewConnEvt.cpp" />
+    <ClCompile Include="RecvPeerDataEvt.cpp" />
+    <ClCompile Include="RefuseNewConnEvt.cpp" />
+    <ClCompile Include="SocketExceptAction.cpp" />
     <ClCompile Include="Tcp.cpp" />
     <ClCompile Include="RecvNewConnAction.cpp" />
     <ClCompile Include="ByteStream.cpp" />
-    <ClCompile Include="ClientSocketMgr.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="EncryptBuffer.cpp" />
     <ClCompile Include="LinkList.cpp" />
@@ -151,8 +156,6 @@
     <ClCompile Include="PacketBase.cpp" />
     <ClCompile Include="PacketHeadBase.cpp" />
     <ClCompile Include="PeerCloseAction.cpp" />
-    <ClCompile Include="ServerClientSocketMgr.cpp" />
-    <ClCompile Include="ProtocolClientMgr.cpp" />
     <ClCompile Include="RecvPeerDataAction.cpp" />
     <ClCompile Include="SafeLock.cpp" />
     <ClCompile Include="Select.cpp" />
@@ -173,7 +176,9 @@
     <ClCompile Include="TcpServerMgr.cpp" />
     <ClCompile Include="TcpService.cpp" />
     <ClCompile Include="TcpServiceMgr.cpp" />
+    <ClCompile Include="TcpSrvEvt.cpp" />
     <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="ThreadEntry.cpp" />
     <ClCompile Include="ThreadEvent.cpp" />
     <ClCompile Include="ThreadLock.cpp" />
     <ClCompile Include="ThreadMgr.cpp" />

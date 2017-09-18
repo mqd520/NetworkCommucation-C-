@@ -4,23 +4,17 @@
 
 namespace NetworkCommunication
 {
-	CRecvPeerDataAction::CRecvPeerDataAction(PeerData* pData) :
-		CTcpAction(pData->socket),
-		m_pRecvData(pData)
+	CRecvPeerDataAction::CRecvPeerDataAction(SOCKET recv, BYTE buf[], int len) :
+		CTcpAction(recv),
+		m_pBuf(buf),
+		m_nLen(len)
 	{
 
 	}
 
 	CRecvPeerDataAction::~CRecvPeerDataAction()
 	{
-		if (m_pRecvData)
-		{
-			if (m_pRecvData->pBuf)
-			{
-				delete m_pRecvData->pBuf;
-			}
-			delete m_pRecvData;
-		}
+		//m_pBuf指针将会传递给对应的事件对象,由事件对象释放指针
 	}
 
 	int CRecvPeerDataAction::GetActionType()
@@ -28,8 +22,13 @@ namespace NetworkCommunication
 		return ETcpActionType::RecvPeerData;
 	}
 
-	PeerData* CRecvPeerDataAction::GetPeerData()
+	int CRecvPeerDataAction::GetLen()
 	{
-		return m_pRecvData;
+		return m_nLen;
+	}
+
+	BYTE* CRecvPeerDataAction::GetBuf()
+	{
+		return m_pBuf;
 	}
 }
