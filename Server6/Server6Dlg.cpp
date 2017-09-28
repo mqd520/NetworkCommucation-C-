@@ -198,7 +198,11 @@ void CServer6Dlg::OnBnClickedButton2()
 		CString log;
 		log.Format(_T("Prepare Send data to %s:%d, size: %d"), session.ip, session.port, len);
 		ShowLog(log);
-		theApp.m_tcpSrv.AsyncSendData(session.client, buf, len);
+
+		bool b = theApp.m_tcpSrv.SendData(session.client, buf, len, false);
+		//theApp.m_tcpSrv.SendData(session.client, buf, len);
+
+		delete buf;
 	}
 }
 
@@ -249,7 +253,7 @@ LRESULT CServer6Dlg::OnSendPeerDataResult(WPARAM wParam, LPARAM lParam)
 
 void CServer6Dlg::ShowLog(CString strLog)
 {
-	CString log,newLog;
+	CString log, newLog;
 	m_editRecv.GetWindowTextW(log);
 	newLog = strLog + _T("\r\n") + log;
 	m_editRecv.SetWindowTextW(newLog);

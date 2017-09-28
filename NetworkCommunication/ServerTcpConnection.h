@@ -24,14 +24,13 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    收到对端数据事件处理
-		// Parameter: tcp事件
 		//************************************
-		void OnRecvPeerData(CRecvPeerDataAction* pAction);
+		void OnRecvPeerData();
 
 		//************************************
-		// Method:    tcp连接断开事件处理
+		// Method:    连接断开事件处理
 		//************************************
-		void OnTcpDisconnect(int reason);
+		void OnConnDisconnect();
 
 		//************************************
 		// Method:    发送对端数据完成事件处理

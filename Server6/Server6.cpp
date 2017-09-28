@@ -18,7 +18,7 @@
 // Method:    tcp事件处理
 // Parameter: tcp事件
 //************************************
-void OnRecvTcpEvent(CTcpSrvEvt* pEvent);
+void OnRecvTcpEvent(CTcpEvt* pEvent);
 
 // CServer6App
 
@@ -122,7 +122,7 @@ int CServer6App::ExitInstance()
 	return CWinApp::ExitInstance();
 }
 
-void OnRecvTcpEvent(CTcpSrvEvt* pEvent)
+void OnRecvTcpEvent(CTcpEvt* pEvent)
 {
 	CSocketAPI api;
 	TCHAR ip[20];
@@ -171,7 +171,7 @@ void OnRecvTcpEvent(CTcpSrvEvt* pEvent)
 		delete pData;
 	}
 	break;
-	case ETcpSrvEvent::TcpDisconnect:
+	case ETcpSrvEvent::ConnDisconnect:
 	{
 		int index = theApp.m_sessionMgr.RemoveByClientSocket(pEvent->GetSendRecvSocket());
 		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_PEERCLOSE, (WPARAM)index, NULL);

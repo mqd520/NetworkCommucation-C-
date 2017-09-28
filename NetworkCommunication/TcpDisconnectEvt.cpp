@@ -4,9 +4,8 @@
 
 namespace NetworkCommunication
 {
-	CTcpDisconnectEvt::CTcpDisconnectEvt(int reason, CTcpService* pSrv, SOCKET sendrecv/* = NULL*/)
-		:CTcpSrvEvt(pSrv, sendrecv),
-		m_nReason(reason)
+	CTcpDisconnectEvt::CTcpDisconnectEvt(CTcpService* pSrv, SOCKET sendrecv/* = NULL*/)
+		:CTcpEvt(pSrv, sendrecv)
 	{
 
 	}
@@ -18,11 +17,6 @@ namespace NetworkCommunication
 
 	int CTcpDisconnectEvt::GetEvtType()
 	{
-		return ETcpSrvEvent::TcpDisconnect;
-	}
-
-	int CTcpDisconnectEvt::GetReason()
-	{
-		return m_nReason;
+		return ETcpSrvEvent::ConnDisconnect;
 	}
 }

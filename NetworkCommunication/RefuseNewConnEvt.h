@@ -1,14 +1,14 @@
 #pragma once
 #include "Def.h"
-#include "TcpSrvEvt.h"
+#include "TcpEvt.h"
 
 namespace NetworkCommunication
 {
 	//拒绝连接事件
-	class CRefuseNewConnEvt : public CTcpSrvEvt
+	class CRefuseNewConnEvt : public CTcpEvt
 	{
 	private:
-		TCHAR m_strIP[MAXIPSTRELN];//客户端IP
+		TCHAR m_strIP[NETCOMM_MAXIPSTRELN];//客户端IP
 		int m_nPort;//客户端端口
 
 	public:

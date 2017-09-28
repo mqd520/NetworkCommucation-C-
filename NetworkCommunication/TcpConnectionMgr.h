@@ -4,6 +4,7 @@
 #include "Thread.h"
 #include "Def.h"
 #include <queue>
+#include "ThreadLock.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ namespace NetworkCommunication
 	private:
 		CSocketAPI m_socketAPI;//socket api
 		vector<CTcpConnection*> m_vecTcpConnection;//tcp连接集合
+		CThreadLock m_lock;
 
 	public:
 		CTcpConnectionMgr();
@@ -35,5 +37,10 @@ namespace NetworkCommunication
 		// Return:	  tcp连接对象
 		//************************************
 		CTcpConnection* GetBySendRecvSocket(SOCKET sendrecv);
+
+		//************************************
+		// Method:    获取连接总数
+		//************************************
+		int Count();
 	};
 }

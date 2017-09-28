@@ -4,7 +4,7 @@
 namespace NetworkCommunication
 {
 	CRefuseNewConnEvt::CRefuseNewConnEvt(CTcpService* pSrv, SOCKET client, TCHAR* ip, int port) :
-		CTcpSrvEvt(pSrv, client),
+		CTcpEvt(pSrv, client),
 		m_nPort(port)
 	{
 		_tcscpy(m_strIP, ip);

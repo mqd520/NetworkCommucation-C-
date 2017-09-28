@@ -1,25 +1,27 @@
 #pragma once
 #include <vector>
 #include "SocketAPI.h"
-#include "Thread.h"
 #include "Def.h"
+#include "ThreadLock.h"
 
 using namespace std;
 
 namespace NetworkCommunication
 {
 	//select类
-	class CSelect : public CThreadEntry
+	class CSelect
 	{
 	private:
 		CSocketAPI m_socketAPI;//socket api
 		vector<SelectSocketData> m_vecSocket;//需要监听的socket集合
-		CThread* m_thread;//线程对象
-		fd_set m_readFdSet;
-		fd_set m_exceptFdSet;
+		fd_set m_readFdSet;//可读socket集合
+		fd_set m_writeFdSet;//可写socket集合
+		fd_set m_exceptFdSet;//异常socket集合
 		vector<vector<SelectSocketData>> m_group;//socket分组
 		timeval m_selectTimeout;//
-		int m_nBufLen;//接收缓冲区字节最大长度
+		vector<ProcessingSocketData> m_vecProcessingData;//正在进行处理的socket数据集合
+		CThreadLock m_lock1;//线程锁,针对m_vecSocket变量
+		CThreadLock m_lock2;//线程锁,针对m_vecProcessingData变量
 
 	private:
 		//************************************
@@ -27,14 +29,23 @@ namespace NetworkCommunication
 		//************************************
 		void ProcessSocket();
 
-		// 对所有socket进行分组
+		//************************************
+		// Method:    对所有socket进行分组
+		//************************************
 		void CalcSocketGroup();
 
 		//************************************
-		// Method:    检查指定socket是否可读
-		// Parameter: 监听socket关联数据
+		// Method:    判断指定socket的信号是否正在被处理
+		// Parameter: socket
+		// Parameter: 信号类型
 		//************************************
-		void CheckSocketCanRead(SelectSocketData socketData);
+		bool IsProcessingSingal(SOCKET socket, int type);
+
+		//************************************
+		// Method:    移除正在进行处理的socket
+		// Parameter: socket
+		//************************************
+		void RemoveProcessingSocket(SOCKET socket);
 
 		//************************************
 		// Method:    检查指定socket是否异常
@@ -43,30 +54,25 @@ namespace NetworkCommunication
 		void CheckSocketExcept(SelectSocketData socketData);
 
 		//************************************
-		// Method:    接收新连接
-		// Parameter: 服务端server
+		// Method:    检查指定socket是否可读
+		// Parameter: 监听socket关联数据
 		//************************************
-		void RecvNewConnection(SOCKET server);
+		void CheckSocketCanRead(SelectSocketData socketData);
 
 		//************************************
-		// Method:    接收对端数据
-		// Parameter: 接收数据的socket
+		// Method:    检查指定socket是否可写
+		// Parameter: 监听socket关联数据
 		//************************************
-		void RecvPeerData(SOCKET recv);
+		void CheckSocketCanWrite(SelectSocketData socketData);
 
 	public:
 		CSelect();
 		~CSelect();
 
 		//************************************
-		// Method:    运行线程
+		// Method:    socket队列是否为空
 		//************************************
-		void Run();
-
-		//************************************
-		// Method:    线程运行事件处理
-		//************************************
-		void OnThreadRun();
+		bool IsEmpty();
 
 		//************************************
 		// Method:    添加socket
@@ -75,7 +81,22 @@ namespace NetworkCommunication
 		//************************************
 		void AddSocket(SOCKET socket, int type);
 
-		// 移除指定socket
+		//************************************
+		// Method:    移除指定的socket
+		// Parameter: socket
+		//************************************
 		void RemoveSocket(SOCKET socket);
+
+		//************************************
+		// Method:    查询socket信号
+		//************************************
+		void Select();
+
+		//************************************
+		// Method:    socket信号处理完毕事件处理
+		// Parameter: socket
+		// Parameter: 信号类型
+		//************************************
+		void OnProcessingSocketCmp(SOCKET socket, int type);
 	};
 }

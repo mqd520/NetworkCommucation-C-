@@ -5,7 +5,7 @@
 namespace NetworkCommunication
 {
 	CRecvPeerDataEvt::CRecvPeerDataEvt(CTcpService* pSrv, SOCKET recv, BYTE* pBuf, int len) :
-		CTcpSrvEvt(pSrv, recv),
+		CTcpEvt(pSrv, recv),
 		m_pBuf(pBuf),
 		m_nLen(len)
 	{

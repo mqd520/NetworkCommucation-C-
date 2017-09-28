@@ -56,5 +56,16 @@ namespace NetworkCommunication
 		// Parameter: ip
 		//************************************
 		bool IsAllow(TCHAR* ip);
+
+		//************************************
+		// Method:    向对端发送数据
+		// Returns:   是否成功
+		// Parameter: socket
+		// Parameter: 缓冲区指针
+		// Parameter: 缓冲区字节长度
+		// Parameter: 是否异步,默认异步发送
+		// Parameter: 实际发送字节长度
+		//************************************
+		bool SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs = true, int* actualLen = NULL);
 	};
 }

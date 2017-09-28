@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "ServerTcpConnection.h"
-#include "RecvNewConnAction.h"
 #include "NetCommuMgr.h"
 #include "Common.h"
+#include "Def.h"
 
 namespace NetworkCommunication
 {
@@ -10,7 +10,14 @@ namespace NetworkCommunication
 		CTcpConnection(pTcpSrv, client),
 		m_serverSocket(server)
 	{
-
+		memset(m_localAddress.ip, 0, NETCOMM_MAXIPSTRELN);
+		memset(m_peerAddress.ip, 0, NETCOMM_MAXIPSTRELN);
+		m_socketAPI.GetPeerIpAndPort(client, m_peerAddress.ip, &m_peerAddress.port);
+		if (pTcpSrv)
+		{
+			_tcscpy(m_localAddress.ip, pTcpSrv->GetLocalIP());
+			m_localAddress.port = pTcpSrv->GetLocalPort();
+		}
 	}
 
 	CServerTcpConnection::~CServerTcpConnection()
@@ -23,37 +30,21 @@ namespace NetworkCommunication
 		return m_serverSocket;
 	}
 
-	void CServerTcpConnection::OnRecvPeerData(CRecvPeerDataAction* pAction)
+	void CServerTcpConnection::OnRecvPeerData()
 	{
-		TCHAR ip[MAXIPSTRELN];
-		int port = 0;
-		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
-
-		PrintfInfo(_T("[%s:%d][socket: %d] recved [%s:%d] data, size: %d, client socket: %d"),
-			m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), ip, port, pAction->GetLen(), m_sendrecvSocket);
-
-		__super::OnRecvPeerData(pAction);
+		__super::OnRecvPeerData();
 	}
 
-	void CServerTcpConnection::OnTcpDisconnect(int reason)
+	void CServerTcpConnection::OnConnDisconnect()
 	{
-		TCHAR ip[MAXIPSTRELN];
-		int port = 0;
-		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
-
-#ifdef _DEBUG
-		PrintfDebug(_T("client [%s:%d] closed the connection, server: [%s:%d][socket: %d], client socket: %d"),
-			ip, port, m_pTcpSrv->GetLocalIP(), m_pTcpSrv->GetLocalPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket);
-#endif // _DEBUG
-
-		__super::OnTcpDisconnect(reason);
+		__super::OnConnDisconnect();
 	}
 
 	void CServerTcpConnection::OnSendDataCompleted(SendPeerDataResult* pResult)
 	{
-		__super::OnSendDataCompleted(pResult);
+		//__super::OnSendDataCompleted(pResult);
 
-		TCHAR ip[MAXIPSTRELN];
+		TCHAR ip[NETCOMM_MAXIPSTRELN];
 		int port = 0;
 		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
 
@@ -80,7 +71,7 @@ namespace NetworkCommunication
 	{
 		__super::OnNetError();
 
-		TCHAR ip[MAXIPSTRELN];
+		TCHAR ip[NETCOMM_MAXIPSTRELN];
 		int port = 0;
 		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
 

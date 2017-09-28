@@ -1,8 +1,7 @@
 #pragma once
 #include "SocketAPI.h"
 #include "TcpService.h"
-#include "SendPeerDataResultAction.h"
-#include "RecvPeerDataAction.h"
+#include "Def.h"
 
 using namespace std;
 
@@ -15,6 +14,19 @@ namespace NetworkCommunication
 		CSocketAPI m_socketAPI;//socket api
 		CTcpService* m_pTcpSrv;//tcp服务对象
 		SOCKET m_sendrecvSocket;//用于发送(接收)数据的socket
+		BYTE* m_pAsyncSendBuf;//异步发送缓冲区                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+		int m_nAsyncSendLen;//异步发送数据长度
+		int m_nAsyncSendStatus;//异步发送状态
+		bool m_bCanAsyncSend;//指示发送线程是否可以发送数据
+		NetAddress m_localAddress;//本地地址
+		NetAddress m_peerAddress;//对端地址
+
+	protected:
+		//************************************
+		// Method:    处理发送结果
+		// Parameter: 发送成功与否
+		//************************************
+		virtual void ProcessSendResult(bool success);
 
 	public:
 		//************************************
@@ -32,10 +44,28 @@ namespace NetworkCommunication
 		SOCKET GetSendRecvSocket();
 
 		//************************************
+		// Method:    获取本地地址
+		//************************************
+		NetAddress GetLocalAddress();
+
+		//************************************
+		// Method:    获取对端地址
+		//************************************
+		NetAddress GetPeerAddress();
+
+		//************************************
 		// Method:    获取关联的tcp服务对象
 		// Returns:   tcp服务对象
 		//************************************
 		CTcpService* GetTcpService();
+
+		//************************************
+		// Method:    异步发送数据
+		// Parameter: 缓冲区指针
+		// Parameter: 缓冲区字节长度
+		// Parameter: 实际发送字节长度
+		//************************************
+		void SetAsyncSendData(BYTE* pBuf, int len, int* actualLen = NULL);
 
 		//************************************
 		// Method:    发送数据
@@ -44,24 +74,22 @@ namespace NetworkCommunication
 		// Parameter: 缓冲区字节长度
 		// Parameter: 实际发送字节长度
 		//************************************
-		bool SendData(BYTE buf[], int len, int* actualLen = NULL);
+		bool SendData(BYTE* pBuf, int len, int* actualLen = NULL);
+
+		//************************************
+		// Method:    异步发送
+		//************************************
+		void AsyncSendData();
 
 		//************************************
 		// Method:    收到对端数据事件处理
-		// Parameter: tcp事件
 		//************************************
-		virtual void OnRecvPeerData(CRecvPeerDataAction* pAction);
+		virtual void OnRecvPeerData();
 
 		//************************************
-		// Method:    tcp连接断开事件处理
+		// Method:    连接断开事件处理
 		//************************************
-		virtual void OnTcpDisconnect(int reason);
-
-		//************************************
-		// Method:    发送对端数据完成事件处理
-		// Parameter: 发送对端数据结果
-		//************************************
-		virtual void OnSendDataCompleted(SendPeerDataResult* pResult);
+		virtual void OnConnDisconnect();
 
 		//************************************
 		// Method:    网络错误事件处理

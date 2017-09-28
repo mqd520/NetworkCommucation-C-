@@ -85,28 +85,29 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AsyncSendDataAction.h" />
+    <ClInclude Include="CommonSingal.h" />
+    <ClInclude Include="CommonThread.h" />
+    <ClInclude Include="RecvDataSingal.h" />
+    <ClInclude Include="RecvThread.h" />
+    <ClInclude Include="SelectThread.h" />
+    <ClInclude Include="SendThread.h" />
+    <ClInclude Include="SendDataSingal.h" />
+    <ClInclude Include="SocketSingal.h" />
     <ClInclude Include="TcpDisconnectEvt.h" />
-    <ClInclude Include="NetErrorAction.h" />
     <ClInclude Include="RecvNewConnEvt.h" />
     <ClInclude Include="RecvPeerDataEvt.h" />
     <ClInclude Include="RefuseNewConnEvt.h" />
-    <ClInclude Include="SocketExceptAction.h" />
-    <ClInclude Include="Tcp.h" />
-    <ClInclude Include="RecvNewConnAction.h" />
     <ClInclude Include="ByteStream.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Def.h" />
-    <ClInclude Include="PeerCloseAction.h" />
-    <ClInclude Include="RecvPeerDataAction.h" />
-    <ClInclude Include="SendPeerDataResultAction.h" />
     <ClInclude Include="ServerTcpConnection.h" />
-    <ClInclude Include="TcpAction.h" />
     <ClInclude Include="TcpClient.h" />
+    <ClInclude Include="TcpEvtMgr.h" />
+    <ClInclude Include="TcpEvtThread.h" />
     <ClInclude Include="TcpServerMgr.h" />
     <ClInclude Include="TcpService.h" />
     <ClInclude Include="TcpServiceMgr.h" />
-    <ClInclude Include="TcpSrvEvt.h" />
+    <ClInclude Include="TcpEvt.h" />
     <ClInclude Include="TFunPointer.h" />
     <ClInclude Include="EncryptBuffer.h" />
     <ClInclude Include="LinkList.h" />
@@ -137,15 +138,18 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AsyncSendDataAction.cpp" />
+    <ClCompile Include="CommonSingal.cpp" />
+    <ClCompile Include="CommonThread.cpp" />
+    <ClCompile Include="RecvDataSingal.cpp" />
+    <ClCompile Include="RecvThread.cpp" />
+    <ClCompile Include="SelectThread.cpp" />
+    <ClCompile Include="SendThread.cpp" />
+    <ClCompile Include="SendDataSingal.cpp" />
+    <ClCompile Include="SocketSingal.cpp" />
     <ClCompile Include="TcpDisconnectEvt.cpp" />
-    <ClCompile Include="NetErrorAction.cpp" />
     <ClCompile Include="RecvNewConnEvt.cpp" />
     <ClCompile Include="RecvPeerDataEvt.cpp" />
     <ClCompile Include="RefuseNewConnEvt.cpp" />
-    <ClCompile Include="SocketExceptAction.cpp" />
-    <ClCompile Include="Tcp.cpp" />
-    <ClCompile Include="RecvNewConnAction.cpp" />
     <ClCompile Include="ByteStream.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="EncryptBuffer.cpp" />
@@ -155,11 +159,8 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="PacketBase.cpp" />
     <ClCompile Include="PacketHeadBase.cpp" />
-    <ClCompile Include="PeerCloseAction.cpp" />
-    <ClCompile Include="RecvPeerDataAction.cpp" />
     <ClCompile Include="SafeLock.cpp" />
     <ClCompile Include="Select.cpp" />
-    <ClCompile Include="SendPeerDataResultAction.cpp" />
     <ClCompile Include="ServerTcpConnection.cpp" />
     <ClCompile Include="SocketAPI.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
@@ -168,15 +169,16 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TcpAction.cpp" />
     <ClCompile Include="TcpClient.cpp" />
+    <ClCompile Include="TcpEvtMgr.cpp" />
+    <ClCompile Include="TcpEvtThread.cpp" />
     <ClCompile Include="TcpServer.cpp" />
     <ClCompile Include="TcpConnection.cpp" />
     <ClCompile Include="TcpConnectionMgr.cpp" />
     <ClCompile Include="TcpServerMgr.cpp" />
     <ClCompile Include="TcpService.cpp" />
     <ClCompile Include="TcpServiceMgr.cpp" />
-    <ClCompile Include="TcpSrvEvt.cpp" />
+    <ClCompile Include="TcpEvt.cpp" />
     <ClCompile Include="Thread.cpp" />
     <ClCompile Include="ThreadEntry.cpp" />
     <ClCompile Include="ThreadEvent.cpp" />

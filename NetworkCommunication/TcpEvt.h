@@ -6,7 +6,7 @@ namespace NetworkCommunication
 	class CTcpService;
 
 	//tcp服务事件基类
-	class CTcpSrvEvt
+	class CTcpEvt
 	{
 	protected:
 		CTcpService* m_pTcpSrv;//tcp服务对象
@@ -18,8 +18,8 @@ namespace NetworkCommunication
 		// Parameter: 关联的tcp服务对象
 		// Parameter: 关联的用于发送(接收)数据的socket
 		//************************************
-		CTcpSrvEvt(CTcpService* pSrv, SOCKET sendrecv = NULL);
-		~CTcpSrvEvt();
+		CTcpEvt(CTcpService* pSrv, SOCKET sendrecv = NULL);
+		~CTcpEvt();
 
 		//************************************
 		// Method:    获取事件类型

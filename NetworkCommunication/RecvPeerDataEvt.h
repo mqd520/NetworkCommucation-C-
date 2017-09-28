@@ -1,10 +1,10 @@
 #pragma once
-#include "TcpSrvEvt.h"
+#include "TcpEvt.h"
 
 namespace NetworkCommunication
 {
 	//收到对端数据事件
-	class CRecvPeerDataEvt : public CTcpSrvEvt
+	class CRecvPeerDataEvt : public CTcpEvt
 	{
 	private:
 		BYTE* m_pBuf;//收到的数据缓冲区指针

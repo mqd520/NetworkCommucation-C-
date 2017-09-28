@@ -5,18 +5,29 @@
 namespace NetworkCommunication
 {
 	CThreadMgr* CNetworkCommuMgr::m_threadMgr = NULL;
+	CSelectThread* CNetworkCommuMgr::m_selectThread = NULL;
+	CRecvThread* CNetworkCommuMgr::m_recvThread = NULL;
+	CSendThread* CNetworkCommuMgr::m_sendThread = NULL;
+	CCommonThread* CNetworkCommuMgr::m_commonThread = NULL;
+	CTcpEvtThread* CNetworkCommuMgr::m_tcpEvtThread = NULL;
+
 	CSelect* CNetworkCommuMgr::m_Select = NULL;
-	CTcp* CNetworkCommuMgr::m_tcp = NULL;
+	CCommonSingal* CNetworkCommuMgr::m_commonSingal = NULL;
+	CRecvDataSingal* CNetworkCommuMgr::m_recvSingal = NULL;
+	CSendDataSingal* CNetworkCommuMgr::m_sendSingal = NULL;
+
 	CTcpConnectionMgr* CNetworkCommuMgr::m_tcpConnMgr = NULL;
 	CTcpServiceMgr* CNetworkCommuMgr::m_tcpServiceMgr = NULL;
-	CTcpServerMgr* CNetworkCommuMgr::m_tcpServerMgr = NULL;
+	CTcpEvtMgr* CNetworkCommuMgr::m_tcpEvtMgr = NULL;
 
 	void CNetworkCommuMgr::Init()
 	{
 		CSocketAPI::Init();
-		GetSelect()->Run();//启动select线程
-		GetTcp()->Run();//启动tcp线程
-		GetTcpServiceMgr()->Run();//启动tcp事件线程
+		GetSelectThread()->Run();//启动select线程
+		GetRecvThread()->Run();//启动收数据线程
+		GetSendThread()->Run();//启动发送数据线程
+		GetCommonThread()->Run();//启动通用信号处理线程
+		GetTcpEvtThread()->Run();//启动tcp事件线程
 	}
 
 	void CNetworkCommuMgr::Exit()
@@ -41,6 +52,51 @@ namespace NetworkCommunication
 		return m_threadMgr;
 	}
 
+	CSelectThread* CNetworkCommuMgr::GetSelectThread()
+	{
+		if (m_selectThread == NULL)
+		{
+			m_selectThread = new CSelectThread();
+		}
+		return m_selectThread;
+	}
+
+	CRecvThread* CNetworkCommuMgr::GetRecvThread()
+	{
+		if (m_recvThread == NULL)
+		{
+			m_recvThread = new CRecvThread();
+		}
+		return m_recvThread;
+	}
+
+	CSendThread* CNetworkCommuMgr::GetSendThread()
+	{
+		if (m_sendThread == NULL)
+		{
+			m_sendThread = new CSendThread();
+		}
+		return m_sendThread;
+	}
+
+	CCommonThread* CNetworkCommuMgr::GetCommonThread()
+	{
+		if (m_commonThread == NULL)
+		{
+			m_commonThread = new CCommonThread();
+		}
+		return m_commonThread;
+	}
+
+	CTcpEvtThread* CNetworkCommuMgr::GetTcpEvtThread()
+	{
+		if (m_tcpEvtThread == NULL)
+		{
+			m_tcpEvtThread = new CTcpEvtThread();
+		}
+		return m_tcpEvtThread;
+	}
+
 	CSelect* CNetworkCommuMgr::GetSelect()
 	{
 		if (m_Select == NULL)
@@ -50,13 +106,31 @@ namespace NetworkCommunication
 		return m_Select;
 	}
 
-	CTcp* CNetworkCommuMgr::GetTcp()
+	CRecvDataSingal* CNetworkCommuMgr::GetRecvDataSingal()
 	{
-		if (m_tcp == NULL)
+		if (m_recvSingal == NULL)
 		{
-			m_tcp = new CTcp();
+			m_recvSingal = new CRecvDataSingal();
 		}
-		return m_tcp;
+		return m_recvSingal;
+	}
+
+	CSendDataSingal* CNetworkCommuMgr::GetSendDataSingal()
+	{
+		if (m_sendSingal == NULL)
+		{
+			m_sendSingal = new CSendDataSingal();
+		}
+		return m_sendSingal;
+	}
+
+	CCommonSingal* CNetworkCommuMgr::GetCommonSingal()
+	{
+		if (m_commonSingal == NULL)
+		{
+			m_commonSingal = new CCommonSingal();
+		}
+		return m_commonSingal;
 	}
 
 	CTcpConnectionMgr* CNetworkCommuMgr::GetTcpConnectionMgr()
@@ -77,12 +151,12 @@ namespace NetworkCommunication
 		return m_tcpServiceMgr;
 	}
 
-	CTcpServerMgr* CNetworkCommuMgr::GetTcpServerMgr()
+	CTcpEvtMgr* CNetworkCommuMgr::GetTcpEvtMgr()
 	{
-		if (m_tcpServerMgr == NULL)
+		if (m_tcpEvtMgr == NULL)
 		{
-			m_tcpServerMgr = new CTcpServerMgr();
+			m_tcpEvtMgr = new CTcpEvtMgr();
 		}
-		return m_tcpServerMgr;
+		return m_tcpEvtMgr;
 	}
 }

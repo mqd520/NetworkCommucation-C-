@@ -2,7 +2,6 @@
 #include "TcpConnectionMgr.h"
 #include "NetCommuMgr.h"
 #include "Common.h"
-#include "PeerCloseAction.h"
 
 namespace NetworkCommunication
 {
@@ -37,11 +36,18 @@ namespace NetworkCommunication
 	{
 		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it < m_vecTcpConnection.end(); it++)
 		{
-			if ((*it)->GetSendRecvSocket() == socket)
+			CTcpConnection* pConn = *it;
+			if (pConn->GetSendRecvSocket() == socket)
 			{
 				m_vecTcpConnection.erase(it);
+				delete pConn;
 				break;
 			}
 		}
+	}
+
+	int CTcpConnectionMgr::Count()
+	{
+		return (int)m_vecTcpConnection.size();
 	}
 }

@@ -5,7 +5,7 @@
 namespace NetworkCommunication
 {
 	CRecvNewConnEvt::CRecvNewConnEvt(CTcpService* pSrv, SOCKET client) :
-		CTcpSrvEvt(pSrv, client),
+		CTcpEvt(pSrv, client),
 		m_bRefuse(false)
 	{
 

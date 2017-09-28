@@ -1,11 +1,11 @@
 #pragma once
-#include "TcpSrvEvt.h"
+#include "TcpEvt.h"
 #include "TcpService.h"
 
 namespace NetworkCommunication
 {
 	//收到新连接事件
-	class CRecvNewConnEvt : public CTcpSrvEvt
+	class CRecvNewConnEvt : public CTcpEvt
 	{
 	public:
 		bool m_bRefuse;//用户是否拒绝了新连接
