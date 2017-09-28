@@ -3,6 +3,7 @@
 #include "NetCommuMgr.h"
 #include "Common.h"
 #include "TcpEvtMgr.h"
+#include <tchar.h>
 
 namespace NetworkCommunication
 {
@@ -18,7 +19,7 @@ namespace NetworkCommunication
 
 	void CTcpEvtThread::OnThreadRun()
 	{
-		//PrintfInfo(_T(""));
+		PrintfInfo(_T("Tcp event thread run"));
 
 		if (CNetworkCommuMgr::GetTcpEvtMgr()->IsEmpty())
 		{

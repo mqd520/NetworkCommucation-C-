@@ -90,6 +90,7 @@
     <ClInclude Include="RecvDataSingal.h" />
     <ClInclude Include="RecvThread.h" />
     <ClInclude Include="SelectThread.h" />
+    <ClInclude Include="SendDataResultEvt.h" />
     <ClInclude Include="SendThread.h" />
     <ClInclude Include="SendDataSingal.h" />
     <ClInclude Include="SocketSingal.h" />
@@ -143,6 +144,7 @@
     <ClCompile Include="RecvDataSingal.cpp" />
     <ClCompile Include="RecvThread.cpp" />
     <ClCompile Include="SelectThread.cpp" />
+    <ClCompile Include="SendDataResultEvt.cpp" />
     <ClCompile Include="SendThread.cpp" />
     <ClCompile Include="SendDataSingal.cpp" />
     <ClCompile Include="SocketSingal.cpp" />

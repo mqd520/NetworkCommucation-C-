@@ -2,6 +2,7 @@
 #include "RecvThread.h"
 #include "NetCommuMgr.h"
 #include "Common.h"
+#include <tchar.h>
 
 namespace NetworkCommunication
 {
@@ -17,7 +18,7 @@ namespace NetworkCommunication
 
 	void CRecvThread::OnThreadRun()
 	{
-		//PrintfInfo(_T("Recv thread run"));
+		PrintfInfo(_T("Recv thread run"));
 
 		if (CNetworkCommuMgr::GetRecvDataSingal()->IsEmpty())
 		{

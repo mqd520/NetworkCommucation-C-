@@ -213,6 +213,9 @@
     <ClInclude Include="TcpEvtMgr.h">
       <Filter>05 Tcp管理\03 Tcp事件</Filter>
     </ClInclude>
+    <ClInclude Include="SendDataResultEvt.h">
+      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -354,6 +357,9 @@
       <Filter>05 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="TcpEvtMgr.cpp">
+      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+    </ClCompile>
+    <ClCompile Include="SendDataResultEvt.cpp">
       <Filter>05 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
   </ItemGroup>

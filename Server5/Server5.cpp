@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "NetCommuMgr.h"
 #include "TcpServer.h"
 #include "MemoryTool.h"
 #include "Common.h"
@@ -12,12 +13,12 @@ using namespace NetworkCommunication;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	HANDLE m;
+
 	CNetworkCommuMgr::Init();//网络通信初始化
 
 	CTcpServer server;
-	server.Init("192.168.0.68", 8040);
-	server.AddAllowIP("192.168.0.68");
-	server.Listen();
+	server.Listen(_T("192.168.0.68"),8040);
 
 	_tprintf(_T("输入exit退出程序!\n"));
 	char input[5];

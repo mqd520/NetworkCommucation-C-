@@ -2,6 +2,7 @@
 #include "SendThread.h"
 #include "NetCommuMgr.h"
 #include "Common.h"
+#include <tchar.h>
 
 namespace NetworkCommunication
 {
@@ -17,7 +18,7 @@ namespace NetworkCommunication
 
 	void CSendThread::OnThreadRun()
 	{
-		//PrintfInfo(_T("Send thread run"));
+		PrintfInfo(_T("Send thread run"));
 
 		if (CNetworkCommuMgr::GetSendDataSingal()->IsEmpty())
 		{

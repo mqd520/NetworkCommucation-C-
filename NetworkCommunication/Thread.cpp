@@ -41,7 +41,7 @@ namespace NetworkCommunication
 	{
 		if (millsecond == 0)
 		{
-			m_evtReady.Wait();
+			//m_evtReady.Wait();
 		}
 		else
 		{

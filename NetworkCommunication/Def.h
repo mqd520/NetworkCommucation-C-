@@ -49,22 +49,6 @@ public:
 	};
 };
 
-//tcp动作类型
-class ETcpActionType
-{
-public:
-	enum
-	{
-		RecvNewConnection,//收到新连接
-		RecvPeerData,//收到对端数据
-		PeerCloseConn,//对端主动关闭连接
-		AsyncSendData,//异步发送数据
-		SendDataResult,//发送数据结果
-		SocketExcept,//socket发生了异常
-		NetError//发生了网络错误
-	};
-};
-
 //tcp服务事件
 class ETcpSrvEvent
 {

@@ -5,13 +5,13 @@ namespace NetworkCommunication
 	class CThreadEvent
 	{
 	private:
-		HANDLE m_hEvent;
+		//HANDLE m_hEvent;
 
 	public:
 		CThreadEvent(bool bManualReset = true, bool bInitialState = false);
 		~CThreadEvent();
 
-		HANDLE GetEvent() const;
+		//HANDLE GetEvent() const;
 
 		void Wait() const;
 

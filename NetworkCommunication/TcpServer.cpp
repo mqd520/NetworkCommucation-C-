@@ -10,7 +10,7 @@ namespace NetworkCommunication
 		CTcpService(ETcpServiceType::Server),
 		m_bListening(false)
 	{
-		
+
 	}
 
 	CTcpServer::~CTcpServer()
@@ -33,8 +33,8 @@ namespace NetworkCommunication
 			m_socketAPI.Listen(m_socket);
 			m_socketAddr = m_socketAPI.GetSocketAddr(m_strLocalIP, m_nLocalPort);
 
+			PrintfInfo(_T("Listen success: %s:%d"), m_strLocalIP, m_nLocalPort);
 			PrintfDebug(_T("Listen success: %s:%d, socket: %d"), m_strLocalIP, m_nLocalPort, m_socket);
-			PrintfInfo(_T("listen success: %s:%d"), m_strLocalIP, m_nLocalPort);
 
 			//加入select队列
 			CNetworkCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::RecvConn);

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SelectThread.h"
 #include "NetCommuMgr.h"
+#include <tchar.h>
+#include "Common.h"
 
 namespace NetworkCommunication
 {
@@ -16,7 +18,7 @@ namespace NetworkCommunication
 
 	void CSelectThread::OnThreadRun()
 	{
-		//PrintfInfo(_T(""));
+		PrintfInfo(_T("Select thread run"));
 
 		if (CNetworkCommuMgr::GetSelect()->IsEmpty())
 		{

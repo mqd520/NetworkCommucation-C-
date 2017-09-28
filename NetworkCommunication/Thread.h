@@ -9,8 +9,8 @@ namespace NetworkCommunication
 	class CThread
 	{
 	private:
-		CThreadEvent m_evtReady;
-		CThreadEvent m_evtGiven;
+		//CThreadEvent m_evtReady;
+		//CThreadEvent m_evtGiven;
 		CThreadEntry* m_pEntry;
 
 	private:

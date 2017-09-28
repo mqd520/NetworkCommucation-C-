@@ -5,6 +5,7 @@
 #include "NetCommuMgr.h"
 #include "RecvPeerDataEvt.h"
 #include "TcpDisconnectEvt.h"
+#include "SendDataResultEvt.h"
 
 namespace NetworkCommunication
 {
@@ -90,13 +91,13 @@ namespace NetworkCommunication
 			m_nAsyncSendStatus = EAsyncSendStatus::Sending;
 			bool result = m_socketAPI.Send(m_sendrecvSocket, m_pAsyncSendBuf, m_nAsyncSendLen, &len);
 
+			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CSendDataResultEvt(m_pTcpSrv, result, m_nAsyncSendLen, len));
+
 			delete m_pAsyncSendBuf;
 			m_pAsyncSendBuf = NULL;
 			m_nAsyncSendLen = 0;
 
 			m_nAsyncSendStatus = EAsyncSendStatus::SendCmp;
-
-			//CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpEvent();
 
 			ProcessSendResult(result);
 		}
