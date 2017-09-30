@@ -1,5 +1,4 @@
 #pragma once
-#include "ThreadMgr.h"
 #include "SelectThread.h"
 #include "RecvThread.h"
 #include "SendThread.h"
@@ -21,7 +20,8 @@ namespace NetworkCommunication
 	class CNetworkCommuMgr
 	{
 	private:
-		static CThreadMgr* m_threadMgr;//线程管理对象
+		static volatile bool m_bExited;//是否需要退出了
+
 		static CSelectThread* m_selectThread;//select线程对象
 		static CRecvThread* m_recvThread;//收数据线程对象
 		static CSendThread* m_sendThread;//发数据线程对象
@@ -54,9 +54,14 @@ namespace NetworkCommunication
 		static void Exit();
 
 		//************************************
-		// Method:    获取线程管理对象
+		// Method:    释放资源
 		//************************************
-		static CThreadMgr* GetThreadMgr();
+		static void Release();
+
+		//************************************
+		// Method:    是否需要退出
+		//************************************
+		static bool IsExited();
 
 		//************************************
 		// Method:    获取select线程对象

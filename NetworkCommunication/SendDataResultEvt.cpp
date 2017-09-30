@@ -20,7 +20,7 @@ namespace NetworkCommunication
 
 	int CSendDataResultEvt::GetEvtType()
 	{
-		return ETcpSrvEvent::AsyncSendDataResult;
+		return ETcpEvent::AsyncSendDataResult;
 	}
 
 	bool CSendDataResultEvt::GetResult()

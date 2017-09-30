@@ -50,11 +50,11 @@ namespace NetworkCommunication
 
 	void CTcpService::OnRecvTcpEvent(CTcpEvt* pEvent)
 	{
-		if (m_lpCallback && pEvent && pEvent->GetEvtType() != ETcpSrvEvent::None)
+		if (m_lpCallback)
 		{
 			m_lpCallback(pEvent);//通知事件注册方
 
-			if (pEvent->GetEvtType() == ETcpSrvEvent::RecvNewConnection)
+			if (pEvent->GetEvtType() == ETcpEvent::RecvNewConnection)
 			{
 				CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
 				if (pRecvEvent->m_bRefuse)//用户拒绝了新连接

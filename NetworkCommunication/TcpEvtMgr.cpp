@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TcpEvtMgr.h"
 #include "TcpService.h"
+#include "NetCommuMgr.h"
 
 namespace NetworkCommunication
 {
@@ -11,7 +12,13 @@ namespace NetworkCommunication
 
 	CTcpEvtMgr::~CTcpEvtMgr()
 	{
+		while (m_queueEvent.size() > 0)
+		{
+			CTcpEvt* pEvent = m_queueEvent.front();
+			m_queueEvent.pop();
 
+			delete pEvent;
+		}
 	}
 
 	bool CTcpEvtMgr::IsEmpty()
@@ -28,6 +35,11 @@ namespace NetworkCommunication
 	{
 		while (m_queueEvent.size() > 0)
 		{
+			if (CNetworkCommuMgr::IsExited())//指示需要退出了
+			{
+				break;
+			}
+
 			CTcpEvt* pEvent = m_queueEvent.front();
 			m_queueEvent.pop();
 

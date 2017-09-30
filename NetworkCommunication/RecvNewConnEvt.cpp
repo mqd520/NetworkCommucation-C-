@@ -18,6 +18,6 @@ namespace NetworkCommunication
 
 	int CRecvNewConnEvt::GetEvtType()
 	{
-		return ETcpSrvEvent::RecvNewConnection;
+		return ETcpEvent::RecvNewConnection;
 	}
 }

@@ -22,7 +22,7 @@ namespace NetworkCommunication
 
 	int CRecvPeerDataEvt::GetEvtType()
 	{
-		return ETcpSrvEvent::RecvPeerData;
+		return ETcpEvent::RecvPeerData;
 	}
 
 	BYTE* CRecvPeerDataEvt::GetRecvBuf()

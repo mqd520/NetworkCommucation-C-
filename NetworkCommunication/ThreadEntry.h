@@ -9,13 +9,39 @@ namespace NetworkCommunication
 	{
 	protected:
 		CThread* m_pThread;//线程对象
+		volatile bool m_bExist;//线程是否应该退出
+		bool m_bRun;//线程是否已开启
+		int m_nSleepMillSecond;//休眠时间
+
+	protected:
+		//************************************
+		// Method:    设置休眠时间
+		//************************************
+		void SetSleepTime(int millsecond);
 
 	protected:
 		friend class CThread;
 		//************************************
-		// Method:    线程运行事件处理
+		// Method:    线程执行事件处理
+		// Returns:   是否应该退出
+		// Qualifier:
 		//************************************
-		virtual void OnThreadRun();
+		virtual void OnThreadExecute();
+
+		//************************************
+		// Method:    线程执行完毕事件处理
+		//************************************
+		virtual void OnThreadCmp();
+
+		//************************************
+		// Method:    线程是否可以退出
+		//************************************
+		bool IsCanExit();
+
+		//************************************
+		// Method:    执行一次业务代码后休眠
+		//************************************
+		virtual void Sleep();
 
 	public:
 		CThreadEntry();
@@ -25,5 +51,10 @@ namespace NetworkCommunication
 		// Method:    开始运行线程
 		//************************************
 		virtual void Run();
+
+		//************************************
+		// Method:    退出线程
+		//************************************
+		virtual void Exit();
 	};
 }

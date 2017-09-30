@@ -57,9 +57,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>07 其它</Filter>
     </ClInclude>
@@ -155,9 +152,6 @@
     </ClInclude>
     <ClInclude Include="ServerTcpConnection.h">
       <Filter>05 Tcp管理\04 Tcp连接</Filter>
-    </ClInclude>
-    <ClInclude Include="TcpServerMgr.h">
-      <Filter>05 Tcp管理\07 Tcp服务端</Filter>
     </ClInclude>
     <ClInclude Include="ThreadEntry.h">
       <Filter>03 线程</Filter>
@@ -305,9 +299,6 @@
     <ClCompile Include="ServerTcpConnection.cpp">
       <Filter>05 Tcp管理\04 Tcp连接</Filter>
     </ClCompile>
-    <ClCompile Include="TcpServerMgr.cpp">
-      <Filter>05 Tcp管理\07 Tcp服务端</Filter>
-    </ClCompile>
     <ClCompile Include="ThreadEntry.cpp">
       <Filter>03 线程</Filter>
     </ClCompile>
@@ -362,5 +353,13 @@
     <ClCompile Include="SendDataResultEvt.cpp">
       <Filter>05 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>07 其它</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dll.def">
+      <Filter>07 其它</Filter>
+    </None>
   </ItemGroup>
 </Project>

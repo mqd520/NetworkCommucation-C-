@@ -17,7 +17,7 @@ namespace NetworkCommunication
 
 	int CRefuseNewConnEvt::GetEvtType()
 	{
-		return ETcpSrvEvent::RefuseNewConnection;
+		return ETcpEvent::RefuseNewConnection;
 	}
 
 	TCHAR* CRefuseNewConnEvt::GetClientIP()

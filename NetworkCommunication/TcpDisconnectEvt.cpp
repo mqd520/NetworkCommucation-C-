@@ -17,6 +17,6 @@ namespace NetworkCommunication
 
 	int CTcpDisconnectEvt::GetEvtType()
 	{
-		return ETcpSrvEvent::ConnDisconnect;
+		return ETcpEvent::ConnDisconnect;
 	}
 }

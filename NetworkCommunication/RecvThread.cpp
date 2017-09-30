@@ -16,13 +16,20 @@ namespace NetworkCommunication
 
 	}
 
-	void CRecvThread::OnThreadRun()
+	void CRecvThread::Run()
 	{
-		PrintfInfo(_T("Recv thread run"));
+		if (!m_bRun)
+		{
+			PrintfInfo(_T("Recv thread run"));
+			__super::Run();
+		}
+	}
 
+	void CRecvThread::OnThreadExecute()
+	{
 		if (CNetworkCommuMgr::GetRecvDataSingal()->IsEmpty())
 		{
-			Sleep(10);
+			SetSleepTime(10);
 		}
 		else
 		{

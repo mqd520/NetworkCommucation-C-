@@ -10,7 +10,7 @@ namespace NetworkCommunication
 
 	CTcpServiceMgr::~CTcpServiceMgr()
 	{
-
+		
 	}
 
 	void CTcpServiceMgr::PushTcpService(CTcpService* srv)

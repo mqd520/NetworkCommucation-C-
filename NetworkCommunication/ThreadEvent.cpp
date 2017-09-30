@@ -5,18 +5,18 @@ namespace NetworkCommunication
 {
 	CThreadEvent::CThreadEvent(bool bManualReset /*= true*/, bool bInitialState /*= false*/)
 	{
-		//m_hEvent = ::CreateEvent(NULL, bManualReset, bInitialState, NULL);
+		m_hEvent = ::CreateEvent(NULL, bManualReset, bInitialState, NULL);
 	}
 
 	CThreadEvent::~CThreadEvent()
 	{
-		//::CloseHandle(m_hEvent);
+		::CloseHandle(m_hEvent);
 	}
 
-	//HANDLE CThreadEvent::GetEvent() const
-	//{
-	//	return m_hEvent;
-	//}
+	HANDLE CThreadEvent::GetEvent() const
+	{
+		return m_hEvent;
+	}
 
 	void CThreadEvent::Wait() const
 	{
@@ -26,25 +26,25 @@ namespace NetworkCommunication
 	bool CThreadEvent::Wait(DWORD timeoutMillis) const
 	{
 		bool ok = true;
-		//DWORD result = ::WaitForSingleObject(m_hEvent, timeoutMillis);
-		//if (result == WAIT_TIMEOUT)
-		//{
-		//	ok = false;
-		//}
-		//else if (result == WAIT_OBJECT_0)
-		//{
-		//	ok = true;
-		//}
+		DWORD result = ::WaitForSingleObject(m_hEvent, timeoutMillis);
+		if (result == WAIT_TIMEOUT)
+		{
+			ok = false;
+		}
+		else if (result == WAIT_OBJECT_0)
+		{
+			ok = true;
+		}
 		return ok;
 	}
 
 	void CThreadEvent::Active()
 	{
-		//::SetEvent(m_hEvent);
+		::SetEvent(m_hEvent);
 	}
 
 	void CThreadEvent::Inactive()
 	{
-		//::ResetEvent(m_hEvent);
+		::ResetEvent(m_hEvent);
 	}
 }

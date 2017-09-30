@@ -18,7 +18,7 @@ namespace NetworkCommunication
 
 	int CTcpEvt::GetEvtType()
 	{
-		return ETcpSrvEvent::None;
+		return 0;
 	}
 
 	CTcpService* CTcpEvt::GetTcpSrv()

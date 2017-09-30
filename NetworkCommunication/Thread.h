@@ -9,23 +9,37 @@ namespace NetworkCommunication
 	class CThread
 	{
 	private:
-		//CThreadEvent m_evtReady;
-		//CThreadEvent m_evtGiven;
+		HANDLE m_hThread;//线程句柄
+
+		CThreadEvent m_evtReady;
+		CThreadEvent m_evtGiven;
 		CThreadEntry* m_pEntry;
 
 	private:
+		//************************************
+		// Method:    线程入口
+		//************************************
 		static unsigned WINAPI  Run(LPVOID lParam);
 
 	public:
 		CThread(CThreadEntry* pEntry);
 		~CThread();
 
-		bool Run();
+		//************************************
+		// Method:    运行线程
+		//************************************
+		void Run();
 
 		void Wait(int millsecond = 0);
 
-		int Execute();
+		//************************************
+		// Method:    线程执行
+		//************************************
+		void Execute();
 
-		void Free();
+		//************************************
+		// Method:    线程执行完毕
+		//************************************
+		void ExecuteCmp();
 	};
 }

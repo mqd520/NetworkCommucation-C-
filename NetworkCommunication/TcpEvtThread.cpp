@@ -17,13 +17,20 @@ namespace NetworkCommunication
 
 	}
 
-	void CTcpEvtThread::OnThreadRun()
+	void CTcpEvtThread::Run()
 	{
-		PrintfInfo(_T("Tcp event thread run"));
+		if (!m_bRun)
+		{
+			PrintfInfo(_T("Tcp event thread run"));
+			__super::Run();
+		}
+	}
 
+	void CTcpEvtThread::OnThreadExecute()
+	{
 		if (CNetworkCommuMgr::GetTcpEvtMgr()->IsEmpty())
 		{
-			Sleep(10);
+			SetSleepTime(10);
 		}
 		else
 		{

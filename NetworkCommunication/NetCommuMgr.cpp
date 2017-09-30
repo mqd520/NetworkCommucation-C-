@@ -4,7 +4,8 @@
 
 namespace NetworkCommunication
 {
-	CThreadMgr* CNetworkCommuMgr::m_threadMgr = NULL;
+	volatile bool CNetworkCommuMgr::m_bExited = false;
+
 	CSelectThread* CNetworkCommuMgr::m_selectThread = NULL;
 	CRecvThread* CNetworkCommuMgr::m_recvThread = NULL;
 	CSendThread* CNetworkCommuMgr::m_sendThread = NULL;
@@ -32,24 +33,90 @@ namespace NetworkCommunication
 
 	void CNetworkCommuMgr::Exit()
 	{
-		CSocketAPI::Release();
-		if (m_threadMgr)
+		m_bExited = true;
+
+		//ÍË³öÏß³Ì
+		GetSelectThread()->Exit();
+		GetRecvThread()->Exit();
+		GetSendThread()->Exit();
+		GetCommonThread()->Exit();
+		GetTcpEvtThread()->Exit();
+
+		::Sleep(300);
+	}
+
+	void CNetworkCommuMgr::Release()
+	{
+		if (m_selectThread)
 		{
-			delete m_threadMgr;
+			delete m_selectThread;
+			m_selectThread = NULL;
 		}
 		if (m_Select)
 		{
 			delete m_Select;
+			m_Select = NULL;
+		}
+		if (m_recvThread)
+		{
+			delete m_recvThread;
+			m_recvThread = NULL;
+		}
+		if (m_recvSingal)
+		{
+			delete m_recvSingal;
+			m_recvSingal = NULL;
+		}
+		if (m_sendThread)
+		{
+			delete m_sendThread;
+			m_sendThread = NULL;
+		}
+		if (m_sendSingal)
+		{
+			delete m_sendSingal;
+			m_sendSingal = NULL;
+		}
+		if (m_commonThread)
+		{
+			delete m_commonThread;
+			m_commonThread = NULL;
+		}
+		if (m_commonSingal)
+		{
+			delete m_commonSingal;
+			m_commonSingal = NULL;
+		}
+		if (m_commonThread)
+		{
+			delete m_commonThread;
+			m_commonThread = NULL;
+		}
+		if (m_commonSingal)
+		{
+			delete m_commonSingal;
+			m_commonSingal = NULL;
+		}
+		if (m_tcpEvtThread)
+		{
+			delete m_tcpEvtThread;
+			m_tcpEvtThread = NULL;
+		}
+		if (m_tcpEvtMgr)
+		{
+			delete m_tcpEvtMgr;
+			m_tcpEvtMgr = NULL;
+		}
+		if (m_tcpServiceMgr)
+		{
+			delete m_tcpServiceMgr;
+			m_tcpServiceMgr = NULL;
 		}
 	}
 
-	CThreadMgr* CNetworkCommuMgr::GetThreadMgr()
+	bool CNetworkCommuMgr::IsExited()
 	{
-		if (m_threadMgr == NULL)
-		{
-			m_threadMgr = new CThreadMgr();
-		}
-		return m_threadMgr;
+		return m_bExited;
 	}
 
 	CSelectThread* CNetworkCommuMgr::GetSelectThread()

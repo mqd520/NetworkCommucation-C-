@@ -4,9 +4,10 @@
 namespace NetworkCommunication
 {
 	CThread::CThread(CThreadEntry* pEntry) :
-		m_pEntry(pEntry)
+		m_pEntry(pEntry),
+		m_hThread(0)
 	{
-		
+
 	}
 
 	CThread::~CThread()
@@ -17,31 +18,26 @@ namespace NetworkCommunication
 	unsigned WINAPI  CThread::Run(LPVOID lParam)
 	{
 		CThread* pThread = (CThread*)lParam;
-		if (pThread == NULL)
-		{
-			return 0;
-		}
+
 		pThread->Execute();
-		pThread->Free();
-		::_endthreadex(0);
+		pThread->ExecuteCmp();
+
 		return 0;
 	}
 
-	bool CThread::Run()
+	void CThread::Run()
 	{
-		HANDLE hThread = (HANDLE)_beginthreadex(0, 0, Run, this, 0, NULL);
-		if (hThread)
+		if (m_hThread == 0)
 		{
-			::CloseHandle(hThread);
+			m_hThread = (HANDLE)_beginthreadex(0, 0, Run, this, 0, NULL);
 		}
-		return (hThread != 0);
 	}
 
 	void CThread::Wait(int millsecond)
 	{
 		if (millsecond == 0)
 		{
-			//m_evtReady.Wait();
+			m_evtReady.Wait();
 		}
 		else
 		{
@@ -49,19 +45,27 @@ namespace NetworkCommunication
 		}
 	}
 
-	int CThread::Execute()
+	void CThread::Execute()
 	{
-		//m_evtReady.Active();
-		//m_evtGiven.Wait();
-		while (true)
+		if (m_pEntry)
 		{
-			m_pEntry->OnThreadRun();
+			while (m_pEntry->IsCanExit() == false)
+			{
+				//执行具体业务
+				m_pEntry->OnThreadExecute();
+
+				//休眠一段时间
+				m_pEntry->Sleep();
+			}
 		}
-		return 0;
 	}
 
-	void CThread::Free()
+	void CThread::ExecuteCmp()
 	{
-		//CNetworkCommuMgr::GetThreadMgr()->AddRecycleThread(this);
+		::CloseHandle(m_hThread);
+		if (m_pEntry)
+		{
+			m_pEntry->OnThreadCmp();
+		}
 	}
 }

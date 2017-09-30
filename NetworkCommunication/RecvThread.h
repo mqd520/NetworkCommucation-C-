@@ -10,10 +10,15 @@ namespace NetworkCommunication
 		//************************************
 		// Method:    线程运行事件处理
 		//************************************
-		void OnThreadRun();
+		void OnThreadExecute();
 
 	public:
 		CRecvThread();
 		~CRecvThread();
+
+		//************************************
+		// Method:    开始运行线程
+		//************************************
+		void Run();
 	};
 }

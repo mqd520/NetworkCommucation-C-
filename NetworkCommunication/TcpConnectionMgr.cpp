@@ -12,7 +12,10 @@ namespace NetworkCommunication
 
 	CTcpConnectionMgr::~CTcpConnectionMgr()
 	{
-
+		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it != m_vecTcpConnection.end();)
+		{
+			it = m_vecTcpConnection.erase(it);
+		}
 	}
 
 	void CTcpConnectionMgr::PushTcpConn(CTcpConnection* conn)
@@ -34,7 +37,7 @@ namespace NetworkCommunication
 
 	void CTcpConnectionMgr::RemoveBySendRecvSocket(SOCKET socket)
 	{
-		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it < m_vecTcpConnection.end(); it++)
+		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it != m_vecTcpConnection.end(); it++)
 		{
 			CTcpConnection* pConn = *it;
 			if (pConn->GetSendRecvSocket() == socket)

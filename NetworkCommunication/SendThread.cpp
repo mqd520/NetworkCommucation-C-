@@ -16,13 +16,20 @@ namespace NetworkCommunication
 
 	}
 
-	void CSendThread::OnThreadRun()
+	void CSendThread::Run()
 	{
-		PrintfInfo(_T("Send thread run"));
+		if (!m_bRun)
+		{
+			PrintfInfo(_T("Send thread run"));
+			__super::Run();
+		}
+	}
 
+	void CSendThread::OnThreadExecute()
+	{
 		if (CNetworkCommuMgr::GetSendDataSingal()->IsEmpty())
 		{
-			Sleep(10);
+			SetSleepTime(10);
 		}
 		else
 		{

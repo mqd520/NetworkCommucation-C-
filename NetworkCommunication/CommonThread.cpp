@@ -16,13 +16,20 @@ namespace NetworkCommunication
 
 	}
 
-	void CCommonThread::OnThreadRun()
+	void CCommonThread::Run()
 	{
-		PrintfInfo(_T("Common thread run"));
+		if (!m_bRun)
+		{
+			PrintfInfo(_T("Common thread run"));
+			__super::Run();
+		}
+	}
 
+	void CCommonThread::OnThreadExecute()
+	{
 		if (CNetworkCommuMgr::GetCommonSingal()->IsEmpty())
 		{
-			Sleep(10);
+			SetSleepTime(10);
 		}
 		else
 		{

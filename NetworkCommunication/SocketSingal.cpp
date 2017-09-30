@@ -44,6 +44,11 @@ namespace NetworkCommunication
 	{
 		while (m_queueSocketData.size() > 0)
 		{
+			if (CNetworkCommuMgr::IsExited())//指示需要退出
+			{
+				break;//立刻跳出循环,不再处理后面的队列
+			}
+
 			SocketSingalData data = m_queueSocketData.front();
 			m_queueSocketData.pop();
 

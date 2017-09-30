@@ -13,16 +13,23 @@ namespace NetworkCommunication
 
 	CSelectThread::~CSelectThread()
 	{
-
+		int n = 0;
 	}
 
-	void CSelectThread::OnThreadRun()
+	void CSelectThread::Run()
 	{
-		PrintfInfo(_T("Select thread run"));
+		if (!m_bRun)
+		{
+			PrintfInfo(_T("Select thread run"));
+			__super::Run();
+		}
+	}
 
+	void CSelectThread::OnThreadExecute()
+	{
 		if (CNetworkCommuMgr::GetSelect()->IsEmpty())
 		{
-			Sleep(10);
+			SetSleepTime(10);
 		}
 		else
 		{

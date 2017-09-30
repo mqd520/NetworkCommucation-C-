@@ -61,7 +61,7 @@ BOOL CServer6App::InitInstance()
 	CWinApp::InitInstance();
 
 	CNetworkCommuMgr::Init();//初始化网络通信
-	m_tcpSrv.RegTcpEventCallback(OnRecvTcpEvent);//注册tcp事件回调
+	//m_tcpSrv.RegTcpEventCallback(OnRecvTcpEvent);//注册tcp事件回调
 
 
 	// 创建 shell 管理器，以防对话框包含
@@ -112,7 +112,10 @@ BOOL CServer6App::InitInstance()
 	return FALSE;
 }
 
-
+CServer6App::~CServer6App()
+{
+	CNetworkCommuMgr::Release();
+}
 
 int CServer6App::ExitInstance()
 {
@@ -124,65 +127,67 @@ int CServer6App::ExitInstance()
 
 void OnRecvTcpEvent(CTcpEvt* pEvent)
 {
-	CSocketAPI api;
-	TCHAR ip[20];
-	int port = 0;
-	api.GetPeerIpAndPort(pEvent->GetSendRecvSocket(), ip, &port);
+	return;
 
-	switch (pEvent->GetEvtType())
-	{
-	case ETcpSrvEvent::RecvNewConnection:
-	{
-		CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
+	//CSocketAPI api;
+	//TCHAR ip[20];
+	//int port = 0;
+	//api.GetPeerIpAndPort(pEvent->GetSendRecvSocket(), ip, &port);
 
-		//pRecvEvent->m_bRefuse = true;
-		//return;
+	//switch (pEvent->GetEvtType())
+	//{
+	//case ETcpEvent::RecvNewConnection:
+	//{
+	//	CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
 
-		//if (_tcscmp(ip, _T("192.168.0.2")) == 0)
-		//{
-		//	pRecvEvent->m_bRefuse = true;
-		//	return;
-		//}
+	//	//pRecvEvent->m_bRefuse = true;
+	//	//return;
 
-		TcpSessionData data;
-		data.server = theApp.m_tcpSrv.GetSocket();
-		data.client = pRecvEvent->GetSendRecvSocket();
-		_tcscpy(data.ip, ip);
-		data.port = port;
-		int index = theApp.m_sessionMgr.Push(data);
-		PostMessage(theApp.m_pMainWnd->m_hWnd, WM_RECVNEWCONNECTION, index, 0);
-	}
-	break;
-	case ETcpSrvEvent::RefuseNewConnection:
-	{
-		CRefuseNewConnEvt* pRefuseEvt = (CRefuseNewConnEvt*)pEvent;
-		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_REFUSENEWCONNECTION, (WPARAM)pRefuseEvt->GetClientIP(), pRefuseEvt->GetClientPort());
-	}
-	break;
-	case  ETcpSrvEvent::RecvPeerData:
-	{
-		CRecvPeerDataEvt* pRecvPeerDataEvt = (CRecvPeerDataEvt*)pEvent;
-		PeerData* pData = new PeerData();
-		pData->buf = pRecvPeerDataEvt->GetRecvBuf();
-		pData->len = pRecvPeerDataEvt->GetBufLen();
-		_tcscpy(pData->ip, ip);
-		pData->port = port;
-		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_RECVPEERDATA, (WPARAM)pData, 0);
-		delete pData;
-	}
-	break;
-	case ETcpSrvEvent::ConnDisconnect:
-	{
-		int index = theApp.m_sessionMgr.RemoveByClientSocket(pEvent->GetSendRecvSocket());
-		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_PEERCLOSE, (WPARAM)index, NULL);
-	}
-	break;
-	case  ETcpSrvEvent::AsyncSendDataResult:
-	{
-		//CSendPeerDataResultAction* pSendAction = (CSendPeerDataResultAction*)pEvent;
-		//SendPeerDataResult* pResult = pSendAction->GetResult();
-		//SendMessage(theApp.m_pMainWnd->m_hWnd, WM_SENDPEERDATARESULT, (WPARAM)pResult, NULL);
-	}
-	break;
-	}
+	//	//if (_tcscmp(ip, _T("192.168.0.2")) == 0)
+	//	//{
+	//	//	pRecvEvent->m_bRefuse = true;
+	//	//	return;
+	//	//}
+
+	//	TcpSessionData data;
+	//	data.server = theApp.m_tcpSrv.GetSocket();
+	//	data.client = pRecvEvent->GetSendRecvSocket();
+	//	_tcscpy(data.ip, ip);
+	//	data.port = port;
+	//	int index = theApp.m_sessionMgr.Push(data);
+	//	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_RECVNEWCONNECTION, index, 0);
+	//}
+	//break;
+	//case ETcpEvent::RefuseNewConnection:
+	//{
+	//	CRefuseNewConnEvt* pRefuseEvt = (CRefuseNewConnEvt*)pEvent;
+	//	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_REFUSENEWCONNECTION, (WPARAM)pRefuseEvt->GetClientIP(), pRefuseEvt->GetClientPort());
+	//}
+	//break;
+	//case  ETcpEvent::RecvPeerData:
+	//{
+	//	CRecvPeerDataEvt* pRecvPeerDataEvt = (CRecvPeerDataEvt*)pEvent;
+	//	PeerData* pData = new PeerData();
+	//	pData->buf = pRecvPeerDataEvt->GetRecvBuf();
+	//	pData->len = pRecvPeerDataEvt->GetBufLen();
+	//	_tcscpy(pData->ip, ip);
+	//	pData->port = port;
+	//	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_RECVPEERDATA, (WPARAM)pData, 0);
+	//	delete pData;
+	//}
+	//break;
+	//case ETcpEvent::ConnDisconnect:
+	//{
+	//	int index = theApp.m_sessionMgr.RemoveByClientSocket(pEvent->GetSendRecvSocket());
+	//	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_PEERCLOSE, (WPARAM)index, NULL);
+	//}
+	//break;
+	//case  ETcpEvent::AsyncSendDataResult:
+	//{
+	//	//CSendPeerDataResultAction* pSendAction = (CSendPeerDataResultAction*)pEvent;
+	//	//SendPeerDataResult* pResult = pSendAction->GetResult();
+	//	//SendMessage(theApp.m_pMainWnd->m_hWnd, WM_SENDPEERDATARESULT, (WPARAM)pResult, NULL);
+	//}
+	//break;
+	//}
 }
