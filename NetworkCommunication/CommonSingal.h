@@ -19,6 +19,20 @@ namespace NetworkCommunication
 		void ProcessReadSingal(SOCKET socket, int type);
 
 		//************************************
+		// Method:    处理socket可写信号
+		// Parameter: socket
+		// Parameter: socket类型
+		//************************************
+		void ProcessWriteSingal(SOCKET socket, int type);
+
+		//************************************
+		// Method:    处理socket异常信号
+		// Parameter: socket
+		// Parameter: socket类型
+		//************************************
+		void ProcessExceptSingal(SOCKET socket, int type);
+
+		//************************************
 		// Method:    收到新连接事件处理
 		// Parameter: socket
 		//************************************

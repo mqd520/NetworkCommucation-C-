@@ -11,10 +11,9 @@ namespace NetworkCommunication
 	{
 	protected:
 		CSocketAPI m_socketAPI;//socket api
-		int m_nSrvType;//服务类型
 		SOCKET m_socket;//socket,服务端(客户端)socket
-		TCHAR m_strLocalIP[20];//socket关联的本地IP
-		int m_nLocalPort;//socket关联的本地端口
+		TCHAR m_strServerIP[20];//socket关联的服务端IP
+		int m_nServerPort;//socket关联的服务端端口
 		LPTcpEventCallback m_lpCallback;//tcp事件回调函数指针
 
 	protected:
@@ -23,31 +22,37 @@ namespace NetworkCommunication
 		// Method:    收到tcp事件处理
 		// Parameter: tcp事件
 		//************************************
-		void OnRecvTcpEvent(CTcpEvt* pEvent);
+		virtual void OnRecvTcpEvent(CTcpEvt* pEvent);
+
+		//************************************
+		// Method:    向对端发送数据
+		// Returns:   是否成功
+		// Parameter: socket
+		// Parameter: 缓冲区指针
+		// Parameter: 缓冲区字节长度
+		// Parameter: 是否异步,默认异步发送
+		// Parameter: 实际发送字节长度
+		//************************************
+		bool SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs = true, int* actualLen = NULL);
 
 	public:
-		CTcpService(int srvType);
+		CTcpService();
 		~CTcpService();
 
 		//************************************
-		// Method:    获取tcp服务类型
-		//************************************
-		int GetSrvType();
-
-		//************************************
-		// Method:    获取socket
+		// Method:    获取服务关联的socket
 		//************************************
 		SOCKET GetSocket();
 
 		//************************************
-		// Method:    获取本地IP
+		// Method:    获取服务端IP
 		//************************************
-		TCHAR* GetLocalIP();
+		TCHAR* GetServerIP();
 
 		//************************************
-		// Method:    获取本地端口
+		// Method:    获取服务端端口
 		//************************************
-		int GetLocalPort();
+		int GetServerPort();
 
 		//************************************
 		// Method:    注册tcp事件回调函数

@@ -84,8 +84,9 @@ namespace NetworkCommunication
 		//************************************
 		// Method:    移除指定的socket
 		// Parameter: socket
+		// Parameter: 是否关闭,默认关闭
 		//************************************
-		void RemoveSocket(SOCKET socket);
+		void RemoveSocket(SOCKET socket, bool close = true);
 
 		//************************************
 		// Method:    查询socket信号

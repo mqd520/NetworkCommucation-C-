@@ -110,7 +110,6 @@ void CClient1Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(TRUE);
-	theApp.m_tcp.CloseConnect();
 }
 
 void CClient1Dlg::OnBnClickedButton2()
@@ -120,11 +119,15 @@ void CClient1Dlg::OnBnClickedButton2()
 	string	str = UTF8ToMultiByte(m_strSend.GetBuffer());
 	int len = 0;
 	BYTE* buf = WriteMultiByteStr((char*)str.c_str(), &len);
-	bool b = theApp.m_tcp.SendData(buf, len);
+	bool b = theApp.m_pTcpClient->Send(buf, len, false);
 	delete buf;
 	if (!b)
 	{
 		MessageBox(_T("发送失败!"));
+	}
+	else
+	{
+		MessageBox(_T("发送成功!"));
 	}
 }
 
@@ -132,22 +135,22 @@ void CClient1Dlg::OnBnClickedButton3()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	UpdateData(TRUE);
-	string	str = UTF8ToMultiByte(m_strSend.GetBuffer());
-	int len = 0;
-	BYTE* buf = WriteMultiByteStr((char*)str.c_str(), &len);
-	theApp.m_tcp.SimulateServerData(buf, len);
-	delete buf;
+	//string	str = UTF8ToMultiByte(m_strSend.GetBuffer());
+	//int len = 0;
+	//BYTE* buf = WriteMultiByteStr((char*)str.c_str(), &len);
+	//theApp.m_tcp.SimulateServerData(buf, len);
+	//delete buf;
 }
 
 LRESULT CClient1Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
 {
 	UpdateData(true);
-	string str = ReadMultiByteStr((BYTE*)wparam, (int)lparam);
-	wstring wstr = MultiByteToUTF8(str.c_str());
-	wstr += _T("\r\n");
-	CString tmp(wstr.c_str());
-	m_strResult = tmp + m_strResult;
-	m_editResult.SetWindowText(m_strResult);
+	//string str = ReadMultiByteStr((BYTE*)wparam, (int)lparam);
+	//wstring wstr = MultiByteToUTF8(str.c_str());
+	//wstr += _T("\r\n");
+	//CString tmp(wstr.c_str());
+	//m_strResult = tmp + m_strResult;
+	//m_editResult.SetWindowText(m_strResult);
 	return 0;
 }
 
@@ -155,5 +158,5 @@ LRESULT CClient1Dlg::OnRecvData(WPARAM wparam, LPARAM lparam)
 void CClient1Dlg::OnBnClickedButton4()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	theApp.m_tcp.Connect();
+	theApp.m_pTcpClient->Connect();
 }

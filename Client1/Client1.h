@@ -10,7 +10,6 @@
 
 #include "resource.h"		// 主符号
 #include "TcpClient.h"
-#include "Timer.h"
 
 using namespace NetworkCommunication;
 
@@ -20,14 +19,14 @@ using namespace NetworkCommunication;
 // 有关此类的实现，请参阅 Client1.cpp
 //
 
-//接收数据
-bool OnRecvData(BYTE buf[], int len);
-
 class CClient1App : public CWinApp
 {
 public:
+	CTcpClient* m_pTcpClient;
+
+public:
 	CClient1App();
-	CTcpClient m_tcp;
+	~CClient1App();
 
 	// 重写
 public:

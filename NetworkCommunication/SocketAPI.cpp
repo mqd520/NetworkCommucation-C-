@@ -81,12 +81,12 @@ namespace NetworkCommunication
 	bool CSocketAPI::Connect1(SOCKET socket, TCHAR* ip, int port)
 	{
 		m_bErr = false;
-		//SOCKADDR_IN addr = GetSocketAddr(ip, port);
-		//int result = ::connect(socket, (SOCKADDR*)&addr, sizeof(addr));
-		//if (result == SOCKET_ERROR)
-		//{
-		//	m_bErr = true;
-		//}
+		SOCKADDR_IN addr = GetSocketAddr(ip, port);
+		int result = ::connect(socket, (SOCKADDR*)&addr, sizeof(addr));
+		if (result == SOCKET_ERROR)
+		{
+			m_bErr = true;
+		}
 		return !m_bErr;
 	}
 

@@ -16,7 +16,19 @@ namespace NetworkCommunication
 		bool m_bListening;//是否正在监听
 		vector<TCHAR*> m_vecAllowIP;//允许的客户端IP
 		SOCKADDR_IN m_socketAddr;//socket addr
-		vector<SOCKET> m_vecClientSocket;
+
+	protected:
+		friend class CCommonSingal;
+		//************************************
+		// Method:    获取服务端socket addr
+		//************************************
+		SOCKADDR_IN GetServerSocketAddr();
+
+		//************************************
+		// Method:    指定IP是否被允许
+		// Parameter: ip
+		//************************************
+		bool IsAllow(TCHAR* ip);
 
 	public:
 		CTcpServer();
@@ -30,9 +42,15 @@ namespace NetworkCommunication
 		bool Listen(TCHAR* ip, int port);
 
 		//************************************
-		// Method:    获取服务端socket addr
+		// Method:    向对端发送数据
+		// Returns:   是否成功
+		// Parameter: socket
+		// Parameter: 缓冲区指针
+		// Parameter: 缓冲区字节长度
+		// Parameter: 是否异步,默认异步发送
+		// Parameter: 实际发送字节长度
 		//************************************
-		SOCKADDR_IN GetServerSocketAddr();
+		bool Send(SOCKET socket, BYTE* pBuf, int len, bool asyncs = true, int* actualLen = NULL);
 
 		//************************************
 		// Method:    增加一个允许IP
@@ -50,22 +68,5 @@ namespace NetworkCommunication
 		// Method:    清除所有允许IP,表示允许所有IP
 		//************************************
 		void ClearAllowIP();
-
-		//************************************
-		// Method:    指定IP是否被允许
-		// Parameter: ip
-		//************************************
-		bool IsAllow(TCHAR* ip);
-
-		//************************************
-		// Method:    向对端发送数据
-		// Returns:   是否成功
-		// Parameter: socket
-		// Parameter: 缓冲区指针
-		// Parameter: 缓冲区字节长度
-		// Parameter: 是否异步,默认异步发送
-		// Parameter: 实际发送字节长度
-		//************************************
-		bool SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs = true, int* actualLen = NULL);
 	};
 }

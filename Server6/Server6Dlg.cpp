@@ -132,44 +132,44 @@ HCURSOR CServer6Dlg::OnQueryDragIcon()
 void CServer6Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	//CString strServerIP, strServerPort;
-	//m_ipServerIP.GetWindowTextW(strServerIP);
-	//m_edServerPort.GetWindowTextW(strServerPort);
-	//int nServerPort = _wtoi(strServerPort.GetBuffer());
+	CString strServerIP, strServerPort;
+	m_ipServerIP.GetWindowTextW(strServerIP);
+	m_edServerPort.GetWindowTextW(strServerPort);
+	int nServerPort = _wtoi(strServerPort.GetBuffer());
 
-	//if (nServerPort > 0)
-	//{
-	//	theApp.m_tcpSrv.Listen(strServerIP.GetBuffer(), nServerPort);
+	if (nServerPort > 0)
+	{
+		theApp.m_tcpSrv.Listen(strServerIP.GetBuffer(), nServerPort);
 
-	//	m_btnListen.EnableWindow(FALSE);
-	//	m_edServerPort.EnableWindow(FALSE);
-	//	m_ipServerIP.EnableWindow(FALSE);
-	//	m_btnSend.ShowWindow(SW_SHOW);
-	//	ShowLog(_T("Listen success"));
-	//}
-	//else
-	//{
-	//	MessageBoxW(L"请输入正确的IP和端口", L"Title");
-	//}
+		m_btnListen.EnableWindow(FALSE);
+		m_edServerPort.EnableWindow(FALSE);
+		m_ipServerIP.EnableWindow(FALSE);
+		m_btnSend.ShowWindow(SW_SHOW);
+		ShowLog(_T("Listen success"));
+	}
+	else
+	{
+		MessageBoxW(L"请输入正确的IP和端口", L"Title");
+	}
 }
 
 LRESULT CServer6Dlg::OnRecvNewConnection(WPARAM wParam, LPARAM lParam)
 {
-	//int index = (int)wParam;
-	//int lcNewIndex = m_lcClientData.GetItemCount();
+	int index = (int)wParam;
+	int lcNewIndex = m_lcClientData.GetItemCount();
 
-	//TcpSessionData session = theApp.m_sessionMgr.GetDataByIndex(index);
-	//CString strNumber, strPort;
-	//strNumber.Format(_T("%d"), lcNewIndex + 1);
-	//strPort.Format(_T("%d"), session.port);
+	TcpSessionData session = theApp.m_sessionMgr.GetDataByIndex(index);
+	CString strNumber, strPort;
+	strNumber.Format(_T("%d"), lcNewIndex + 1);
+	strPort.Format(_T("%d"), session.port);
 
-	//m_lcClientData.InsertItem(LVIF_TEXT | LVIF_STATE, lcNewIndex, strNumber.GetBuffer(), 0, 0, 0, 0);
-	//m_lcClientData.SetItemText(lcNewIndex, 1, session.ip);
-	//m_lcClientData.SetItemText(lcNewIndex, 2, strPort.GetBuffer());
+	m_lcClientData.InsertItem(LVIF_TEXT | LVIF_STATE, lcNewIndex, strNumber.GetBuffer(), 0, 0, 0, 0);
+	m_lcClientData.SetItemText(lcNewIndex, 1, session.ip);
+	m_lcClientData.SetItemText(lcNewIndex, 2, strPort.GetBuffer());
 
-	//CString str;
-	//str.Format(_T("Recv a new client: %s:%d"), session.ip, session.port);
-	//ShowLog(str);
+	CString str;
+	str.Format(_T("Recv a new client: %s:%d"), session.ip, session.port);
+	ShowLog(str);
 
 	return 0;
 }
@@ -177,93 +177,93 @@ LRESULT CServer6Dlg::OnRecvNewConnection(WPARAM wParam, LPARAM lParam)
 void CServer6Dlg::OnBnClickedButton2()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	//int index = -1;
-	//for (int i = 0; i < m_lcClientData.GetItemCount(); i++)
-	//{
-	//	UINT state = m_lcClientData.GetItemState(i, LVIS_SELECTED);
-	//	if (state == LVIS_SELECTED)
-	//	{
-	//		index = i;
-	//	}
-	//}
+	int index = -1;
+	for (int i = 0; i < m_lcClientData.GetItemCount(); i++)
+	{
+		UINT state = m_lcClientData.GetItemState(i, LVIS_SELECTED);
+		if (state == LVIS_SELECTED)
+		{
+			index = i;
+		}
+	}
 
-	//if (index > -1)
-	//{
-	//	TcpSessionData session = theApp.m_sessionMgr.GetDataByIndex(index);
-	//	CString strSend;
-	//	m_editSend.GetWindowTextW(strSend);
-	//	string str = UTF8ToMultiByte(strSend.GetBuffer());
-	//	int len = 0;
-	//	BYTE* buf = WriteMultiByteStr((char*)str.c_str(), &len);
-	//	CString log;
-	//	log.Format(_T("Prepare Send data to %s:%d, size: %d"), session.ip, session.port, len);
-	//	ShowLog(log);
+	if (index > -1)
+	{
+		TcpSessionData session = theApp.m_sessionMgr.GetDataByIndex(index);
+		CString strSend;
+		m_editSend.GetWindowTextW(strSend);
+		string str = UTF8ToMultiByte(strSend.GetBuffer());
+		int len = 0;
+		BYTE* buf = WriteMultiByteStr((char*)str.c_str(), &len);
+		CString log;
+		log.Format(_T("Prepare Send data to %s:%d, size: %d"), session.ip, session.port, len);
+		ShowLog(log);
 
-	//	bool b = theApp.m_tcpSrv.SendData(session.client, buf, len, false);
-	//	//theApp.m_tcpSrv.SendData(session.client, buf, len);
+		bool b = theApp.m_tcpSrv.SendData(session.client, buf, len, false);
+		//theApp.m_tcpSrv.SendData(session.client, buf, len);
 
-	//	delete buf;
-	//}
+		delete buf;
+	}
 }
 
 LRESULT CServer6Dlg::OnRecvPeerData(WPARAM wParam, LPARAM lParam)
 {
-	//PeerData* pData = (PeerData*)wParam;
-	//if (pData)
-	//{
-	//	CString str;
-	//	CNetworkStream ns;
-	//	ns.Write(pData->buf, pData->len);
-	//	string strData = ns.ReadMultiStr(pData->len);
-	//	wstring wstrData = MultiByteToUTF8(strData.c_str());
-	//	str.Format(_T("Recv data from %s:%d, size: %d, data(string): %s \n"), pData->ip, pData->port, pData->len, wstrData.c_str());
-	//	ShowLog(str);
-	//}
+	PeerData* pData = (PeerData*)wParam;
+	if (pData)
+	{
+		CString str;
+		CNetworkStream ns;
+		ns.Write(pData->buf, pData->len);
+		string strData = ns.ReadMultiStr(pData->len);
+		wstring wstrData = MultiByteToUTF8(strData.c_str());
+		str.Format(_T("Recv data from %s:%d, size: %d, data(string): %s \n"), pData->ip, pData->port, pData->len, wstrData.c_str());
+		ShowLog(str);
+	}
 	return 0;
 }
 
 LRESULT CServer6Dlg::OnPeerClose(WPARAM wParam, LPARAM lParam)
 {
-	//int index = (int)wParam;
-	//if (index > -1 && index < m_lcClientData.GetItemCount())
-	//{
-	//	m_lcClientData.DeleteItem(index);
-	//}
+	int index = (int)wParam;
+	if (index > -1 && index < m_lcClientData.GetItemCount())
+	{
+		m_lcClientData.DeleteItem(index);
+	}
 	return 0;
 }
 
 LRESULT CServer6Dlg::OnSendPeerDataResult(WPARAM wParam, LPARAM lParam)
 {
-	//SendPeerDataResult* pResult = (SendPeerDataResult*)wParam;
-	//if (pResult)
-	//{
-	//	CString str;
-	//	if (pResult)
-	//	{
-	//		str.Format(_T("Send data to %s:%d success,size: %d \n"), pResult->ip, pResult->port, pResult->len);
-	//	}
-	//	else
-	//	{
+	SendPeerDataResult* pResult = (SendPeerDataResult*)wParam;
+	if (pResult)
+	{
+		CString str;
+		if (pResult)
+		{
+			str.Format(_T("Send data to %s:%d success,size: %d \n"), pResult->ip, pResult->port, pResult->len);
+		}
+		else
+		{
 
-	//	}
-	//	ShowLog(str);
-	//}
+		}
+		ShowLog(str);
+	}
 	return 0;
 }
 
 void CServer6Dlg::ShowLog(CString strLog)
 {
-	//CString log, newLog;
-	//m_editRecv.GetWindowTextW(log);
-	//newLog = strLog + _T("\r\n") + log;
-	//m_editRecv.SetWindowTextW(newLog);
+	CString log, newLog;
+	m_editRecv.GetWindowTextW(log);
+	newLog = strLog + _T("\r\n") + log;
+	m_editRecv.SetWindowTextW(newLog);
 }
 
 LRESULT CServer6Dlg::OnRefuseNewConnection(WPARAM wParam, LPARAM lParam)
 {
-	//TCHAR* ip = (TCHAR*)wParam;
-	//CString str;
-	//str.Format(_T("Server refuse a new connection: %s:%d"), ip, lParam);
-	//ShowLog(str);
+	TCHAR* ip = (TCHAR*)wParam;
+	CString str;
+	str.Format(_T("Server refuse a new connection: %s:%d"), ip, lParam);
+	ShowLog(str);
 	return 0;
 }

@@ -39,7 +39,7 @@ namespace NetworkCommunication
 		m_lock1.Unlock();
 	}
 
-	void CSelect::RemoveSocket(SOCKET socket)
+	void CSelect::RemoveSocket(SOCKET socket, bool close/* = true*/)
 	{
 		m_lock1.Lock();
 
@@ -48,7 +48,10 @@ namespace NetworkCommunication
 			if (it->socket == socket)
 			{
 				m_vecSocket.erase(it);
-				m_socketAPI.CloseSocket(socket);//关闭socket
+				if (close)
+				{
+					m_socketAPI.CloseSocket(socket);//关闭socket
+				}
 				RemoveProcessingSocket(socket);//移除正在处理的socket
 				break;
 			}
@@ -59,7 +62,7 @@ namespace NetworkCommunication
 
 	void CSelect::Select()
 	{
-		//Sleep(3 * 1000);//调试时使用,无意义,可注释掉
+		Sleep(3 * 1000);//调试时使用,无意义,可注释掉
 
 		if (CNetworkCommuMgr::IsExited())//指示需要退出了
 		{
@@ -185,7 +188,7 @@ namespace NetworkCommunication
 			//检查socket异常信号是否正在被处理
 			if (!IsProcessingSingal(socketData.socket, SocketSingalType::Except))
 			{
-				SocketSingalData data = { socketData.socket, SocketSingalType::Read, socketData.type };
+				SocketSingalData data = { socketData.socket, SocketSingalType::Except, socketData.type };
 				CNetworkCommuMgr::GetCommonSingal()->PushSocket(data);
 			}
 		}
@@ -220,11 +223,14 @@ namespace NetworkCommunication
 			//检查socket可读信号是否正在被处理
 			if (!IsProcessingSingal(socketData.socket, SocketSingalType::Write))
 			{
-				SocketSingalData data = { socketData.socket, SocketSingalType::Read, socketData.type };
+				SocketSingalData data = { socketData.socket, SocketSingalType::Write, socketData.type };
 				if (socketData.type == ESelectSocketType::ReadWriteData)//指示socket用于读写数据
 				{
-					SocketSingalData data = { socketData.socket, SocketSingalType::Write, socketData.type };
 					CNetworkCommuMgr::GetSendDataSingal()->PushSocket(data);
+				}
+				else if (socketData.type == ESelectSocketType::Connect)//指示socket用于连接服务端
+				{
+					CNetworkCommuMgr::GetCommonSingal()->PushSocket(data);
 				}
 			}
 		}

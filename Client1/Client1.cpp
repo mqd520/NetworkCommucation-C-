@@ -5,8 +5,10 @@
 #include "stdafx.h"
 #include "Client1.h"
 #include "Client1Dlg.h"
-#include "OtherTool.h"
-#include "SocketAPI.h"
+#include "NetCommuMgr.h"
+#include "ConnectCmpEvt.h"
+#include "RecvPeerDataEvt.h"
+#include "TimeoutMgr.h"
 
 using namespace NetworkCommunication;
 
@@ -14,8 +16,11 @@ using namespace NetworkCommunication;
 #define new DEBUG_NEW
 #endif
 
-bool OnRecvData(BYTE buf[], int len);
-void OnRecvEvt(TcpEvtType type, TCHAR* msg);
+//************************************
+// Method:    tcp事件处理
+// Parameter: tcp事件
+//************************************
+void OnRecvTcpEvent(CTcpEvt* pEvent);
 
 // CClient1App
 
@@ -24,18 +29,18 @@ BEGIN_MESSAGE_MAP(CClient1App, CWinApp)
 END_MESSAGE_MAP()
 
 
-// CClient1App 构造
 
-bool OnTimer()
-{
-	OutputDebugString(_T("OnTimer\n"));
-	return false;
-}
+// CClient1App 构造
 
 CClient1App::CClient1App()
 {
 	// TODO:  在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
+}
+
+CClient1App::~CClient1App()
+{
+	CNetworkCommuMgr::Release();
 }
 
 // 唯一的一个 CClient1App 对象
@@ -75,28 +80,10 @@ BOOL CClient1App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	CSocketAPI api;
-	CSocketAPI::Init();
-	SOCKET socket = api.CreateTcpSocket();
-	TRACE("本地socket: %d \n", socket);
-	SOCKADDR_IN addr = api.GetSocketAddr("192.168.0.68", 8040);
-	int result = ::connect(socket, (SOCKADDR*)&addr, sizeof(addr));
-	TRACE("新socket: %d \n", result);
-	::Sleep(2 * 1000);
-	char buf[] = "12345";
-	::send(socket, buf, 6, 0);
-	::Sleep(2 * 1000);
-	::closesocket(socket);
+	CNetworkCommuMgr::Init();
+	m_pTcpClient = new CTcpClient(_T("192.168.0.68"), 8040);
+	m_pTcpClient->RegTcpEventCallback(OnRecvTcpEvent);
 
-
-	TCHAR ip[20] = { 0 };
-	if (GetLocalIP(ip))
-	{
-		//m_tcp.Init(_T("192.168.0.10"), 8080);
-		m_tcp.Init(ip, 8080);
-		m_tcp.SetCallback(OnRecvData, OnRecvEvt);
-		m_tcp.Connect();
-	}
 
 	CClient1Dlg dlg;
 	m_pMainWnd = &dlg;
@@ -128,20 +115,41 @@ BOOL CClient1App::InitInstance()
 	return FALSE;
 }
 
-bool OnRecvData(BYTE buf[], int len)
-{
-	theApp.m_tcp.CloseConnect();
-	SendMessage(theApp.m_pMainWnd->m_hWnd, WM_CUSTOM_MESSAGE1, (WPARAM)buf, len);
-	return false;
-}
-
-void OnRecvEvt(TcpEvtType type, TCHAR* msg)
-{
-	OutputDebugString(msg);
-}
-
 int CClient1App::ExitInstance()
 {
 	// TODO:  在此添加专用代码和/或调用基类
+	CNetworkCommuMgr::Exit();
+
 	return CWinApp::ExitInstance();
+}
+
+void OnRecvTcpEvent(CTcpEvt* pEvent)
+{
+	switch (pEvent->GetEvtType())
+	{
+	case ETcpEvent::ConnectCmp:
+	{
+		CConnectCmpEvt* pConnCmpEvt = (CConnectCmpEvt*)pEvent;
+		if (!pConnCmpEvt->GetConnectResult())
+		{
+			TRACE(_T("连接失败,正在进行重新连接!!!!!!!!!!!!!!!! \n"));
+		}
+		else
+		{
+			TRACE(_T("连接成功!!!!!!!!!!! \n"));
+		}
+	}
+	case  ETcpEvent::RecvPeerData:
+	{
+		CRecvPeerDataEvt* pRecvPeerDataEvt = (CRecvPeerDataEvt*)pEvent;
+		//PeerData* pData = new PeerData();
+		//pData->buf = pRecvPeerDataEvt->GetRecvBuf();
+		//pData->len = pRecvPeerDataEvt->GetBufLen();
+		//_tcscpy(pData->ip, ip);
+		//pData->port = port;
+		//SendMessage(theApp.m_pMainWnd->m_hWnd, WM_RECVPEERDATA, (WPARAM)pData, 0);
+		//delete pData;
+	}
+	break;
+	}
 }

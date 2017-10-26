@@ -13,63 +13,54 @@
     <Filter Include="04 Socket管理">
       <UniqueIdentifier>{1e438d53-0a93-4d9f-b78b-08c6ad56bcff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理">
-      <UniqueIdentifier>{971cee1d-991d-45d3-a7c3-6b64ac59e86d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06 通信协议管理">
-      <UniqueIdentifier>{e91db0c6-7780-42f1-b0c8-4d5e2b01204c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06 通信协议管理\01 通信协议客户端">
-      <UniqueIdentifier>{311cddd5-6596-48f2-9b74-2a1e97957bae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06 通信协议管理\02 通信协议服务端">
-      <UniqueIdentifier>{59492ddf-af1d-41a9-a77d-a225145921af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="07 其它">
-      <UniqueIdentifier>{386534d3-12d0-48f5-b9f7-5d159a020830}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00 公共">
       <UniqueIdentifier>{43f7a872-35aa-4517-b49f-994aa00f3b79}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\00 Common">
+    <Filter Include="05 超时器">
+      <UniqueIdentifier>{347e8599-1442-4b8d-8f48-38397c873715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 Tcp管理">
+      <UniqueIdentifier>{971cee1d-991d-45d3-a7c3-6b64ac59e86d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 Tcp管理\00 Common">
       <UniqueIdentifier>{84cf6a5d-912f-477b-9847-892bfca39bb9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\04 Tcp连接">
+    <Filter Include="06 Tcp管理\04 Tcp连接">
       <UniqueIdentifier>{f6490646-483b-4fd3-bb32-12879705b7f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\05 Tcp服务">
+    <Filter Include="06 Tcp管理\05 Tcp服务">
       <UniqueIdentifier>{5fb097eb-90ed-44ce-a91c-ed3dddcb115d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\06 Tcp客户端">
+    <Filter Include="06 Tcp管理\06 Tcp客户端">
       <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\07 Tcp服务端">
+    <Filter Include="06 Tcp管理\07 Tcp服务端">
       <UniqueIdentifier>{bc7a4d26-2d09-44af-bd90-fdab95bddefe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\02 Socket信号处理">
+    <Filter Include="06 Tcp管理\02 Socket信号处理">
       <UniqueIdentifier>{cdf97335-b171-4316-85f3-f45927fe78cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\01 线程处理">
+    <Filter Include="06 Tcp管理\01 线程处理">
       <UniqueIdentifier>{f396dfe6-e594-4801-bfe7-cd750aed8ca3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 Tcp管理\03 Tcp事件">
+    <Filter Include="06 Tcp管理\03 Tcp事件">
       <UniqueIdentifier>{ea75656b-4c43-4df2-851b-ebad2d01f7b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07 通信协议管理">
+      <UniqueIdentifier>{e91db0c6-7780-42f1-b0c8-4d5e2b01204c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07 通信协议管理\01 通信协议客户端">
+      <UniqueIdentifier>{311cddd5-6596-48f2-9b74-2a1e97957bae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07 通信协议管理\02 通信协议服务端">
+      <UniqueIdentifier>{59492ddf-af1d-41a9-a77d-a225145921af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>07 其它</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>07 其它</Filter>
-    </ClInclude>
     <ClInclude Include="MemoryTool.h">
       <Filter>00 公共</Filter>
     </ClInclude>
     <ClInclude Include="EncryptBuffer.h">
-      <Filter>00 公共</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
       <Filter>00 公共</Filter>
     </ClInclude>
     <ClInclude Include="ByteStream.h">
@@ -82,13 +73,13 @@
       <Filter>00 公共</Filter>
     </ClInclude>
     <ClInclude Include="TcpServer.h">
-      <Filter>05 Tcp管理\07 Tcp服务端</Filter>
+      <Filter>06 Tcp管理\07 Tcp服务端</Filter>
     </ClInclude>
     <ClInclude Include="PacketBase.h">
-      <Filter>06 通信协议管理</Filter>
+      <Filter>07 通信协议管理</Filter>
     </ClInclude>
     <ClInclude Include="PacketHeadBase.h">
-      <Filter>06 通信协议管理</Filter>
+      <Filter>07 通信协议管理</Filter>
     </ClInclude>
     <ClInclude Include="Node.h">
       <Filter>01 链表</Filter>
@@ -123,108 +114,125 @@
     <ClInclude Include="ThreadMgr.h">
       <Filter>03 线程</Filter>
     </ClInclude>
-    <ClInclude Include="TFunPointer.h">
-      <Filter>00 公共</Filter>
-    </ClInclude>
     <ClInclude Include="Common.h">
       <Filter>00 公共</Filter>
     </ClInclude>
     <ClInclude Include="TcpConnection.h">
-      <Filter>05 Tcp管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp管理\04 Tcp连接</Filter>
     </ClInclude>
     <ClInclude Include="TcpConnectionMgr.h">
-      <Filter>05 Tcp管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp管理\04 Tcp连接</Filter>
     </ClInclude>
     <ClInclude Include="NetCommuMgr.h">
-      <Filter>05 Tcp管理\00 Common</Filter>
+      <Filter>06 Tcp管理\00 Common</Filter>
     </ClInclude>
     <ClInclude Include="Def.h">
-      <Filter>05 Tcp管理\00 Common</Filter>
+      <Filter>06 Tcp管理\00 Common</Filter>
     </ClInclude>
     <ClInclude Include="TcpService.h">
-      <Filter>05 Tcp管理\05 Tcp服务</Filter>
+      <Filter>06 Tcp管理\05 Tcp服务</Filter>
     </ClInclude>
     <ClInclude Include="TcpServiceMgr.h">
-      <Filter>05 Tcp管理\05 Tcp服务</Filter>
+      <Filter>06 Tcp管理\05 Tcp服务</Filter>
     </ClInclude>
     <ClInclude Include="SocketAPI.h">
       <Filter>04 Socket管理</Filter>
     </ClInclude>
     <ClInclude Include="ServerTcpConnection.h">
-      <Filter>05 Tcp管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp管理\04 Tcp连接</Filter>
     </ClInclude>
     <ClInclude Include="ThreadEntry.h">
       <Filter>03 线程</Filter>
     </ClInclude>
     <ClInclude Include="TcpClient.h">
-      <Filter>05 Tcp管理\06 Tcp客户端</Filter>
+      <Filter>06 Tcp管理\06 Tcp客户端</Filter>
     </ClInclude>
     <ClInclude Include="RecvNewConnEvt.h">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="RefuseNewConnEvt.h">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="RecvPeerDataEvt.h">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="TcpDisconnectEvt.h">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="RecvThread.h">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClInclude>
     <ClInclude Include="RecvDataSingal.h">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClInclude>
     <ClInclude Include="SocketSingal.h">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClInclude>
     <ClInclude Include="SendDataSingal.h">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClInclude>
     <ClInclude Include="CommonSingal.h">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClInclude>
     <ClInclude Include="Select.h">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClInclude>
     <ClInclude Include="SendThread.h">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClInclude>
     <ClInclude Include="CommonThread.h">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClInclude>
     <ClInclude Include="SelectThread.h">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClInclude>
     <ClInclude Include="TcpEvtThread.h">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClInclude>
     <ClInclude Include="TcpEvt.h">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="TcpEvtMgr.h">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="SendDataResultEvt.h">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClInclude>
+    <ClInclude Include="ConnectCmpEvt.h">
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientTcpConnection.h">
+      <Filter>06 Tcp管理\04 Tcp连接</Filter>
+    </ClInclude>
+    <ClInclude Include="Timeout.h">
+      <Filter>05 超时器</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeoutThread.h">
+      <Filter>05 超时器</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeoutListMgr.h">
+      <Filter>05 超时器</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeoutMgr.h">
+      <Filter>05 超时器</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeoutEvtProcess.h">
+      <Filter>05 超时器</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeoutEvtThread.h">
+      <Filter>05 超时器</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>07 其它</Filter>
-    </ClCompile>
     <ClCompile Include="MemoryTool.cpp">
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp">
-      <Filter>05 Tcp管理\06 Tcp客户端</Filter>
+      <Filter>06 Tcp管理\06 Tcp客户端</Filter>
     </ClCompile>
     <ClCompile Include="EncryptBuffer.cpp">
-      <Filter>00 公共</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="ByteStream.cpp">
@@ -237,13 +245,13 @@
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="TcpServer.cpp">
-      <Filter>05 Tcp管理\07 Tcp服务端</Filter>
+      <Filter>06 Tcp管理\07 Tcp服务端</Filter>
     </ClCompile>
     <ClCompile Include="PacketBase.cpp">
-      <Filter>06 通信协议管理</Filter>
+      <Filter>07 通信协议管理</Filter>
     </ClCompile>
     <ClCompile Include="PacketHeadBase.cpp">
-      <Filter>06 通信协议管理</Filter>
+      <Filter>07 通信协议管理</Filter>
     </ClCompile>
     <ClCompile Include="Node.cpp">
       <Filter>01 链表</Filter>
@@ -279,87 +287,107 @@
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="TcpConnection.cpp">
-      <Filter>05 Tcp管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp管理\04 Tcp连接</Filter>
     </ClCompile>
     <ClCompile Include="TcpConnectionMgr.cpp">
-      <Filter>05 Tcp管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp管理\04 Tcp连接</Filter>
     </ClCompile>
     <ClCompile Include="NetCommuMgr.cpp">
-      <Filter>05 Tcp管理\00 Common</Filter>
+      <Filter>06 Tcp管理\00 Common</Filter>
     </ClCompile>
     <ClCompile Include="TcpService.cpp">
-      <Filter>05 Tcp管理\05 Tcp服务</Filter>
+      <Filter>06 Tcp管理\05 Tcp服务</Filter>
     </ClCompile>
     <ClCompile Include="TcpServiceMgr.cpp">
-      <Filter>05 Tcp管理\05 Tcp服务</Filter>
+      <Filter>06 Tcp管理\05 Tcp服务</Filter>
     </ClCompile>
     <ClCompile Include="SocketAPI.cpp">
       <Filter>04 Socket管理</Filter>
     </ClCompile>
     <ClCompile Include="ServerTcpConnection.cpp">
-      <Filter>05 Tcp管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp管理\04 Tcp连接</Filter>
     </ClCompile>
     <ClCompile Include="ThreadEntry.cpp">
       <Filter>03 线程</Filter>
     </ClCompile>
     <ClCompile Include="RecvNewConnEvt.cpp">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="RefuseNewConnEvt.cpp">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="RecvPeerDataEvt.cpp">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="TcpDisconnectEvt.cpp">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="RecvThread.cpp">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClCompile>
     <ClCompile Include="RecvDataSingal.cpp">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClCompile>
     <ClCompile Include="SocketSingal.cpp">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClCompile>
     <ClCompile Include="SendDataSingal.cpp">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClCompile>
     <ClCompile Include="CommonSingal.cpp">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClCompile>
     <ClCompile Include="Select.cpp">
-      <Filter>05 Tcp管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp管理\02 Socket信号处理</Filter>
     </ClCompile>
     <ClCompile Include="SendThread.cpp">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClCompile>
     <ClCompile Include="CommonThread.cpp">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClCompile>
     <ClCompile Include="SelectThread.cpp">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClCompile>
     <ClCompile Include="TcpEvtThread.cpp">
-      <Filter>05 Tcp管理\01 线程处理</Filter>
+      <Filter>06 Tcp管理\01 线程处理</Filter>
     </ClCompile>
     <ClCompile Include="TcpEvt.cpp">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="TcpEvtMgr.cpp">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="SendDataResultEvt.cpp">
-      <Filter>05 Tcp管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>07 其它</Filter>
+    <ClCompile Include="ConnectCmpEvt.cpp">
+      <Filter>06 Tcp管理\03 Tcp事件</Filter>
     </ClCompile>
+    <ClCompile Include="ClientTcpConnection.cpp">
+      <Filter>06 Tcp管理\04 Tcp连接</Filter>
+    </ClCompile>
+    <ClCompile Include="Timeout.cpp">
+      <Filter>05 超时器</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeoutThread.cpp">
+      <Filter>05 超时器</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeoutListMgr.cpp">
+      <Filter>05 超时器</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeoutMgr.cpp">
+      <Filter>05 超时器</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeoutEvtProcess.cpp">
+      <Filter>05 超时器</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeoutEvtThread.cpp">
+      <Filter>05 超时器</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="dll.def">
-      <Filter>07 其它</Filter>
-    </None>
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>

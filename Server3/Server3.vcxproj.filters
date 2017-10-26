@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="07 其它">
+      <UniqueIdentifier>{801ca993-d611-4e69-9603-59cfdb8492d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -24,6 +27,12 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\NetworkCommunication\stdafx.h">
+      <Filter>07 其它</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetworkCommunication\targetver.h">
+      <Filter>07 其它</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -32,5 +41,16 @@
     <ClCompile Include="Server3.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\NetworkCommunication\dllmain.cpp">
+      <Filter>07 其它</Filter>
+    </ClCompile>
+    <ClCompile Include="..\NetworkCommunication\stdafx.cpp">
+      <Filter>07 其它</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\NetworkCommunication\dll.def">
+      <Filter>07 其它</Filter>
+    </None>
   </ItemGroup>
 </Project>

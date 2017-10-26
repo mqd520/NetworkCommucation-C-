@@ -7,7 +7,6 @@
 namespace NetworkCommunication
 {
 	CTcpServer::CTcpServer() :
-		CTcpService(ETcpServiceType::Server),
 		m_bListening(false)
 	{
 
@@ -22,19 +21,19 @@ namespace NetworkCommunication
 	{
 		if (!m_bListening)
 		{
-			_tcscpy(m_strLocalIP, ip);
-			m_nLocalPort = port;
+			_tcscpy(m_strServerIP, ip);
+			m_nServerPort = port;
 
 			//初始化服务端socket
 			m_bListening = true;
 			m_socket = m_socketAPI.CreateTcpSocket();
 			m_socketAPI.SetNonBlock(m_socket);
-			m_socketAPI.Bind(m_socket, m_strLocalIP, m_nLocalPort);
+			m_socketAPI.Bind(m_socket, m_strServerIP, m_nServerPort);
 			m_socketAPI.Listen(m_socket);
-			m_socketAddr = m_socketAPI.GetSocketAddr(m_strLocalIP, m_nLocalPort);
+			m_socketAddr = m_socketAPI.GetSocketAddr(m_strServerIP, m_nServerPort);
 
-			PrintfInfo(_T("Listen success: %s:%d"), m_strLocalIP, m_nLocalPort);
-			PrintfDebug(_T("Listen success: %s:%d, socket: %d"), m_strLocalIP, m_nLocalPort, m_socket);
+			PrintfInfo(_T("Listen success: %s:%d"), m_strServerIP, m_nServerPort);
+			PrintfDebug(_T("Listen success: %s:%d, socket: %d"), m_strServerIP, m_nServerPort, m_socket);
 
 			//加入select队列
 			CNetworkCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::RecvConn);
@@ -104,24 +103,8 @@ namespace NetworkCommunication
 		return result;
 	}
 
-	bool CTcpServer::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
+	bool CTcpServer::Send(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
 	{
-		//获取指定socket的tcp连接对象
-		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
-
-		if (pConn)
-		{
-			if (asyncs)//异步发送
-			{
-				pConn->SetAsyncSendData(pBuf, len, actualLen);
-				return true;
-			}
-			else//同步发送
-			{
-				pConn->SendData(pBuf, len, actualLen);
-			}
-		}
-
-		return false;
+		return __super::SendData(socket, pBuf, len, asyncs, actualLen);
 	}
 }

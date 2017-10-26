@@ -18,17 +18,6 @@ typedef struct tagNetAddress
 	int port;//端口
 }NetAddress;
 
-//tcp服务类型
-class ETcpServiceType
-{
-public:
-	enum
-	{
-		Client,	//客户端
-		Server	//服务端
-	};
-};
-
 //tcp事件
 class ETcpEvent
 {
@@ -39,7 +28,8 @@ public:
 		RefuseNewConnection,//拒绝新连接
 		RecvPeerData,//收到对端数据
 		ConnDisconnect,//连接断开
-		AsyncSendDataResult//异步发送数据结果
+		AsyncSendDataResult,//异步发送数据结果
+		ConnectCmp//连接完成
 	};
 };
 
@@ -49,8 +39,9 @@ class ESelectSocketType
 public:
 	enum
 	{
-		RecvConn,//指示用于接收新连接的socket
-		ReadWriteData//指示用于读写数据的socket
+		RecvConn,//指示用于接收新连接的服务端socket
+		ReadWriteData,//指示用于读写数据的socket
+		Connect//指示用于连接服务端的客户端socket
 	};
 };
 

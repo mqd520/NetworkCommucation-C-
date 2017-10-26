@@ -11,10 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0F7FD0AC-5D87-40EC-8E07-316D79745805}</ProjectGuid>
+    <ProjectGuid>{725DC803-D97E-4DC7-B3D4-8B144285C777}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TCPCommunication</RootNamespace>
-    <ProjectName>NetworkCommunication</ProjectName>
+    <RootNamespace>NetworkCommunication</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -43,12 +42,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
-    <LibraryPath>../TCPCommunication1/bin/;$(LibraryPath)</LibraryPath>
-    <TargetName>$(ProjectName)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>bin\</OutDir>
-    <IntDir>obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -56,19 +49,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>dll.def</ModuleDefinitionFile>
     </Link>
-    <Lib>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Lib>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -78,54 +64,62 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ModuleDefinitionFile>dll.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ByteStream.h" />
+    <ClInclude Include="ClientTcpConnection.h" />
+    <ClInclude Include="Common.h" />
     <ClInclude Include="CommonSingal.h" />
     <ClInclude Include="CommonThread.h" />
-    <ClInclude Include="RecvDataSingal.h" />
-    <ClInclude Include="RecvThread.h" />
-    <ClInclude Include="SelectThread.h" />
-    <ClInclude Include="SendDataResultEvt.h" />
-    <ClInclude Include="SendThread.h" />
-    <ClInclude Include="SendDataSingal.h" />
-    <ClInclude Include="SocketSingal.h" />
-    <ClInclude Include="TcpDisconnectEvt.h" />
-    <ClInclude Include="RecvNewConnEvt.h" />
-    <ClInclude Include="RecvPeerDataEvt.h" />
-    <ClInclude Include="RefuseNewConnEvt.h" />
-    <ClInclude Include="ByteStream.h" />
-    <ClInclude Include="Common.h" />
+    <ClInclude Include="ConnectCmpEvt.h" />
     <ClInclude Include="Def.h" />
-    <ClInclude Include="ServerTcpConnection.h" />
-    <ClInclude Include="TcpClient.h" />
-    <ClInclude Include="TcpEvtMgr.h" />
-    <ClInclude Include="TcpEvtThread.h" />
-    <ClInclude Include="TcpService.h" />
-    <ClInclude Include="TcpServiceMgr.h" />
-    <ClInclude Include="TcpEvt.h" />
-    <ClInclude Include="TFunPointer.h" />
     <ClInclude Include="EncryptBuffer.h" />
     <ClInclude Include="LinkList.h" />
+    <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="NetCommuMgr.h" />
     <ClInclude Include="NetworkStream.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="OtherTool.h" />
     <ClInclude Include="PacketBase.h" />
     <ClInclude Include="PacketHeadBase.h" />
     <ClInclude Include="Queue.h" />
+    <ClInclude Include="RecvDataSingal.h" />
+    <ClInclude Include="RecvNewConnEvt.h" />
+    <ClInclude Include="RecvPeerDataEvt.h" />
+    <ClInclude Include="RecvThread.h" />
+    <ClInclude Include="RefuseNewConnEvt.h" />
     <ClInclude Include="SafeLock.h" />
     <ClInclude Include="Select.h" />
+    <ClInclude Include="SelectThread.h" />
+    <ClInclude Include="SendDataResultEvt.h" />
+    <ClInclude Include="SendDataSingal.h" />
+    <ClInclude Include="SendThread.h" />
+    <ClInclude Include="ServerTcpConnection.h" />
     <ClInclude Include="SocketAPI.h" />
-    <ClInclude Include="TcpServer.h" />
+    <ClInclude Include="SocketSingal.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TcpClient.h" />
     <ClInclude Include="TcpConnection.h" />
     <ClInclude Include="TcpConnectionMgr.h" />
+    <ClInclude Include="TcpDisconnectEvt.h" />
+    <ClInclude Include="TcpEvt.h" />
+    <ClInclude Include="TcpEvtMgr.h" />
+    <ClInclude Include="TcpEvtThread.h" />
+    <ClInclude Include="TcpServer.h" />
+    <ClInclude Include="TcpService.h" />
+    <ClInclude Include="TcpServiceMgr.h" />
     <ClInclude Include="Thread.h" />
     <ClInclude Include="ThreadEntry.h" />
     <ClInclude Include="ThreadEvent.h" />
@@ -134,55 +128,57 @@
     <ClInclude Include="ThreadMutex.h" />
     <ClInclude Include="ThreadMutexHelper.h" />
     <ClInclude Include="ThreadSemaphore.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="MemoryTool.h" />
-    <ClInclude Include="OtherTool.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Timeout.h" />
+    <ClInclude Include="TimeoutEvtProcess.h" />
+    <ClInclude Include="TimeoutEvtThread.h" />
+    <ClInclude Include="TimeoutListMgr.h" />
+    <ClInclude Include="TimeoutMgr.h" />
+    <ClInclude Include="TimeoutThread.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ByteStream.cpp" />
+    <ClCompile Include="ClientTcpConnection.cpp" />
+    <ClCompile Include="Common.cpp" />
     <ClCompile Include="CommonSingal.cpp" />
     <ClCompile Include="CommonThread.cpp" />
-    <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="RecvDataSingal.cpp" />
-    <ClCompile Include="RecvThread.cpp" />
-    <ClCompile Include="SelectThread.cpp" />
-    <ClCompile Include="SendDataResultEvt.cpp" />
-    <ClCompile Include="SendThread.cpp" />
-    <ClCompile Include="SendDataSingal.cpp" />
-    <ClCompile Include="SocketSingal.cpp" />
-    <ClCompile Include="TcpDisconnectEvt.cpp" />
-    <ClCompile Include="RecvNewConnEvt.cpp" />
-    <ClCompile Include="RecvPeerDataEvt.cpp" />
-    <ClCompile Include="RefuseNewConnEvt.cpp" />
-    <ClCompile Include="ByteStream.cpp" />
-    <ClCompile Include="Common.cpp" />
+    <ClCompile Include="ConnectCmpEvt.cpp" />
     <ClCompile Include="EncryptBuffer.cpp" />
     <ClCompile Include="LinkList.cpp" />
+    <ClCompile Include="MemoryTool.cpp" />
     <ClCompile Include="NetCommuMgr.cpp" />
     <ClCompile Include="NetworkStream.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="OtherTool.cpp" />
     <ClCompile Include="PacketBase.cpp" />
     <ClCompile Include="PacketHeadBase.cpp" />
+    <ClCompile Include="RecvDataSingal.cpp" />
+    <ClCompile Include="RecvNewConnEvt.cpp" />
+    <ClCompile Include="RecvPeerDataEvt.cpp" />
+    <ClCompile Include="RecvThread.cpp" />
+    <ClCompile Include="RefuseNewConnEvt.cpp" />
     <ClCompile Include="SafeLock.cpp" />
     <ClCompile Include="Select.cpp" />
+    <ClCompile Include="SelectThread.cpp" />
+    <ClCompile Include="SendDataResultEvt.cpp" />
+    <ClCompile Include="SendDataSingal.cpp" />
+    <ClCompile Include="SendThread.cpp" />
     <ClCompile Include="ServerTcpConnection.cpp" />
     <ClCompile Include="SocketAPI.cpp" />
-    <ClCompile Include="MemoryTool.cpp" />
-    <ClCompile Include="OtherTool.cpp" />
+    <ClCompile Include="SocketSingal.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp" />
+    <ClCompile Include="TcpConnection.cpp" />
+    <ClCompile Include="TcpConnectionMgr.cpp" />
+    <ClCompile Include="TcpDisconnectEvt.cpp" />
+    <ClCompile Include="TcpEvt.cpp" />
     <ClCompile Include="TcpEvtMgr.cpp" />
     <ClCompile Include="TcpEvtThread.cpp" />
     <ClCompile Include="TcpServer.cpp" />
-    <ClCompile Include="TcpConnection.cpp" />
-    <ClCompile Include="TcpConnectionMgr.cpp" />
     <ClCompile Include="TcpService.cpp" />
     <ClCompile Include="TcpServiceMgr.cpp" />
-    <ClCompile Include="TcpEvt.cpp" />
     <ClCompile Include="Thread.cpp" />
     <ClCompile Include="ThreadEntry.cpp" />
     <ClCompile Include="ThreadEvent.cpp" />
@@ -191,17 +187,14 @@
     <ClCompile Include="ThreadMutex.cpp" />
     <ClCompile Include="ThreadMutexHelper.cpp" />
     <ClCompile Include="ThreadSemaphore.cpp" />
-    <ClCompile Include="Timer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="dll.def" />
+    <ClCompile Include="Timeout.cpp" />
+    <ClCompile Include="TimeoutEvtProcess.cpp" />
+    <ClCompile Include="TimeoutEvtThread.cpp" />
+    <ClCompile Include="TimeoutListMgr.cpp" />
+    <ClCompile Include="TimeoutMgr.cpp" />
+    <ClCompile Include="TimeoutThread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties RESOURCE_FILE="\Test\17 NetworkCommucation\Client2\Client2.rc" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

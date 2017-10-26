@@ -9,7 +9,7 @@ namespace NetworkCommunication
 	{
 	protected:
 		CThread* m_pThread;//线程对象
-		volatile bool m_bExist;//线程是否应该退出
+		bool m_bExist;//线程是否应该退出
 		bool m_bRun;//线程是否已开启
 		int m_nSleepMillSecond;//休眠时间
 

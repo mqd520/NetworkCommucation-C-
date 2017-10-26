@@ -22,7 +22,7 @@ class CServer6App : public CWinApp
 {
 public:
 	CTcpServer m_tcpSrv;//tcp服务端
-	//CTcpDataSessionDataMgr m_sessionMgr;//tcp会话数据管理
+	CTcpDataSessionDataMgr m_sessionMgr;//tcp会话数据管理
 
 public:
 	CServer6App();

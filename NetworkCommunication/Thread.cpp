@@ -57,6 +57,9 @@ namespace NetworkCommunication
 				//ÐÝÃßÒ»¶ÎÊ±¼ä
 				m_pEntry->Sleep();
 			}
+
+			int n = 0;
+			n++;
 		}
 	}
 
