@@ -27,13 +27,13 @@ namespace NetworkCommunication
 
 	void CCommonThread::OnThreadExecute()
 	{
-		if (CNetworkCommuMgr::GetCommonSingal()->IsEmpty())
+		if (CNetworkCommuMgr::GetOtherSingal()->IsEmpty())
 		{
 			SetSleepTime(10);
 		}
 		else
 		{
-			CNetworkCommuMgr::GetCommonSingal()->ProcessSocketSingal();
+			CNetworkCommuMgr::GetOtherSingal()->ProcessSocketSingal();
 		}
 	}
 }

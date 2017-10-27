@@ -3,15 +3,15 @@
 
 namespace NetworkCommunication
 {
-	//连接完成事件
-	class CConnectCmpEvt : public CTcpEvt
+	//连接服务端结果事件
+	class CConnectSrvResultEvt : public CTcpEvt
 	{
 	private:
 		bool m_bSuccess;//连接是否成功
 
 	public:
-		CConnectCmpEvt(CTcpService* pSrv, bool success);
-		~CConnectCmpEvt();
+		CConnectSrvResultEvt(CTcpService* pSrv, bool success);
+		~CConnectSrvResultEvt();
 
 		//************************************
 		// Method:    获取事件类型

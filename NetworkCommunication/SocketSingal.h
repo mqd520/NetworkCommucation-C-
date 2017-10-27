@@ -1,6 +1,7 @@
 #pragma once
 #include <queue>
 #include "Def.h"
+#include "SocketAPI.h"
 
 using namespace std;
 
@@ -11,6 +12,7 @@ namespace NetworkCommunication
 	{
 	protected:
 		queue<SocketSingalData> m_queueSocketData;//有信号的socket数据队列
+		CSocketAPI m_socketAPI;//
 
 	protected:
 		//************************************
@@ -33,6 +35,36 @@ namespace NetworkCommunication
 		// Parameter: socket类型
 		//************************************
 		virtual void ProcessExceptSingal(SOCKET socket, int type);
+
+		//************************************
+		// Method:    接收新连接
+		// Parameter: 服务端socket
+		//************************************
+		void RecvNewConnection(SOCKET socket);
+
+		//************************************
+		// Method:    接收对端数据
+		// Parameter: 收发数据的socket
+		//************************************
+		void RecvPeerData(SOCKET socket);
+
+		//************************************
+		// Method:    发送数据
+		// Parameter: 收发数据的socket
+		//************************************
+		void SendData(SOCKET socket);
+
+		//************************************
+		// Method:    连接服务端成功事件处理
+		// Parameter: 客户端socket
+		//************************************
+		void OnConnectSuccess(SOCKET socket);
+
+		//************************************
+		// Method:    连接服务端失败事件处理
+		// Parameter: 客户端socket
+		//************************************
+		void OnConnectFail(SOCKET socket);
 
 	public:
 		CSocketSingal();

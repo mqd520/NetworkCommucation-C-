@@ -3,6 +3,9 @@
 #include "Common.h"
 #include "TcpConnectionMgr.h"
 #include "NetCommuMgr.h"
+#include "RecvNewConnEvt.h"
+#include "ServerTcpConnection.h"
+#include "RecvConnResultEvt.h"
 
 namespace NetworkCommunication
 {
@@ -43,9 +46,47 @@ namespace NetworkCommunication
 		return true;
 	}
 
-	SOCKADDR_IN CTcpServer::GetServerSocketAddr()
+	void CTcpServer::OnRecvTcpEvent(CTcpEvt* pEvent)
 	{
-		return m_socketAddr;
+		if (pEvent->GetEvtType() == ETcpEvent::RecvNewConnection)//收到新连接
+		{
+			SOCKET clientSocket = pEvent->GetSendRecvSocket();//获取客户端socket
+			TCHAR ip[NETCOMM_MAXIPSTRELN];
+			int port = 0;
+			m_socketAPI.GetPeerIpAndPort(clientSocket, ip, &port);
+
+			bool result = false;//接收连接结果
+			if (IsAllow(ip))
+			{
+				DispatchTcpEvt(pEvent);
+
+				CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
+				if (pRecvEvent->m_bRefuse)//用户拒绝了新连接
+				{
+					m_socketAPI.CloseSocket(pRecvEvent->GetSendRecvSocket());//关闭客户端socket
+
+					PrintfInfo(_T("[%s:%d][socket: %d] refuse a new connection [%s:%d][socket: %d]"),
+						this->GetServerIP(), this->GetServerPort(), this->GetSocket(), ip, port, clientSocket);
+				}
+				else//用户允许了新连接
+				{
+					//创建tcp连接对象
+					CServerTcpConnection* conn = new CServerTcpConnection(this, pRecvEvent->GetSendRecvSocket(), m_socket);
+					CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
+					result = true;
+				}
+			}
+			else
+			{
+				//...
+			}
+
+			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvConnResultEvt(this, result, ip, port));
+
+			return;
+		}
+
+		__super::OnRecvTcpEvent(pEvent);
 	}
 
 	void CTcpServer::AddAllowIP(TCHAR* ip)

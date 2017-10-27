@@ -189,7 +189,7 @@ namespace NetworkCommunication
 			if (!IsProcessingSingal(socketData.socket, SocketSingalType::Except))
 			{
 				SocketSingalData data = { socketData.socket, SocketSingalType::Except, socketData.type };
-				CNetworkCommuMgr::GetCommonSingal()->PushSocket(data);
+				CNetworkCommuMgr::GetOtherSingal()->PushSocket(data);
 			}
 		}
 	}
@@ -205,7 +205,7 @@ namespace NetworkCommunication
 				SocketSingalData data = { socketData.socket, SocketSingalType::Read, socketData.type };
 				if (socketData.type == ESelectSocketType::RecvConn)//指示socket用于接收新连接
 				{
-					CNetworkCommuMgr::GetCommonSingal()->PushSocket(data);
+					CNetworkCommuMgr::GetOtherSingal()->PushSocket(data);
 				}
 				else if (socketData.type == ESelectSocketType::ReadWriteData)//指示socket用于读写数据
 				{
@@ -230,7 +230,7 @@ namespace NetworkCommunication
 				}
 				else if (socketData.type == ESelectSocketType::Connect)//指示socket用于连接服务端
 				{
-					CNetworkCommuMgr::GetCommonSingal()->PushSocket(data);
+					CNetworkCommuMgr::GetOtherSingal()->PushSocket(data);
 				}
 			}
 		}

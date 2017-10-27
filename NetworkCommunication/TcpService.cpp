@@ -65,33 +65,14 @@ namespace NetworkCommunication
 
 	void CTcpService::OnRecvTcpEvent(CTcpEvt* pEvent)
 	{
+		DispatchTcpEvt(pEvent);
+	}
+
+	void CTcpService::DispatchTcpEvt(CTcpEvt* pEvent)
+	{
 		if (m_lpCallback)
 		{
 			m_lpCallback(pEvent);//通知事件注册方
-
-			if (pEvent->GetEvtType() == ETcpEvent::RecvNewConnection)
-			{
-				CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
-				if (pRecvEvent->m_bRefuse)//用户拒绝了新连接
-				{
-					SOCKET clientSocket = pRecvEvent->GetSendRecvSocket();//获取客户端socket
-					TCHAR ip[NETCOMM_MAXIPSTRELN];
-					int port = 0;
-					m_socketAPI.GetPeerIpAndPort(clientSocket, ip, &port);
-
-					m_socketAPI.CloseSocket(pRecvEvent->GetSendRecvSocket());//关闭客户端socket
-
-					PrintfInfo(_T("[%s:%d][socket: %d] refuse a new connection [%s:%d][socket: %d]"),
-						this->GetServerIP(), this->GetServerPort(), this->GetSocket(), ip, port, clientSocket);
-					CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRefuseNewConnEvt(this, clientSocket, ip, port));
-				}
-				else//用户允许了新连接
-				{
-					//创建tcp连接对象
-					CServerTcpConnection* conn = new CServerTcpConnection(this, pRecvEvent->GetSendRecvSocket(), m_socket);
-					CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
-				}
-			}
 		}
 	}
 }

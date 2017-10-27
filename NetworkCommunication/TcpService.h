@@ -35,6 +35,12 @@ namespace NetworkCommunication
 		//************************************
 		bool SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs = true, int* actualLen = NULL);
 
+		//************************************
+		// Method:    通知调用者tcp事件
+		// Parameter: tcp事件
+		//************************************
+		void DispatchTcpEvt(CTcpEvt* pEvent);
+
 	public:
 		CTcpService();
 		~CTcpService();

@@ -2,6 +2,10 @@
 #include "SocketSingal.h"
 #include "Common.h"
 #include "NetCommuMgr.h"
+#include "TcpConnectionMgr.h"
+#include "ClientTcpConnection.h"
+#include "RecvNewConnEvt.h"
+#include "ConnectSrvResultEvt.h"
 
 namespace NetworkCommunication
 {
@@ -17,15 +21,97 @@ namespace NetworkCommunication
 
 	void CSocketSingal::ProcessReadSingal(SOCKET socket, int type)
 	{
-
+		if (type == ESelectSocketType::RecvConn)//指示socket用于接收客户端连接
+		{
+			RecvNewConnection(socket);
+		}
+		else if (type == ESelectSocketType::ReadWriteData)//指示socket用于收发数据
+		{
+			RecvPeerData(socket);
+		}
 	}
 
 	void CSocketSingal::ProcessWriteSingal(SOCKET socket, int type)
 	{
-
+		if (type == ESelectSocketType::ReadWriteData)//指示socket用于收发数据
+		{
+			SendData(socket);
+		}
+		else if (type == ESelectSocketType::Connect)//指示socket用于连接服务端
+		{
+			OnConnectSuccess(socket);
+		}
 	}
 
 	void CSocketSingal::ProcessExceptSingal(SOCKET socket, int type)
+	{
+		if (type == ESelectSocketType::Connect)//指示socket用于连接服务端
+		{
+			OnConnectFail(socket);
+		}
+	}
+
+	void CSocketSingal::RecvNewConnection(SOCKET socket)
+	{
+		//获取服务端socket关联的tcp服务对象
+		CTcpService* pSrv = CNetworkCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+		if (pSrv)
+		{
+			SOCKET client = m_socketAPI.Accept(socket, pSrv->GetServerIP(), pSrv->GetServerPort());
+			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvNewConnEvt(pSrv, client));
+		}
+	}
+
+	void CSocketSingal::RecvPeerData(SOCKET socket)
+	{
+		//获取tcp连接对象
+		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+		if (pConn)
+		{
+			pConn->OnRecvPeerData();
+		}
+		else
+		{
+			CNetworkCommuMgr::GetSelect()->RemoveSocket(socket);
+		}
+	}
+
+	void CSocketSingal::SendData(SOCKET socket)
+	{
+		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+		if (pConn)
+		{
+			pConn->AsyncSendData();
+		}
+		else
+		{
+			CNetworkCommuMgr::GetSelect()->RemoveSocket(socket);//移除select中指定socket
+		}
+	}
+
+	void CSocketSingal::OnConnectSuccess(SOCKET socket)
+	{
+		//获取服务端socket关联的tcp服务对象
+		CTcpService* pSrv = CNetworkCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+		if (pSrv)
+		{
+			//连接成功后,不再需要监听是否已连接上服务端
+			CNetworkCommuMgr::GetSelect()->RemoveSocket(socket, false);
+
+			//创建连接完成事件
+			CConnectSrvResultEvt* pEvent = new CConnectSrvResultEvt(pSrv, true);
+			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
+
+			//建立tcp连接
+			CClientTcpConnection* pConn = new CClientTcpConnection(pSrv, socket);
+			CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(pConn);
+
+			//客户端socket立刻转变为收发数据的socket
+			CNetworkCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::ReadWriteData);
+		}
+	}
+
+	void CSocketSingal::OnConnectFail(SOCKET socket)
 	{
 
 	}

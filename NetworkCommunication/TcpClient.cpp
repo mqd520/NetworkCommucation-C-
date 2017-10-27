@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TcpClient.h"
 #include "NetCommuMgr.h"
-#include "ConnectCmpEvt.h"
+#include "ConnectSrvResultEvt.h"
 #include "MemoryTool.h"
 
 namespace NetworkCommunication
@@ -64,10 +64,10 @@ namespace NetworkCommunication
 	{
 		__super::OnRecvTcpEvent(pEvent);
 
-		if (pEvent->GetEvtType() == ETcpEvent::ConnectCmp)
+		if (pEvent->GetEvtType() == ETcpEvent::ConnectSrvResult)
 		{
 			m_bIsConnecting = false;//连接已完成
-			CConnectCmpEvt* pConnCmpEvt = (CConnectCmpEvt*)pEvent;
+			CConnectSrvResultEvt* pConnCmpEvt = (CConnectSrvResultEvt*)pEvent;
 			m_bIsConnected = pConnCmpEvt->GetConnectResult(); 
 		}
 	}

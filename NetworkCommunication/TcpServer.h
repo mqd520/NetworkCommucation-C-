@@ -18,17 +18,17 @@ namespace NetworkCommunication
 		SOCKADDR_IN m_socketAddr;//socket addr
 
 	protected:
-		friend class CCommonSingal;
-		//************************************
-		// Method:    获取服务端socket addr
-		//************************************
-		SOCKADDR_IN GetServerSocketAddr();
-
 		//************************************
 		// Method:    指定IP是否被允许
 		// Parameter: ip
 		//************************************
 		bool IsAllow(TCHAR* ip);
+
+		//************************************
+		// Method:    收到tcp事件处理
+		// Parameter: tcp事件
+		//************************************
+		void OnRecvTcpEvent(CTcpEvt* pEvent);
 
 	public:
 		CTcpServer();

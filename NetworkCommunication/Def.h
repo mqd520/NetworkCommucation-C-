@@ -25,11 +25,11 @@ public:
 	enum
 	{
 		RecvNewConnection,//收到新连接
-		RefuseNewConnection,//拒绝新连接
 		RecvPeerData,//收到对端数据
 		ConnDisconnect,//连接断开
 		AsyncSendDataResult,//异步发送数据结果
-		ConnectCmp//连接完成
+		RecvConnResult,//接收客户端连接的结果
+		ConnectSrvResult//连接服务端的结果
 	};
 };
 
