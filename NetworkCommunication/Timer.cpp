@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "Timeout.h"
-#include "TimeoutMgr.h"
+#include "Timer.h"
+#include "TimerAppMgr.h"
 
 namespace NetworkCommunication
 {
-	CTimeout::CTimeout(int millsecond, LPTimeoutCallback lpfn, int count/* = 0*/)
+	CTimer::CTimer(int millsecond, LPTimeoutCallback lpfn, int count/* = 0*/)
 		:m_nTimeout(millsecond),
 		m_lpfn(lpfn),
 		m_nCount(count),
@@ -12,15 +12,15 @@ namespace NetworkCommunication
 		m_nTimeouted(0),
 		m_nCounted(0)
 	{
-		CTimeoutMgr::m_timeoutListMgr.Add(this);
+		CTimerAppMgr::GetTimerMgr()->Add(this);
 	}
 
-	CTimeout::~CTimeout()
+	CTimer::~CTimer()
 	{
 
 	}
 
-	void CTimeout::Run(bool clear)
+	void CTimer::Run(bool clear)
 	{
 		m_bRunning = true;
 		if (clear)
@@ -29,17 +29,17 @@ namespace NetworkCommunication
 		}
 	}
 
-	void CTimeout::Pause()
+	void CTimer::Pause()
 	{
 		m_bRunning = false;
 	}
 
-	bool CTimeout::IsRun()
+	bool CTimer::IsRun()
 	{
 		return m_bRunning;
 	}
 
-	void CTimeout::OnTimeout(int millsecond)
+	void CTimer::OnTimeout(int millsecond)
 	{
 		if (m_bRunning && (m_nCount == 0 || m_nCounted < m_nCount))
 		{
@@ -56,7 +56,7 @@ namespace NetworkCommunication
 		}
 	}
 
-	int CTimeout::Count()
+	int CTimer::Count()
 	{
 		return m_nCounted;
 	}

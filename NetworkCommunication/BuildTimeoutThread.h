@@ -3,8 +3,12 @@
 
 namespace NetworkCommunication
 {
-	class CTimeoutEvtThread : public CThreadEntry
+	//生成超时数据线程
+	class CBuildTimeoutThread : public CThreadEntry
 	{
+	private:
+		int m_nTimespan;//间隔时间
+
 	protected:
 		//************************************
 		// Method:    线程运行事件处理
@@ -12,7 +16,7 @@ namespace NetworkCommunication
 		void OnThreadExecute();
 
 	public:
-		CTimeoutEvtThread();
-		~CTimeoutEvtThread();
+		CBuildTimeoutThread();
+		~CBuildTimeoutThread();
 	};
 }

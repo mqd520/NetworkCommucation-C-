@@ -1,29 +1,29 @@
 #include "stdafx.h"
-#include "TimeoutListMgr.h"
+#include "TimerMgr.h"
 
 namespace NetworkCommunication
 {
-	CTimeoutListMgr::CTimeoutListMgr()
+	CTimerMgr::CTimerMgr()
 	{
 
 	}
 
-	CTimeoutListMgr::~CTimeoutListMgr()
+	CTimerMgr::~CTimerMgr()
 	{
 
 	}
 
-	void CTimeoutListMgr::Add(CTimeout* pTimeout)
+	void CTimerMgr::Add(CTimer* pTimeout)
 	{
 		m_vecTimeout.push_back(pTimeout);
 	}
 
-	int CTimeoutListMgr::Count()
+	int CTimerMgr::Count()
 	{
 		return m_vecTimeout.size();
 	}
 
-	void CTimeoutListMgr::OnTimeout(int millsecond)
+	void CTimerMgr::OnTimeout(int millsecond)
 	{
 		for (int i = 0; i < (int)m_vecTimeout.size(); i++)
 		{

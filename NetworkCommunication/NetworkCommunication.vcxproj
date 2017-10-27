@@ -128,12 +128,12 @@
     <ClInclude Include="ThreadMutex.h" />
     <ClInclude Include="ThreadMutexHelper.h" />
     <ClInclude Include="ThreadSemaphore.h" />
-    <ClInclude Include="Timeout.h" />
-    <ClInclude Include="TimeoutEvtProcess.h" />
-    <ClInclude Include="TimeoutEvtThread.h" />
-    <ClInclude Include="TimeoutListMgr.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="TimeoutMgr.h" />
-    <ClInclude Include="TimeoutThread.h" />
+    <ClInclude Include="ProcessTimeoutThread.h" />
+    <ClInclude Include="TimerMgr.h" />
+    <ClInclude Include="TimerAppMgr.h" />
+    <ClInclude Include="BuildTimeoutThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ByteStream.cpp" />
@@ -187,12 +187,12 @@
     <ClCompile Include="ThreadMutex.cpp" />
     <ClCompile Include="ThreadMutexHelper.cpp" />
     <ClCompile Include="ThreadSemaphore.cpp" />
-    <ClCompile Include="Timeout.cpp" />
-    <ClCompile Include="TimeoutEvtProcess.cpp" />
-    <ClCompile Include="TimeoutEvtThread.cpp" />
-    <ClCompile Include="TimeoutListMgr.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimeoutMgr.cpp" />
-    <ClCompile Include="TimeoutThread.cpp" />
+    <ClCompile Include="ProcessTimeoutThread.cpp" />
+    <ClCompile Include="TimerMgr.cpp" />
+    <ClCompile Include="TimerAppMgr.cpp" />
+    <ClCompile Include="BuildTimeoutThread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

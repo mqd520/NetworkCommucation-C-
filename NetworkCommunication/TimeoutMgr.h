@@ -1,33 +1,31 @@
 #pragma once
-#include "TimeoutListMgr.h"
-#include "TimeoutEvtProcess.h"
-#include "TimeoutEvtThread.h"
-#include "TimeoutThread.h"
+#include <queue>
+#include "ThreadLock.h"
+
+using namespace std;
 
 namespace NetworkCommunication
 {
-	//超时器管理
+	//超时事件管理
 	class CTimeoutMgr
 	{
 	private:
-		static int m_nUnitMillSecond;//超时单位
-		static CTimeoutEvtThread m_timeoutEvtThread;
-		static CTimeoutThread m_timeoutThread;
-
-	public:
-		static CTimeoutListMgr m_timeoutListMgr;
-		static CTimeoutEvtProcess m_timeoutEvtProcess;
+		queue<int> m_quTimeout;//超时队列
+		CThreadLock m_lock1;//线程锁,针对m_vecTimeout变量
 
 	public:
 		CTimeoutMgr();
 		~CTimeoutMgr();
 
-		static void Init();
+		//************************************
+		// Method:    添加一个超时数据
+		// Parameter: 超时时间
+		//************************************
+		void Add(int millsecond);
 
-		static void Exit();
-
-		static int GetUnitMillSecond();
-
-		static void SetUnitMillSecond(int millsecond);
+		//************************************
+		// Method:    处理超时数据
+		//************************************
+		void ProcessTimeout();
 	};
 }

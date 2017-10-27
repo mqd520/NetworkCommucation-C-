@@ -1,14 +1,9 @@
 #include "stdafx.h"
 #include "TimeoutMgr.h"
+#include "TimerAppMgr.h"
 
 namespace NetworkCommunication
 {
-	CTimeoutListMgr CTimeoutMgr::m_timeoutListMgr;
-	int CTimeoutMgr::m_nUnitMillSecond = 200;
-	CTimeoutEvtProcess CTimeoutMgr::m_timeoutEvtProcess;
-	CTimeoutEvtThread CTimeoutMgr::m_timeoutEvtThread;
-	CTimeoutThread CTimeoutMgr::m_timeoutThread;
-
 	CTimeoutMgr::CTimeoutMgr()
 	{
 
@@ -19,26 +14,24 @@ namespace NetworkCommunication
 
 	}
 
-	void CTimeoutMgr::Init()
+	void CTimeoutMgr::Add(int millsecond)
 	{
-		m_timeoutThread.Run();
-		m_timeoutEvtThread.Run();
+		m_lock1.Lock();
+		m_quTimeout.push(millsecond);
+		m_lock1.Unlock();
 	}
 
-	void CTimeoutMgr::Exit()
+	void CTimeoutMgr::ProcessTimeout()
 	{
-		m_timeoutThread.Exit();
-		m_timeoutThread.Exit();
-		::Sleep(m_nUnitMillSecond);
-	}
+		while (CTimerAppMgr::CanExit() == false && m_quTimeout.size() > 0)
+		{
+			int millsecond = m_quTimeout.front();
 
-	int CTimeoutMgr::GetUnitMillSecond()
-	{
-		return m_nUnitMillSecond;
-	}
+			m_lock1.Lock();
+			m_quTimeout.pop();
+			m_lock1.Unlock();
 
-	void CTimeoutMgr::SetUnitMillSecond(int millsecond)
-	{
-		m_nUnitMillSecond = millsecond;
+			CTimerAppMgr::GetTimerMgr()->OnTimeout(millsecond);
+		}
 	}
 }

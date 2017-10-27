@@ -4,7 +4,7 @@
 
 #pragma once
 #include "afxwin.h"
-#include "Timeout.h"
+#include "Timer.h"
 
 using namespace NetworkCommunication;
 
@@ -16,7 +16,7 @@ public:
 	CClient6Dlg(CWnd* pParent = NULL);	// 标准构造函数
 	~CClient6Dlg();
 
-	void OnCustomTimer(CTimeout* pTimer, int count);
+	void OnCustomTimer(CTimer* pTimer, int count);
 
 // 对话框数据
 	enum { IDD = IDD_CLIENT6_DIALOG };
@@ -42,11 +42,11 @@ protected:
 	CButton m_btn5;
 
 protected:
-	CTimeout* m_pTimer1;
-	CTimeout* m_pTimer2;
-	CTimeout* m_pTimer3;
-	CTimeout* m_pTimer4;
-	CTimeout* m_pTimer5;
+	CTimer* m_pTimer1;
+	CTimer* m_pTimer2;
+	CTimer* m_pTimer3;
+	CTimer* m_pTimer4;
+	CTimer* m_pTimer5;
 public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();

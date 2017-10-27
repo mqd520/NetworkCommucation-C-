@@ -16,9 +16,6 @@
     <Filter Include="00 公共">
       <UniqueIdentifier>{43f7a872-35aa-4517-b49f-994aa00f3b79}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05 超时器">
-      <UniqueIdentifier>{347e8599-1442-4b8d-8f48-38397c873715}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06 Tcp管理">
       <UniqueIdentifier>{971cee1d-991d-45d3-a7c3-6b64ac59e86d}</UniqueIdentifier>
     </Filter>
@@ -54,6 +51,15 @@
     </Filter>
     <Filter Include="07 通信协议管理\02 通信协议服务端">
       <UniqueIdentifier>{59492ddf-af1d-41a9-a77d-a225145921af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05 定时器管理">
+      <UniqueIdentifier>{347e8599-1442-4b8d-8f48-38397c873715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05 定时器管理\01 线程处理">
+      <UniqueIdentifier>{9104fac5-d820-48cc-900f-f02dfb401b1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05 定时器管理\00 定时器处理">
+      <UniqueIdentifier>{b79e030b-3671-41d5-a649-7d44499d73d0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -204,26 +210,26 @@
     <ClInclude Include="ClientTcpConnection.h">
       <Filter>06 Tcp管理\04 Tcp连接</Filter>
     </ClInclude>
-    <ClInclude Include="Timeout.h">
-      <Filter>05 超时器</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeoutThread.h">
-      <Filter>05 超时器</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeoutListMgr.h">
-      <Filter>05 超时器</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeoutMgr.h">
-      <Filter>05 超时器</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeoutEvtProcess.h">
-      <Filter>05 超时器</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeoutEvtThread.h">
-      <Filter>05 超时器</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TimerAppMgr.h">
+      <Filter>05 定时器管理</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerMgr.h">
+      <Filter>05 定时器管理\00 定时器处理</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessTimeoutThread.h">
+      <Filter>05 定时器管理\01 线程处理</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildTimeoutThread.h">
+      <Filter>05 定时器管理\01 线程处理</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeoutMgr.h">
+      <Filter>05 定时器管理\00 定时器处理</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>05 定时器管理\00 定时器处理</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoryTool.cpp">
@@ -367,25 +373,25 @@
     <ClCompile Include="ClientTcpConnection.cpp">
       <Filter>06 Tcp管理\04 Tcp连接</Filter>
     </ClCompile>
-    <ClCompile Include="Timeout.cpp">
-      <Filter>05 超时器</Filter>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="TimerAppMgr.cpp">
+      <Filter>05 定时器管理</Filter>
     </ClCompile>
-    <ClCompile Include="TimeoutThread.cpp">
-      <Filter>05 超时器</Filter>
+    <ClCompile Include="Timer.cpp">
+      <Filter>05 定时器管理\00 定时器处理</Filter>
     </ClCompile>
-    <ClCompile Include="TimeoutListMgr.cpp">
-      <Filter>05 超时器</Filter>
+    <ClCompile Include="TimerMgr.cpp">
+      <Filter>05 定时器管理\00 定时器处理</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessTimeoutThread.cpp">
+      <Filter>05 定时器管理\01 线程处理</Filter>
+    </ClCompile>
+    <ClCompile Include="BuildTimeoutThread.cpp">
+      <Filter>05 定时器管理\01 线程处理</Filter>
     </ClCompile>
     <ClCompile Include="TimeoutMgr.cpp">
-      <Filter>05 超时器</Filter>
+      <Filter>05 定时器管理\00 定时器处理</Filter>
     </ClCompile>
-    <ClCompile Include="TimeoutEvtProcess.cpp">
-      <Filter>05 超时器</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeoutEvtThread.cpp">
-      <Filter>05 超时器</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

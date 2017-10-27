@@ -1,27 +1,27 @@
 
-// Client6.cpp : 定义应用程序的类行为。
+// Client7.cpp : 定义应用程序的类行为。
 //
 
 #include "stdafx.h"
-#include "Client6.h"
-#include "Client6Dlg.h"
-#include "TimerAppMgr.h"
+#include "Client7.h"
+#include "Client7Dlg.h"
+#include "TestThread.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
-// CClient6App
+// CClient7App
 
-BEGIN_MESSAGE_MAP(CClient6App, CWinApp)
+BEGIN_MESSAGE_MAP(CClient7App, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
 
-// CClient6App 构造
+// CClient7App 构造
 
-CClient6App::CClient6App()
+CClient7App::CClient7App()
 {
 	// 支持重新启动管理器
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
@@ -31,13 +31,14 @@ CClient6App::CClient6App()
 }
 
 
-// 唯一的一个 CClient6App 对象
+// 唯一的一个 CClient7App 对象
 
-CClient6App theApp;
+CClient7App theApp;
+CTestThread thread;
 
-// CClient6App 初始化
+// CClient7App 初始化
 
-BOOL CClient6App::InitInstance()
+BOOL CClient7App::InitInstance()
 {
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要
 	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
@@ -51,8 +52,6 @@ BOOL CClient6App::InitInstance()
 
 	CWinApp::InitInstance();
 
-
-	AfxEnableControlContainer();
 
 	// 创建 shell 管理器，以防对话框包含
 	// 任何 shell 树视图控件或 shell 列表视图控件。
@@ -70,9 +69,9 @@ BOOL CClient6App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	CTimerAppMgr::Init();
+	thread.Run();
 
-	CClient6Dlg dlg;
+	CClient7Dlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
@@ -102,12 +101,11 @@ BOOL CClient6App::InitInstance()
 	return FALSE;
 }
 
-
-
-int CClient6App::ExitInstance()
+int CClient7App::ExitInstance()
 {
 	// TODO:  在此添加专用代码和/或调用基类
-	CTimerAppMgr::Exit();
+	thread.Exit();    
+	::Sleep(200);
 
 	return CWinApp::ExitInstance();
 }

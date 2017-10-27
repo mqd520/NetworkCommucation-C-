@@ -3,11 +3,9 @@
 
 namespace NetworkCommunication
 {
-	class CTimeoutThread : public CThreadEntry
+	//处理超时数据线程
+	class CProcessTimeoutThread : public CThreadEntry
 	{
-	private:
-		int m_nTimeout;//超时时间
-
 	protected:
 		//************************************
 		// Method:    线程运行事件处理
@@ -15,7 +13,7 @@ namespace NetworkCommunication
 		void OnThreadExecute();
 
 	public:
-		CTimeoutThread();
-		~CTimeoutThread();
+		CProcessTimeoutThread();
+		~CProcessTimeoutThread();
 	};
 }

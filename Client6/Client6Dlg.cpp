@@ -14,7 +14,7 @@
 
 // CClient6Dlg 对话框
 
-void OnTimer(CTimeout* pTimer, int count);
+void OnTimer(CTimer* pTimer, int count);
 
 CClient6Dlg::CClient6Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CClient6Dlg::IDD, pParent)
@@ -79,15 +79,15 @@ BOOL CClient6Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
-	m_pTimer1 = new CTimeout(1 * 1000, ::OnTimer);
+	m_pTimer1 = new CTimer(1 * 1000, ::OnTimer);
 	m_pTimer1->Run();
-	m_pTimer2 = new CTimeout(2 * 1000, ::OnTimer);
+	m_pTimer2 = new CTimer(2 * 1000, ::OnTimer);
 	m_pTimer2->Run();
-	m_pTimer3 = new CTimeout(3 * 1000, ::OnTimer);
+	m_pTimer3 = new CTimer(3 * 1000, ::OnTimer);
 	m_pTimer3->Run();
-	m_pTimer4 = new CTimeout(4 * 1000, ::OnTimer);
+	m_pTimer4 = new CTimer(4 * 1000, ::OnTimer);
 	m_pTimer4->Run();
-	m_pTimer5 = new CTimeout(5 * 1000, ::OnTimer);
+	m_pTimer5 = new CTimer(5 * 1000, ::OnTimer);
 	m_pTimer5->Run();
 
 
@@ -131,7 +131,7 @@ HCURSOR CClient6Dlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CClient6Dlg::OnCustomTimer(CTimeout* pTimer, int count)
+void CClient6Dlg::OnCustomTimer(CTimer* pTimer, int count)
 {
 	if (pTimer == m_pTimer1)
 	{
@@ -180,7 +180,7 @@ void CClient6Dlg::OnCustomTimer(CTimeout* pTimer, int count)
 	}
 }
 
-void OnTimer(CTimeout* pTimer, int count)
+void OnTimer(CTimer* pTimer, int count)
 {
 	((CClient6Dlg*)theApp.m_pMainWnd)->OnCustomTimer(pTimer, count);
 }
