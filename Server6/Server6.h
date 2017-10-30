@@ -21,12 +21,11 @@ using namespace NetworkCommunication;
 class CServer6App : public CWinApp
 {
 public:
-	CTcpServer m_tcpSrv;//tcp服务端
+	CTcpServer* m_pTcpSrv;//tcp服务端
 	CTcpDataSessionDataMgr m_sessionMgr;//tcp会话数据管理
 
 public:
 	CServer6App();
-	~CServer6App();
 
 	// 重写
 public:

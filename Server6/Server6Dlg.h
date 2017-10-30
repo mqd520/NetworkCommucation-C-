@@ -54,4 +54,9 @@ protected:
 	CEdit m_editRecv;
 	// 发送文本框
 	CEdit m_editSend;
+public:
+	afx_msg void OnBnClickedButton3();
+protected:
+	// 断开客户端按钮
+	CButton m_btnDisconnect;
 };

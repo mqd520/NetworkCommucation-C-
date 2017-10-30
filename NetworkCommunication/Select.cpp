@@ -62,7 +62,7 @@ namespace NetworkCommunication
 
 	void CSelect::Select()
 	{
-		Sleep(3 * 1000);//调试时使用,无意义,可注释掉
+		//Sleep(3 * 1000);//调试时使用,无意义,可注释掉
 
 		if (CNetworkCommuMgr::IsExited())//指示需要退出了
 		{

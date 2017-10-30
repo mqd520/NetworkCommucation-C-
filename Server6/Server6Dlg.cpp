@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 #include "MemoryTool.h"
 #include "NetworkStream.h"
+#include "NetCommuMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,6 +35,7 @@ void CServer6Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON2, m_btnSend);
 	DDX_Control(pDX, IDC_EDIT2, m_editRecv);
 	DDX_Control(pDX, IDC_EDIT3, m_editSend);
+	DDX_Control(pDX, IDC_BUTTON3, m_btnDisconnect);
 }
 
 BEGIN_MESSAGE_MAP(CServer6Dlg, CDialogEx)
@@ -46,6 +48,7 @@ BEGIN_MESSAGE_MAP(CServer6Dlg, CDialogEx)
 	ON_MESSAGE(WM_PEERCLOSE, &CServer6Dlg::OnPeerClose)
 	ON_MESSAGE(WM_SENDPEERDATARESULT, &CServer6Dlg::OnSendPeerDataResult)
 	ON_MESSAGE(WM_REFUSENEWCONNECTION, &CServer6Dlg::OnRefuseNewConnection)
+	ON_BN_CLICKED(IDC_BUTTON3, &CServer6Dlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -65,6 +68,8 @@ BOOL CServer6Dlg::OnInitDialog()
 	m_edServerPort.SetWindowTextW(L"8040");
 
 	//初始化listctrl
+	m_btnDisconnect.ShowWindow(SW_HIDE);
+
 	DWORD dwStyle = m_lcClientData.GetStyle();
 	dwStyle |= LVS_SHOWSELALWAYS;
 	SetWindowLong(m_lcClientData.m_hWnd, GWL_STYLE, dwStyle);
@@ -131,6 +136,9 @@ HCURSOR CServer6Dlg::OnQueryDragIcon()
 
 void CServer6Dlg::OnBnClickedButton1()
 {
+	//CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpService(NULL);
+	//return;
+
 	// TODO:  在此添加控件通知处理程序代码
 	CString strServerIP, strServerPort;
 	m_ipServerIP.GetWindowTextW(strServerIP);
@@ -139,13 +147,14 @@ void CServer6Dlg::OnBnClickedButton1()
 
 	if (nServerPort > 0)
 	{
-		theApp.m_tcpSrv.Listen(strServerIP.GetBuffer(), nServerPort);
+		theApp.m_pTcpSrv->Listen(strServerIP.GetBuffer(), nServerPort);
 
 		m_btnListen.EnableWindow(FALSE);
 		m_edServerPort.EnableWindow(FALSE);
 		m_ipServerIP.EnableWindow(FALSE);
 		m_btnSend.ShowWindow(SW_SHOW);
 		ShowLog(_T("Listen success"));
+		m_btnDisconnect.ShowWindow(SW_SHOW);
 	}
 	else
 	{
@@ -199,7 +208,7 @@ void CServer6Dlg::OnBnClickedButton2()
 		log.Format(_T("Prepare Send data to %s:%d, size: %d"), session.ip, session.port, len);
 		ShowLog(log);
 
-		bool b = theApp.m_tcpSrv.SendData(session.client, buf, len, false);
+		bool b = theApp.m_pTcpSrv->Send(session.client, buf, len, false);
 		//theApp.m_tcpSrv.SendData(session.client, buf, len);
 
 		delete buf;
@@ -266,4 +275,26 @@ LRESULT CServer6Dlg::OnRefuseNewConnection(WPARAM wParam, LPARAM lParam)
 	str.Format(_T("Server refuse a new connection: %s:%d"), ip, lParam);
 	ShowLog(str);
 	return 0;
+}
+
+
+void CServer6Dlg::OnBnClickedButton3()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	int index = -1;
+	for (int i = 0; i < m_lcClientData.GetItemCount(); i++)
+	{
+		UINT state = m_lcClientData.GetItemState(i, LVIS_SELECTED);
+		if (state == LVIS_SELECTED)
+		{
+			index = i;
+		}
+	}
+
+	if (index > -1)
+	{
+		SOCKET client = theApp.m_sessionMgr.GetDataByIndex(index).client;
+		theApp.m_pTcpSrv->CloseClient(client);
+		m_lcClientData.DeleteItem(index);
+	}
 }

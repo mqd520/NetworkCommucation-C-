@@ -32,8 +32,8 @@ namespace NetworkCommunication
 		void RemoveBySendRecvSocket(SOCKET socket);
 
 		//************************************
-		// Method:    获取指定收发数据的socket关联的tcp连接对象
-		// Parameter: 收发数据的socket
+		// Method:    获取指定收(发)数据的socket关联的tcp连接对象
+		// Parameter: 收(发)数据的socket
 		// Return:	  tcp连接对象
 		//************************************
 		CTcpConnection* GetBySendRecvSocket(SOCKET sendrecv);

@@ -81,7 +81,7 @@ namespace NetworkCommunication
 				//...
 			}
 
-			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvConnResultEvt(this, result, ip, port));
+			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvConnResultEvt(this, result, clientSocket, ip, port));
 
 			return;
 		}
@@ -147,5 +147,14 @@ namespace NetworkCommunication
 	bool CTcpServer::Send(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
 	{
 		return __super::SendData(socket, pBuf, len, asyncs, actualLen);
+	}
+
+	void CTcpServer::CloseClient(SOCKET client)
+	{
+		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(client);
+		if (pConn)
+		{
+			pConn->Close();
+		}
 	}
 }

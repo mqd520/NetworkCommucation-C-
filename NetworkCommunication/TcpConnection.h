@@ -77,6 +77,11 @@ namespace NetworkCommunication
 		bool SendData(BYTE* pBuf, int len, int* actualLen = NULL);
 
 		//************************************
+		// Method:    关闭tcp连接
+		//************************************
+		void Close();
+
+		//************************************
 		// Method:    异步发送
 		//************************************
 		void AsyncSendData();

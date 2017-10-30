@@ -13,7 +13,7 @@ namespace NetworkCommunication
 		int m_nClientPort;//¿Í»§¶Ë¶Ë¿Ú
 
 	public:
-		CRecvConnResultEvt(CTcpService* pSrv, bool success, TCHAR* ip, int port);
+		CRecvConnResultEvt(CTcpService* pSrv, bool success, SOCKET client, TCHAR* ip, int port);
 		~CRecvConnResultEvt();
 
 		//************************************

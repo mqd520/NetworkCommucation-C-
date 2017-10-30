@@ -136,4 +136,10 @@ namespace NetworkCommunication
 	{
 		CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除指定发送(接收)数据的socket关联的tcp连接
 	}
+
+	void CTcpConnection::Close()
+	{
+		CNetworkCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//移除select队列中socket
+		CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除tcp连接对象
+	}
 }

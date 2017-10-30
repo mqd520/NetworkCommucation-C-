@@ -7,8 +7,8 @@
 #include "Server6Dlg.h"
 #include "NetCommuMgr.h"
 #include "RecvNewConnEvt.h"
-#include "RefuseNewConnEvt.h"
 #include "RecvPeerDataEvt.h"
+#include "RecvConnResultEvt.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,7 +43,6 @@ CServer6App::CServer6App()
 
 CServer6App theApp;
 
-
 // CServer6App 初始化
 
 BOOL CServer6App::InitInstance()
@@ -59,9 +58,6 @@ BOOL CServer6App::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	CWinApp::InitInstance();
-
-	CNetworkCommuMgr::Init();//初始化网络通信
-	m_tcpSrv.RegTcpEventCallback(OnRecvTcpEvent);//注册tcp事件回调
 
 
 	// 创建 shell 管理器，以防对话框包含
@@ -80,7 +76,9 @@ BOOL CServer6App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-
+	m_pTcpSrv = new CTcpServer();
+	CNetworkCommuMgr::Init();//初始化网络通信
+	m_pTcpSrv->RegTcpEventCallback(OnRecvTcpEvent);//注册tcp事件回调
 
 	CServer6Dlg dlg;
 	m_pMainWnd = &dlg;
@@ -112,11 +110,6 @@ BOOL CServer6App::InitInstance()
 	return FALSE;
 }
 
-CServer6App::~CServer6App()
-{
-	CNetworkCommuMgr::Release();
-}
-
 int CServer6App::ExitInstance()
 {
 	// TODO:  在此添加专用代码和/或调用基类
@@ -134,7 +127,7 @@ void OnRecvTcpEvent(CTcpEvt* pEvent)
 
 	switch (pEvent->GetEvtType())
 	{
-	case ETcpEvent::RecvNewConnection:
+	case ETcpEvent::RecvNewConnection://收到新连接
 	{
 		CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
 
@@ -146,23 +139,28 @@ void OnRecvTcpEvent(CTcpEvt* pEvent)
 		//	pRecvEvent->m_bRefuse = true;
 		//	return;
 		//}
-
-		TcpSessionData data;
-		data.server = theApp.m_tcpSrv.GetSocket();
-		data.client = pRecvEvent->GetSendRecvSocket();
-		_tcscpy(data.ip, ip);
-		data.port = port;
-		int index = theApp.m_sessionMgr.Push(data);
-		PostMessage(theApp.m_pMainWnd->m_hWnd, WM_RECVNEWCONNECTION, index, 0);
 	}
 	break;
-	case ETcpEvent::RefuseNewConnection:
+	case ETcpEvent::RecvConnResult://接收新连接结果
 	{
-		CRefuseNewConnEvt* pRefuseEvt = (CRefuseNewConnEvt*)pEvent;
-		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_REFUSENEWCONNECTION, (WPARAM)pRefuseEvt->GetClientIP(), pRefuseEvt->GetClientPort());
+		CRecvConnResultEvt* pRecvResultEvt = (CRecvConnResultEvt*)pEvent;
+		if (pRecvResultEvt->GetRecvResult())
+		{
+			TcpSessionData data;
+			data.server = theApp.m_pTcpSrv->GetSocket();
+			data.client = pRecvResultEvt->GetSendRecvSocket();
+			_tcscpy(data.ip, ip);
+			data.port = port;
+			int index = theApp.m_sessionMgr.Push(data);
+			PostMessage(theApp.m_pMainWnd->m_hWnd, WM_RECVNEWCONNECTION, index, 0);
+		}
+		else
+		{
+			SendMessage(theApp.m_pMainWnd->m_hWnd, WM_REFUSENEWCONNECTION, (WPARAM)pRecvResultEvt->GetClientIP(), pRecvResultEvt->GetClientPort());
+		}
 	}
 	break;
-	case  ETcpEvent::RecvPeerData:
+	case  ETcpEvent::RecvPeerData://收到对端数据
 	{
 		CRecvPeerDataEvt* pRecvPeerDataEvt = (CRecvPeerDataEvt*)pEvent;
 		PeerData* pData = new PeerData();
@@ -174,13 +172,13 @@ void OnRecvTcpEvent(CTcpEvt* pEvent)
 		delete pData;
 	}
 	break;
-	case ETcpEvent::ConnDisconnect:
+	case ETcpEvent::ConnDisconnect://连接断开
 	{
 		int index = theApp.m_sessionMgr.RemoveByClientSocket(pEvent->GetSendRecvSocket());
 		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_PEERCLOSE, (WPARAM)index, NULL);
 	}
 	break;
-	case  ETcpEvent::AsyncSendDataResult:
+	case  ETcpEvent::AsyncSendDataResult://异步发送结果
 	{
 
 	}

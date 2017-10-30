@@ -53,6 +53,12 @@ namespace NetworkCommunication
 		bool Send(SOCKET socket, BYTE* pBuf, int len, bool asyncs = true, int* actualLen = NULL);
 
 		//************************************
+		// Method:    关闭指定客户端
+		// Parameter: 客户端SOCKET
+		//************************************
+		void CloseClient(SOCKET client);
+
+		//************************************
 		// Method:    增加一个允许IP
 		// Parameter: ip
 		//************************************

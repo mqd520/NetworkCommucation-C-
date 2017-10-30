@@ -4,8 +4,8 @@
 
 namespace NetworkCommunication
 {
-	CRecvConnResultEvt::CRecvConnResultEvt(CTcpService* pSrv, bool success, TCHAR* ip, int port) :
-		CTcpEvt(pSrv),
+	CRecvConnResultEvt::CRecvConnResultEvt(CTcpService* pSrv, bool success, SOCKET client, TCHAR* ip, int port) :
+		CTcpEvt(pSrv, client),
 		m_bSuccess(success),
 		m_nClientPort(port)
 	{

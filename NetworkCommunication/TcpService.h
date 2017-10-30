@@ -3,6 +3,7 @@
 #include "Def.h"
 #include "SocketAPI.h"
 #include "TcpEvt.h"
+#include "TcpConnection.h"
 
 namespace NetworkCommunication
 {

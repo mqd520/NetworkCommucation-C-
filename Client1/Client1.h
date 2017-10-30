@@ -26,7 +26,6 @@ public:
 
 public:
 	CClient1App();
-	~CClient1App();
 
 	// ÖØÐ´
 public:

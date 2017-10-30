@@ -33,6 +33,7 @@ namespace NetworkCommunication
 		
 		static CTcpConnectionMgr m_tcpConnMgr;//tcp连接管理对象
 		static CTcpServiceMgr m_tcpServiceMgr;//tcp服务管理对象
+		//static CTcpServiceMgr* m_tcpServiceMgr;//tcp服务管理对象
 		static CTcpEvtMgr m_tcpEvtMgr;//tcp事件管理对象
 
 	private:

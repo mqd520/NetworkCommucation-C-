@@ -6,7 +6,7 @@
 #include "Client1.h"
 #include "Client1Dlg.h"
 #include "NetCommuMgr.h"
-#include "ConnectCmpEvt.h"
+#include "ConnectSrvResultEvt.h"
 #include "RecvPeerDataEvt.h"
 #include "TimeoutMgr.h"
 
@@ -36,11 +36,6 @@ CClient1App::CClient1App()
 {
 	// TODO:  在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
-}
-
-CClient1App::~CClient1App()
-{
-	CNetworkCommuMgr::Release();
 }
 
 // 唯一的一个 CClient1App 对象
@@ -127,17 +122,17 @@ void OnRecvTcpEvent(CTcpEvt* pEvent)
 {
 	switch (pEvent->GetEvtType())
 	{
-	case ETcpEvent::ConnectCmp:
+	case ETcpEvent::ConnectSrvResult:
 	{
-		CConnectCmpEvt* pConnCmpEvt = (CConnectCmpEvt*)pEvent;
-		if (!pConnCmpEvt->GetConnectResult())
-		{
-			TRACE(_T("连接失败,正在进行重新连接!!!!!!!!!!!!!!!! \n"));
-		}
-		else
-		{
-			TRACE(_T("连接成功!!!!!!!!!!! \n"));
-		}
+		//CConnectCmpEvt* pConnCmpEvt = (CConnectCmpEvt*)pEvent;
+		//if (!pConnCmpEvt->GetConnectResult())
+		//{
+		//	TRACE(_T("连接失败,正在进行重新连接!!!!!!!!!!!!!!!! \n"));
+		//}
+		//else
+		//{
+		//	TRACE(_T("连接成功!!!!!!!!!!! \n"));
+		//}
 	}
 	case  ETcpEvent::RecvPeerData:
 	{
