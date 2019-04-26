@@ -19,7 +19,7 @@ namespace NetworkCommunication
 		// Parameter: 关联的用于发送(接收)数据的socket
 		//************************************
 		CTcpEvt(CTcpService* pSrv, SOCKET sendrecv = NULL);
-		~CTcpEvt();
+		virtual ~CTcpEvt();
 
 		//************************************
 		// Method:    获取事件类型

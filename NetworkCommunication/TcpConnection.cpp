@@ -107,21 +107,25 @@ namespace NetworkCommunication
 	{
 		BYTE* pRecvBuf = new BYTE[NETCOMM_TCPRECVBUFFERSIZE];
 		int len = m_socketAPI.Recv(m_sendrecvSocket, pRecvBuf, NETCOMM_TCPRECVBUFFERSIZE);
-		if (len == SOCKET_ERROR)
-		{
-			OnConnDisconnect();
-		}
-		else if (len == 0)//客户端断开了连接
-		{
-			OnConnDisconnect();
-		}
-		else
+		if (len > 0)//接收数据成功
 		{
 			PrintfDebug(_T("[%s:%d][socket: %d] recved [%s:%d][socket: %d] data, size: %d"),
 				m_localAddress.ip, m_localAddress.port, m_pTcpSrv->GetSocket(), m_peerAddress.ip, m_peerAddress.port, m_sendrecvSocket, len);
 
 			CRecvPeerDataEvt* pEvent = new CRecvPeerDataEvt(m_pTcpSrv, m_sendrecvSocket, pRecvBuf, len);
 			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
+		}
+		else//接收数据失败
+		{
+			delete pRecvBuf;
+			if (len == SOCKET_ERROR)//发生了异常
+			{
+				OnConnDisconnect();
+			}
+			else if (len == 0)//对方断开了连接
+			{
+				OnConnDisconnect();
+			}
 		}
 	}
 

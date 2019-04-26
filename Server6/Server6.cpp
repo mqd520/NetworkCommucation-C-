@@ -9,6 +9,7 @@
 #include "RecvNewConnEvt.h"
 #include "RecvPeerDataEvt.h"
 #include "RecvConnResultEvt.h"
+#include "NetworkStream.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,6 +20,7 @@
 // Parameter: tcp事件
 //************************************
 void OnRecvTcpEvent(CTcpEvt* pEvent);
+
 
 // CServer6App
 
@@ -38,6 +40,13 @@ CServer6App::CServer6App()
 	// 将所有重要的初始化放置在 InitInstance 中
 }
 
+CServer6App::~CServer6App()
+{
+	if (m_pTcpSrv)
+	{
+		delete m_pTcpSrv;
+	}
+}
 
 // 唯一的一个 CServer6App 对象
 
@@ -76,9 +85,55 @@ BOOL CServer6App::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
+	//BYTE buf1[] = { 1 };
+	//CNetworkStream ns1(buf1, 1);
+	//BYTE b1 = ns1.ReadByte();
+
+	//BYTE buf1[] = { 10, 20 };
+	//CNetworkStream ns1(buf1, 2);
+	//USHORT u1 = ns1.ReadUShort();
+
+	//BYTE buf1[] = { 1, 2, 3, 4 };
+	//CNetworkStream ns1(buf1, 4);
+	//UINT u1 = ns1.ReadUInt();
+
+	//BYTE buf1[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+	//CNetworkStream ns1(buf1, 8);
+	//UINT64 u1 = ns1.ReadUInt64();
+
+	//BYTE buf1[] = { 255, 248 };
+	//CNetworkStream ns(buf1, 2);
+	//short s1 = ns.ReadShort();
+
+	//BYTE buf1[] = { 255, 255, 255, 255 };
+	//CNetworkStream ns(buf1, 4);
+	//int s1 = ns.ReadInt();
+
+	//BYTE buf1[] = { 255, 254 };
+	//CNetworkStream ns(buf1, 2);
+	//INT16 s1 = ns.ReadInt16();
+
+	//BYTE buf1[] = { 255, 255, 255, 255, 255, 255, 255, 255 };
+	//CNetworkStream ns(buf1, 8);
+	//INT64 s1 = ns.ReadInt64();
+
+	//BYTE buf1[] = { 255, 248 };
+	//CNetworkStream ns(buf1, 2);
+	//short s1 = ns.ReadShort();
+
+	//BYTE buf1[4] = { 0 };
+	//float f1 = 1.1F;
+	//memcpy(buf1, &f1, 4
+
+	//wchar_t str[] = L"一";
+	//BYTE buf[4] = { 1, 1, 1, 1 };
+	//memcpy(buf, str, 4);
+
+
 	m_pTcpSrv = new CTcpServer();
 	CNetworkCommuMgr::Init();//初始化网络通信
 	m_pTcpSrv->RegTcpEventCallback(OnRecvTcpEvent);//注册tcp事件回调
+
 
 	CServer6Dlg dlg;
 	m_pMainWnd = &dlg;

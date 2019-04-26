@@ -99,5 +99,10 @@ namespace NetworkCommunication
 		// Parameter: 信号类型
 		//************************************
 		void OnProcessingSocketCmp(SOCKET socket, int type);
+
+		//************************************
+		// Method:    指示用户退出
+		//************************************
+		void Exit();
 	};
 }

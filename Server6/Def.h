@@ -19,6 +19,23 @@ typedef	struct tagPeerData
 	int len;//数据长度
 }PeerData;
 
+
+#define	KEY_SIZE 50
+#define	VALUE_SIZE 100
+// 
+typedef struct tagKeyValueDataW
+{
+	wchar_t key[KEY_SIZE];  // 键名
+	wchar_t value[VALUE_SIZE]; // 键值
+} KeyValueDataW;
+
+// 
+typedef struct tagKeyValueDataA
+{
+	char key[KEY_SIZE];  // 键名
+	char value[VALUE_SIZE]; // 键值
+} KeyValueDataA;
+
 #define WM_RECVNEWCONNECTION	(WM_USER + 1)	//收到新客户端连接	
 #define WM_RECVPEERDATA			(WM_USER + 2)	//收到对端数据
 #define WM_PEERCLOSE			(WM_USER + 3)	//对端关闭连接

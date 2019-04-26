@@ -8,7 +8,11 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	StartListen(_T("192.168.0.17"), ListenPort);
+	int n = 67305985;
+	BYTE p[4];
+	memcpy(p, &n, 4);
+
+	StartListen(_T("121.196.201.36"), ListenPort);
 
 	_tprintf(_T("ÊäÈëexitÍË³ö³ÌĞò!\n"));
 	TCHAR input[5];

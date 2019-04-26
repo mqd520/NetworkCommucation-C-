@@ -14,7 +14,12 @@ namespace NetworkCommunication
 	{
 		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it != m_vecTcpConnection.end();)
 		{
+			CTcpConnection* pConn = *it;
 			it = m_vecTcpConnection.erase(it);
+			if (pConn)
+			{
+				delete pConn;
+			}
 		}
 	}
 

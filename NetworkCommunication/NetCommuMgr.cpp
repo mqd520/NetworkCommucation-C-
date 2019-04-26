@@ -19,7 +19,6 @@ namespace NetworkCommunication
 
 	CTcpConnectionMgr CNetworkCommuMgr::m_tcpConnMgr;
 	CTcpServiceMgr CNetworkCommuMgr::m_tcpServiceMgr;
-	//CTcpServiceMgr* CNetworkCommuMgr::m_tcpServiceMgr = NULL;
 	CTcpEvtMgr CNetworkCommuMgr::m_tcpEvtMgr;
 
 	void CNetworkCommuMgr::Init()
@@ -46,6 +45,8 @@ namespace NetworkCommunication
 #if RELEASE
 		::Sleep(300);
 #endif
+
+		m_Select.Exit();
 	}
 
 	bool CNetworkCommuMgr::IsExited()
@@ -107,15 +108,6 @@ namespace NetworkCommunication
 	{
 		return &m_tcpServiceMgr;
 	}
-
-	//CTcpServiceMgr* CNetworkCommuMgr::GetTcpServiceMgr()
-	//{
-	//	if (m_tcpServiceMgr==NULL)
-	//	{
-	//		m_tcpServiceMgr = new CTcpServiceMgr();
-	//	}
-	//	return m_tcpServiceMgr;
-	//}
 
 	CTcpEvtMgr* CNetworkCommuMgr::GetTcpEvtMgr()
 	{

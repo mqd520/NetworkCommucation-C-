@@ -270,4 +270,13 @@ namespace NetworkCommunication
 
 		m_lock2.Unlock();
 	}
+
+	void CSelect::Exit()
+	{
+		//πÿ±’À˘”–socket
+		for (int i = 0; i < (int)m_vecSocket.size(); i++)
+		{
+			m_socketAPI.CloseSocket(m_vecSocket[i].socket);
+		}
+	}
 }

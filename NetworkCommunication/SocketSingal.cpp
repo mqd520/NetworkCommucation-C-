@@ -58,7 +58,10 @@ namespace NetworkCommunication
 		if (pSrv)
 		{
 			SOCKET client = m_socketAPI.Accept(socket, pSrv->GetServerIP(), pSrv->GetServerPort());
-			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvNewConnEvt(pSrv, client));
+			if (client > 0)
+			{
+				CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvNewConnEvt(pSrv, client));
+			}
 		}
 	}
 

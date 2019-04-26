@@ -26,6 +26,7 @@ public:
 
 public:
 	CServer6App();
+	~CServer6App();
 
 	// ÖØÐ´
 public:

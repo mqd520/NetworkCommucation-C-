@@ -221,10 +221,10 @@ LRESULT CServer6Dlg::OnRecvPeerData(WPARAM wParam, LPARAM lParam)
 	if (pData)
 	{
 		CString str;
-		CNetworkStream ns;
-		ns.Write(pData->buf, pData->len);
-		string strData = ns.ReadMultiStr(pData->len);
-		wstring wstrData = MultiByteToUTF8(strData.c_str());
+		CNetworkStream ns(pData->buf, pData->len);
+		char dest[100] = { 0 };
+		ns.ReadMultiByteStr(dest, pData->len);
+		wstring wstrData = MultiByteToUTF8(dest);
 		str.Format(_T("Recv data from %s:%d, size: %d, data(string): %s \n"), pData->ip, pData->port, pData->len, wstrData.c_str());
 		ShowLog(str);
 	}
