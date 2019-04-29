@@ -42,6 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>bin\$(Configuration)\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>bin\$(Configuration)\</OutDir>
@@ -88,6 +89,12 @@
     <ClInclude Include="ConnectSrvResultEvt.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="EncryptBuffer.h" />
+    <ClInclude Include="Include\nc\GB2312Str.h" />
+    <ClInclude Include="Include\nc\NetworkStreamRead.h" />
+    <ClInclude Include="Include\nc\NCTool.h" />
+    <ClInclude Include="Include\nc\StringTool.h" />
+    <ClInclude Include="Include\nc\UTF16Str.h" />
+    <ClInclude Include="Include\nc\UTF8Str.h" />
     <ClInclude Include="LinkList.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="NetCommuMgr.h" />
@@ -132,7 +139,6 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimeoutMgr.h" />
     <ClInclude Include="ProcessTimeoutThread.h" />
-    <ClInclude Include="Timer1.h" />
     <ClInclude Include="TimerMgr.h" />
     <ClInclude Include="TimerAppMgr.h" />
     <ClInclude Include="BuildTimeoutThread.h" />
@@ -141,12 +147,15 @@
   <ItemGroup>
     <ClCompile Include="ByteStream.cpp" />
     <ClCompile Include="ClientTcpConnection.cpp" />
+    <ClCompile Include="GB2312Str.cpp" />
+    <ClCompile Include="NetworkStreamRead.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="CommonThread.cpp" />
     <ClCompile Include="ConnectSrvResultEvt.cpp" />
     <ClCompile Include="EncryptBuffer.cpp" />
     <ClCompile Include="LinkList.cpp" />
     <ClCompile Include="MemoryTool.cpp" />
+    <ClCompile Include="NCTool.cpp" />
     <ClCompile Include="NetCommuMgr.cpp" />
     <ClCompile Include="NetworkStream.cpp" />
     <ClCompile Include="Node.cpp" />
@@ -169,6 +178,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StringTool.cpp" />
     <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="TcpConnection.cpp" />
     <ClCompile Include="TcpConnectionMgr.cpp" />
@@ -190,11 +200,12 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TimeoutMgr.cpp" />
     <ClCompile Include="ProcessTimeoutThread.cpp" />
-    <ClCompile Include="Timer1.cpp" />
     <ClCompile Include="TimerMgr.cpp" />
     <ClCompile Include="TimerAppMgr.cpp" />
     <ClCompile Include="BuildTimeoutThread.cpp" />
     <ClCompile Include="UnicodeConvert.cpp" />
+    <ClCompile Include="UTF16Str.cpp" />
+    <ClCompile Include="UTF8Str.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

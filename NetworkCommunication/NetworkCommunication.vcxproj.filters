@@ -52,7 +52,7 @@
     <Filter Include="08 通信协议管理">
       <UniqueIdentifier>{e91db0c6-7780-42f1-b0c8-4d5e2b01204c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07 字节流处理">
+    <Filter Include="07 流处理">
       <UniqueIdentifier>{eb870d64-278d-46a7-9a59-c5b609da3673}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -210,16 +210,31 @@
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="ByteStream.h">
-      <Filter>07 字节流处理</Filter>
+      <Filter>07 流处理</Filter>
     </ClInclude>
     <ClInclude Include="NetworkStream.h">
-      <Filter>07 字节流处理</Filter>
+      <Filter>07 流处理</Filter>
     </ClInclude>
     <ClInclude Include="UnicodeConvert.h">
       <Filter>00 公共</Filter>
     </ClInclude>
-    <ClInclude Include="Timer1.h">
-      <Filter>05 定时器管理</Filter>
+    <ClInclude Include="Include\nc\NCTool.h">
+      <Filter>00 公共</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\nc\NetworkStreamRead.h">
+      <Filter>07 流处理</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\nc\StringTool.h">
+      <Filter>00 公共</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\nc\GB2312Str.h">
+      <Filter>00 公共</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\nc\UTF8Str.h">
+      <Filter>00 公共</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\nc\UTF16Str.h">
+      <Filter>00 公共</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -369,16 +384,31 @@
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="NetworkStream.cpp">
-      <Filter>07 字节流处理</Filter>
+      <Filter>07 流处理</Filter>
     </ClCompile>
     <ClCompile Include="ByteStream.cpp">
-      <Filter>07 字节流处理</Filter>
+      <Filter>07 流处理</Filter>
     </ClCompile>
     <ClCompile Include="UnicodeConvert.cpp">
       <Filter>00 公共</Filter>
     </ClCompile>
-    <ClCompile Include="Timer1.cpp">
-      <Filter>05 定时器管理</Filter>
+    <ClCompile Include="NCTool.cpp">
+      <Filter>00 公共</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkStreamRead.cpp">
+      <Filter>07 流处理</Filter>
+    </ClCompile>
+    <ClCompile Include="StringTool.cpp">
+      <Filter>00 公共</Filter>
+    </ClCompile>
+    <ClCompile Include="GB2312Str.cpp">
+      <Filter>00 公共</Filter>
+    </ClCompile>
+    <ClCompile Include="UTF8Str.cpp">
+      <Filter>00 公共</Filter>
+    </ClCompile>
+    <ClCompile Include="UTF16Str.cpp">
+      <Filter>00 公共</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -11,10 +11,12 @@ namespace NetworkCommunication
 		char c;
 	}u;
 
-	CNetworkStream::CNetworkStream(BYTE* pBuf, int len, bool bigEndian/* = true*/) :
+	EByteOrder CNetworkStream::m_bHostByeOrder = u.c == 1 ? EByteOrder::litte : EByteOrder::big;
+
+	CNetworkStream::CNetworkStream(BYTE* pBuf, int len, EByteOrder bo/* = EByteOrder::big*/) :
 		m_pBuf(pBuf),
 		m_nBufLen(len),
-		m_bNetBigEndian(bigEndian)
+		m_bNSByteOrder(bo)
 	{
 		//if (m_pBuf == NULL)
 		//{
@@ -26,16 +28,6 @@ namespace NetworkCommunication
 		//{
 		//	m_bDelete = false;
 		//}
-
-		//判断主机字节序
-		if (u.c == 1)
-		{
-			m_bHostBigEndian = false;
-		}
-		else
-		{
-			m_bHostBigEndian = true;
-		}
 
 		m_nReadIndex = m_nWriteIndex = 0;
 	}
@@ -54,13 +46,13 @@ namespace NetworkCommunication
 		if (len <= AvaliableRead())
 		{
 			result = true;
-			if (len > 1)//多字节数据
+			if (len > 1)	// 多字节数据
 			{
-				if (m_bHostBigEndian == m_bNetBigEndian)//表示网络流和主机的字节序一致
+				if (m_bHostByeOrder == m_bNSByteOrder)	// 表示网络流和主机的字节序一致
 				{
 					memcpy(pDest, m_pBuf + m_nReadIndex, len);
 				}
-				else//表示网络流和主机的字节序不一致,需要反转
+				else // 表示网络流和主机的字节序不一致, 需要反转
 				{
 					BYTE buf[8] = { 0 };
 					memcpy(buf, m_pBuf + m_nReadIndex, len);
@@ -212,11 +204,11 @@ namespace NetworkCommunication
 		bool result = false;
 		if (len <= AvaliableRead())
 		{
-			BYTE* pBuf = new BYTE[len];
-			int count = UTF8ByteToUTF16Byte(m_pBuf + m_nReadIndex, len, pBuf, m_bHostBigEndian);
-			memcpy(dest, pBuf, count);
-			m_nReadIndex += len;
-			result = true;
+			//BYTE* pBuf = new BYTE[len];
+			//int count = UTF8ByteToUTF16Byte(m_pBuf + m_nReadIndex, len, pBuf, m_bHostBigEndian);
+			//memcpy(dest, pBuf, count);
+			//m_nReadIndex += len;
+			//result = true;
 		}
 		return result;
 	}

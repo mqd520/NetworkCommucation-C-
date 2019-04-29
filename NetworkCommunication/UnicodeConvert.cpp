@@ -10,26 +10,27 @@ namespace NetworkCommunication
 		int index1 = 0;
 		int index2 = 0;
 		int size = 0;
-		int count = 0;//UTF16字节总数
+		int count = 0;	// UTF16字节总数
+
 		while (index < len)
 		{
 			if (index1 == 0)
 			{
 				memset(tmp, 0, 4);
-				BYTE prefix = pBufSrc[index] >> 4;//获取首字节高4位
-				if ((BYTE)(prefix >> 3) == 0)//表示单字节字符串
+				BYTE prefix = pBufSrc[index] >> 4;	// 获取首字节高4位
+				if ((BYTE)(prefix >> 3) == 0)	// 表示单字节字符串
 				{
 					size = 1;
 				}
-				else if (prefix == 6)//表示2字节字符串
+				else if (prefix == 6)	// 表示2字节字符串
 				{
 					size = 2;
 				}
-				else if (prefix == 14)//表示3字节字符串
+				else if (prefix == 14)	// 表示3字节字符串
 				{
 					size = 3;
 				}
-				else if (prefix == 15)//表示4字节字符串
+				else if (prefix == 15)	// 表示4字节字符串
 				{
 					size = 4;
 				}
@@ -56,12 +57,12 @@ namespace NetworkCommunication
 					step++;
 				}
 
-				if (bBigEndian)//大端字节序
+				if (bBigEndian)	// 大端字节序
 				{
 					pBufDest[index2++] = (BYTE)(encode >> 8);
 					pBufDest[index2++] = (BYTE)((encode << 24) >> 24);
 				}
-				else//小端字节序
+				else // 小端字节序
 				{
 					pBufDest[index2++] = (BYTE)((encode << 24) >> 24);
 					pBufDest[index2++] = (BYTE)(encode >> 8);

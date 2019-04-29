@@ -2,14 +2,14 @@
 
 namespace NetworkCommunication
 {
-	//字节流对象:
-	//从开始出读取(读取后后面的数据依次向前平移),从结尾处写入
+	// 字节流对象:
+	// 从开始处读取(读取后后面的数据依次向前平移),从结尾处写入
 	class CByteStream
 	{
 	protected:
-		int m_nStreamLen;//字节流长度
-		BYTE* m_buf;//缓冲区指针
-		int m_nDataEndPos;//数据结尾索引
+		int m_nStreamLen;	// 字节流长度
+		BYTE* m_buf;		// 缓冲区指针
+		int m_nDataEndPos;	// 数据结尾索引
 
 	public:
 		CByteStream(int len);

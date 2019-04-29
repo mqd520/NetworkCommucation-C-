@@ -11,10 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0FB18438-25D2-43D1-8EA3-F18F45C95726}</ProjectGuid>
-    <RootNamespace>Tool1</RootNamespace>
+    <ProjectGuid>{54B67314-2A21-41C5-BFD6-81193DF6B41D}</ProjectGuid>
+    <RootNamespace>StringTool</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <ProjectName>Timer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -57,13 +56,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../NetworkCommunication/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../NetworkCommunication/Include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../NetworkCommunication/bin/debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NetworkCommunication.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../NetworkCommunication/bin/Debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>NetworkCommunication_d.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -109,33 +108,33 @@
   <ItemGroup>
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringTool.h" />
+    <ClInclude Include="StringToolDlg.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Tool1.h" />
-    <ClInclude Include="Tool1Dlg.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Tool1.cpp" />
-    <ClCompile Include="Tool1Dlg.cpp" />
+    <ClCompile Include="StringTool.cpp" />
+    <ClCompile Include="StringToolDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Tool1.rc" />
+    <ResourceCompile Include="StringTool.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\Tool1.rc2" />
+    <None Include="res\StringTool.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\Tool1.ico" />
+    <Image Include="res\StringTool.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="Tool1.rc" />
+      <UserProperties RESOURCE_FILE="StringTool.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

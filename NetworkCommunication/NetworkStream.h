@@ -2,21 +2,29 @@
 
 namespace NetworkCommunication
 {
-	//网络流处理
+	// 字节序枚举值定义
+	enum EByteOrder
+	{
+		litte = 1,	// 小端字节序
+		big = 2		// 大端字节序
+	};
+
+	/************************************************************************/
+	/* 网络流类
+	/************************************************************************/
 	class CNetworkStream
 	{
 	public:
-		CNetworkStream(BYTE* pBuf, int len, bool bigEndian = true);
+		CNetworkStream(BYTE* pBuf, int len, EByteOrder bo = EByteOrder::big);
 		~CNetworkStream();
-
 	private:
-		bool m_bHostBigEndian;//主机是否采用大端字节序
-		bool m_bNetBigEndian;//网络流是否采用大端字节序
-		int m_nBufLen;//缓冲区长度
-		BYTE* m_pBuf;//缓冲区
-		bool m_bDelete;//是否需要主动释放缓冲区
-		int m_nReadIndex;//数据读(写)开始索引
-		int m_nWriteIndex;//数据读(写)结束索引
+		static EByteOrder m_bHostByeOrder;	// 当前主机所使用的字节序
+		EByteOrder m_bNSByteOrder;			// 当前网络流使用的字节序
+		int m_nBufLen;					// 缓冲区长度
+		BYTE* m_pBuf;					// 缓冲区
+		bool m_bDelete;					// 是否需要主动释放缓冲区
+		int m_nReadIndex;				// 数据读(写)开始索引
+		int m_nWriteIndex;				// 数据读(写)结束索引
 
 	private:
 		bool ReadData(void* pDest, int len);
