@@ -227,6 +227,9 @@
     <ClInclude Include="Include\nc\UTF16Str.h">
       <Filter>00 公共</Filter>
     </ClInclude>
+    <ClInclude Include="Include\nc\NetworkStreamWrite.h">
+      <Filter>07 流处理</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoryTool.cpp">
@@ -391,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="UTF16Str.cpp">
       <Filter>00 公共</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkStreamWrite.cpp">
+      <Filter>07 流处理</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

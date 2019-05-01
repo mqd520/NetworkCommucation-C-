@@ -92,6 +92,7 @@
     <ClInclude Include="Include\nc\GB2312Str.h" />
     <ClInclude Include="Include\nc\NetworkStreamRead.h" />
     <ClInclude Include="Include\nc\NCTool.h" />
+    <ClInclude Include="Include\nc\NetworkStreamWrite.h" />
     <ClInclude Include="Include\nc\UTF16Str.h" />
     <ClInclude Include="LinkList.h" />
     <ClInclude Include="MemoryTool.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="NCTool.cpp" />
     <ClCompile Include="NetCommuMgr.cpp" />
     <ClCompile Include="NetworkStream.cpp" />
+    <ClCompile Include="NetworkStreamWrite.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="OtherTool.cpp" />
     <ClCompile Include="PacketBase.cpp" />

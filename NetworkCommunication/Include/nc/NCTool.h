@@ -23,6 +23,13 @@ namespace NetworkCommunication
 		//************************************
 		static EByteOrder GetHostByteOrder();
 
+		//************************************
+		// Method:    翻转缓冲区
+		// Parameter: BYTE * pBuf:	缓冲区指针
+		// Parameter: int len:		缓冲区长度
+		//************************************
+		static void ReverseBuf(BYTE* pBuf, int len);
+
 	private:
 
 	};

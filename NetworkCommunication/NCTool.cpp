@@ -31,3 +31,13 @@ EByteOrder NCTool::GetHostByteOrder()
 
 	return EByteOrder::big;
 }
+
+void NCTool::ReverseBuf(BYTE* pBuf, int len)
+{
+	for (int i = 0; i < len / 2; i++)
+	{
+		BYTE tmp = pBuf[len - 1 - i];
+		pBuf[len - 1 - i] = pBuf[i];
+		pBuf[i] = tmp;
+	}
+}

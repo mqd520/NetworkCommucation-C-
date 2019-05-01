@@ -8,9 +8,9 @@ using namespace std;
 namespace NetworkCommunication
 {
 	/************************************************************************/
-	/* 网络流(只读)类
+	/* 网络流(只写)类
 	/************************************************************************/
-	class CNetworkStreamRead
+	class CNetworkStreamWrite
 	{
 	public:
 		//************************************
@@ -18,40 +18,30 @@ namespace NetworkCommunication
 		// Parameter: int len:		缓冲区长度
 		// Parameter: EByteOrder bo:网络流所使用的字节序 	
 		//************************************
-		CNetworkStreamRead(BYTE* pBuf, int len, EByteOrder bo = EByteOrder::big);
-		~CNetworkStreamRead();
+		CNetworkStreamWrite(BYTE* pBuf, int len, EByteOrder bo = EByteOrder::big);
+		~CNetworkStreamWrite();
 
 	private:
 		EByteOrder m_bNSByteOrder;		// 当前网络流使用的字节序
 		int m_nBufLen;					// 缓冲区长度
 		BYTE* m_pBuf;					// 缓冲区
-		int m_nReadIndex;				// 数据读索引
+		int m_nWriteIndex;				// 数据写索引
 
 	private:
 		//************************************
-		// Method:    反转缓冲区
-		// Access:    private 
-		// Returns:   bool
-		// Parameter: BYTE * pBuf: 缓冲区指针
-		// Parameter: int len:	   缓冲区长度
-		//************************************
-		void ReverseBuf(BYTE* pBuf, int len);
-
-		//************************************
-		// Method:    读取数据
-		// Access:    private 
-		// Returns:   bool
+		// Method:    写入数据
 		// Parameter: void * pDest:	数据接收地址
 		// Parameter: int len:		读取长度
 		//************************************
-		bool ReadData(void* pDest, int len);
+		bool WriteData(void* pDest, int len);
 
 		//************************************
-		// Method:    读取字符串前缀
-		// Returns:   int:	字符串字节长度
-		// Parameter: 前缀所占的字节长度
+		// Method:    写入字符串前缀
+		// Returns:   是否写入成功
+		// Parameter: int prefix：	前缀所占的字节长度
+		// Parameter: int val：		前缀数据
 		//************************************
-		UINT32 ReadStrPrefix(int len);
+		bool WriteStrPrefix(int prefix, int val);
 
 	public:
 		//************************************
@@ -65,112 +55,112 @@ namespace NetworkCommunication
 		BYTE* GetBuf();
 
 		//************************************
-		// Method:    返回可读的字节数
+		// Method:    返回可写的字节数
 		//************************************
-		int AvaliableRead();
+		int AvaliableWrite();
 
 		//************************************
-		// Method:    返回已读字节数
+		// Method:    返回已写字节数
 		//************************************
-		int ReadedCount();
+		int WritedCount();
 
 		//************************************
-		// Method:    读取一段缓冲区数据
-		// Returns:	  实际读取长度
-		// Parameter: 接收缓冲区
-		// Parameter: 预计读取长度
+		// Method:    写入一段缓冲区数据
+		// Returns:	  是否写入成功
+		// Parameter: BYTE* pBuf:	数据缓冲区
+		// Parameter: int len:		数据缓冲区长度
 		//************************************
-		int ReadBuf(BYTE* buf, int len);
+		bool WriteBuf(BYTE* pBuf, int len);
 
 		//************************************
 		// Method:    读取一个BYTE数据
 		//************************************
-		BYTE ReadByte();
+		bool WriteByte(BYTE val);
 
 		//************************************
 		// Method:    读取一个SHORT数据
 		//************************************
-		SHORT ReadShort();
+		bool WriteShort(short val);
 
 		//************************************
 		// Method:    读取一个USHORT数据
 		//************************************
-		USHORT ReadUShort();
+		bool WriteUShort(USHORT val);
 
 		//************************************
 		// Method:    读取一个int16数据
 		//************************************
-		INT16 ReadInt16();
+		bool WriteInt16(INT16 val);
 
 		//************************************
 		// Method:    读取一个uint16数据
 		//************************************
-		UINT16 ReadUInt16();
+		bool WriteUInt16(UINT16 val);
 
 		//************************************
 		// Method:    读取一个INT32数据
 		//************************************
-		INT32 ReadInt32();
+		bool WriteInt32(INT32 val);
 
 		//************************************
 		// Method:    读取一个UINT32数据
 		//************************************
-		UINT32 ReadUInt32();
+		bool WriteUInt32(UINT32 val);
 
 		//************************************
 		// Method:    读取一个INT64数据
 		//************************************
-		INT64 ReadInt64();
+		bool WriteInt64(INT64 val);
 
 		//************************************
 		// Method:    读取一个UINT64数据
 		//************************************
-		UINT64 ReadUInt64();
+		bool WriteUInt64(UINT64 val);
 
 		//************************************
 		// Method:    读取一个float数据
 		//************************************
-		float ReadFloat();
+		bool WriteFloat(float val);
 
 		//************************************
 		// Method:    读取一个double数据
 		//************************************
-		double ReadDouble();
+		bool WriteDouble(double val);
 
 		//************************************
 		// Method:    读取 GB2312 字符串
 		// Parameter: int len:					读取字节长度
 		//************************************
-		string ReadGB2312Str(int len);
+		string WriteGB2312Str(int len);
 
 		//************************************
 		// Method:    读取 GB2312 字符串
 		// Parameter: int prefixLen = 4:		说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
 		//************************************
-		string ReadGB2312Str1(int prefixLen = 4);
+		string WriteGB2312Str1(int prefixLen = 4);
 
 		//************************************
 		// Method:    读取 UTF16 字符串
 		// Parameter: int len:					读取字节长度
 		//************************************
-		wstring ReadUTF16Str(int len);
+		wstring WriteUTF16Str(int len);
 
 		//************************************
 		// Method:    读取 UTF16 字符串
 		// Parameter: int prefixLen = 4:		说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
 		//************************************
-		wstring ReadUTF16Str1(int prefixLen = 4);
+		wstring WriteUTF16Str1(int prefixLen = 4);
 
 		//************************************
 		// Method:    读取 UT8 字符串, 自动转换成 GB2312 字符串 
 		// Parameter: int len:					读取字节长度
 		//************************************
-		string ReadUTF8Str(int len);
+		string WriteUTF8Str(int len);
 
 		//************************************
 		// Method:    读取 UTF16 字符串
 		// Parameter: int prefixLen = 4:		说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
 		//************************************
-		string ReadUTF8Str1(int prefixLen = 4);
+		string WriteUTF8Str1(int prefixLen = 4);
 	};
 }
