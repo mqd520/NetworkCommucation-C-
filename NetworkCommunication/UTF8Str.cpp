@@ -13,12 +13,17 @@ UTF8Str::~UTF8Str()
 
 }
 
-wstring UTF8Str::FromBuf(BYTE* pBuf, int len)
-{
-	return L"";
-}
-
-string UTF8Str::FromBuf1(BYTE* pBuf, int len)
-{
-	return "";
-}
+//string UTF8Str::FromBuf(BYTE* pBuf, int len)
+//{
+//	char* ch = new char[len];
+//	memset(ch, 0, len);
+//	memcpy(ch, pBuf, len);
+//	string str = ch;
+//	delete ch;
+//	return str;
+//}
+//
+//string UTF8Str::FromUTF16(wstring str)
+//{
+//	"";
+//}

@@ -15,11 +15,17 @@ GB2312Str::~GB2312Str()
 
 string GB2312Str::FromBuf(BYTE* pBuf, int len)
 {
-	char ch[1024] = { 0 };
+	char* ch = new char[len + 1];
+	memset(ch, 0, len + 1);
 	memcpy(ch, pBuf, len);
-	ch[1023] = 0;
 	string str = ch;
+	delete ch;
 	return str;
+}
+
+string GB2312Str::FromUTF8Buf(BYTE* pBuf, int len)
+{
+	return "";
 }
 
 string GB2312Str::FromUTF16(wstring str)
@@ -36,13 +42,6 @@ string GB2312Str::FromUTF16(wstring str)
 	}
 
 	return result;
-}
-
-string GB2312Str::FromUTF8(wstring str)
-{
-	char ch[1024] = { 0 };
-	memcpy(ch, str.data(), 1024);
-	return FromUTF8(ch);
 }
 
 string GB2312Str::FromUTF8(string str)

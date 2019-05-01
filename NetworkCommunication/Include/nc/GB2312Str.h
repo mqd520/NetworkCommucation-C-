@@ -22,17 +22,13 @@ namespace NetworkCommunication
 		//************************************
 		static string FromBuf(BYTE* pBuf, int len);
 
+		static string FromUTF8Buf(BYTE* pBuf, int len);
+
 		//************************************
 		// Method:    ´Ó UTF16 ×Ö·û´®ÖÐ¶ÁÈ¡ GB2312 ×Ö·û´®
 		// Parameter: str:	UTF16×Ö·û´®
 		//************************************
 		static string FromUTF16(wstring str);
-
-		//************************************
-		// Method:    ´Ó UTF8 ×Ö·û´®ÖÐ¶ÁÈ¡ GB2312 ×Ö·û´®
-		// Parameter: str:	UTF8×Ö·û´®
-		//************************************
-		static string FromUTF8(wstring str);
 
 		//************************************
 		// Method:    ´Ó UTF8 ×Ö·û´®ÖÐ¶ÁÈ¡ GB2312 ×Ö·û´®
