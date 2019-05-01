@@ -1,6 +1,9 @@
 #pragma once
 
+#include <vector>
 #include "NCTool.h"
+
+using namespace std;
 
 namespace NetworkCommunication
 {
@@ -11,11 +14,6 @@ namespace NetworkCommunication
 	{
 	public:
 		//************************************
-		// Method:    CNetworkStream
-		// FullName:  NetworkCommunication::CNetworkStream::CNetworkStream
-		// Access:    public 
-		// Returns:   
-		// Qualifier: 
 		// Parameter: BYTE * pBuf:	缓冲区指针
 		// Parameter: int len:		缓冲区长度
 		// Parameter: EByteOrder bo:网络流所使用的字节序 	
@@ -140,43 +138,39 @@ namespace NetworkCommunication
 		double ReadDouble();
 
 		//************************************
-		// Method:    读取GB2312字符串
-		// Parameter: char* pDest:				字符串指针
+		// Method:    读取 GB2312 字符串
 		// Parameter: int len:					读取字节长度
-		// Parameter: bool hasEndChar = false:	流中是否带有字符串结束符'\0'
 		//************************************
-		bool ReadGB2312Str(char* pDest, int len, bool hasEndChar = false);
+		string ReadGB2312Str(int len);
 
 		//************************************
-		// Method:    读取GB2312字符串
-		// Parameter: char* pDest:				字符串指针
+		// Method:    读取 GB2312 字符串
 		// Parameter: int prefixLen = 4:		说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
-		// Parameter: bool hasEndChar = false:	流中是否带有字符串结束符'\0'
 		//************************************
-		bool ReadGB2312Str(char* pDest, unsigned int prefixLen = 4, bool hasEndChar = false);
+		string ReadGB2312Str1(int prefixLen = 4);
 
 		//************************************
-		// Method:    读取UTF16字符串
-		// Parameter: wchar_t* pDest:			字符串指针
+		// Method:    读取 UTF16 字符串
 		// Parameter: int len:					读取字节长度
-		// Parameter: bool hasEndChar = false:	流中是否带有字符串结束符'\0'
 		//************************************
-		bool ReadUTF16Str(wchar_t* pDest, int len, bool hasEndChar = false);
+		wstring ReadUTF16Str(int len);
 
 		//************************************
-		// Method:    读取UTF16字符串
-		// Parameter: wchar_t* pDest:			字符串指针
+		// Method:    读取 UTF16 字符串
 		// Parameter: int prefixLen = 4:		说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
-		// Parameter: bool hasEndChar = false:	流中是否带有字符串结束符'\0'
 		//************************************
-		bool ReadUTF16Str(wchar_t* pDest, unsigned int prefixLen = 4, bool hasEndChar = false);
+		wstring ReadUTF16Str1(int prefixLen = 4);
 
 		//************************************
-		// Method:    读取UT8字符串
-		// Parameter: wchar_t* pDest:			字符串指针
+		// Method:    读取 UT8 字符串, 自动转换成 GB2312 字符串 
 		// Parameter: int len:					读取字节长度
-		// Parameter: bool hasEndChar = false:	流中是否带有字符串结束符'\0'
 		//************************************
-		bool ReadUTF8Str(wchar_t* pDest, int len, bool hasEndChar = false);
+		string ReadUTF8Str(int len);
+
+		//************************************
+		// Method:    读取 UTF16 字符串
+		// Parameter: int prefixLen = 4:		说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
+		//************************************
+		string ReadUTF8Str1(int prefixLen = 4);
 	};
 }

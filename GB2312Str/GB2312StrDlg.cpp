@@ -20,7 +20,7 @@ using namespace NetworkCommunication;
 
 
 CGB2312StrDlg::CGB2312StrDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CGB2312StrDlg::IDD, pParent)
+: CDialogEx(CGB2312StrDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -121,11 +121,7 @@ void CGB2312StrDlg::OnBnClickedButton3()
 	// TODO:  在此添加控件通知处理程序代码
 
 	BYTE buf1[] = { -26, -79, -119, -27, -83, -105, 65, 66, 67, 49, 50, 51 };	// 汉字ABC123, UTF8编码
-	wchar_t ch[128] = { 0 };
-	memcpy(ch, buf1, 12);
-	wstring strUTF8 = ch;
-
-	string strGB2312 = GB2312Str::FromUTF8(strUTF8);
+	string strGB2312 = GB2312Str::FromUTF8Buf(buf1, sizeof(buf1) / sizeof(BYTE));
 	TRACE("%s \n", strGB2312.c_str());
 }
 
@@ -134,13 +130,15 @@ void CGB2312StrDlg::OnBnClickedButton4()
 {
 	// TODO:  在此添加控件通知处理程序代码
 
-	BYTE buf1[] = { -26, -79, -119, -27, -83, -105, 65, 66, 67, 49, 50, 51 };	// 汉字ABC123, UTF8编码
-	char ch[128] = { 0 };
-	memcpy(ch, buf1, 12);
-	string strUTF8 = ch;
-
-	string strGB2312 = GB2312Str::FromUTF8(strUTF8);
-	TRACE("%s \n", strGB2312.c_str());
+	BYTE buf[100] = { 0 };
+	int n = GB2312Str::ToUTF8Buf("汉字ABC123", buf);
+	for (int i = 0; i < n; i ++)
+	{
+		char ch[10] = { 0 };
+		sprintf_s(ch, "%d, ", buf[i]);
+		OutputDebugStringA(ch);
+	}
+	TRACE("\n");
 }
 
 

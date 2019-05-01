@@ -215,22 +215,13 @@
     <ClInclude Include="NetworkStream.h">
       <Filter>07 流处理</Filter>
     </ClInclude>
-    <ClInclude Include="UnicodeConvert.h">
-      <Filter>00 公共</Filter>
-    </ClInclude>
     <ClInclude Include="Include\nc\NCTool.h">
       <Filter>00 公共</Filter>
     </ClInclude>
     <ClInclude Include="Include\nc\NetworkStreamRead.h">
       <Filter>07 流处理</Filter>
     </ClInclude>
-    <ClInclude Include="Include\nc\StringTool.h">
-      <Filter>00 公共</Filter>
-    </ClInclude>
     <ClInclude Include="Include\nc\GB2312Str.h">
-      <Filter>00 公共</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\nc\UTF8Str.h">
       <Filter>00 公共</Filter>
     </ClInclude>
     <ClInclude Include="Include\nc\UTF16Str.h">
@@ -389,22 +380,13 @@
     <ClCompile Include="ByteStream.cpp">
       <Filter>07 流处理</Filter>
     </ClCompile>
-    <ClCompile Include="UnicodeConvert.cpp">
-      <Filter>00 公共</Filter>
-    </ClCompile>
     <ClCompile Include="NCTool.cpp">
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="NetworkStreamRead.cpp">
       <Filter>07 流处理</Filter>
     </ClCompile>
-    <ClCompile Include="StringTool.cpp">
-      <Filter>00 公共</Filter>
-    </ClCompile>
     <ClCompile Include="GB2312Str.cpp">
-      <Filter>00 公共</Filter>
-    </ClCompile>
-    <ClCompile Include="UTF8Str.cpp">
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="UTF16Str.cpp">

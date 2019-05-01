@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "NetworkStream.h"
 #include "MemoryTool.h"
-#include "UnicodeConvert.h"
 
 namespace NetworkCommunication
 {

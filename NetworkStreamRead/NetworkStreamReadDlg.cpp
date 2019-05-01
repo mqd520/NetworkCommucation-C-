@@ -20,7 +20,7 @@ using namespace NetworkCommunication;
 
 
 CNetworkStreamReadDlg::CNetworkStreamReadDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CNetworkStreamReadDlg::IDD, pParent)
+: CDialogEx(CNetworkStreamReadDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -240,57 +240,67 @@ void CNetworkStreamReadDlg::OnBnClickedCancel10()
 void CNetworkStreamReadDlg::OnBnClickedCancel11()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	BYTE buf1[] = { 0xBA, 0xBA, 0xD7, 0xD6, 65, 66, 67, 49, 50, 51 };
-	CNetworkStreamRead ns1(buf1, 10, EByteOrder::litte);
-	char ch1[20] = { 0 };
-	ns1.ReadGB2312Str(ch1, 10);
-	TRACE("%s \n", ch1);
+	BYTE buf1[] = { 0xBA, 0xBA, 0xD7, 0xD6, 65, 66, 67, 49, 50, 51 };				// "汉字ABC123", GB2312编码
+	CNetworkStreamRead ns1(buf1, sizeof(buf1) / sizeof(BYTE));
+	string str1 = ns1.ReadGB2312Str(sizeof(buf1) / sizeof(BYTE));
+	TRACE("%s \n", str1.c_str());
 
-	BYTE buf2[] = { 0, 0, 0, 10, 0xBA, 0xBA, 0xD7, 0xD6, 65, 66, 67, 49, 50, 51 };
-	CNetworkStreamRead ns2(buf2, 14, EByteOrder::big);
-	char ch2[20] = { 0 };
-	ns2.ReadGB2312Str(ch2);
-	TRACE("%s \n", ch2);
+	BYTE buf2[] = { 0, 0, 0, 10, 0xBA, 0xBA, 0xD7, 0xD6, 65, 66, 67, 49, 50, 51 };	// "汉字ABC123", GB2312编码
+	CNetworkStreamRead ns2(buf2, sizeof(buf2) / sizeof(BYTE), EByteOrder::big);
+	string str2 = ns2.ReadGB2312Str1();
+	TRACE("%s \n", str2.c_str());
 
-	BYTE buf3[] = { 10, 0, 0, 0, 0xBA, 0xBA, 0xD7, 0xD6, 65, 66, 67, 49, 50, 51 };
-	CNetworkStreamRead ns3(buf3, 14, EByteOrder::litte);
-	char ch3[20] = { 0 };
-	ns3.ReadGB2312Str(ch3);
-	TRACE("%s \n", ch3);
+	BYTE buf3[] = { 10, 0, 0, 0, 0xBA, 0xBA, 0xD7, 0xD6, 65, 66, 67, 49, 50, 51 };	// "汉字ABC123", GB2312编码
+	CNetworkStreamRead ns3(buf3, sizeof(buf3) / sizeof(BYTE), EByteOrder::litte);
+	string str3 = ns3.ReadGB2312Str1();
+	TRACE("%s \n", str3.c_str());
 }
 
 
 void CNetworkStreamReadDlg::OnBnClickedCancel12()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	BYTE buf1[] = { 0x6C, 0x49, 0x5B, 0x57, 0, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51 };
-	CNetworkStreamRead ns1(buf1, 16, EByteOrder::big);
-	wchar_t ch1[20] = { 0 };
-	ns1.ReadUTF16Str(ch1, 16);
-	TRACE(L"%s \n", ch1);
 
-	BYTE buf2[] = { 0x49, 0x6C, 0x57, 0x5B, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51, 0 };
-	CNetworkStreamRead ns2(buf2, 16, EByteOrder::litte);
-	wchar_t ch2[20] = { 0 };
-	ns2.ReadUTF16Str(ch2, 16);
-	TRACE(L"%s \n", ch2);
+	BYTE buf1[] = { 0x6C, 0x49, 0x5B, 0x57, 0, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51 };		// "汉字ABC123", UTF16编码, 大端
+	CNetworkStreamRead ns1(buf1, sizeof(buf1) / sizeof(BYTE), EByteOrder::big);
+	wstring str1 = ns1.ReadUTF16Str(sizeof(buf1) / sizeof(BYTE));
+	TRACE(L"%s \n", str1.c_str());
 
-	BYTE buf3[] = { 16, 0, 0, 0, 0x49, 0x6C, 0x57, 0x5B, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51, 0 };
-	CNetworkStreamRead ns3(buf3, 20, EByteOrder::litte);
-	wchar_t ch3[20] = { 0 };
-	ns3.ReadUTF16Str(ch3);
-	TRACE(L"%s \n", ch3);
+	BYTE buf2[] = { 0x49, 0x6C, 0x57, 0x5B, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51, 0 };		// "汉字ABC123", UTF16编码, 小端
+	CNetworkStreamRead ns2(buf2, sizeof(buf2) / sizeof(BYTE), EByteOrder::litte);
+	wstring str2 = ns2.ReadUTF16Str(sizeof(buf2) / sizeof(BYTE));
+	TRACE(L"%s \n", str2.c_str());
+
+	BYTE buf3[] = { 0, 0, 0, 16, 0x6C, 0x49, 0x5B, 0x57, 0, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51 };		// "汉字ABC123", UTF16编码, 大端
+	CNetworkStreamRead ns3(buf3, sizeof(buf3) / sizeof(BYTE), EByteOrder::big);
+	wstring str3 = ns3.ReadUTF16Str1();
+	TRACE(L"%s \n", str3.c_str());
+
+	BYTE buf4[] = { 16, 0, 0, 0, 0x49, 0x6C, 0x57, 0x5B, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51, 0 };	// "汉字ABC123", UTF16编码, 小端
+	CNetworkStreamRead ns4(buf4, sizeof(buf4) / sizeof(BYTE), EByteOrder::litte);
+	wstring str4 = ns4.ReadUTF16Str1();
+	TRACE(L"%s \n", str4.c_str());
 }
 
 
 void CNetworkStreamReadDlg::OnBnClickedCancel13()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	BYTE buf1[] = { -26, -79, -119 };
-	CNetworkStreamRead ns1(buf1, 3, EByteOrder::big);
-	wchar_t ch1[20] = { 0 };
-	ns1.ReadUTF8Str(ch1, 16);
-	TRACE(L"%s \n", ch1);
+
+	BYTE buf1[] = { -26, -79, -119, -27, -83, -105, 65, 66, 67, 49, 50, 51 };		// "汉字ABC123", UTF8编码
+	CNetworkStreamRead ns1(buf1, sizeof(buf1) / sizeof(BYTE));
+	string str1 = ns1.ReadUTF8Str(sizeof(buf1) / sizeof(BYTE));
+	TRACE("%s \n", str1.c_str());
+
+	BYTE buf2[] = { 0, 0, 0, 12, -26, -79, -119, -27, -83, -105, 65, 66, 67, 49, 50, 51 };		// "汉字ABC123", UTF8编码
+	CNetworkStreamRead ns2(buf2, sizeof(buf2) / sizeof(BYTE), EByteOrder::big);
+	string str2 = ns2.ReadUTF8Str1();
+	TRACE("%s \n", str2.c_str());
+
+	BYTE buf3[] = { 12, 0, 0, 0, -26, -79, -119, -27, -83, -105, 65, 66, 67, 49, 50, 51 };		// "汉字ABC123", UTF8编码
+	CNetworkStreamRead ns3(buf3, sizeof(buf3) / sizeof(BYTE), EByteOrder::litte);
+	string str3 = ns3.ReadUTF8Str1();
+	TRACE("%s \n", str3.c_str());
 }
 
 

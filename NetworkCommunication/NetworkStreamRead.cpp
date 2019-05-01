@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Include/nc/NetworkStreamRead.h"
-#include "Include/nc/StringTool.h"
+#include "Include/nc/GB2312Str.h"
+#include "Include/nc/UTF16Str.h"
 
 using namespace NetworkCommunication;
 
@@ -180,74 +181,80 @@ double CNetworkStreamRead::ReadDouble()
 	return d;
 }
 
-bool CNetworkStreamRead::ReadGB2312Str(char* pDest, int len, bool hasEndChar /*= false*/)
+string CNetworkStreamRead::ReadGB2312Str(int len)
 {
-	int len1 = len + (hasEndChar == true ? 1 : 0);
-	if (len1 <= AvaliableRead())
-	{
-		memcpy(pDest, m_pBuf + m_nReadIndex, len);
-		m_nReadIndex += len1;
+	string result = "";
 
-		return true;
+	if (len <= AvaliableRead())
+	{
+		result = GB2312Str::FromBuf(m_pBuf + m_nReadIndex, len);
+		m_nReadIndex += len;
 	}
 
-	return false;
+	return result;
 }
 
-bool CNetworkStreamRead::ReadGB2312Str(char* pDest, unsigned int prefixLen /*= 4*/, bool hasEndChar /*= false*/)
+string CNetworkStreamRead::ReadGB2312Str1(int prefixLen /*= 4*/)
 {
-	int len = ReadStrPrefix(prefixLen);
+	string result = "";
 
+	int len = ReadStrPrefix(prefixLen);
 	if (len > 0)
 	{
-		return ReadGB2312Str(pDest, len, hasEndChar);
+		result = ReadGB2312Str(len);
 	}
 
-	return false;
+	return result;
 }
 
-bool CNetworkStreamRead::ReadUTF16Str(wchar_t* pDest, int len, bool hasEndChar /*= false*/)
+wstring CNetworkStreamRead::ReadUTF16Str(int len)
 {
-	int len1 = len + (hasEndChar == true ? 2 : 0);
-	if (len1 <= AvaliableRead())
+	wstring result = L"";
+
+	if (len <= AvaliableRead())
 	{
-		int size = sizeof(wchar_t);
-		int n = 0;
-		for (int i = 0; i < len; i += 2)
-		{
-			wchar_t ch = 0;
-			ReadData(&ch, size);
-			memcpy(pDest + n, &ch, size);
-			n++;
-		}
-
-		return true;
+		result = UTF16Str::FromBuf(m_pBuf + m_nReadIndex, len, m_bNSByteOrder);
+		m_nReadIndex += len;
 	}
 
-	return false;
+	return result;
 }
 
-bool CNetworkStreamRead::ReadUTF16Str(wchar_t* pDest, unsigned int prefixLen /*= 4*/, bool hasEndChar /*= false*/)
+wstring CNetworkStreamRead::ReadUTF16Str1(int prefixLen /*= 4*/)
 {
-	int len = ReadStrPrefix(prefixLen);
+	wstring result = L"";
 
+	int len = ReadStrPrefix(prefixLen);
 	if (len > 0)
 	{
-		return ReadUTF16Str(pDest, len, hasEndChar);
+		return ReadUTF16Str(len);
 	}
 
-	return false;
+	return result;
 }
 
-bool CNetworkStreamRead::ReadUTF8Str(wchar_t* pDest, int len, bool hasEndChar /*= false*/)
+string CNetworkStreamRead::ReadUTF8Str(int len)
 {
-	int len1 = len + (hasEndChar == true ? 2 : 0);
-	if (len1 <= AvaliableRead())
-	{
-		
+	string str = "";
 
-		return true;
+	if (len <= AvaliableRead())
+	{
+		str = GB2312Str::FromUTF8Buf(m_pBuf + m_nReadIndex, len);
+		m_nReadIndex += len;
 	}
 
-	return false;
+	return str;
+}
+
+string CNetworkStreamRead::ReadUTF8Str1(int prefixLen /*= 4*/)
+{
+	string result = "";
+
+	int len = ReadStrPrefix(prefixLen);
+	if (len > 0)
+	{
+		result = ReadUTF8Str(len);
+	}
+
+	return result;
 }

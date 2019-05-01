@@ -92,9 +92,7 @@
     <ClInclude Include="Include\nc\GB2312Str.h" />
     <ClInclude Include="Include\nc\NetworkStreamRead.h" />
     <ClInclude Include="Include\nc\NCTool.h" />
-    <ClInclude Include="Include\nc\StringTool.h" />
     <ClInclude Include="Include\nc\UTF16Str.h" />
-    <ClInclude Include="Include\nc\UTF8Str.h" />
     <ClInclude Include="LinkList.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="NetCommuMgr.h" />
@@ -142,7 +140,6 @@
     <ClInclude Include="TimerMgr.h" />
     <ClInclude Include="TimerAppMgr.h" />
     <ClInclude Include="BuildTimeoutThread.h" />
-    <ClInclude Include="UnicodeConvert.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ByteStream.cpp" />
@@ -178,7 +175,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="StringTool.cpp" />
     <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="TcpConnection.cpp" />
     <ClCompile Include="TcpConnectionMgr.cpp" />
@@ -203,9 +199,7 @@
     <ClCompile Include="TimerMgr.cpp" />
     <ClCompile Include="TimerAppMgr.cpp" />
     <ClCompile Include="BuildTimeoutThread.cpp" />
-    <ClCompile Include="UnicodeConvert.cpp" />
     <ClCompile Include="UTF16Str.cpp" />
-    <ClCompile Include="UTF8Str.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

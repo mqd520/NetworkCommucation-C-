@@ -50,6 +50,7 @@ wstring UTF16Str::FromBuf(BYTE* pBuf, int len, EByteOrder bo /*= EByteOrder::big
 	}
 
 	str = ch;
+	delete ch;
 
 	return str;
 }
@@ -178,10 +179,8 @@ void UTF16Str::UTF16_2_UTF8(BYTE* pBuf1, int len1, BYTE* pBuf2, int* len2, EByte
 
 wstring UTF16Str::FromUTF8Buf(BYTE* pBuf, int len)
 {
-	wstring strUTF16 = L"";
-
-	BYTE* pBuf1 = new BYTE[len];
-	memset(pBuf1, 0, len);
+	BYTE* pBuf1 = new BYTE[len * 2];
+	memset(pBuf1, 0, len * 2);
 	int len1 = 0;
 	UTF8_2_UTF16(pBuf, len, pBuf1, &len1, NCTool::GetHostByteOrder());
 	if (len1 > 0)
@@ -189,10 +188,13 @@ wstring UTF16Str::FromUTF8Buf(BYTE* pBuf, int len)
 		wchar_t* ch = new wchar_t[(len1 / 2) + 1];
 		memset(ch, 0, len1 + 2);
 		memcpy(ch, pBuf1, len1);
-		strUTF16 = ch;
+		wstring strUTF16 = ch;
+		delete pBuf1;
+		delete ch;
+		return strUTF16;
 	}
-
-	return strUTF16;
+	delete pBuf1;
+	return L"";
 }
 
 wstring UTF16Str::FromGB2312(string str)
@@ -243,6 +245,7 @@ int UTF16Str::ToUTF8Buf(wstring str, BYTE* pBuf, bool hasEndChar /*= false*/)
 		BYTE* pBufUTF16 = new BYTE[n];
 		int len = ToBuf(str, pBufUTF16, EByteOrder::litte, hasEndChar);
 		UTF16_2_UTF8(pBufUTF16, len, pBuf, &result, EByteOrder::litte);
+		delete pBufUTF16;
 	}
 	if (hasEndChar)
 	{

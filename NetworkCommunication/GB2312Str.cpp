@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Include/nc/GB2312Str.h"
+#include "Include/nc/NCTool.h"
+#include "Include/nc/UTF16Str.h"
 
 using namespace NetworkCommunication;
 
@@ -25,7 +27,9 @@ string GB2312Str::FromBuf(BYTE* pBuf, int len)
 
 string GB2312Str::FromUTF8Buf(BYTE* pBuf, int len)
 {
-	return "";
+	int len1 = 0;
+	wstring strUTF16 = UTF16Str::FromUTF8Buf(pBuf, len);
+	return FromUTF16(strUTF16);
 }
 
 string GB2312Str::FromUTF16(wstring str)
@@ -40,27 +44,6 @@ string GB2312Str::FromUTF16(wstring str)
 		result = strGB2312;
 		delete strGB2312;
 	}
-
-	return result;
-}
-
-string GB2312Str::FromUTF8(string str)
-{
-	string result;
-	WCHAR *strSrc;
-	char *szRes;
-
-	int i = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
-	strSrc = new WCHAR[i + 1];
-	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, strSrc, i);
-
-	i = WideCharToMultiByte(CP_ACP, 0, strSrc, -1, NULL, 0, NULL, NULL);
-	szRes = new char[i + 1];
-	WideCharToMultiByte(CP_ACP, 0, strSrc, -1, szRes, i, NULL, NULL);
-
-	result = szRes;
-	delete[]strSrc;
-	delete[]szRes;
 
 	return result;
 }
@@ -95,4 +78,10 @@ int GB2312Str::ToBuf(string str, BYTE* pBuf, bool hasEndChar /*= false*/)
 		}
 	}
 	return len;
+}
+
+int GB2312Str::ToUTF8Buf(string str, BYTE* pBuf, bool hasEndChar /*= false*/)
+{
+	wstring strUTF16 = UTF16Str::FromGB2312(str);
+	return UTF16Str::ToUTF8Buf(strUTF16, pBuf, hasEndChar);
 }
