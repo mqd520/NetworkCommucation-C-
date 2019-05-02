@@ -73,57 +73,57 @@ namespace NetworkCommunication
 		bool WriteBuf(BYTE* pBuf, int len);
 
 		//************************************
-		// Method:    读取一个BYTE数据
+		// Method:    写入一个 BYTE 数据
 		//************************************
 		bool WriteByte(BYTE val);
 
 		//************************************
-		// Method:    读取一个SHORT数据
+		// Method:    写入一个 short 数据
 		//************************************
 		bool WriteShort(short val);
 
 		//************************************
-		// Method:    读取一个USHORT数据
+		// Method:    写入一个 USHORT 数据
 		//************************************
 		bool WriteUShort(USHORT val);
 
 		//************************************
-		// Method:    读取一个int16数据
+		// Method:    写入一个 INT16 数据
 		//************************************
 		bool WriteInt16(INT16 val);
 
 		//************************************
-		// Method:    读取一个uint16数据
+		// Method:    写入一个 UINT16 数据
 		//************************************
 		bool WriteUInt16(UINT16 val);
 
 		//************************************
-		// Method:    读取一个INT32数据
+		// Method:    写入一个 INT32 数据
 		//************************************
 		bool WriteInt32(INT32 val);
 
 		//************************************
-		// Method:    读取一个UINT32数据
+		// Method:    写入一个 UINT32 数据
 		//************************************
 		bool WriteUInt32(UINT32 val);
 
 		//************************************
-		// Method:    读取一个INT64数据
+		// Method:    写入一个 INT64 数据
 		//************************************
 		bool WriteInt64(INT64 val);
 
 		//************************************
-		// Method:    读取一个UINT64数据
+		// Method:    写入一个 UINT64 数据
 		//************************************
 		bool WriteUInt64(UINT64 val);
 
 		//************************************
-		// Method:    读取一个float数据
+		// Method:    写入一个 float 数据
 		//************************************
 		bool WriteFloat(float val);
 
 		//************************************
-		// Method:    读取一个double数据
+		// Method:    写入一个 double 数据
 		//************************************
 		bool WriteDouble(double val);
 

@@ -17,10 +17,20 @@ using namespace NetworkCommunication;
 
 // CNetworkStreamWriteDlg 对话框
 
+void PrintfBuf(BYTE* pBuf, int len)
+{
+	for (int i = 0; i < len; i++)
+	{
+		char ch[10] = { 0 };
+		sprintf_s(ch, "%d, ", pBuf[i]);
+		OutputDebugStringA(ch);
+	}
+	OutputDebugStringA("\n");
+}
 
 
 CNetworkStreamWriteDlg::CNetworkStreamWriteDlg(CWnd* pParent /*=NULL*/)
-: CDialogEx(CNetworkStreamWriteDlg::IDD, pParent)
+	: CDialogEx(CNetworkStreamWriteDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -36,6 +46,9 @@ BEGIN_MESSAGE_MAP(CNetworkStreamWriteDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CNetworkStreamWriteDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CNetworkStreamWriteDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CNetworkStreamWriteDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &CNetworkStreamWriteDlg::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON5, &CNetworkStreamWriteDlg::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON6, &CNetworkStreamWriteDlg::OnBnClickedButton6)
 END_MESSAGE_MAP()
 
 
@@ -97,13 +110,23 @@ void CNetworkStreamWriteDlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
 
-
+	BYTE buf1[128] = { 0 };
+	CNetworkStreamWrite ns1(buf1, 128, EByteOrder::big);
+	BYTE buf2[] = { 1, 2, 3, 4, 5 };
+	ns1.WriteBuf(buf2, sizeof(buf2) / sizeof(BYTE));
+	PrintfBuf(buf1, ns1.WritedCount());
 }
 
 
 void CNetworkStreamWriteDlg::OnBnClickedButton2()
 {
 	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[128] = { 0 };
+	CNetworkStreamWrite ns1(buf1, 128, EByteOrder::big);
+	BYTE b = 1;
+	ns1.WriteByte(b);
+	PrintfBuf(buf1, ns1.WritedCount());
 }
 
 
@@ -115,26 +138,64 @@ void CNetworkStreamWriteDlg::OnBnClickedButton3()
 	CNetworkStreamWrite ns1(buf1, 128, EByteOrder::big);
 	ns1.WriteShort(1);
 	ns1.WriteShort(-1);
-	int n1 = ns1.WritedCount();
-	for (int i = 0; i < n1; i++)
-	{
-		char ch[10] = { 0 };
-		sprintf_s(ch, "%d, ", buf1[i]);
-		OutputDebugStringA(ch);
-	}
-	OutputDebugStringA("\n");
+	PrintfBuf(buf1, ns1.WritedCount());
 
 
 	BYTE buf2[128] = { 0 };
 	CNetworkStreamWrite ns2(buf2, 128, EByteOrder::litte);
 	ns2.WriteShort(1);
 	ns2.WriteShort(-1);
-	int n2 = ns2.WritedCount();
-	for (int i = 0; i < n2; i++)
-	{
-		char ch[10] = { 0 };
-		sprintf_s(ch, "%d, ", buf2[i]);
-		OutputDebugStringA(ch);
-	}
-	OutputDebugStringA("\n");
+	PrintfBuf(buf2, ns2.WritedCount());
+}
+
+
+void CNetworkStreamWriteDlg::OnBnClickedButton4()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[128] = { 0 };
+	CNetworkStreamWrite ns1(buf1, 128, EByteOrder::big);
+	ns1.WriteUShort(1);
+	PrintfBuf(buf1, ns1.WritedCount());
+
+	BYTE buf2[128] = { 0 };
+	CNetworkStreamWrite ns2(buf2, 128, EByteOrder::litte);
+	ns2.WriteUShort(1);
+	PrintfBuf(buf2, ns2.WritedCount());
+}
+
+
+void CNetworkStreamWriteDlg::OnBnClickedButton5()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[128] = { 0 };
+	CNetworkStreamWrite ns1(buf1, 128, EByteOrder::big);
+	ns1.WriteInt16(1);
+	ns1.WriteInt16(-2);
+	PrintfBuf(buf1, ns1.WritedCount());
+
+
+	BYTE buf2[128] = { 0 };
+	CNetworkStreamWrite ns2(buf2, 128, EByteOrder::litte);
+	ns2.WriteInt16(1);
+	ns2.WriteInt16(-2);
+	PrintfBuf(buf2, ns2.WritedCount());
+}
+
+
+void CNetworkStreamWriteDlg::OnBnClickedButton6()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[128] = { 0 };
+	CNetworkStreamWrite ns1(buf1, 128, EByteOrder::big);
+	ns1.WriteUInt16(1);
+	PrintfBuf(buf1, ns1.WritedCount());
+
+
+	BYTE buf2[128] = { 0 };
+	CNetworkStreamWrite ns2(buf2, 128, EByteOrder::litte);
+	ns1.WriteUInt16(1);
+	PrintfBuf(buf1, ns1.WritedCount());
 }
