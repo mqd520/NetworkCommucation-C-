@@ -6,10 +6,10 @@
 using namespace NetworkCommunication;
 
 CNetworkStreamWrite::CNetworkStreamWrite(BYTE* pBuf, int len, EByteOrder bo /*= EByteOrder::big*/) :
-m_pBuf(pBuf),
-m_nBufLen(len),
-m_bNSByteOrder(bo),
-m_nWriteIndex(0)
+pBuff(pBuf),
+nBuffLen(len),
+nsByteOrder(bo),
+nWriteIndex(0)
 {
 
 }
@@ -19,67 +19,60 @@ CNetworkStreamWrite::~CNetworkStreamWrite()
 
 }
 
-bool CNetworkStreamWrite::WriteData(void* pDest, int len)
+bool CNetworkStreamWrite::WriteData(void* pData, int len)
 {
 	bool result = false;
 
 	if (len <= AvaliableWrite())
 	{
-		memcpy(m_pBuf + m_nWriteIndex, pDest, len);
+		memcpy(pBuff + nWriteIndex, pData, len);
 
-		if (len > 1 && m_bNSByteOrder != NCTool::GetHostByteOrder())	// 多字节数据
+		if (len > 1 && nsByteOrder != NCTool::GetHostByteOrder())	// 多字节数据
 		{
-			NCTool::ReverseBuf(m_pBuf + m_nWriteIndex, len);
+			NCTool::ReverseBuf(pBuff + nWriteIndex, len);
 		}
 
-		m_nWriteIndex += len;
+		nWriteIndex += len;
 		result = true;
 	}
 
 	return result;
 }
 
-bool CNetworkStreamWrite::WriteStrPrefix(int prefix, int val)
+void CNetworkStreamWrite::WriteStrPrefix(int prefix, int len)
 {
-	bool result = true;
-
 	switch (prefix)
 	{
 	case 1:
-		result = WriteByte(val);
+		WriteByte(len);
 		break;
 	case 2:
-		result = WriteUShort(val);
+		WriteUShort(len);
 		break;
 	case 4:
-		result = WriteUInt32(val);
-		break;
-	default:
-		result = false;
+		WriteUInt32(len);
 		break;
 	}
-
-	return result;
 }
 
 int CNetworkStreamWrite::GetLen()
 {
-	return m_nBufLen;
+	return nBuffLen;
 }
 
 BYTE* CNetworkStreamWrite::GetBuf()
 {
-	return m_pBuf;
+	return pBuff;
 }
 
 int CNetworkStreamWrite::AvaliableWrite()
 {
-	return m_nBufLen - m_nWriteIndex;
+	return nBuffLen - nWriteIndex;
 }
 
 int CNetworkStreamWrite::WritedCount()
 {
-	return m_nWriteIndex;
+	return nWriteIndex;
 }
 
 bool CNetworkStreamWrite::WriteBuf(BYTE* pBuf, int len)
@@ -88,8 +81,8 @@ bool CNetworkStreamWrite::WriteBuf(BYTE* pBuf, int len)
 
 	if (len <= AvaliableWrite())
 	{
-		memcpy(m_pBuf + m_nWriteIndex, pBuf, len);
-		m_nWriteIndex += len;
+		memcpy(pBuff + nWriteIndex, pBuf, len);
+		nWriteIndex += len;
 		result = true;
 	}
 
@@ -151,3 +144,65 @@ bool CNetworkStreamWrite::WriteDouble(double val)
 	return WriteData(&val, sizeof(double));
 }
 
+bool CNetworkStreamWrite::WriteGB2312Str(string str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
+{
+	bool result = false;
+
+	int len = GB2312Str::GetByteCount(str);	// 获取字符串字节长度(不含结束符)
+	int count = nWriteIndex;
+	WriteStrPrefix(prefix, len);			// 写入前缀
+	int len1 = hasEndChar == true ? len + 1 : len;
+	if (len1 <= AvaliableWrite())
+	{
+		GB2312Str::ToBuf(str, pBuff + nWriteIndex, hasEndChar);
+		nWriteIndex += len1;
+	}
+	else
+	{
+		nWriteIndex = count;
+	}
+
+	return result;
+}
+
+bool CNetworkStreamWrite::WriteUTF16Str(wstring str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
+{
+	bool result = false;
+
+	int len = UTF16Str::GetByteCount(str);	// 获取字符串字节长度(不含结束符)
+	int count = nWriteIndex;
+	WriteStrPrefix(prefix, len);			// 写入前缀
+	int len1 = hasEndChar == true ? len + 2 : len;
+	if (len1 <= AvaliableWrite())
+	{
+		UTF16Str::ToBuf(str, pBuff + nWriteIndex, nsByteOrder, hasEndChar);
+		nWriteIndex += len1;
+	}
+	else
+	{
+		nWriteIndex = count;
+	}
+
+	return result;
+}
+
+bool CNetworkStreamWrite::WriteUTF8Str(string str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
+{
+	bool result = false;
+
+	BYTE buf1[1028] = { 0 };
+	int len = GB2312Str::ToUTF8Buf(str, buf1, hasEndChar);	// GB2312字符串转换成 UTF8 缓冲区
+	int count = nWriteIndex;
+	WriteStrPrefix(prefix, len);			// 写入前缀
+	if (len <= AvaliableWrite())
+	{
+		memcpy(pBuff + nWriteIndex, buf1, len);
+		nWriteIndex += len;
+	}
+	else
+	{
+		nWriteIndex = count;
+	}
+
+	return result;
+}

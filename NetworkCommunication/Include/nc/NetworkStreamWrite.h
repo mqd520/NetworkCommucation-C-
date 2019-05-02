@@ -14,34 +14,35 @@ namespace NetworkCommunication
 	{
 	public:
 		//************************************
-		// Parameter: BYTE * pBuf:	缓冲区指针
-		// Parameter: int len:		缓冲区长度
-		// Parameter: EByteOrder bo:网络流所使用的字节序 	
+		// Parameter: BYTE * pBuf:		缓冲区指针
+		// Parameter: int len:			缓冲区长度
+		// Parameter: EByteOrder bo:	网络流所使用的字节序 	
 		//************************************
 		CNetworkStreamWrite(BYTE* pBuf, int len, EByteOrder bo = EByteOrder::big);
 		~CNetworkStreamWrite();
 
 	private:
-		EByteOrder m_bNSByteOrder;		// 当前网络流使用的字节序
-		int m_nBufLen;					// 缓冲区长度
-		BYTE* m_pBuf;					// 缓冲区
-		int m_nWriteIndex;				// 数据写索引
+		EByteOrder nsByteOrder;		// 当前网络流使用的字节序
+		int nBuffLen;				// 缓冲区长度
+		BYTE* pBuff;				// 缓冲区
+		int nWriteIndex;			// 数据写索引
 
 	private:
 		//************************************
 		// Method:    写入数据
-		// Parameter: void * pDest:	数据接收地址
-		// Parameter: int len:		读取长度
+		// Returns:   是否写入成功
+		// Parameter: void* pDest:	数据地址
+		// Parameter: int len:		数据字节长度
 		//************************************
-		bool WriteData(void* pDest, int len);
+		bool WriteData(void* pData, int len);
 
 		//************************************
 		// Method:    写入字符串前缀
 		// Returns:   是否写入成功
 		// Parameter: int prefix：	前缀所占的字节长度
-		// Parameter: int val：		前缀数据
+		// Parameter: int len：		字符串字节长度
 		//************************************
-		bool WriteStrPrefix(int prefix, int val);
+		void WriteStrPrefix(int prefix, int len);
 
 	public:
 		//************************************
@@ -74,93 +75,95 @@ namespace NetworkCommunication
 
 		//************************************
 		// Method:    写入一个 BYTE 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteByte(BYTE val);
 
 		//************************************
 		// Method:    写入一个 short 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteShort(short val);
 
 		//************************************
 		// Method:    写入一个 USHORT 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteUShort(USHORT val);
 
 		//************************************
 		// Method:    写入一个 INT16 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteInt16(INT16 val);
 
 		//************************************
 		// Method:    写入一个 UINT16 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteUInt16(UINT16 val);
 
 		//************************************
 		// Method:    写入一个 INT32 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteInt32(INT32 val);
 
 		//************************************
 		// Method:    写入一个 UINT32 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteUInt32(UINT32 val);
 
 		//************************************
 		// Method:    写入一个 INT64 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteInt64(INT64 val);
 
 		//************************************
 		// Method:    写入一个 UINT64 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteUInt64(UINT64 val);
 
 		//************************************
 		// Method:    写入一个 float 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteFloat(float val);
 
 		//************************************
 		// Method:    写入一个 double 数据
+		// Returns:	  是否写入成功
 		//************************************
 		bool WriteDouble(double val);
 
 		//************************************
-		// Method:    读取 GB2312 字符串
-		// Parameter: int len:					读取字节长度
+		// Method:    写入 GB2312 字符串
+		// Returns:	  是否写入成功
+		// Parameter: string str:		GB2312 字符串
+		// Parameter: int prefix:		字符串字节长度前缀所占字节, 范围: 1, 2, 4, 0: 不使用前缀
+		// Parameter: bool hasEndChar:	是否将结束符写入
 		//************************************
-		string WriteGB2312Str(int len);
+		bool WriteGB2312Str(string str, int prefix = 4, bool hasEndChar = false);
 
 		//************************************
-		// Method:    读取 GB2312 字符串
-		// Parameter: int prefixLen = 4:		说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
+		// Method:    写入 UTF16 字符串
+		// Returns:	  是否写入成功
+		// Parameter: string str:		UTF16 字符串
+		// Parameter: int prefix:		字符串字节长度前缀所占字节, 范围: 1, 2, 4, 0: 不使用前缀
+		// Parameter: bool hasEndChar:	是否将结束符写入
 		//************************************
-		string WriteGB2312Str1(int prefixLen = 4);
+		bool WriteUTF16Str(wstring str, int prefix = 4, bool hasEndChar = false);
 
 		//************************************
-		// Method:    读取 UTF16 字符串
-		// Parameter: int len:					读取字节长度
+		// Method:    写入 UTF8 字符串
+		// Returns:	  是否写入成功
+		// Parameter: string str:		UTF8 字符串
+		// Parameter: int prefix:		字符串字节长度前缀所占字节, 范围: 1, 2, 4, 0: 不使用前缀
+		// Parameter: bool hasEndChar:	是否将结束符写入
 		//************************************
-		wstring WriteUTF16Str(int len);
-
-		//************************************
-		// Method:    读取 UTF16 字符串
-		// Parameter: int prefixLen = 4:		说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
-		//************************************
-		wstring WriteUTF16Str1(int prefixLen = 4);
-
-		//************************************
-		// Method:    读取 UT8 字符串, 自动转换成 GB2312 字符串 
-		// Parameter: int len:					读取字节长度
-		//************************************
-		string WriteUTF8Str(int len);
-
-		//************************************
-		// Method:    读取 UTF16 字符串
-		// Parameter: int prefixLen = 4:		说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
-		//************************************
-		string WriteUTF8Str1(int prefixLen = 4);
+		bool WriteUTF8Str(string str, int prefix = 4, bool hasEndChar = false);
 	};
 }

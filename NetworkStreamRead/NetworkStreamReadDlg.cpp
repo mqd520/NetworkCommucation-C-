@@ -17,7 +17,16 @@ using namespace NetworkCommunication;
 
 // CNetworkStreamReadDlg 对话框
 
-
+void PrintfBuf(BYTE* pBuf, int len)
+{
+	for (int i = 0; i < len; i++)
+	{
+		char ch[10] = { 0 };
+		sprintf_s(ch, "%d, ", pBuf[i]);
+		OutputDebugStringA(ch);
+	}
+	OutputDebugStringA("\n");
+}
 
 CNetworkStreamReadDlg::CNetworkStreamReadDlg(CWnd* pParent /*=NULL*/)
 : CDialogEx(CNetworkStreamReadDlg::IDD, pParent)
@@ -48,6 +57,21 @@ BEGIN_MESSAGE_MAP(CNetworkStreamReadDlg, CDialogEx)
 	ON_BN_CLICKED(IDCANCEL12, &CNetworkStreamReadDlg::OnBnClickedCancel12)
 	ON_BN_CLICKED(IDCANCEL13, &CNetworkStreamReadDlg::OnBnClickedCancel13)
 	ON_BN_CLICKED(IDOK2, &CNetworkStreamReadDlg::OnBnClickedOk2)
+	ON_BN_CLICKED(IDC_BUTTON1, &CNetworkStreamReadDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CNetworkStreamReadDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CNetworkStreamReadDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &CNetworkStreamReadDlg::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON5, &CNetworkStreamReadDlg::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON6, &CNetworkStreamReadDlg::OnBnClickedButton6)
+	ON_BN_CLICKED(IDC_BUTTON7, &CNetworkStreamReadDlg::OnBnClickedButton7)
+	ON_BN_CLICKED(IDC_BUTTON9, &CNetworkStreamReadDlg::OnBnClickedButton9)
+	ON_BN_CLICKED(IDC_BUTTON8, &CNetworkStreamReadDlg::OnBnClickedButton8)
+	ON_BN_CLICKED(IDC_BUTTON10, &CNetworkStreamReadDlg::OnBnClickedButton10)
+	ON_BN_CLICKED(IDC_BUTTON11, &CNetworkStreamReadDlg::OnBnClickedButton11)
+	ON_BN_CLICKED(IDC_BUTTON12, &CNetworkStreamReadDlg::OnBnClickedButton12)
+	ON_BN_CLICKED(IDC_BUTTON13, &CNetworkStreamReadDlg::OnBnClickedButton13)
+	ON_BN_CLICKED(IDC_BUTTON14, &CNetworkStreamReadDlg::OnBnClickedButton14)
+	ON_BN_CLICKED(IDC_BUTTON15, &CNetworkStreamReadDlg::OnBnClickedButton15)
 END_MESSAGE_MAP()
 
 
@@ -307,4 +331,218 @@ void CNetworkStreamReadDlg::OnBnClickedCancel13()
 void CNetworkStreamReadDlg::OnBnClickedOk2()
 {
 	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton1()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	BYTE buf1[] = { 1, 2, 3, 4, 5 };
+	CNetworkStreamRead ns1(buf1, sizeof(buf1) / sizeof(BYTE), EByteOrder::big);
+	BYTE buf2[1024] = { 0 };
+	ns1.ReadBuf(buf2, ns1.AvaliableRead());
+	PrintfBuf(buf2, 5);
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton2()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf[5] = { 1, 2, 3, 4, 5 };
+
+	CNetworkStreamRead ns(buf, 5, EByteOrder::big);
+	BYTE b1 = ns.ReadByte();
+	BYTE b2 = ns.ReadByte();
+	BYTE b3 = ns.ReadByte();
+
+	TRACE("b1 = %d, b2 = %d, b3 = %d \n", b1, b2, b3);
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton3()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[2] = { 1, 2 };
+	CNetworkStreamRead ns1(buf1, 2, EByteOrder::litte);
+	short s1 = ns1.ReadShort();
+	TRACE("s1(litte) = %d \n", s1);
+
+	BYTE buf2[2] = { 1, 2 };
+	CNetworkStreamRead ns2(buf2, 2, EByteOrder::big);
+	short s2 = ns2.ReadShort();
+	TRACE("s2(big) = %d \n", s2);
+
+	BYTE buf3[2] = { 1, 130 };	// 负数
+	CNetworkStreamRead ns3(buf3, 2, EByteOrder::litte);
+	short s3 = ns3.ReadShort();
+	TRACE("-s3(litte) = %d \n", s3);
+
+	BYTE buf4[2] = { 129, 2 };	// 负数
+	CNetworkStreamRead ns4(buf4, 2, EByteOrder::big);
+	short s4 = ns4.ReadShort();
+	TRACE("-s4(big) = %d \n", s4);
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton4()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[2] = { 1, 2 };
+	CNetworkStreamRead ns1(buf1, 2, EByteOrder::litte);
+	USHORT s1 = ns1.ReadUShort();
+	TRACE("s1(litte) = %d \n", s1);
+
+	BYTE buf2[2] = { 1, 2 };
+	CNetworkStreamRead ns2(buf2, 2, EByteOrder::big);
+	USHORT s2 = ns2.ReadUShort();
+	TRACE("s2(big) = %d \n", s2);
+
+	BYTE buf3[2] = { 1, 130 };	// 负数
+	CNetworkStreamRead ns3(buf3, 2, EByteOrder::litte);
+	USHORT s3 = ns3.ReadUShort();
+	TRACE("-s3(litte) = %d \n", s3);
+
+	BYTE buf4[2] = { 129, 2 };	// 负数
+	CNetworkStreamRead ns4(buf4, 2, EByteOrder::big);
+	USHORT s4 = ns4.ReadUShort();
+	TRACE("-s4(big) = %d \n", s4);
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton5()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton6()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton7()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[4] = { 1, 2, 3, 4 };
+	CNetworkStreamRead ns1(buf1, 4, EByteOrder::litte);
+	INT32 s1 = ns1.ReadInt32();
+	TRACE("s1(litte) = %d \n", s1);
+
+	BYTE buf2[4] = { 1, 2, 3, 4 };
+	CNetworkStreamRead ns2(buf2, 4, EByteOrder::big);
+	INT32 s2 = ns2.ReadInt32();
+	TRACE("s2(big) = %d \n", s2);
+
+	BYTE buf3[4] = { 1, 2, 3, -4 };	// 负数
+	CNetworkStreamRead ns3(buf3, 4, EByteOrder::litte);
+	INT32 s3 = ns3.ReadInt32();
+	TRACE("-s3(litte) = %d \n", s3);
+
+	BYTE buf4[4] = { -1, 2, 3, 4 };	// 负数
+	CNetworkStreamRead ns4(buf4, 4, EByteOrder::big);
+	INT32 s4 = ns4.ReadInt32();
+	TRACE("-s4(big) = %d \n", s4);
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton9()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton8()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton10()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton11()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton12()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton13()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[] = { 0xBA, 0xBA, 0xD7, 0xD6, 65, 66, 67, 49, 50, 51 };				// "汉字ABC123", GB2312编码
+	CNetworkStreamRead ns1(buf1, sizeof(buf1) / sizeof(BYTE));
+	string str1 = ns1.ReadGB2312Str(sizeof(buf1) / sizeof(BYTE));
+	TRACE("%s \n", str1.c_str());
+
+	BYTE buf2[] = { 0, 0, 0, 10, 0xBA, 0xBA, 0xD7, 0xD6, 65, 66, 67, 49, 50, 51 };	// "汉字ABC123", GB2312编码
+	CNetworkStreamRead ns2(buf2, sizeof(buf2) / sizeof(BYTE), EByteOrder::big);
+	string str2 = ns2.ReadGB2312Str1();
+	TRACE("%s \n", str2.c_str());
+
+	BYTE buf3[] = { 10, 0, 0, 0, 0xBA, 0xBA, 0xD7, 0xD6, 65, 66, 67, 49, 50, 51 };	// "汉字ABC123", GB2312编码
+	CNetworkStreamRead ns3(buf3, sizeof(buf3) / sizeof(BYTE), EByteOrder::litte);
+	string str3 = ns3.ReadGB2312Str1();
+	TRACE("%s \n", str3.c_str());
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton14()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[] = { 0x6C, 0x49, 0x5B, 0x57, 0, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51 };		// "汉字ABC123", UTF16编码, 大端
+	CNetworkStreamRead ns1(buf1, sizeof(buf1) / sizeof(BYTE), EByteOrder::big);
+	wstring str1 = ns1.ReadUTF16Str(sizeof(buf1) / sizeof(BYTE));
+	TRACE(L"%s \n", str1.c_str());
+
+	BYTE buf2[] = { 0x49, 0x6C, 0x57, 0x5B, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51, 0 };		// "汉字ABC123", UTF16编码, 小端
+	CNetworkStreamRead ns2(buf2, sizeof(buf2) / sizeof(BYTE), EByteOrder::litte);
+	wstring str2 = ns2.ReadUTF16Str(sizeof(buf2) / sizeof(BYTE));
+	TRACE(L"%s \n", str2.c_str());
+
+	BYTE buf3[] = { 0, 0, 0, 16, 0x6C, 0x49, 0x5B, 0x57, 0, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51 };		// "汉字ABC123", UTF16编码, 大端
+	CNetworkStreamRead ns3(buf3, sizeof(buf3) / sizeof(BYTE), EByteOrder::big);
+	wstring str3 = ns3.ReadUTF16Str1();
+	TRACE(L"%s \n", str3.c_str());
+
+	BYTE buf4[] = { 16, 0, 0, 0, 0x49, 0x6C, 0x57, 0x5B, 65, 0, 66, 0, 67, 0, 49, 0, 50, 0, 51, 0 };	// "汉字ABC123", UTF16编码, 小端
+	CNetworkStreamRead ns4(buf4, sizeof(buf4) / sizeof(BYTE), EByteOrder::litte);
+	wstring str4 = ns4.ReadUTF16Str1();
+	TRACE(L"%s \n", str4.c_str());
+}
+
+
+void CNetworkStreamReadDlg::OnBnClickedButton15()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	BYTE buf1[] = { -26, -79, -119, -27, -83, -105, 65, 66, 67, 49, 50, 51 };		// "汉字ABC123", UTF8编码
+	CNetworkStreamRead ns1(buf1, sizeof(buf1) / sizeof(BYTE));
+	string str1 = ns1.ReadUTF8Str(sizeof(buf1) / sizeof(BYTE));
+	TRACE("%s \n", str1.c_str());
+
+	BYTE buf2[] = { 0, 0, 0, 12, -26, -79, -119, -27, -83, -105, 65, 66, 67, 49, 50, 51 };		// "汉字ABC123", UTF8编码
+	CNetworkStreamRead ns2(buf2, sizeof(buf2) / sizeof(BYTE), EByteOrder::big);
+	string str2 = ns2.ReadUTF8Str1();
+	TRACE("%s \n", str2.c_str());
+
+	BYTE buf3[] = { 12, 0, 0, 0, -26, -79, -119, -27, -83, -105, 65, 66, 67, 49, 50, 51 };		// "汉字ABC123", UTF8编码
+	CNetworkStreamRead ns3(buf3, sizeof(buf3) / sizeof(BYTE), EByteOrder::litte);
+	string str3 = ns3.ReadUTF8Str1();
+	TRACE("%s \n", str3.c_str());
 }

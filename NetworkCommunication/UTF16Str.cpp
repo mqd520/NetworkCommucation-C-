@@ -242,7 +242,8 @@ int UTF16Str::ToUTF8Buf(wstring str, BYTE* pBuf, bool hasEndChar /*= false*/)
 	int n = GetByteCount(str);
 	if (n > 0)
 	{
-		BYTE* pBufUTF16 = new BYTE[n];
+		int n1 = hasEndChar == true ? n + 2 : n;
+		BYTE* pBufUTF16 = new BYTE[n1];
 		int len = ToBuf(str, pBufUTF16, EByteOrder::litte, hasEndChar);
 		UTF16_2_UTF8(pBufUTF16, len, pBuf, &result, EByteOrder::litte);
 		delete pBufUTF16;

@@ -6,10 +6,10 @@
 using namespace NetworkCommunication;
 
 CNetworkStreamRead::CNetworkStreamRead(BYTE* pBuf, int len, EByteOrder bo /* = EByteOrder::big */) :
-m_pBuf(pBuf),
-m_nBufLen(len),
-m_bNSByteOrder(bo),
-m_nReadIndex(0)
+pBuff(pBuf),
+nBuffLen(len),
+nsByteOrder(bo),
+nReadIndex(0)
 {
 
 }
@@ -19,37 +19,20 @@ CNetworkStreamRead::~CNetworkStreamRead()
 
 }
 
-void CNetworkStreamRead::ReverseBuf(BYTE* pBuf, int len)
-{
-	for (int i = 0; i < len / 2; i++)
-	{
-		BYTE tmp = pBuf[i];
-		pBuf[i] = pBuf[len - 1 - i];
-		pBuf[len - 1 - i] = tmp;
-	}
-}
-
-bool CNetworkStreamRead::ReadData(void* pDest, int len)
+bool CNetworkStreamRead::ReadData(void* pData, int len)
 {
 	bool result = false;
 	if (len <= AvaliableRead())
 	{
+		memcpy(pData, pBuff + nReadIndex, len);
+
+		if (len > 1 && nsByteOrder != NCTool::GetHostByteOrder())	// 多字节数据
+		{
+			NCTool::ReverseBuf(pBuff + nReadIndex, len);
+		}
+
+		nReadIndex += len;
 		result = true;
-		if (len > 1)	// 多字节数据
-		{
-			memcpy(pDest, m_pBuf + m_nReadIndex, len);
-
-			if (m_bNSByteOrder == EByteOrder::big)
-			{
-				ReverseBuf((BYTE*)pDest, len);
-			}
-		}
-		else if (len == 1)	// 单字节数据
-		{
-			memcpy(pDest, m_pBuf + m_nReadIndex, 1);
-		}
-
-		m_nReadIndex += len;
 	}
 	return result;
 }
@@ -57,6 +40,7 @@ bool CNetworkStreamRead::ReadData(void* pDest, int len)
 UINT32 CNetworkStreamRead::ReadStrPrefix(int len)
 {
 	UINT32 len1 = 0;	// 字符串字节长度
+
 	switch (len)
 	{
 	case 1:
@@ -75,33 +59,35 @@ UINT32 CNetworkStreamRead::ReadStrPrefix(int len)
 
 int CNetworkStreamRead::GetLen()
 {
-	return m_nBufLen;
+	return nBuffLen;
 }
 
 BYTE* CNetworkStreamRead::GetBuf()
 {
-	return m_pBuf;
+	return pBuff;
 }
 
 int CNetworkStreamRead::AvaliableRead()
 {
-	return m_nBufLen - m_nReadIndex;
+	return nBuffLen - nReadIndex;
 }
 
 int CNetworkStreamRead::ReadedCount()
 {
-	return m_nReadIndex;
+	return nReadIndex;
 }
 
 int CNetworkStreamRead::ReadBuf(BYTE* buf, int len)
 {
-	int nlen = len > AvaliableRead() ? AvaliableRead() : len;	// 实际读取长度
-	if (nlen > 0)
+	if (len <= AvaliableRead())
 	{
-		memcpy(buf, m_pBuf + m_nReadIndex, nlen);
-		m_nReadIndex += nlen;
+		memcpy(buf, pBuff + nReadIndex, len);
+		nReadIndex += len;
+
+		return true;
 	}
-	return nlen;
+
+	return false;
 }
 
 BYTE CNetworkStreamRead::ReadByte()
@@ -187,8 +173,8 @@ string CNetworkStreamRead::ReadGB2312Str(int len)
 
 	if (len <= AvaliableRead())
 	{
-		result = GB2312Str::FromBuf(m_pBuf + m_nReadIndex, len);
-		m_nReadIndex += len;
+		result = GB2312Str::FromBuf(pBuff + nReadIndex, len);
+		nReadIndex += len;
 	}
 
 	return result;
@@ -213,8 +199,8 @@ wstring CNetworkStreamRead::ReadUTF16Str(int len)
 
 	if (len <= AvaliableRead())
 	{
-		result = UTF16Str::FromBuf(m_pBuf + m_nReadIndex, len, m_bNSByteOrder);
-		m_nReadIndex += len;
+		result = UTF16Str::FromBuf(pBuff + nReadIndex, len, nsByteOrder);
+		nReadIndex += len;
 	}
 
 	return result;
@@ -239,8 +225,8 @@ string CNetworkStreamRead::ReadUTF8Str(int len)
 
 	if (len <= AvaliableRead())
 	{
-		str = GB2312Str::FromUTF8Buf(m_pBuf + m_nReadIndex, len);
-		m_nReadIndex += len;
+		str = GB2312Str::FromUTF8Buf(pBuff + nReadIndex, len);
+		nReadIndex += len;
 	}
 
 	return str;
