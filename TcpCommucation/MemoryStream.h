@@ -1,6 +1,6 @@
 #pragma once
 
-namespace NetworkCommunication
+namespace tc
 {
 	// 字节流对象:
 	// 从开始处读取(读取后后面的数据依次向前平移),从结尾处写入

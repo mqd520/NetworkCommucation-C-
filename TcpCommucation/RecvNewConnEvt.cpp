@@ -2,7 +2,7 @@
 #include "RecvNewConnEvt.h"
 #include "Def.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CRecvNewConnEvt::CRecvNewConnEvt(CTcpService* pSrv, SOCKET client) :
 		CTcpEvt(pSrv, client),

@@ -2,7 +2,7 @@
 #include "NetCommuMgr.h"
 #include "SocketAPI.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	volatile bool CNetworkCommuMgr::m_bExited = false;
 

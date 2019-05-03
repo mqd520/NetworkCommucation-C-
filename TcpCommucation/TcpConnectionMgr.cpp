@@ -3,7 +3,7 @@
 #include "NetCommuMgr.h"
 #include "Common.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpConnectionMgr::CTcpConnectionMgr()
 	{

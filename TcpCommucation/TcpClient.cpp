@@ -4,7 +4,7 @@
 #include "ConnectSrvResultEvt.h"
 #include "MemoryTool.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpClient::CTcpClient(TCHAR* strServerIP, int nServerPort) :
 		m_bIsConnecting(false),

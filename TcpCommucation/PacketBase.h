@@ -1,6 +1,6 @@
 #pragma once
 
-namespace NetworkCommunication
+namespace tc
 {
 	//包体基类
 	class PacketBase

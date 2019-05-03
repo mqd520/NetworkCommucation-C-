@@ -2,7 +2,7 @@
 #include "ConnectSrvResultEvt.h"
 #include "Def.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CConnectSrvResultEvt::CConnectSrvResultEvt(CTcpService* pSrv, bool success) :
 		CTcpEvt(pSrv),

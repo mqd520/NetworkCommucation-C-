@@ -2,7 +2,7 @@
 #include "TimeoutMgr.h"
 #include "TimerAppMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTimeoutMgr::CTimeoutMgr()
 	{

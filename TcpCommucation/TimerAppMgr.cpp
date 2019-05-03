@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TimerAppMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	bool CTimerAppMgr::m_bExit = false;
 	

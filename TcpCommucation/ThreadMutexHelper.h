@@ -1,7 +1,7 @@
 #pragma once
 #include "ThreadMutex.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	class CThreadMutexHelper
 	{

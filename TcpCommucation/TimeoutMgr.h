@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	//超时事件管理
 	class CTimeoutMgr

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SafeLock.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CSafeLock::CSafeLock(CThreadLock* pLock)
 		: m_pLock(pLock)

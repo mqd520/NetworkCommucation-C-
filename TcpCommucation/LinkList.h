@@ -1,7 +1,7 @@
 #pragma once
 #include "Node.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	class CLinkList
 	{

@@ -1,7 +1,7 @@
 #pragma once
 #include "LinkList.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	class CQueue
 	{

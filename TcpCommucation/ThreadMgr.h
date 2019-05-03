@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	class CThreadMgr
 	{

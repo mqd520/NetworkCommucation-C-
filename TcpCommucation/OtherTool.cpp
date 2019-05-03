@@ -2,7 +2,7 @@
 #include "OtherTool.h"
 #include "MemoryTool.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	void Printf(TCHAR* msg)
 	{

@@ -6,9 +6,9 @@
 #include "GB2312Str.h"
 #include "GB2312StrDlg.h"
 #include "afxdialogex.h"
-#include "nc/GB2312Str.h"
+#include "tc/GB2312Str.h"
 
-using namespace NetworkCommunication;
+using namespace tc;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

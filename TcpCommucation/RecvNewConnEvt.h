@@ -2,7 +2,7 @@
 #include "TcpEvt.h"
 #include "TcpService.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//收到新连接事件
 	class CRecvNewConnEvt : public CTcpEvt

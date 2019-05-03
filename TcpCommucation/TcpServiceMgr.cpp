@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TcpServiceMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpServiceMgr::CTcpServiceMgr()
 	{

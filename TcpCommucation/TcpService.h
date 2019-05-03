@@ -5,7 +5,7 @@
 #include "TcpEvt.h"
 #include "TcpConnection.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	///tcp·þÎñ
 	class CTcpService

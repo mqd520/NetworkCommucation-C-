@@ -5,7 +5,7 @@
 #include <stdarg.h>
 #pragma warning(disable:4996)
 
-namespace NetworkCommunication
+namespace tc
 {
 	void MyPrintf(int type, TCHAR* format, ...)
 	{

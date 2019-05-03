@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	CSocketAPI::CSocketAPI() :
 		m_strMsg(NULL), m_bErr(false)

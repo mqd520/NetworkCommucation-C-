@@ -4,7 +4,7 @@
 #include "Common.h"
 #include "Def.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CServerTcpConnection::CServerTcpConnection(CTcpService* pTcpSrv, SOCKET client, SOCKET server) :
 		CTcpConnection(pTcpSrv, client),

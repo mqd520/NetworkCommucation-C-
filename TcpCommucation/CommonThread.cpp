@@ -4,7 +4,7 @@
 #include "Common.h"
 #include <tchar.h>
 
-namespace NetworkCommunication
+namespace tc
 {
 	CCommonThread::CCommonThread()
 	{

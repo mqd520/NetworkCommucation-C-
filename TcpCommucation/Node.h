@@ -1,6 +1,6 @@
 #pragma once
 
-namespace NetworkCommunication
+namespace tc
 {
 	class CNode
 	{

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ThreadEvent.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CThreadEvent::CThreadEvent(bool bManualReset /*= true*/, bool bInitialState /*= false*/)
 	{

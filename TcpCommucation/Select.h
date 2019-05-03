@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	//select¿‡
 	class CSelect

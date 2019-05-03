@@ -2,7 +2,7 @@
 #include "TcpEvt.h"
 #include "Def.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//接收客户端连接结果事件
 	class CRecvConnResultEvt : public CTcpEvt

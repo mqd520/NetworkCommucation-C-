@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "Include/nc/GB2312Str.h"
-#include "Include/nc/NCTool.h"
-#include "Include/nc/UTF16Str.h"
+#include "Include/tc/GB2312Str.h"
+#include "Include/tc/NCTool.h"
+#include "Include/tc/UTF16Str.h"
 
-using namespace NetworkCommunication;
+using namespace tc;
 
 GB2312Str::GB2312Str()
 {

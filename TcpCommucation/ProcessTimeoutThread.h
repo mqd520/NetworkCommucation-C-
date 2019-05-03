@@ -1,7 +1,7 @@
 #pragma once
 #include "ThreadEntry.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//处理超时数据线程
 	class CProcessTimeoutThread : public CThreadEntry

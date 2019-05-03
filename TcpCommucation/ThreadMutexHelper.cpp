@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ThreadMutexHelper.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CThreadMutexHelper::CThreadMutexHelper(CThreadMutex& mutex) :m_Mutex(mutex)
 	{

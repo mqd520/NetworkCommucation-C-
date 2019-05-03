@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	//tcp·þÎñ¶Ë
 	class CTcpServer : public CTcpService

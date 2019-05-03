@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ClientTcpConnection.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CClientTcpConnection::CClientTcpConnection(CTcpService* pSrv, SOCKET sendrecv) :
 		CTcpConnection(pSrv, sendrecv)

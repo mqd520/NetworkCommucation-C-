@@ -4,7 +4,7 @@
 #include "TcpEvt.h"
 
 using namespace std;
-using namespace NetworkCommunication;
+using namespace tc;
 
 #define	NETCOMM_MAXCLIENTCOUNT			65535	//最大tcp连接数
 #define NETCOMM_TCPRECVBUFFERSIZE		1024	//tcp接收缓冲区默认大小

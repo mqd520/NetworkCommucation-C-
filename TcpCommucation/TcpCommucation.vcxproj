@@ -82,18 +82,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ByteStream.h" />
     <ClInclude Include="ClientTcpConnection.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="CommonThread.h" />
     <ClInclude Include="ConnectSrvResultEvt.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="EncryptBuffer.h" />
-    <ClInclude Include="Include\nc\GB2312Str.h" />
-    <ClInclude Include="Include\nc\NetworkStreamRead.h" />
-    <ClInclude Include="Include\nc\NCTool.h" />
-    <ClInclude Include="Include\nc\NetworkStreamWrite.h" />
-    <ClInclude Include="Include\nc\UTF16Str.h" />
+    <ClInclude Include="Include\tc\GB2312Str.h" />
+    <ClInclude Include="Include\tc\MemoryStream.h" />
+    <ClInclude Include="Include\tc\NCTool.h" />
+    <ClInclude Include="Include\tc\NetworkStreamRead.h" />
+    <ClInclude Include="Include\tc\NetworkStreamWrite.h" />
+    <ClInclude Include="Include\tc\UTF16Str.h" />
     <ClInclude Include="LinkList.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="NetCommuMgr.h" />
@@ -142,7 +142,7 @@
     <ClInclude Include="BuildTimeoutThread.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ByteStream.cpp" />
+    <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="ClientTcpConnection.cpp" />
     <ClCompile Include="GB2312Str.cpp" />
     <ClCompile Include="NetworkStreamRead.cpp" />

@@ -2,7 +2,7 @@
 
 #define PRINTFMAXLEN	1024	//MyPrintf字符最大数
 
-namespace NetworkCommunication
+namespace tc
 {
 	//输出信息类型
 	enum EInfoType

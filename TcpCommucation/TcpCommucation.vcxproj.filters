@@ -209,23 +209,23 @@
     <ClInclude Include="ConnectSrvResultEvt.h">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClInclude>
-    <ClInclude Include="ByteStream.h">
+    <ClInclude Include="Include\tc\MemoryStream.h">
       <Filter>07 流处理</Filter>
     </ClInclude>
-    <ClInclude Include="Include\nc\NCTool.h">
-      <Filter>00 公共</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\nc\NetworkStreamRead.h">
+    <ClInclude Include="Include\tc\NetworkStreamRead.h">
       <Filter>07 流处理</Filter>
     </ClInclude>
-    <ClInclude Include="Include\nc\GB2312Str.h">
-      <Filter>00 公共</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\nc\UTF16Str.h">
-      <Filter>00 公共</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\nc\NetworkStreamWrite.h">
+    <ClInclude Include="Include\tc\NetworkStreamWrite.h">
       <Filter>07 流处理</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\GB2312Str.h">
+      <Filter>00 公共</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\UTF16Str.h">
+      <Filter>00 公共</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\NCTool.h">
+      <Filter>00 公共</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -374,9 +374,6 @@
     <ClCompile Include="ConnectSrvResultEvt.cpp">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClCompile>
-    <ClCompile Include="ByteStream.cpp">
-      <Filter>07 流处理</Filter>
-    </ClCompile>
     <ClCompile Include="NCTool.cpp">
       <Filter>00 公共</Filter>
     </ClCompile>
@@ -390,6 +387,9 @@
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="NetworkStreamWrite.cpp">
+      <Filter>07 流处理</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryStream.cpp">
       <Filter>07 流处理</Filter>
     </ClCompile>
   </ItemGroup>

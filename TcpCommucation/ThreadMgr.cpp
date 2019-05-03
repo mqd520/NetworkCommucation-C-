@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ThreadMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CThreadMgr::CThreadMgr()
 	{

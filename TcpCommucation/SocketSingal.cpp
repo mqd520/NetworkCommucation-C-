@@ -7,7 +7,7 @@
 #include "RecvNewConnEvt.h"
 #include "ConnectSrvResultEvt.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CSocketSingal::CSocketSingal()
 	{

@@ -5,7 +5,7 @@
 #include <tchar.h>
 #include <WinSock2.h>
 
-namespace NetworkCommunication
+namespace tc
 {
 	//socketπ‹¿Ì
 	class CSocketAPI

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ThreadMutex.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CThreadMutex::CThreadMutex(BOOL bInitialOwner, LPCTSTR lpName)
 	{

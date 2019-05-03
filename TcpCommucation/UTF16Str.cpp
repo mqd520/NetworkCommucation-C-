@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "Include/nc/UTF16Str.h"
+#include "Include/tc/UTF16Str.h"
 
-using namespace NetworkCommunication;
+using namespace tc;
 
 //************************************
 // Method:    翻转字节数组

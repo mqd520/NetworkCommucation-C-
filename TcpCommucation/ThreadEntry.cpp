@@ -2,7 +2,7 @@
 #include "ThreadEntry.h"
 #include "Thread.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CThreadEntry::CThreadEntry() :
 		m_bExist(false),

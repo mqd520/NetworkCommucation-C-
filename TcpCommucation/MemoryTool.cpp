@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MemoryTool.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	wstring MultiByteToUTF8(const char* str)
 	{

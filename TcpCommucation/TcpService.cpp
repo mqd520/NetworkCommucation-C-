@@ -6,7 +6,7 @@
 #include "RecvNewConnEvt.h"
 #include "RefuseNewConnEvt.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpService::CTcpService() :
 		m_socket(INVALID_SOCKET),

@@ -2,7 +2,7 @@
 #include "RecvPeerDataEvt.h"
 #include "Def.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CRecvPeerDataEvt::CRecvPeerDataEvt(CTcpService* pSrv, SOCKET recv, BYTE* pBuf, int len) :
 		CTcpEvt(pSrv, recv),

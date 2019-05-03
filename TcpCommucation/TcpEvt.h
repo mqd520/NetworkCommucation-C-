@@ -1,7 +1,7 @@
 #pragma once
 #include "SocketAPI.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	class CTcpService;
 

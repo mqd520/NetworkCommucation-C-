@@ -1,7 +1,7 @@
 #pragma once
 #include "ThreadEntry.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//通用信号处理线程
 	class CCommonThread : public CThreadEntry

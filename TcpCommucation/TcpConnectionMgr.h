@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	//tcp连接管理对象
 	class CTcpConnectionMgr

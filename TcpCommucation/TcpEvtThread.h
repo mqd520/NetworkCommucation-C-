@@ -1,7 +1,7 @@
 #pragma once
 #include "ThreadEntry.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//tcp事件线程
 	class CTcpEvtThread : public CThreadEntry

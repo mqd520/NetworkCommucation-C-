@@ -2,7 +2,7 @@
 #include "ProcessTimeoutThread.h"
 #include "TimerAppMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CProcessTimeoutThread::CProcessTimeoutThread()
 	{

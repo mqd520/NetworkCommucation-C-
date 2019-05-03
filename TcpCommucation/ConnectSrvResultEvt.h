@@ -1,7 +1,7 @@
 #pragma once
 #include "TcpEvt.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//连接服务端结果事件
 	class CConnectSrvResultEvt : public CTcpEvt

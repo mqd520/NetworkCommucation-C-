@@ -4,7 +4,7 @@
 #include <tchar.h>
 #include "Common.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CSelectThread::CSelectThread()
 	{

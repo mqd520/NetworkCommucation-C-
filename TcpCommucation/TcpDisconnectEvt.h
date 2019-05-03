@@ -1,7 +1,7 @@
 #pragma once
 #include "TcpEvt.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//tcp连接断开事件
 	class CTcpDisconnectEvt : public CTcpEvt

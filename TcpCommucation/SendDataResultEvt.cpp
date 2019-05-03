@@ -2,7 +2,7 @@
 #include "SendDataResultEvt.h"
 #include "Def.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CSendDataResultEvt::CSendDataResultEvt(CTcpService* pSrv, bool success, int len, int actualLen)
 		:CTcpEvt(pSrv),

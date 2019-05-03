@@ -6,7 +6,7 @@
 #include "Def.h"
 #include "Common.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CSelect::CSelect() :
 		m_selectTimeout({ 0, 0 })

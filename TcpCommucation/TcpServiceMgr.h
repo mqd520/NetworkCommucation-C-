@@ -3,7 +3,7 @@
 #include <queue>
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	//tcp服务对象管理
 	class CTcpServiceMgr

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	/************************************************************************/
 	/* GB2312×Ö·û´®´¦Àí                                                                     */

@@ -1,7 +1,7 @@
 #pragma once
 #include "TcpConnection.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//服务端tcp连接对象
 	class CServerTcpConnection : public CTcpConnection

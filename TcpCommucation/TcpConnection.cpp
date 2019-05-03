@@ -7,7 +7,7 @@
 #include "TcpDisconnectEvt.h"
 #include "SendDataResultEvt.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpConnection::CTcpConnection(CTcpService* pSrv, SOCKET sendrecv) :
 		m_pTcpSrv(pSrv),

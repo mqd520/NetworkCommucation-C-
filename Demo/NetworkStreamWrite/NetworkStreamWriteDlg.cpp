@@ -6,9 +6,9 @@
 #include "NetworkStreamWrite.h"
 #include "NetworkStreamWriteDlg.h"
 #include "afxdialogex.h"
-#include "nc/NetworkStreamWrite.h"
+#include "tc/NetworkStreamWrite.h"
 
-using namespace NetworkCommunication;
+using namespace tc;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

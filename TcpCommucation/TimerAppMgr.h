@@ -4,7 +4,7 @@
 #include "TimeoutMgr.h"
 #include "TimerMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//定时器应用管理
 	class CTimerAppMgr

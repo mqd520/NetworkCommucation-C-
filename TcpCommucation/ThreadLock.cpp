@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ThreadLock.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CThreadLock::CThreadLock()
 	{

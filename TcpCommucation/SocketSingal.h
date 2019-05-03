@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	//socket–≈∫≈¥¶¿Ì
 	class CSocketSingal

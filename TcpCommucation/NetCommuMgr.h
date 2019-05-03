@@ -12,7 +12,7 @@
 #include "TcpServiceMgr.h"
 #include "TcpEvtMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//网络通信管理对象
 	class CNetworkCommuMgr

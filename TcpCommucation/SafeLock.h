@@ -1,7 +1,7 @@
 #pragma once
 #include "ThreadLock.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	class CSafeLock
 	{

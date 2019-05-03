@@ -1,7 +1,7 @@
 #pragma once
 #include "TcpEvt.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//收到对端数据事件
 	class CRecvPeerDataEvt : public CTcpEvt

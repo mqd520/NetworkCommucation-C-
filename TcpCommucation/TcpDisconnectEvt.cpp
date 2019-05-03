@@ -2,7 +2,7 @@
 #include "TcpDisconnectEvt.h"
 #include "Def.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpDisconnectEvt::CTcpDisconnectEvt(CTcpService* pSrv, SOCKET sendrecv/* = NULL*/)
 		:CTcpEvt(pSrv, sendrecv)

@@ -6,9 +6,9 @@
 #include "UTF16Str.h"
 #include "UTF16StrDlg.h"
 #include "afxdialogex.h"
-#include "nc/UTF16Str.h"
+#include "tc/UTF16Str.h"
 
-using namespace NetworkCommunication;
+using namespace tc;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

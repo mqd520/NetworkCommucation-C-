@@ -3,7 +3,7 @@
 #include <process.h>
 #include "ThreadEntry.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//œﬂ≥Ã¿‡
 	class CThread

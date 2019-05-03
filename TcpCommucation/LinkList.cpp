@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LinkList.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CLinkList::CLinkList() :
 		m_nCount(0),

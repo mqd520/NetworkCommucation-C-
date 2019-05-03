@@ -6,7 +6,7 @@
 
 #include "Timer.h"
 
-using namespace NetworkCommunication;
+using namespace tc;
 
 
 // CTool1Dlg ¶Ô»°¿ò

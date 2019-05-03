@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PacketBase.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	PacketBase::PacketBase()
 	{

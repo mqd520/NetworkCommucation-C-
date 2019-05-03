@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Thread.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CThread::CThread(CThreadEntry* pEntry) :
 		m_pEntry(pEntry),

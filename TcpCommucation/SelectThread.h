@@ -1,7 +1,7 @@
 #pragma once
 #include "ThreadEntry.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//selectœﬂ≥Ã
 	class CSelectThread : public CThreadEntry

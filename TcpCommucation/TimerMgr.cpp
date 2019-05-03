@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TimerMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTimerMgr::CTimerMgr()
 	{

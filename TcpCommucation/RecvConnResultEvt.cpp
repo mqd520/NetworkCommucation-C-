@@ -2,7 +2,7 @@
 #include "RecvConnResultEvt.h"
 #include "Def.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CRecvConnResultEvt::CRecvConnResultEvt(CTcpService* pSrv, bool success, SOCKET client, TCHAR* ip, int port) :
 		CTcpEvt(pSrv, client),

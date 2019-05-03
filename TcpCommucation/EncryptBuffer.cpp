@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "EncryptBuffer.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	const BYTE CEncryptBuffer::m_sendByteMap[256] =
 	{

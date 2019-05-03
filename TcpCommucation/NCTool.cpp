@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "Include/nc/NCTool.h"
+#include "Include/tc/NCTool.h"
 
-using namespace NetworkCommunication;
+using namespace tc;
 
 union MyUnion
 {

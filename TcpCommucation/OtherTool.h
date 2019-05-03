@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	//线程信息
 	typedef struct tagThreadInfo

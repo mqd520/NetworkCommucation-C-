@@ -2,7 +2,7 @@
 #include "TcpEvt.h"
 #include "Def.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpEvt::CTcpEvt(CTcpService* pSrv, SOCKET sendrecv/* = NULL*/) :
 		m_pTcpSrv(pSrv),

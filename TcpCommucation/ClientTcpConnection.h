@@ -2,7 +2,7 @@
 #include "TcpConnection.h"
 #include "TcpService.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//客户端tcp连接
 	class CClientTcpConnection : public CTcpConnection

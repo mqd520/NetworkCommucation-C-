@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Node.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CNode::CNode() :
 		m_pNext(NULL),

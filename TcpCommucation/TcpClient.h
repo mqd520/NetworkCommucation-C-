@@ -2,7 +2,7 @@
 #include "SocketAPI.h"
 #include "TcpService.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//tcp¿Í»§¶Ë
 	class CTcpClient : public CTcpService

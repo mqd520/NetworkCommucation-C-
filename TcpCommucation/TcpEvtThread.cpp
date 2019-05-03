@@ -5,7 +5,7 @@
 #include "TcpEvtMgr.h"
 #include <tchar.h>
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpEvtThread::CTcpEvtThread()
 	{

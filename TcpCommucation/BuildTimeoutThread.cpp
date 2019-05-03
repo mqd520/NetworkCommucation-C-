@@ -2,7 +2,7 @@
 #include "BuildTimeoutThread.h"
 #include "TimerAppMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CBuildTimeoutThread::CBuildTimeoutThread()
 	{

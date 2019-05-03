@@ -1,7 +1,7 @@
 #pragma once
 #include "TcpEvt.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	//发送(异步)数据结果事件
 	class CSendDataResultEvt : public CTcpEvt

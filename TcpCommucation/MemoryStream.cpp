@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "ByteStream.h"
+#include "Include/tc/MemoryStream.h"
 #include "MemoryTool.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CByteStream::CByteStream(int len) :
 		m_nStreamLen(len),

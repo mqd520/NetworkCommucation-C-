@@ -2,7 +2,7 @@
 #include "Timer.h"
 #include "TimerAppMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTimer::CTimer(int millsecond, LPTimeoutCallback lpfn, int count/* = 0*/)
 		:m_nTimeout(millsecond),

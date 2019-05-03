@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	//定时器管理
 	class CTimerMgr

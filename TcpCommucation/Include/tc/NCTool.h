@@ -1,6 +1,6 @@
 #pragma once
 
-namespace NetworkCommunication
+namespace tc
 {
 	// 字节序枚举值定义
 	enum EByteOrder

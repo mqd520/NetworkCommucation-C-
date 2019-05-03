@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "Include/nc/NetworkStreamWrite.h"
-#include "Include/nc/GB2312Str.h"
-#include "Include/nc/UTF16Str.h"
+#include "Include/tc/NetworkStreamWrite.h"
+#include "Include/tc/GB2312Str.h"
+#include "Include/tc/UTF16Str.h"
 
-using namespace NetworkCommunication;
+using namespace tc;
 
 CNetworkStreamWrite::CNetworkStreamWrite(BYTE* pBuf, int len, EByteOrder bo /*= EByteOrder::big*/) :
 pBuff(pBuf),

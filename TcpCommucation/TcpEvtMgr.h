@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace NetworkCommunication
+namespace tc
 {
 	//tcp事件管理对象
 	class CTcpEvtMgr

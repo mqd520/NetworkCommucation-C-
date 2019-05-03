@@ -7,7 +7,7 @@
 #include "ServerTcpConnection.h"
 #include "RecvConnResultEvt.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpServer::CTcpServer() :
 		m_bListening(false)

@@ -6,9 +6,9 @@
 #include "NetworkStreamRead.h"
 #include "NetworkStreamReadDlg.h"
 #include "afxdialogex.h"
-#include "nc/NetworkStreamRead.h"
+#include "tc/NetworkStreamRead.h"
 
-using namespace NetworkCommunication;
+using namespace tc;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

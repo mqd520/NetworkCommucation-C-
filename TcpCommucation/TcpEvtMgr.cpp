@@ -3,7 +3,7 @@
 #include "TcpService.h"
 #include "NetCommuMgr.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CTcpEvtMgr::CTcpEvtMgr()
 	{

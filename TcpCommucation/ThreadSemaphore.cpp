@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ThreadSemaphore.h"
 
-namespace NetworkCommunication
+namespace tc
 {
 	CThreadSemaphore::CThreadSemaphore(LONG lInitialCount, LONG lMaximumCount /*= 4096*/, LPCTSTR lpName /*= NULL*/)
 	{
