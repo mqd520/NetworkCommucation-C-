@@ -8,7 +8,7 @@ namespace NetworkCommunication
 	class CRefuseNewConnEvt : public CTcpEvt
 	{
 	private:
-		TCHAR m_strIP[NETCOMM_MAXIPSTRELN];//客户端IP
+		TCHAR m_strIP[TC_MAXIPSTRELN];//客户端IP
 		int m_nPort;//客户端端口
 
 	public:

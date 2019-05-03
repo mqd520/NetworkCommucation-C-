@@ -9,7 +9,7 @@ namespace tc
 	{
 	private:
 		bool m_bSuccess;//连接是否成功
-		TCHAR m_strClientIP[NETCOMM_MAXIPSTRELN];//客户端IP
+		TCHAR m_strClientIP[TC_MAXIPSTRELN];//客户端IP
 		int m_nClientPort;//客户端端口
 
 	public:

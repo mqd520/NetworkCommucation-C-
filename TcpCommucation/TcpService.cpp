@@ -13,7 +13,7 @@ namespace tc
 		m_nServerPort(0),
 		m_lpCallback(NULL)
 	{
-		memset(m_strServerIP, 0, NETCOMM_MAXIPSTRELN * sizeof(TCHAR));
+		memset(m_strServerIP, 0, TC_MAXIPSTRELN * sizeof(TCHAR));
 		CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpService(this);
 	}
 

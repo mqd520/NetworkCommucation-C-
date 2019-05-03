@@ -10,8 +10,8 @@ namespace tc
 		CTcpConnection(pTcpSrv, client),
 		m_serverSocket(server)
 	{
-		memset(m_localAddress.ip, 0, NETCOMM_MAXIPSTRELN);
-		memset(m_peerAddress.ip, 0, NETCOMM_MAXIPSTRELN);
+		memset(m_localAddress.ip, 0, TC_MAXIPSTRELN);
+		memset(m_peerAddress.ip, 0, TC_MAXIPSTRELN);
 		m_socketAPI.GetPeerIpAndPort(client, m_peerAddress.ip, &m_peerAddress.port);
 		if (pTcpSrv)
 		{
@@ -44,7 +44,7 @@ namespace tc
 	{
 		//__super::OnSendDataCompleted(pResult);
 
-		TCHAR ip[NETCOMM_MAXIPSTRELN];
+		TCHAR ip[TC_MAXIPSTRELN];
 		int port = 0;
 		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
 
@@ -71,7 +71,7 @@ namespace tc
 	{
 		__super::OnNetError();
 
-		TCHAR ip[NETCOMM_MAXIPSTRELN];
+		TCHAR ip[TC_MAXIPSTRELN];
 		int port = 0;
 		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
 

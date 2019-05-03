@@ -7,6 +7,10 @@ namespace tc
 	//tcp客户端
 	class CTcpClient : public CTcpService
 	{
+	public:
+		CTcpClient(TCHAR* strServerIP, int nServerPort);
+		~CTcpClient();
+
 	private:
 		CSocketAPI m_socketAPI;//
 		bool m_bIsConnecting;//是否正在进行连接
@@ -31,9 +35,6 @@ namespace tc
 		void OnRecvTcpEvent(CTcpEvt* pEvent);
 
 	public:
-		CTcpClient(TCHAR* strServerIP, int nServerPort);
-		~CTcpClient();
-
 		//************************************
 		// Method:    连接服务端
 		//************************************

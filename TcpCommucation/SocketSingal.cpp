@@ -21,7 +21,7 @@ namespace tc
 
 	void CSocketSingal::ProcessReadSingal(SOCKET socket, int type)
 	{
-		if (type == ESelectSocketType::RecvConn)//指示socket用于接收客户端连接
+		if (type == ESelectSocketType::Accept)//指示socket用于接收客户端连接
 		{
 			RecvNewConnection(socket);
 		}
@@ -141,15 +141,15 @@ namespace tc
 			SocketSingalData data = m_queueSocketData.front();
 			m_queueSocketData.pop();
 
-			if (data.singaltype == SocketSingalType::Read)//处理可读信号
+			if (data.singaltype == ESocketSingalType::Read)//处理可读信号
 			{
 				ProcessReadSingal(data.socket, data.sockettype);
 			}
-			else if (data.singaltype == SocketSingalType::Write)//处理可写信号
+			else if (data.singaltype == ESocketSingalType::Write)//处理可写信号
 			{
 				ProcessWriteSingal(data.socket, data.sockettype);
 			}
-			else if (data.singaltype == SocketSingalType::Except)//处理异常信号
+			else if (data.singaltype == ESocketSingalType::Except)//处理异常信号
 			{
 				ProcessExceptSingal(data.socket, data.sockettype);
 			}

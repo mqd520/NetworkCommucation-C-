@@ -105,8 +105,8 @@ namespace tc
 
 	void CTcpConnection::OnRecvPeerData()
 	{
-		BYTE* pRecvBuf = new BYTE[NETCOMM_TCPRECVBUFFERSIZE];
-		int len = m_socketAPI.Recv(m_sendrecvSocket, pRecvBuf, NETCOMM_TCPRECVBUFFERSIZE);
+		BYTE* pRecvBuf = new BYTE[TC_TCPRECVBUFFERSIZE];
+		int len = m_socketAPI.Recv(m_sendrecvSocket, pRecvBuf, TC_TCPRECVBUFFERSIZE);
 		if (len > 0)//接收数据成功
 		{
 			PrintfDebug(_T("[%s:%d][socket: %d] recved [%s:%d][socket: %d] data, size: %d"),

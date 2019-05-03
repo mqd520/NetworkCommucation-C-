@@ -62,11 +62,11 @@ namespace tc
 
 	void CSelect::Select()
 	{
-		//Sleep(3 * 1000);//调试时使用,无意义,可注释掉
+		//Sleep(3 * 1000);	//调试时使用,无意义,可注释掉
 
-		if (CNetworkCommuMgr::IsExited())//指示需要退出了
+		if (CNetworkCommuMgr::IsExited())	//指示需要退出了
 		{
-			return;//立刻返回
+			return;	//立刻返回
 		}
 
 		CalcSocketGroup();//对socket进行分组
@@ -186,9 +186,9 @@ namespace tc
 		if (result > 0)
 		{
 			//检查socket异常信号是否正在被处理
-			if (!IsProcessingSingal(socketData.socket, SocketSingalType::Except))
+			if (!IsProcessingSingal(socketData.socket, ESocketSingalType::Except))
 			{
-				SocketSingalData data = { socketData.socket, SocketSingalType::Except, socketData.type };
+				SocketSingalData data = { socketData.socket, ESocketSingalType::Except, socketData.type };
 				CNetworkCommuMgr::GetOtherSingal()->PushSocket(data);
 			}
 		}
@@ -200,10 +200,10 @@ namespace tc
 		if (result > 0)
 		{
 			//检查socket可读信号是否正在被处理
-			if (!IsProcessingSingal(socketData.socket, SocketSingalType::Read))
+			if (!IsProcessingSingal(socketData.socket, ESocketSingalType::Read))
 			{
-				SocketSingalData data = { socketData.socket, SocketSingalType::Read, socketData.type };
-				if (socketData.type == ESelectSocketType::RecvConn)//指示socket用于接收新连接
+				SocketSingalData data = { socketData.socket, ESocketSingalType::Read, socketData.type };
+				if (socketData.type == ESelectSocketType::Accept)//指示socket用于接收新连接
 				{
 					CNetworkCommuMgr::GetOtherSingal()->PushSocket(data);
 				}
@@ -221,9 +221,9 @@ namespace tc
 		if (result > 0)
 		{
 			//检查socket可读信号是否正在被处理
-			if (!IsProcessingSingal(socketData.socket, SocketSingalType::Write))
+			if (!IsProcessingSingal(socketData.socket, ESocketSingalType::Write))
 			{
-				SocketSingalData data = { socketData.socket, SocketSingalType::Write, socketData.type };
+				SocketSingalData data = { socketData.socket, ESocketSingalType::Write, socketData.type };
 				if (socketData.type == ESelectSocketType::ReadWriteData)//指示socket用于读写数据
 				{
 					CNetworkCommuMgr::GetSendDataSingal()->PushSocket(data);

@@ -39,7 +39,7 @@ namespace tc
 			PrintfDebug(_T("Listen success: %s:%d, socket: %d"), m_strServerIP, m_nServerPort, m_socket);
 
 			//加入select队列
-			CNetworkCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::RecvConn);
+			CNetworkCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::Accept);
 
 			return true;
 		}
@@ -51,7 +51,7 @@ namespace tc
 		if (pEvent->GetEvtType() == ETcpEvent::RecvNewConnection)//收到新连接
 		{
 			SOCKET clientSocket = pEvent->GetSendRecvSocket();//获取客户端socket
-			TCHAR ip[NETCOMM_MAXIPSTRELN];
+			TCHAR ip[TC_MAXIPSTRELN];
 			int port = 0;
 			m_socketAPI.GetPeerIpAndPort(clientSocket, ip, &port);
 
@@ -102,7 +102,7 @@ namespace tc
 		}
 		if (!exist)
 		{
-			TCHAR* strIP = new TCHAR[NETCOMM_MAXIPSTRELN]{0};
+			TCHAR* strIP = new TCHAR[TC_MAXIPSTRELN]{0};
 			_tcscpy(strIP, ip);
 			m_vecAllowIP.push_back(strIP);
 		}
