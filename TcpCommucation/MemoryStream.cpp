@@ -7,7 +7,8 @@ using namespace tc;
 MemoryStream::MemoryStream(int len) :
 nBufLen(len),
 pBuf(new BYTE[len]),
-nReadIndex(0)
+nDataStartIndex(0),
+nDataEndIndex(-1)
 {
 	memset(pBuf, 0, len);
 }
@@ -27,7 +28,11 @@ void MemoryStream::ReAssignBuf(int len)
 	{
 		BYTE* pTmp = new BYTE[len];
 		memset(pTmp, 0, len);
-		memcpy(pTmp + nReadIndex, pBuf + nReadIndex, AvaliableWriteLen());
+		int len1 = AvaliableReadLen();
+		if (len1 > 0)
+		{
+			memcpy(pTmp + nDataStartIndex, pBuf + nDataStartIndex, len1);
+		}
 		delete pBuf;
 		pBuf = pTmp;
 		nBufLen = len;
@@ -42,6 +47,11 @@ void MemoryStream::LeftPan(int index, int len, int size)
 	delete pTmp;
 }
 
+BYTE* MemoryStream::GetBuf()
+{
+	return pBuf;
+}
+
 int MemoryStream::GetTotalLen()
 {
 	return nBufLen;
@@ -49,19 +59,24 @@ int MemoryStream::GetTotalLen()
 
 int MemoryStream::AvaliableReadLen()
 {
-	return nBufLen - nReadIndex;
+	if (nDataEndIndex >= nDataStartIndex)
+	{
+		return nDataEndIndex - nDataStartIndex + 1;
+	}
+
+	return 0;
 }
 
 int MemoryStream::AvaliableWriteLen()
 {
-	return nBufLen - nReadIndex;
+	return nBufLen - AvaliableReadLen();
 }
 
 bool MemoryStream::Copy(BYTE buf[], int len)
 {
 	if (len <= AvaliableReadLen())
 	{
-		memcpy(buf, pBuf + nReadIndex, len);
+		memcpy(buf, pBuf + nDataStartIndex, len);
 
 		return true;
 	}
@@ -73,9 +88,9 @@ bool MemoryStream::Read(BYTE buf[], int len)
 {
 	if (len <= AvaliableReadLen())
 	{
-		memcpy(buf, pBuf + nReadIndex, len);
-		nReadIndex += len;
-		
+		memcpy(buf, pBuf + nDataStartIndex, len);
+		nDataStartIndex += len;
+
 		return true;
 	}
 
@@ -84,24 +99,31 @@ bool MemoryStream::Read(BYTE buf[], int len)
 
 void MemoryStream::Write(BYTE buf[], int len)
 {
-	int len1 = AvaliableWriteLen();	// 原可写长度
+	int len1 = AvaliableWriteLen();
+	int len2 = AvaliableReadLen();
 
-	if (len > nBufLen)
+	if (len > len1)
 	{
 		ReAssignBuf(len);	// 重新分配缓冲区
 	}
 
-	if (nReadIndex > 0)
+	if (len2 > 0 && nDataStartIndex > 0)
 	{
-		LeftPan(nReadIndex, len1, nReadIndex);
-		nReadIndex = 0;
+		LeftPan(nDataStartIndex, len2, nDataStartIndex);
+		nDataStartIndex = 0;
+		nDataEndIndex = len2 - 1;
 	}
 
-	memcpy(pBuf + len1, buf, len);
+	if (nDataEndIndex + 1 <= nBufLen - 1)
+	{
+		memcpy(pBuf + nDataEndIndex + 1, buf, len);
+		nDataEndIndex += len;
+	}
 }
 
 void MemoryStream::Clear()
 {
 	memset(pBuf, 0, nBufLen);
-	nReadIndex = 0;
+	nDataStartIndex = 0;
+	nDataEndIndex = 0;
 }

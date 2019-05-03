@@ -17,9 +17,10 @@ namespace tc
 		~MemoryStream();
 
 	protected:
-		BYTE* pBuf;			// 缓冲区指针
-		int nBufLen;		// 字节流长度
-		int nReadIndex;		// 数据读索引
+		BYTE* pBuf;				// 缓冲区指针
+		int nBufLen;			// 字节流长度
+		int nDataStartIndex;	// 数据段开始索引
+		int nDataEndIndex;		// 数据段结束索引
 
 	protected:
 		//************************************
@@ -35,6 +36,11 @@ namespace tc
 		void LeftPan(int index, int len, int size);
 
 	public:
+		//************************************
+		// Method:    获取流缓冲区
+		//************************************
+		BYTE* GetBuf();
+
 		//************************************
 		// Method:    获取当前缓冲区总长度
 		//************************************
