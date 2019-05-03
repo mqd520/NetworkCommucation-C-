@@ -2,145 +2,106 @@
 #include "Include/tc/MemoryStream.h"
 #include "MemoryTool.h"
 
-namespace tc
+using namespace tc;
+
+MemoryStream::MemoryStream(int len) :
+nBufLen(len),
+pBuf(new BYTE[len]),
+nReadIndex(0)
 {
-	CByteStream::CByteStream(int len) :
-		m_nStreamLen(len),
-		m_buf(new BYTE[len]),
-		m_nDataEndPos(-1)
+	memset(pBuf, 0, len);
+}
+
+MemoryStream::~MemoryStream()
+{
+	if (pBuf)
 	{
-		memset(m_buf, 0, len);
+		delete pBuf;
+		pBuf = NULL;
+	}
+}
+
+void MemoryStream::ReAssignBuf(int len)
+{
+	if (len > nBufLen)
+	{
+		BYTE* pTmp = new BYTE[len];
+		memset(pTmp, 0, len);
+		memcpy(pTmp + nReadIndex, pBuf + nReadIndex, AvaliableWriteLen());
+		delete pBuf;
+		pBuf = pTmp;
+		nBufLen = len;
+	}
+}
+
+void MemoryStream::LeftPan(int index, int len, int size)
+{
+	BYTE* pTmp = new BYTE[len];
+	memcpy(pTmp, pBuf + index, len);
+	memcpy(pBuf, pTmp, len);
+	delete pTmp;
+}
+
+int MemoryStream::GetTotalLen()
+{
+	return nBufLen;
+}
+
+int MemoryStream::AvaliableReadLen()
+{
+	return nBufLen - nReadIndex;
+}
+
+int MemoryStream::AvaliableWriteLen()
+{
+	return nBufLen - nReadIndex;
+}
+
+bool MemoryStream::Copy(BYTE buf[], int len)
+{
+	if (len <= AvaliableReadLen())
+	{
+		memcpy(buf, pBuf + nReadIndex, len);
+
+		return true;
 	}
 
-	CByteStream::~CByteStream()
+	return false;
+}
+
+bool MemoryStream::Read(BYTE buf[], int len)
+{
+	if (len <= AvaliableReadLen())
 	{
-		if (m_buf)
-		{
-			delete m_buf;
-			m_buf = NULL;
-		}
+		memcpy(buf, pBuf + nReadIndex, len);
+		nReadIndex += len;
+		
+		return true;
 	}
 
-	int CByteStream::GetDataLen()
+	return false;
+}
+
+void MemoryStream::Write(BYTE buf[], int len)
+{
+	int len1 = AvaliableWriteLen();	// 原可写长度
+
+	if (len > nBufLen)
 	{
-		return m_nDataEndPos + 1;
+		ReAssignBuf(len);	// 重新分配缓冲区
 	}
 
-	BYTE* CByteStream::GetBuf()
+	if (nReadIndex > 0)
 	{
-		return m_buf;
+		LeftPan(nReadIndex, len1, nReadIndex);
+		nReadIndex = 0;
 	}
 
-	BYTE* CByteStream::Read(int len, int* actualLen)
-	{
-		int nlen = len > GetDataLen() ? GetDataLen() : len;//获取实际读取长度
-		if (nlen > 0)
-		{
-			BYTE* buf = new BYTE[nlen];
-			memcpy(buf, m_buf, nlen);
-			int behindLen = GetDataLen() - nlen;//计算开始出nlen后数据长度
-			if (behindLen > 0)//如果有剩余成都,进行平移操作
-			{
-				Left(nlen, behindLen, nlen);
-			}
-			else
-			{
-				m_nDataEndPos = -1;
-			}
-			if (actualLen != NULL)
-			{
-				*actualLen = nlen;
-			}
-			return buf;
-		}
-		return NULL;
-	}
+	memcpy(pBuf + len1, buf, len);
+}
 
-	BYTE* CByteStream::Read(int len)
-	{
-		if (len > GetDataLen())
-		{
-			return NULL;
-		}
-		else
-		{
-			return Read(len, NULL);
-		}
-	}
-
-	int CByteStream::Write(BYTE buf[], int len)
-	{
-		int nlen = CalcActualLen(len);
-		if (nlen > 0)
-		{
-			memcpy(m_buf + m_nDataEndPos + 1, buf, nlen);
-			m_nDataEndPos += nlen;
-		}
-		return nlen;
-	}
-
-	int CByteStream::Write(CByteStream* p)
-	{
-		int datalen = p->GetDataLen();//读取流对象的可用数据长度
-		int remainlen = m_nStreamLen - GetDataLen();//当前流对象的剩余长度
-		int nlen = 0;//实际写入长度
-		if (datalen > 0 && remainlen > 0)
-		{
-			nlen = datalen > remainlen ? remainlen : datalen;//计算实际写入长度
-			memcpy(m_buf + m_nDataEndPos + 1, p->GetBuf(), nlen);
-			p->Detele(nlen);
-		}
-		return nlen;
-	}
-
-	void CByteStream::Left(int start, int len, int space)
-	{
-		BYTE* buf = new BYTE[len];
-		memcpy(buf, m_buf + start, len);//拷贝需要平移的字节缓冲区到buf
-		int nIndex = start - len;//计算平移后的开始位置
-		if (nIndex < 0)
-		{
-			nIndex = 0;
-		}
-		m_nDataEndPos -= space;//计算平移后的数据结束索引
-		memcpy(m_buf + nIndex, buf, len);
-		delete buf;
-	}
-
-	int CByteStream::CalcActualLen(int len)
-	{
-		return len > (m_nStreamLen - GetDataLen()) ? (m_nStreamLen - GetDataLen()) : len;//计算实际写入字节长度
-	}
-
-	void CByteStream::Clean()
-	{
-		m_nDataEndPos = -1;
-	}
-
-	void CByteStream::Detele(int len)
-	{
-		if (len < GetDataLen())
-		{
-			Left(len, GetDataLen() - len, len);
-		}
-		else
-		{
-			m_nDataEndPos = -1;
-		}
-	}
-
-	int CByteStream::GetBufLen()
-	{
-		return m_nStreamLen;
-	}
-
-	bool CByteStream::IsFull()
-	{
-		return GetDataLen() == m_nStreamLen ? true : false;
-	}
-
-	int CByteStream::GetWriteLen()
-	{
-		return m_nStreamLen - GetDataLen();
-	}
+void MemoryStream::Clear()
+{
+	memset(pBuf, 0, nBufLen);
+	nReadIndex = 0;
 }
