@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TcpEvtMgr.h"
 #include "TcpService.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 
 namespace tc
 {
@@ -35,7 +35,7 @@ namespace tc
 	{
 		while (m_queueEvent.size() > 0)
 		{
-			if (CNetworkCommuMgr::IsExited())//指示需要退出了
+			if (CTcpCommuMgr::IsExited())//指示需要退出了
 			{
 				break;
 			}

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CommonThread.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "Common.h"
 #include <tchar.h>
 
@@ -27,13 +27,13 @@ namespace tc
 
 	void CCommonThread::OnThreadExecute()
 	{
-		if (CNetworkCommuMgr::GetOtherSingal()->IsEmpty())
+		if (CTcpCommuMgr::GetOtherSingal()->IsEmpty())
 		{
 			SetSleepTime(10);
 		}
 		else
 		{
-			CNetworkCommuMgr::GetOtherSingal()->ProcessSocketSingal();
+			CTcpCommuMgr::GetOtherSingal()->ProcessSocketSingal();
 		}
 	}
 }

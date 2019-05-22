@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TcpClient.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "ConnectSrvResultEvt.h"
 #include "MemoryTool.h"
 
@@ -35,7 +35,7 @@ namespace tc
 #endif // _UNICODE
 			m_socketAPI.SetNonBlock(m_socket);
 
-			CNetworkCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::Connect);
+			CTcpCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::Connect);
 		}
 	}
 

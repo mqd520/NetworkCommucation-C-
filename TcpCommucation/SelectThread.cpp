@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SelectThread.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include <tchar.h>
 #include "Common.h"
 
@@ -27,13 +27,13 @@ namespace tc
 
 	void CSelectThread::OnThreadExecute()
 	{
-		if (CNetworkCommuMgr::GetSelect()->IsEmpty())
+		if (CTcpCommuMgr::GetSelect()->IsEmpty())
 		{
 			SetSleepTime(10);
 		}
 		else
 		{
-			CNetworkCommuMgr::GetSelect()->Select();
+			CTcpCommuMgr::GetSelect()->Select();
 		}
 	}
 }

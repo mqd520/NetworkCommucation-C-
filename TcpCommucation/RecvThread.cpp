@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RecvThread.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "Common.h"
 #include <tchar.h>
 
@@ -27,13 +27,13 @@ namespace tc
 
 	void CRecvThread::OnThreadExecute()
 	{
-		if (CNetworkCommuMgr::GetRecvDataSingal()->IsEmpty())
+		if (CTcpCommuMgr::GetRecvDataSingal()->IsEmpty())
 		{
 			SetSleepTime(10);
 		}
 		else
 		{
-			CNetworkCommuMgr::GetRecvDataSingal()->ProcessSocketSingal();
+			CTcpCommuMgr::GetRecvDataSingal()->ProcessSocketSingal();
 		}
 	}
 }

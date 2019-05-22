@@ -1,21 +1,21 @@
 #pragma once
-#include "SelectThread.h"
-#include "RecvThread.h"
-#include "SendThread.h"
-#include "CommonThread.h"
-#include "TcpEvtThread.h"
+#include "../../SelectThread.h"
+#include "../../RecvThread.h"
+#include "../../SendThread.h"
+#include "../../CommonThread.h"
+#include "../../TcpEvtThread.h"
 
-#include "Select.h"
-#include "SocketSingal.h"
+#include "../../Select.h"
+#include "../../SocketSingal.h"
 
-#include "TcpConnectionMgr.h"
-#include "TcpServiceMgr.h"
-#include "TcpEvtMgr.h"
+#include "../../TcpConnectionMgr.h"
+#include "../../TcpServiceMgr.h"
+#include "../../TcpEvtMgr.h"
 
 namespace tc
 {
 	//网络通信管理对象
-	class CNetworkCommuMgr
+	class CTcpCommuMgr
 	{
 	private:
 		static volatile bool m_bExited;//是否需要退出了
@@ -37,10 +37,10 @@ namespace tc
 		static CTcpEvtMgr m_tcpEvtMgr;//tcp事件管理对象
 
 	private:
-		CNetworkCommuMgr();
+		CTcpCommuMgr();
 
 	public:
-		~CNetworkCommuMgr();
+		~CTcpCommuMgr();
 
 		//************************************
 		// Method:    初始化

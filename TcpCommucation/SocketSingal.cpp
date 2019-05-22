@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SocketSingal.h"
 #include "Common.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "TcpConnectionMgr.h"
 #include "ClientTcpConnection.h"
 #include "RecvNewConnEvt.h"
@@ -54,13 +54,13 @@ namespace tc
 	void CSocketSingal::RecvNewConnection(SOCKET socket)
 	{
 		//获取服务端socket关联的tcp服务对象
-		CTcpService* pSrv = CNetworkCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+		CTcpService* pSrv = CTcpCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
 		if (pSrv)
 		{
 			SOCKET client = m_socketAPI.Accept(socket, pSrv->GetServerIP(), pSrv->GetServerPort());
 			if (client > 0)
 			{
-				CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvNewConnEvt(pSrv, client));
+				CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvNewConnEvt(pSrv, client));
 			}
 		}
 	}
@@ -68,49 +68,49 @@ namespace tc
 	void CSocketSingal::RecvPeerData(SOCKET socket)
 	{
 		//获取tcp连接对象
-		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
 		if (pConn)
 		{
 			pConn->OnRecvPeerData();
 		}
 		else
 		{
-			CNetworkCommuMgr::GetSelect()->RemoveSocket(socket);
+			CTcpCommuMgr::GetSelect()->RemoveSocket(socket);
 		}
 	}
 
 	void CSocketSingal::SendData(SOCKET socket)
 	{
-		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
 		if (pConn)
 		{
 			pConn->AsyncSendData();
 		}
 		else
 		{
-			CNetworkCommuMgr::GetSelect()->RemoveSocket(socket);//移除select中指定socket
+			CTcpCommuMgr::GetSelect()->RemoveSocket(socket);//移除select中指定socket
 		}
 	}
 
 	void CSocketSingal::OnConnectSuccess(SOCKET socket)
 	{
 		//获取服务端socket关联的tcp服务对象
-		CTcpService* pSrv = CNetworkCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+		CTcpService* pSrv = CTcpCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
 		if (pSrv)
 		{
 			//连接成功后,不再需要监听是否已连接上服务端
-			CNetworkCommuMgr::GetSelect()->RemoveSocket(socket, false);
+			CTcpCommuMgr::GetSelect()->RemoveSocket(socket, false);
 
 			//创建连接完成事件
 			CConnectSrvResultEvt* pEvent = new CConnectSrvResultEvt(pSrv, true);
-			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
+			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
 
 			//建立tcp连接
 			CClientTcpConnection* pConn = new CClientTcpConnection(pSrv, socket);
-			CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(pConn);
+			CTcpCommuMgr::GetTcpConnectionMgr()->PushTcpConn(pConn);
 
 			//客户端socket立刻转变为收发数据的socket
-			CNetworkCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::ReadWriteData);
+			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::ReadWriteData);
 		}
 	}
 
@@ -133,7 +133,7 @@ namespace tc
 	{
 		while (m_queueSocketData.size() > 0)
 		{
-			if (CNetworkCommuMgr::IsExited())//指示需要退出
+			if (CTcpCommuMgr::IsExited())//指示需要退出
 			{
 				break;//立刻跳出循环,不再处理后面的队列
 			}
@@ -155,7 +155,7 @@ namespace tc
 			}
 
 			//通知select层当前socket当前信号已处理完毕
-			CNetworkCommuMgr::GetSelect()->OnProcessingSocketCmp(data.socket, data.singaltype);
+			CTcpCommuMgr::GetSelect()->OnProcessingSocketCmp(data.socket, data.singaltype);
 		}
 	}
 }

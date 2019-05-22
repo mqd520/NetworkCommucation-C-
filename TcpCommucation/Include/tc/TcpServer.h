@@ -1,7 +1,8 @@
 #pragma once
-#include "SocketAPI.h"
-#include "TcpConnectionMgr.h"
-#include "Def.h"
+#include "../../SocketAPI.h"
+#include "../../TcpConnectionMgr.h"
+#include "../../Def.h"
+#include "../../TcpService.h"
 #include <vector>
 
 using namespace std;

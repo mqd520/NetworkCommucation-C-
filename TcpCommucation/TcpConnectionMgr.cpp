@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TcpConnectionMgr.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "Common.h"
 
 namespace tc

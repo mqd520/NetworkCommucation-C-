@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "TcpServer.h"
+#include "Include/tc/TcpServer.h"
 #include "Common.h"
 #include "TcpConnectionMgr.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "RecvNewConnEvt.h"
 #include "ServerTcpConnection.h"
 #include "RecvConnResultEvt.h"
@@ -39,7 +39,7 @@ namespace tc
 			PrintfDebug(_T("Listen success: %s:%d, socket: %d"), m_strServerIP, m_nServerPort, m_socket);
 
 			//加入select队列
-			CNetworkCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::Accept);
+			CTcpCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::Accept);
 
 			return true;
 		}
@@ -72,7 +72,7 @@ namespace tc
 				{
 					//创建tcp连接对象
 					CServerTcpConnection* conn = new CServerTcpConnection(this, pRecvEvent->GetSendRecvSocket(), m_socket);
-					CNetworkCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
+					CTcpCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
 					result = true;
 				}
 			}
@@ -81,7 +81,7 @@ namespace tc
 				//...
 			}
 
-			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvConnResultEvt(this, result, clientSocket, ip, port));
+			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvConnResultEvt(this, result, clientSocket, ip, port));
 
 			return;
 		}
@@ -151,7 +151,7 @@ namespace tc
 
 	void CTcpServer::CloseClient(SOCKET client)
 	{
-		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(client);
+		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(client);
 		if (pConn)
 		{
 			pConn->Close();

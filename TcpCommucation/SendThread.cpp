@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SendThread.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "Common.h"
 #include <tchar.h>
 
@@ -27,13 +27,13 @@ namespace tc
 
 	void CSendThread::OnThreadExecute()
 	{
-		if (CNetworkCommuMgr::GetSendDataSingal()->IsEmpty())
+		if (CTcpCommuMgr::GetSendDataSingal()->IsEmpty())
 		{
 			SetSleepTime(10);
 		}
 		else
 		{
-			CNetworkCommuMgr::GetSendDataSingal()->ProcessSocketSingal();
+			CTcpCommuMgr::GetSendDataSingal()->ProcessSocketSingal();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ServerTcpConnection.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "Common.h"
 #include "Def.h"
 

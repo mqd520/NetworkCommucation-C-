@@ -2,7 +2,7 @@
 #include "TcpConnection.h"
 #include "MemoryTool.h"
 #include "Common.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "RecvPeerDataEvt.h"
 #include "TcpDisconnectEvt.h"
 #include "SendDataResultEvt.h"
@@ -17,7 +17,7 @@ namespace tc
 		m_nAsyncSendStatus(EAsyncSendStatus::SendCmp),
 		m_bCanAsyncSend(true)
 	{
-		CNetworkCommuMgr::GetSelect()->AddSocket(sendrecv, ESelectSocketType::ReadWriteData);//加入select队列
+		CTcpCommuMgr::GetSelect()->AddSocket(sendrecv, ESelectSocketType::ReadWriteData);//加入select队列
 	}
 
 	CTcpConnection::~CTcpConnection()
@@ -91,7 +91,7 @@ namespace tc
 			m_nAsyncSendStatus = EAsyncSendStatus::Sending;
 			bool result = m_socketAPI.Send(m_sendrecvSocket, m_pAsyncSendBuf, m_nAsyncSendLen, &len);
 
-			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CSendDataResultEvt(m_pTcpSrv, result, m_nAsyncSendLen, len));
+			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CSendDataResultEvt(m_pTcpSrv, result, m_nAsyncSendLen, len));
 
 			delete m_pAsyncSendBuf;
 			m_pAsyncSendBuf = NULL;
@@ -113,7 +113,7 @@ namespace tc
 				m_localAddress.ip, m_localAddress.port, m_pTcpSrv->GetSocket(), m_peerAddress.ip, m_peerAddress.port, m_sendrecvSocket, len);
 
 			CRecvPeerDataEvt* pEvent = new CRecvPeerDataEvt(m_pTcpSrv, m_sendrecvSocket, pRecvBuf, len);
-			CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
+			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
 		}
 		else//接收数据失败
 		{
@@ -131,19 +131,19 @@ namespace tc
 
 	void CTcpConnection::OnConnDisconnect()
 	{
-		CNetworkCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//移除select队列中socket
-		CNetworkCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CTcpDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
-		CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除tcp连接对象
+		CTcpCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//移除select队列中socket
+		CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CTcpDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
+		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除tcp连接对象
 	}
 
 	void CTcpConnection::OnNetError()
 	{
-		CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除指定发送(接收)数据的socket关联的tcp连接
+		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除指定发送(接收)数据的socket关联的tcp连接
 	}
 
 	void CTcpConnection::Close()
 	{
-		CNetworkCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//移除select队列中socket
-		CNetworkCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除tcp连接对象
+		CTcpCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//移除select队列中socket
+		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除tcp连接对象
 	}
 }

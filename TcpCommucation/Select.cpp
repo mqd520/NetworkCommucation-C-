@@ -2,7 +2,7 @@
 #include "Select.h"
 #include "TcpConnectionMgr.h"
 #include "Thread.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "Def.h"
 #include "Common.h"
 
@@ -64,7 +64,7 @@ namespace tc
 	{
 		//Sleep(3 * 1000);	//调试时使用,无意义,可注释掉
 
-		if (CNetworkCommuMgr::IsExited())	//指示需要退出了
+		if (CTcpCommuMgr::IsExited())	//指示需要退出了
 		{
 			return;	//立刻返回
 		}
@@ -95,7 +95,7 @@ namespace tc
 				{
 					for (int k = 0; k < (int)m_group[i].size(); k++)
 					{
-						if (CNetworkCommuMgr::IsExited())//指示需要退出了
+						if (CTcpCommuMgr::IsExited())//指示需要退出了
 						{
 							return;//立刻返回,不再处理后面的队列
 						}
@@ -108,7 +108,7 @@ namespace tc
 				{
 					for (int k = 0; k < (int)m_group[i].size(); k++)
 					{
-						if (CNetworkCommuMgr::IsExited())//指示需要退出了
+						if (CTcpCommuMgr::IsExited())//指示需要退出了
 						{
 							return;//立刻返回,不再处理后面的队列
 						}
@@ -121,7 +121,7 @@ namespace tc
 				{
 					for (int k = 0; k < (int)m_group[i].size(); k++)
 					{
-						if (CNetworkCommuMgr::IsExited())//指示需要退出了
+						if (CTcpCommuMgr::IsExited())//指示需要退出了
 						{
 							return;//立刻返回,不再处理后面的队列
 						}
@@ -189,7 +189,7 @@ namespace tc
 			if (!IsProcessingSingal(socketData.socket, ESocketSingalType::Except))
 			{
 				SocketSingalData data = { socketData.socket, ESocketSingalType::Except, socketData.type };
-				CNetworkCommuMgr::GetOtherSingal()->PushSocket(data);
+				CTcpCommuMgr::GetOtherSingal()->PushSocket(data);
 			}
 		}
 	}
@@ -205,11 +205,11 @@ namespace tc
 				SocketSingalData data = { socketData.socket, ESocketSingalType::Read, socketData.type };
 				if (socketData.type == ESelectSocketType::Accept)//指示socket用于接收新连接
 				{
-					CNetworkCommuMgr::GetOtherSingal()->PushSocket(data);
+					CTcpCommuMgr::GetOtherSingal()->PushSocket(data);
 				}
 				else if (socketData.type == ESelectSocketType::ReadWriteData)//指示socket用于读写数据
 				{
-					CNetworkCommuMgr::GetRecvDataSingal()->PushSocket(data);
+					CTcpCommuMgr::GetRecvDataSingal()->PushSocket(data);
 				}
 			}
 		}
@@ -226,11 +226,11 @@ namespace tc
 				SocketSingalData data = { socketData.socket, ESocketSingalType::Write, socketData.type };
 				if (socketData.type == ESelectSocketType::ReadWriteData)//指示socket用于读写数据
 				{
-					CNetworkCommuMgr::GetSendDataSingal()->PushSocket(data);
+					CTcpCommuMgr::GetSendDataSingal()->PushSocket(data);
 				}
 				else if (socketData.type == ESelectSocketType::Connect)//指示socket用于连接服务端
 				{
-					CNetworkCommuMgr::GetOtherSingal()->PushSocket(data);
+					CTcpCommuMgr::GetOtherSingal()->PushSocket(data);
 				}
 			}
 		}

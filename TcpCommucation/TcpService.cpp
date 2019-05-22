@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TcpService.h"
 #include "Common.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "ServerTcpConnection.h"
 #include "RecvNewConnEvt.h"
 #include "RefuseNewConnEvt.h"
@@ -14,7 +14,7 @@ namespace tc
 		m_lpCallback(NULL)
 	{
 		memset(m_strServerIP, 0, TC_MAXIPSTRELN * sizeof(TCHAR));
-		CNetworkCommuMgr::GetTcpServiceMgr()->PushTcpService(this);
+		CTcpCommuMgr::GetTcpServiceMgr()->PushTcpService(this);
 	}
 
 	CTcpService::~CTcpService()
@@ -45,7 +45,7 @@ namespace tc
 	bool CTcpService::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
 	{
 		//获取指定socket的tcp连接对象
-		CTcpConnection* pConn = CNetworkCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
 
 		if (pConn)
 		{

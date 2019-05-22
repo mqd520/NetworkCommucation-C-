@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TcpEvtThread.h"
-#include "NetCommuMgr.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "Common.h"
 #include "TcpEvtMgr.h"
 #include <tchar.h>
@@ -28,13 +28,13 @@ namespace tc
 
 	void CTcpEvtThread::OnThreadExecute()
 	{
-		if (CNetworkCommuMgr::GetTcpEvtMgr()->IsEmpty())
+		if (CTcpCommuMgr::GetTcpEvtMgr()->IsEmpty())
 		{
 			SetSleepTime(10);
 		}
 		else
 		{
-			CNetworkCommuMgr::GetTcpEvtMgr()->ProcessTcpEvt();
+			CTcpCommuMgr::GetTcpEvtMgr()->ProcessTcpEvt();
 		}
 	}
 }
