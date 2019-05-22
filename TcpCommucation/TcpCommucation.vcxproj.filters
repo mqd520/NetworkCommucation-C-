@@ -162,9 +162,6 @@
     <ClInclude Include="TcpEvtThread.h">
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClInclude>
-    <ClInclude Include="TcpEvt.h">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
-    </ClInclude>
     <ClInclude Include="TcpEvtMgr.h">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClInclude>
@@ -200,9 +197,6 @@
     <ClInclude Include="RecvConnResultEvt.h">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClInclude>
-    <ClInclude Include="ConnectSrvResultEvt.h">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\tc\MemoryStream.h">
       <Filter>07 流处理</Filter>
     </ClInclude>
@@ -226,6 +220,15 @@
     </ClInclude>
     <ClInclude Include="Include\tc\TcpServer.h">
       <Filter>06 Tcp通信管理\07 Tcp服务端</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\TCDef.h">
+      <Filter>06 Tcp通信管理</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\TcpEvt.h">
+      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\ConnectSrvResultEvt.h">
+      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

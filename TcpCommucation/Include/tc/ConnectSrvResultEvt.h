@@ -3,15 +3,15 @@
 
 namespace tc
 {
-	//连接服务端结果事件
-	class CConnectSrvResultEvt : public CTcpEvt
+	// 连接服务端结果事件类
+	class ConnectSrvResultEvt : public CTcpEvt
 	{
 	private:
-		bool m_bSuccess;//连接是否成功
+		bool bSuccess;	// 连接是否成功
 
 	public:
-		CConnectSrvResultEvt(CTcpService* pSrv, bool success);
-		~CConnectSrvResultEvt();
+		ConnectSrvResultEvt(CTcpService* pSrv, bool success);
+		~ConnectSrvResultEvt();
 
 		//************************************
 		// Method:    获取事件类型

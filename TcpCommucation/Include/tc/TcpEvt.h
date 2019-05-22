@@ -5,12 +5,12 @@ namespace tc
 {
 	class CTcpService;
 
-	//tcp服务事件基类
+	// tcp服务事件基类
 	class CTcpEvt
 	{
 	protected:
-		CTcpService* m_pTcpSrv;//tcp服务对象
-		SOCKET m_socket;//关联的用于发送(接收)数据的socket
+		CTcpService* m_pTcpSrv;	// tcp服务对象
+		SOCKET m_socket;		// 关联的用于发送(接收)数据的socket
 
 	public:
 		//************************************

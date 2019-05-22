@@ -102,7 +102,7 @@ namespace tc
 			CTcpCommuMgr::GetSelect()->RemoveSocket(socket, false);
 
 			//创建连接完成事件
-			CConnectSrvResultEvt* pEvent = new CConnectSrvResultEvt(pSrv, true);
+			ConnectSrvResultEvt* pEvent = new ConnectSrvResultEvt(pSrv, true);
 			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
 
 			//建立tcp连接

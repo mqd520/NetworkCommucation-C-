@@ -53,9 +53,9 @@ class EAsyncSendStatus
 public:
 	enum
 	{
-		PreSend,//准备发送
-		Sending,//正在发送
-		SendCmp//发送完成
+		PreSend,	//准备发送
+		Sending,	//正在发送
+		SendCmp		//发送完成
 	};
 };
 
@@ -76,9 +76,7 @@ typedef struct tagSendPeerDataResult
 	int actualLen;	//实际发送字节长度
 }SendPeerDataResult;
 
-// tcp事件回调函数指针
-// pEvent	tcp服务事件
-typedef void(*LPTcpEventCallback)(CTcpEvt* pEvent);
+
 
 // socket信号类型
 class ESocketSingalType

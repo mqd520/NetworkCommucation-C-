@@ -67,7 +67,7 @@ namespace tc
 		if (pEvent->GetEvtType() == ETcpEvent::ConnectSrvResult)
 		{
 			m_bIsConnecting = false;//连接已完成
-			CConnectSrvResultEvt* pConnCmpEvt = (CConnectSrvResultEvt*)pEvent;
+			ConnectSrvResultEvt* pConnCmpEvt = (ConnectSrvResultEvt*)pEvent;
 			m_bIsConnected = pConnCmpEvt->GetConnectResult(); 
 		}
 	}

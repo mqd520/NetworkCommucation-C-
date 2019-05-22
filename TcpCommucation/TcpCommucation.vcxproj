@@ -85,15 +85,17 @@
     <ClInclude Include="ClientTcpConnection.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="CommonThread.h" />
-    <ClInclude Include="ConnectSrvResultEvt.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="EncryptBuffer.h" />
+    <ClInclude Include="Include\tc\ConnectSrvResultEvt.h" />
     <ClInclude Include="Include\tc\GB2312Str.h" />
     <ClInclude Include="Include\tc\MemoryStream.h" />
     <ClInclude Include="Include\tc\NCTool.h" />
     <ClInclude Include="Include\tc\NetworkStreamRead.h" />
     <ClInclude Include="Include\tc\NetworkStreamWrite.h" />
+    <ClInclude Include="Include\tc\TCDef.h" />
     <ClInclude Include="Include\tc\TcpCommuMgr.h" />
+    <ClInclude Include="Include\tc\TcpEvt.h" />
     <ClInclude Include="Include\tc\TcpServer.h" />
     <ClInclude Include="Include\tc\UTF16Str.h" />
     <ClInclude Include="LinkList.h" />
@@ -121,7 +123,6 @@
     <ClInclude Include="TcpConnection.h" />
     <ClInclude Include="TcpConnectionMgr.h" />
     <ClInclude Include="TcpDisconnectEvt.h" />
-    <ClInclude Include="TcpEvt.h" />
     <ClInclude Include="TcpEvtMgr.h" />
     <ClInclude Include="TcpEvtThread.h" />
     <ClInclude Include="TcpService.h" />

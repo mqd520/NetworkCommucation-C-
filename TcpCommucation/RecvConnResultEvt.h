@@ -4,13 +4,13 @@
 
 namespace tc
 {
-	//接收客户端连接结果事件
+	// 接收客户端连接结果事件
 	class CRecvConnResultEvt : public CTcpEvt
 	{
 	private:
-		bool m_bSuccess;//连接是否成功
-		TCHAR m_strClientIP[TC_MAXIPSTRELN];//客户端IP
-		int m_nClientPort;//客户端端口
+		bool m_bSuccess;	// 连接是否成功
+		TCHAR m_strClientIP[TC_MAXIPSTRELN];	// 客户端IP
+		int m_nClientPort;	// 客户端端口
 
 	public:
 		CRecvConnResultEvt(CTcpService* pSrv, bool success, SOCKET client, TCHAR* ip, int port);

@@ -4,25 +4,25 @@
 
 namespace tc
 {
-	CConnectSrvResultEvt::CConnectSrvResultEvt(CTcpService* pSrv, bool success) :
+	ConnectSrvResultEvt::ConnectSrvResultEvt(CTcpService* pSrv, bool success) :
 		CTcpEvt(pSrv),
-		m_bSuccess(success)
+		bSuccess(success)
 	{
 
 	}
 
-	CConnectSrvResultEvt::~CConnectSrvResultEvt()
+	ConnectSrvResultEvt::~ConnectSrvResultEvt()
 	{
 
 	}
 
-	int CConnectSrvResultEvt::GetEvtType()
+	int ConnectSrvResultEvt::GetEvtType()
 	{
 		return ETcpEvent::ConnectSrvResult;
 	}
 
-	bool CConnectSrvResultEvt::GetConnectResult()
+	bool ConnectSrvResultEvt::GetConnectResult()
 	{
-		return m_bSuccess;
+		return bSuccess;
 	}
 }
