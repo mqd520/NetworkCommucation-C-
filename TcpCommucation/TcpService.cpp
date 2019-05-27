@@ -3,8 +3,7 @@
 #include "Common.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "ServerTcpConnection.h"
-#include "RecvNewConnEvt.h"
-#include "RefuseNewConnEvt.h"
+#include "Include/tc/RecvNewConnEvt.h"
 
 namespace tc
 {
@@ -37,9 +36,10 @@ namespace tc
 		return m_nServerPort;
 	}
 
-	void CTcpService::RegTcpEventCallback(LPTcpEventCallback lpCallback)
+	void CTcpService::RegTcpEventCallback(LPTcpEventCallback lpCallback, void* param)
 	{
 		m_lpCallback = lpCallback;
+		pParam = param;
 	}
 
 	bool CTcpService::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
@@ -63,16 +63,16 @@ namespace tc
 		return false;
 	}
 
-	void CTcpService::OnRecvTcpEvent(CTcpEvt* pEvent)
+	void CTcpService::OnRecvTcpEvent(TcpEvt* pEvent)
 	{
 		DispatchTcpEvt(pEvent);
 	}
 
-	void CTcpService::DispatchTcpEvt(CTcpEvt* pEvent)
+	void CTcpService::DispatchTcpEvt(TcpEvt* pEvent)
 	{
 		if (m_lpCallback)
 		{
-			m_lpCallback(pEvent);//通知事件注册方
+			m_lpCallback(pEvent, pParam);	//通知事件注册方
 		}
 	}
 }

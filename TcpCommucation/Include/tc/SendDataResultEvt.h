@@ -3,22 +3,17 @@
 
 namespace tc
 {
-	//发送(异步)数据结果事件
-	class CSendDataResultEvt : public CTcpEvt
+	// 发送数据结果事件
+	class SendDataResultEvt : public TcpEvt
 	{
 	private:
-		bool m_bSuccess;//发送是否成功
-		int m_nLen;//预计发送长度
-		int m_nActualLen;//实际发送长度
+		bool bSuccess;	// 发送是否成功
+		int nLen;		// 预计发送长度
+		int nActualLen;	// 实际发送长度
 
 	public:
-		CSendDataResultEvt(CTcpService* pSrv, bool success, int len, int actualLen);
-		~CSendDataResultEvt();
-
-		//************************************
-		// Method:    获取事件类型
-		//************************************
-		int GetEvtType();
+		SendDataResultEvt(CTcpService* pSrv, bool success, int len, int actualLen);
+		~SendDataResultEvt();
 
 		//************************************
 		// Method:    获取发送结果

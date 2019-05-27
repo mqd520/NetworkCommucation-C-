@@ -14,7 +14,7 @@ namespace tc
 	{
 		while (m_queueEvent.size() > 0)
 		{
-			CTcpEvt* pEvent = m_queueEvent.front();
+			TcpEvt* pEvent = m_queueEvent.front();
 			m_queueEvent.pop();
 
 			delete pEvent;
@@ -26,7 +26,7 @@ namespace tc
 		return m_queueEvent.size() == 0;
 	}
 
-	void CTcpEvtMgr::PushTcpEvent(CTcpEvt* pEvent)
+	void CTcpEvtMgr::PushTcpEvent(TcpEvt* pEvent)
 	{
 		m_queueEvent.push(pEvent);
 	}
@@ -40,7 +40,7 @@ namespace tc
 				break;
 			}
 
-			CTcpEvt* pEvent = m_queueEvent.front();
+			TcpEvt* pEvent = m_queueEvent.front();
 			m_queueEvent.pop();
 
 			CTcpService* pSrv = pEvent->GetTcpSrv();

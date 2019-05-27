@@ -1,40 +1,36 @@
 #include "stdafx.h"
-#include "SendDataResultEvt.h"
+#include "Include/tc/SendDataResultEvt.h"
 #include "Def.h"
+#include "Include/tc/Def1.h"
 
 namespace tc
 {
-	CSendDataResultEvt::CSendDataResultEvt(CTcpService* pSrv, bool success, int len, int actualLen)
-		:CTcpEvt(pSrv),
-		m_bSuccess(success),
-		m_nLen(len),
-		m_nActualLen(actualLen)
+	SendDataResultEvt::SendDataResultEvt(CTcpService* pSrv, bool success, int len, int actualLen)
+		:TcpEvt(pSrv),
+		bSuccess(success),
+		nLen(len),
+		nActualLen(actualLen)
+	{
+		evt = ETcpEvt::SendDataResult;
+	}
+
+	SendDataResultEvt::~SendDataResultEvt()
 	{
 
 	}
 
-	CSendDataResultEvt::~CSendDataResultEvt()
+	bool SendDataResultEvt::GetResult()
 	{
-
+		return bSuccess;
 	}
 
-	int CSendDataResultEvt::GetEvtType()
+	int SendDataResultEvt::GetLen()
 	{
-		return ETcpEvent::AsyncSendDataResult;
+		return nLen;
 	}
 
-	bool CSendDataResultEvt::GetResult()
+	int SendDataResultEvt::GetActualLen()
 	{
-		return m_bSuccess;
-	}
-
-	int CSendDataResultEvt::GetLen()
-	{
-		return m_nLen;
-	}
-
-	int CSendDataResultEvt::GetActualLen()
-	{
-		return m_nActualLen;
+		return nActualLen;
 	}
 }

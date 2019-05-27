@@ -1,28 +1,24 @@
 #include "stdafx.h"
-#include "ConnectSrvResultEvt.h"
+#include "Include/tc/ConnectSrvResultEvt.h"
 #include "Def.h"
+#include "Include/tc/Def1.h"
 
 namespace tc
 {
-	CConnectSrvResultEvt::CConnectSrvResultEvt(CTcpService* pSrv, bool success) :
-		CTcpEvt(pSrv),
-		m_bSuccess(success)
+	ConnectSrvResultEvt::ConnectSrvResultEvt(CTcpService* pSrv, bool success) :
+		TcpEvt(pSrv),
+		bSuccess(success)
+	{
+		evt = ETcpEvt::ConnectSrvResult;
+	}
+
+	ConnectSrvResultEvt::~ConnectSrvResultEvt()
 	{
 
 	}
 
-	CConnectSrvResultEvt::~CConnectSrvResultEvt()
+	bool ConnectSrvResultEvt::GetConnectResult()
 	{
-
-	}
-
-	int CConnectSrvResultEvt::GetEvtType()
-	{
-		return ETcpEvent::ConnectSrvResult;
-	}
-
-	bool CConnectSrvResultEvt::GetConnectResult()
-	{
-		return m_bSuccess;
+		return bSuccess;
 	}
 }

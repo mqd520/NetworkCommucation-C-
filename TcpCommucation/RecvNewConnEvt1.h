@@ -5,7 +5,7 @@
 namespace tc
 {
 	//收到新连接事件
-	class CRecvNewConnEvt : public CTcpEvt
+	class CRecvNewConnEvt : public TcpEvt
 	{
 	public:
 		bool m_bRefuse;//用户是否拒绝了新连接

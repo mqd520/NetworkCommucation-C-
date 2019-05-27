@@ -1,6 +1,6 @@
 #pragma once
 #include <queue>
-#include "TcpEvt.h"
+#include "Include/tc/TcpEvt.h"
 
 using namespace std;
 
@@ -10,7 +10,7 @@ namespace tc
 	class CTcpEvtMgr
 	{
 	private:
-		queue<CTcpEvt*> m_queueEvent;//tcp事件队列
+		queue<TcpEvt*> m_queueEvent;//tcp事件队列
 
 	public:
 		CTcpEvtMgr();
@@ -25,7 +25,7 @@ namespace tc
 		// Method:    追加一个tcp服务事件
 		// Parameter: tcp服务事件
 		//************************************
-		void PushTcpEvent(CTcpEvt* pEvent);
+		void PushTcpEvent(TcpEvt* pEvent);
 
 		//************************************
 		// Method:    处理tcp事件

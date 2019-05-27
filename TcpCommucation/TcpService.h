@@ -1,8 +1,9 @@
 #pragma once
-#include "Thread.h"
 #include "Def.h"
+#include "Include/tc/Def1.h"
+#include "Thread.h"
 #include "SocketAPI.h"
-#include "TcpEvt.h"
+#include "Include/tc/TcpEvt.h"
 #include "TcpConnection.h"
 
 namespace tc
@@ -11,11 +12,12 @@ namespace tc
 	class CTcpService
 	{
 	protected:
-		CSocketAPI m_socketAPI;//socket api
-		SOCKET m_socket;//socket,服务端(客户端)socket
-		TCHAR m_strServerIP[20];//socket关联的服务端IP
-		int m_nServerPort;//socket关联的服务端端口
-		LPTcpEventCallback m_lpCallback;//tcp事件回调函数指针
+		CSocketAPI m_socketAPI;			// socket api
+		SOCKET m_socket;				// socket,服务端(客户端)socket
+		TCHAR m_strServerIP[20];		// socket关联的服务端IP
+		int m_nServerPort;				// socket关联的服务端端口
+		LPTcpEventCallback m_lpCallback;// tcp事件回调函数指针
+		void* pParam;					// 事件附加参数
 
 	protected:
 		friend class CTcpEvtMgr;
@@ -23,12 +25,11 @@ namespace tc
 		// Method:    收到tcp事件处理
 		// Parameter: tcp事件
 		//************************************
-		virtual void OnRecvTcpEvent(CTcpEvt* pEvent);
+		virtual void OnRecvTcpEvent(TcpEvt* pEvent);
 
 		//************************************
 		// Method:    向对端发送数据
 		// Returns:   是否成功
-		// Parameter: socket
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
 		// Parameter: 是否异步,默认异步发送
@@ -40,7 +41,7 @@ namespace tc
 		// Method:    通知调用者tcp事件
 		// Parameter: tcp事件
 		//************************************
-		void DispatchTcpEvt(CTcpEvt* pEvent);
+		void DispatchTcpEvt(TcpEvt* pEvent);
 
 	public:
 		CTcpService();
@@ -63,7 +64,9 @@ namespace tc
 
 		//************************************
 		// Method:    注册tcp事件回调函数
+		// Parameter: lpCallback:	回调函数
+		// Parameter: pParam:		附加参数
 		//************************************
-		void RegTcpEventCallback(LPTcpEventCallback lpCallback);
+		void RegTcpEventCallback(LPTcpEventCallback lpCallback, void* param);
 	};
 }

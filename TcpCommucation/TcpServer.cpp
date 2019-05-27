@@ -3,9 +3,8 @@
 #include "Common.h"
 #include "TcpConnectionMgr.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "RecvNewConnEvt.h"
+#include "Include/tc/RecvNewConnEvt.h"
 #include "ServerTcpConnection.h"
-#include "RecvConnResultEvt.h"
 
 namespace tc
 {
@@ -46,9 +45,9 @@ namespace tc
 		return true;
 	}
 
-	void CTcpServer::OnRecvTcpEvent(CTcpEvt* pEvent)
+	void CTcpServer::OnRecvTcpEvent(TcpEvt* pEvent)
 	{
-		if (pEvent->GetEvtType() == ETcpEvent::RecvNewConnection)//收到新连接
+		if (pEvent->GetEvtType() == ETcpEvt::RecvNewConn)//收到新连接
 		{
 			SOCKET clientSocket = pEvent->GetSendRecvSocket();//获取客户端socket
 			TCHAR ip[TC_MAXIPSTRELN];
@@ -60,28 +59,28 @@ namespace tc
 			{
 				DispatchTcpEvt(pEvent);
 
-				CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
-				if (pRecvEvent->m_bRefuse)//用户拒绝了新连接
-				{
-					m_socketAPI.CloseSocket(pRecvEvent->GetSendRecvSocket());//关闭客户端socket
+				//CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
+				//if (pRecvEvent->m_bRefuse)//用户拒绝了新连接
+				//{
+				//	m_socketAPI.CloseSocket(pRecvEvent->GetSendRecvSocket());//关闭客户端socket
 
-					PrintfInfo(_T("[%s:%d][socket: %d] refuse a new connection [%s:%d][socket: %d]"),
-						this->GetServerIP(), this->GetServerPort(), this->GetSocket(), ip, port, clientSocket);
-				}
-				else//用户允许了新连接
-				{
-					//创建tcp连接对象
-					CServerTcpConnection* conn = new CServerTcpConnection(this, pRecvEvent->GetSendRecvSocket(), m_socket);
-					CTcpCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
-					result = true;
-				}
+				//	PrintfInfo(_T("[%s:%d][socket: %d] refuse a new connection [%s:%d][socket: %d]"),
+				//		this->GetServerIP(), this->GetServerPort(), this->GetSocket(), ip, port, clientSocket);
+				//}
+				//else//用户允许了新连接
+				//{
+				//	//创建tcp连接对象
+				//	CServerTcpConnection* conn = new CServerTcpConnection(this, pRecvEvent->GetSendRecvSocket(), m_socket);
+				//	CTcpCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
+				//	result = true;
+				//}
 			}
 			else
 			{
 				//...
 			}
 
-			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvConnResultEvt(this, result, clientSocket, ip, port));
+			//CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(this, clientSocket, ip, port));
 
 			return;
 		}

@@ -1,35 +1,37 @@
 #pragma once
+#include <string>
 #include "TcpEvt.h"
-#include "Def.h"
+
+using namespace std;
 
 namespace tc
 {
-	//接收客户端连接结果事件
-	class CRecvConnResultEvt : public CTcpEvt
+	// 收到新连接事件
+	class RecvNewConnEvt : public TcpEvt
 	{
 	private:
-		bool m_bSuccess;//连接是否成功
-		TCHAR m_strClientIP[TC_MAXIPSTRELN];//客户端IP
-		int m_nClientPort;//客户端端口
+		TCHAR strClientIP[20];	// 客户端IP
+		int nClientPort;					// 客户端端口
+		bool bRecvConn;						// 是否接受新连接
 
 	public:
-		CRecvConnResultEvt(CTcpService* pSrv, bool success, SOCKET client, TCHAR* ip, int port);
-		~CRecvConnResultEvt();
+		RecvNewConnEvt(CTcpService* pSrv, SOCKET client, TCHAR* ip, int port);
+		~RecvNewConnEvt();
 
 		//************************************
-		// Method:    获取事件类型
+		// Method:    拒绝新连接
 		//************************************
-		int GetEvtType();
+		void Refuse();
 
 		//************************************
-		// Method:    获取接收结果
+		// Method:    是否接受新连接
 		//************************************
-		bool GetRecvResult();
+		bool IsRecv();
 
 		//************************************
 		// Method:    获取客户端IP
 		//************************************
-		TCHAR* GetClientIP();
+		string GetClientIP();
 
 		//************************************
 		// Method:    获取客户端端口

@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "SocketAPI.h"
-#include "TcpEvt.h"
 
 using namespace std;
 using namespace tc;
@@ -17,23 +16,6 @@ typedef struct tagNetAddress
 	TCHAR ip[TC_MAXIPSTRELN];	// ip
 	int port;					// 端口
 }NetAddress;
-
-// tcp事件
-class ETcpEvent
-{
-public:
-	enum
-	{
-		RecvNewConnection,		// 收到新连接
-		RecvPeerData,			// 收到对端数据
-		ConnDisconnect,			// 连接断开
-		AsyncSendDataResult,	// 异步发送数据结果
-		RecvConnResult,			// 接收客户端连接的结果
-		ConnectSrvResult,		// 连接服务端的结果
-		
-		None					// 无
-	};
-};
 
 // select队列socket类型
 class ESelectSocketType
@@ -75,10 +57,6 @@ typedef struct tagSendPeerDataResult
 	int len;		//发送数据字节长度
 	int actualLen;	//实际发送字节长度
 }SendPeerDataResult;
-
-// tcp事件回调函数指针
-// pEvent	tcp服务事件
-typedef void(*LPTcpEventCallback)(CTcpEvt* pEvent);
 
 // socket信号类型
 class ESocketSingalType

@@ -4,8 +4,8 @@
 #include "Include/tc/TcpCommuMgr.h"
 #include "TcpConnectionMgr.h"
 #include "ClientTcpConnection.h"
-#include "RecvNewConnEvt.h"
-#include "ConnectSrvResultEvt.h"
+#include "Include/tc/RecvNewConnEvt.h"
+#include "Include/tc/ConnectSrvResultEvt.h"
 
 namespace tc
 {
@@ -60,7 +60,7 @@ namespace tc
 			SOCKET client = m_socketAPI.Accept(socket, pSrv->GetServerIP(), pSrv->GetServerPort());
 			if (client > 0)
 			{
-				CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CRecvNewConnEvt(pSrv, client));
+				CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client, NULL, 0));
 			}
 		}
 	}
@@ -102,7 +102,7 @@ namespace tc
 			CTcpCommuMgr::GetSelect()->RemoveSocket(socket, false);
 
 			//创建连接完成事件
-			CConnectSrvResultEvt* pEvent = new CConnectSrvResultEvt(pSrv, true);
+			ConnectSrvResultEvt* pEvent = new ConnectSrvResultEvt(pSrv, true);
 			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
 
 			//建立tcp连接

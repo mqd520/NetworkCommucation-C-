@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TcpClient.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "ConnectSrvResultEvt.h"
+#include "Include/tc/ConnectSrvResultEvt.h"
 #include "MemoryTool.h"
 
 namespace tc
@@ -60,14 +60,14 @@ namespace tc
 		return __super::SendData(m_socket, pBuf, len, asyncs, actualLen);
 	}
 
-	void CTcpClient::OnRecvTcpEvent(CTcpEvt* pEvent)
+	void CTcpClient::OnRecvTcpEvent(TcpEvt* pEvent)
 	{
 		__super::OnRecvTcpEvent(pEvent);
 
-		if (pEvent->GetEvtType() == ETcpEvent::ConnectSrvResult)
+		if (pEvent->GetEvtType() == ETcpEvt::ConnectSrvResult)
 		{
 			m_bIsConnecting = false;//连接已完成
-			CConnectSrvResultEvt* pConnCmpEvt = (CConnectSrvResultEvt*)pEvent;
+			ConnectSrvResultEvt* pConnCmpEvt = (ConnectSrvResultEvt*)pEvent;
 			m_bIsConnected = pConnCmpEvt->GetConnectResult(); 
 		}
 	}

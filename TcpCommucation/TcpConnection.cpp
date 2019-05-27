@@ -3,9 +3,9 @@
 #include "MemoryTool.h"
 #include "Common.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "RecvPeerDataEvt.h"
-#include "TcpDisconnectEvt.h"
-#include "SendDataResultEvt.h"
+#include "Include/tc/RecvDataEvt.h"
+#include "Include/tc/ConnDisconnectEvt.h"
+#include "Include/tc/SendDataResultEvt.h"
 
 namespace tc
 {
@@ -91,7 +91,7 @@ namespace tc
 			m_nAsyncSendStatus = EAsyncSendStatus::Sending;
 			bool result = m_socketAPI.Send(m_sendrecvSocket, m_pAsyncSendBuf, m_nAsyncSendLen, &len);
 
-			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CSendDataResultEvt(m_pTcpSrv, result, m_nAsyncSendLen, len));
+			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new SendDataResultEvt(m_pTcpSrv, result, m_nAsyncSendLen, len));
 
 			delete m_pAsyncSendBuf;
 			m_pAsyncSendBuf = NULL;
@@ -112,7 +112,7 @@ namespace tc
 			PrintfDebug(_T("[%s:%d][socket: %d] recved [%s:%d][socket: %d] data, size: %d"),
 				m_localAddress.ip, m_localAddress.port, m_pTcpSrv->GetSocket(), m_peerAddress.ip, m_peerAddress.port, m_sendrecvSocket, len);
 
-			CRecvPeerDataEvt* pEvent = new CRecvPeerDataEvt(m_pTcpSrv, m_sendrecvSocket, pRecvBuf, len);
+			RecvDataEvt* pEvent = new RecvDataEvt(m_pTcpSrv, m_sendrecvSocket, pRecvBuf, len);
 			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
 		}
 		else//接收数据失败
@@ -132,7 +132,7 @@ namespace tc
 	void CTcpConnection::OnConnDisconnect()
 	{
 		CTcpCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//移除select队列中socket
-		CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new CTcpDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
+		CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
 		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除tcp连接对象
 	}
 

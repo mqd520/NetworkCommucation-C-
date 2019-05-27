@@ -1,33 +1,35 @@
 #include "stdafx.h"
-#include "TcpEvt.h"
 #include "Def.h"
+#include "Include/tc/Def1.h"
+#include "Include/tc/TcpEvt.h"
 
 namespace tc
 {
-	CTcpEvt::CTcpEvt(CTcpService* pSrv, SOCKET sendrecv/* = NULL*/) :
-		m_pTcpSrv(pSrv),
-		m_socket(sendrecv)
+	TcpEvt::TcpEvt(CTcpService* pSrv, SOCKET sendrecv/* = NULL*/) :
+		pTcpSrv(pSrv),
+		socket(sendrecv),
+		evt(ETcpEvt::None)
 	{
 
 	}
 
-	CTcpEvt::~CTcpEvt()
+	TcpEvt::~TcpEvt()
 	{
 
 	}
 
-	int CTcpEvt::GetEvtType()
+	int TcpEvt::GetEvtType()
 	{
-		return 0;
+		return evt;
 	}
 
-	CTcpService* CTcpEvt::GetTcpSrv()
+	CTcpService* TcpEvt::GetTcpSrv()
 	{
-		return m_pTcpSrv;
+		return pTcpSrv;
 	}
 
-	SOCKET CTcpEvt::GetSendRecvSocket()
+	SOCKET TcpEvt::GetSendRecvSocket()
 	{
-		return m_socket;
+		return socket;
 	}
 }
