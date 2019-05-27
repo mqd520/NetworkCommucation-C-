@@ -10,12 +10,12 @@ namespace tc
 	class RecvNewConnEvt : public TcpEvt
 	{
 	private:
-		TCHAR strClientIP[20];	// 客户端IP
-		int nClientPort;					// 客户端端口
-		bool bRecvConn;						// 是否接受新连接
+		string strClientIP;	// 客户端IP
+		int nClientPort;	// 客户端端口
+		bool bRecvConn;		// 是否接受新连接
 
 	public:
-		RecvNewConnEvt(CTcpService* pSrv, SOCKET client, TCHAR* ip, int port);
+		RecvNewConnEvt(CTcpService* pSrv, SOCKET client);
 		~RecvNewConnEvt();
 
 		//************************************

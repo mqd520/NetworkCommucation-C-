@@ -60,7 +60,7 @@ namespace tc
 			SOCKET client = m_socketAPI.Accept(socket, pSrv->GetServerIP(), pSrv->GetServerPort());
 			if (client > 0)
 			{
-				CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client, NULL, 0));
+				CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client));
 			}
 		}
 	}

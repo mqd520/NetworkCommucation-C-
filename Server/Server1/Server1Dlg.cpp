@@ -109,10 +109,10 @@ void CServer1Dlg::OnBnClickedButton1()
 	CString str;
 	m_edPort.GetWindowText(str);
 	int port = 0;
-	_tcscanf_s(_T("%d"), &port);
+	_stscanf_s(str, _T("%d"), &port);
 	m_edPort.EnableWindow(FALSE);
 	
-	m_server.Listen(_T("192.168.0.69"), port);
+	m_server.Listen(_T("192.168.43.238"), port);
 }
 
 void OnTcpEvt(TcpEvt* pEvt, void* pParam)

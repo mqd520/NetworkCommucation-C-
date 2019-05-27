@@ -4,16 +4,16 @@
 #include "Include/tc/RecvNewConnEvt.h"
 #include "ServerTcpConnection.h"
 #include "Include/tc/TcpCommuMgr.h"
+#include "SocketTool.h"
 
 namespace tc
 {
-	RecvNewConnEvt::RecvNewConnEvt(CTcpService* pSrv, SOCKET client, TCHAR* ip, int port) :
+	RecvNewConnEvt::RecvNewConnEvt(CTcpService* pSrv, SOCKET client) :
 		TcpEvt(pSrv, client),
-		nClientPort(port),
 		bRecvConn(true)
 	{
-		evt = ETcpEvt::RecvConnResult;
-		_tcscpy(strClientIP, ip);
+		evt = ETcpEvt::RecvNewConn;
+		strClientIP = SocketTool::GetPeerIpAndPort(client, &nClientPort);
 	}
 
 	RecvNewConnEvt::~RecvNewConnEvt()
@@ -37,7 +37,7 @@ namespace tc
 
 	string RecvNewConnEvt::GetClientIP()
 	{
-		return "";
+		return strClientIP;
 	}
 
 	int RecvNewConnEvt::GetClientPort()
