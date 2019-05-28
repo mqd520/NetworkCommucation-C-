@@ -33,11 +33,6 @@ namespace tc
 		if (!bListening)
 		{
 			bListening = true;
-			socket = m_socketAPI.CreateTcpSocket();
-			m_socketAPI.SetNonBlock(socket);
-			m_socketAPI.Bind(socket, strSelfIP, nSelfPort);
-			m_socketAPI.Listen(socket);
-			m_socketAddr = m_socketAPI.GetSocketAddr(strSelfIP, nSelfPort);
 
 			//加入select队列
 			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Accept);

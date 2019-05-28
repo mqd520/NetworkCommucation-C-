@@ -15,8 +15,8 @@ namespace tc
 		m_socketAPI.GetPeerIpAndPort(client, m_peerAddress.ip, &m_peerAddress.port);
 		if (pTcpSrv)
 		{
-			_tcscpy(m_localAddress.ip, pTcpSrv->GetSelfIP());
-			m_localAddress.port = pTcpSrv->GetSelfPort();
+			//_tcscpy(m_localAddress.ip, pTcpSrv->GetSelfIP());
+			//m_localAddress.port = pTcpSrv->GetSelfPort();
 		}
 	}
 

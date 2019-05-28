@@ -21,22 +21,22 @@ namespace tc
 
 	void CTcpClient::Init()
 	{
-		if (socket == INVALID_SOCKET)
-		{
-			socket = m_socketAPI.CreateTcpSocket();
-			SOCKADDR_IN addr;
-			addr.sin_family = AF_INET;
-			addr.sin_port = htons(nSelfPort);
-#ifdef _UNICODE
-			string str = UTF8ToMultiByte(strSelfIP);
-			addr.sin_addr.S_un.S_addr = inet_addr(str.c_str());
-#else
-			addr.sin_addr.S_un.S_addr = inet_addr(strSelfIP);
-#endif // _UNICODE
-			m_socketAPI.SetNonBlock(socket);
-
-			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Connect);
-		}
+//		if (socket == INVALID_SOCKET)
+//		{
+//			socket = m_socketAPI.CreateTcpSocket();
+//			SOCKADDR_IN addr;
+//			addr.sin_family = AF_INET;
+//			addr.sin_port = htons(nSelfPort);
+//#ifdef _UNICODE
+//			string str = UTF8ToMultiByte(strSelfIP);
+//			addr.sin_addr.S_un.S_addr = inet_addr(str.c_str());
+//#else
+//			addr.sin_addr.S_un.S_addr = inet_addr(strSelfIP);
+//#endif // _UNICODE
+//			m_socketAPI.SetNonBlock(socket);
+//
+//			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Connect);
+//		}
 	}
 
 	void CTcpClient::Reconnect()
@@ -45,7 +45,7 @@ namespace tc
 		if (!m_bIsConnecting && !m_bIsConnected)
 		{
 			m_bIsConnecting = true;
-			m_socketAPI.Connect1(socket, strSelfIP, nSelfPort);
+			//m_socketAPI.Connect1(socket, strSelfIP, nSelfPort);
 		}
 	}
 

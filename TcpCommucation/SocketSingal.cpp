@@ -57,11 +57,11 @@ namespace tc
 		TcpService* pSrv = CTcpCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
 		if (pSrv)
 		{
-			SOCKET client = m_socketAPI.Accept(socket, pSrv->GetSelfIP(), pSrv->GetSelfPort());
-			if (client > 0)
-			{
-				CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client));
-			}
+			//SOCKET client = m_socketAPI.Accept(socket, pSrv->GetSelfIP(), pSrv->GetSelfPort());
+			//if (client > 0)
+			//{
+			//	CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client));
+			//}
 		}
 	}
 

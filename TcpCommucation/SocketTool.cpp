@@ -7,6 +7,8 @@
 
 namespace tc
 {
+	vector<SocketCallbackInfo> SocketTool::vecFNs;
+
 	SocketTool::SocketTool()
 	{
 
@@ -24,7 +26,7 @@ namespace tc
 			char ch[256] = { 0 };
 			sprintf_s(ch, "socket error, fn: %s, code: %d, remark: %s", fn.c_str(), code, remark.c_str());
 
-			for (vector<SocketCallbackInfo>::iterator it; it != vecFNs.end(); it++)
+			for (vector<SocketCallbackInfo>::iterator it = vecFNs.begin(); it != vecFNs.end(); it++)
 			{
 				it->lpfn(ch, it->lpParam);
 			}
@@ -34,7 +36,7 @@ namespace tc
 	void SocketTool::RegErrorCallback(LPErrorCallback lpfn, void* lpParam)
 	{
 		bool b = false;
-		for (vector<SocketCallbackInfo>::iterator it; it != vecFNs.end(); it++)
+		for (vector<SocketCallbackInfo>::iterator it = vecFNs.begin(); it != vecFNs.end(); it++)
 		{
 			if (it->lpfn == lpfn)
 			{
@@ -54,7 +56,7 @@ namespace tc
 
 	void SocketTool::RemoveErrorCallback(LPErrorCallback lpfn)
 	{
-		for (vector<SocketCallbackInfo>::iterator it; it != vecFNs.end(); it++)
+		for (vector<SocketCallbackInfo>::iterator it = vecFNs.begin(); it != vecFNs.end(); it++)
 		{
 			if (it->lpfn == lpfn)
 			{
@@ -85,7 +87,7 @@ namespace tc
 		SOCKET s = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (s == INVALID_SOCKET)
 		{
-			ProcessErrorInfo("::socket", WSAGetLastError(), "create socket fail", b);
+			ProcessErrorInfo("socket", WSAGetLastError(), "create socket fail", b);
 		}
 
 		return s;
@@ -119,9 +121,50 @@ namespace tc
 		{
 			char ch[50] = { 0 };
 			sprintf_s(ch, "bind fail, ip: %s, port: %d", ip.c_str(), port);
-			ProcessErrorInfo("::bind", WSAGetLastError(), ch, b);
+			ProcessErrorInfo("bind", WSAGetLastError(), ch, b);
 			return false;
 		}
+	}
+
+	bool SocketTool::Listen(SOCKET socket, string ip, int port, int backlog /*= SOMAXCONN*/, bool b /*= true*/)
+	{
+		int ret = listen(socket, backlog);
+		if (ret == 0)
+		{
+			return true;
+		}
+		else
+		{
+			char ch[100] = { 0 };
+			sprintf_s(ch, "listen fail, socket: %d, ip: %s, port: %d", socket, ip.c_str(), port);
+			ProcessErrorInfo("listen", WSAGetLastError(), ch, b);
+			return false;
+		}
+	}
+
+	SOCKET SocketTool::Accept(SOCKET socket, string ip, int port, bool b /*= true*/)
+	{
+		SOCKADDR_IN addr = GetSocketAddr(ip, port);
+		SOCKET client = ::accept(socket, (SOCKADDR*)&addr, NULL);
+		if (client == INVALID_SOCKET)
+		{
+			char ch[100] = { 0 };
+			sprintf_s(ch, "accept fail, socket: %d, ip: %s, port: %d", socket, ip.c_str(), port);
+			ProcessErrorInfo("accept", WSAGetLastError(), ch, b);
+		}
+
+		return client;
+	}
+
+	void SocketTool::CloseSocket(SOCKET socket)
+	{
+		::closesocket(socket);
+	}
+
+	void SocketTool::SetNonBlock(SOCKET socket, bool nonblock /*= true*/)
+	{
+		u_long mode = nonblock ? 1 : 0;
+		ioctlsocket(socket, FIONBIO, &mode);
 	}
 
 	string SocketTool::GetPeerIpAndPort(SOCKET socket, int* port)
