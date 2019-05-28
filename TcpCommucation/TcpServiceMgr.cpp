@@ -13,12 +13,12 @@ namespace tc
 		
 	}
 
-	void CTcpServiceMgr::PushTcpService(CTcpService* srv)
+	void CTcpServiceMgr::PushTcpService(TcpService* srv)
 	{
 		m_vecTcpService.push_back(srv);
 	}
 
-	CTcpService* CTcpServiceMgr::GetTcpSrvBySocket(SOCKET socket)
+	TcpService* CTcpServiceMgr::GetTcpSrvBySocket(SOCKET socket)
 	{
 		for (int i = 0; i < (int)m_vecTcpService.size(); i++)
 		{

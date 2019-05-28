@@ -5,7 +5,7 @@
 namespace tc
 {
 	//tcp¿Í»§¶Ë
-	class CTcpClient : public CTcpService
+	class CTcpClient : public TcpService
 	{
 	public:
 		CTcpClient(TCHAR* strServerIP, int nServerPort);

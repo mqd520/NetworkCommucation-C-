@@ -43,7 +43,7 @@ namespace tc
 			TcpEvt* pEvent = m_queueEvent.front();
 			m_queueEvent.pop();
 
-			CTcpService* pSrv = pEvent->GetTcpSrv();
+			TcpService* pSrv = pEvent->GetTcpSrv();
 			if (pSrv)
 			{
 				pSrv->OnRecvTcpEvent(pEvent);

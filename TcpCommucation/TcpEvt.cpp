@@ -5,7 +5,7 @@
 
 namespace tc
 {
-	TcpEvt::TcpEvt(CTcpService* pSrv, SOCKET sendrecv/* = NULL*/) :
+	TcpEvt::TcpEvt(TcpService* pSrv, SOCKET sendrecv/* = NULL*/) :
 		pTcpSrv(pSrv),
 		socket(sendrecv),
 		evt(ETcpEvt::None)
@@ -23,7 +23,7 @@ namespace tc
 		return evt;
 	}
 
-	CTcpService* TcpEvt::GetTcpSrv()
+	TcpService* TcpEvt::GetTcpSrv()
 	{
 		return pTcpSrv;
 	}

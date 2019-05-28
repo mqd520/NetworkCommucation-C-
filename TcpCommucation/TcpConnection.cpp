@@ -9,7 +9,7 @@
 
 namespace tc
 {
-	CTcpConnection::CTcpConnection(CTcpService* pSrv, SOCKET sendrecv) :
+	CTcpConnection::CTcpConnection(TcpService* pSrv, SOCKET sendrecv) :
 		m_pTcpSrv(pSrv),
 		m_sendrecvSocket(sendrecv),
 		m_pAsyncSendBuf(NULL),
@@ -33,7 +33,7 @@ namespace tc
 		return m_sendrecvSocket;
 	}
 
-	CTcpService* CTcpConnection::GetTcpService()
+	TcpService* CTcpConnection::GetTcpService()
 	{
 		return m_pTcpSrv;
 	}

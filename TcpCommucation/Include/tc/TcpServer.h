@@ -10,13 +10,13 @@ using namespace std;
 namespace tc
 {
 	//tcp服务端
-	class CTcpServer : public CTcpService
+	class TcpServer : public TcpService
 	{
 	protected:
-		CSocketAPI m_socketAPI;//socket管理对象
-		bool m_bListening;//是否正在监听
-		vector<TCHAR*> m_vecAllowIP;//允许的客户端IP
-		SOCKADDR_IN m_socketAddr;//socket addr
+		CSocketAPI m_socketAPI;			//socket管理对象
+		bool bListening;				//是否正在监听
+		vector<TCHAR*> m_vecAllowIP;	//允许的客户端IP
+		SOCKADDR_IN m_socketAddr;		//socket addr
 
 	protected:
 		//************************************
@@ -32,15 +32,18 @@ namespace tc
 		void OnRecvTcpEvent(TcpEvt* pEvent);
 
 	public:
-		CTcpServer();
-		~CTcpServer();
+		TcpServer();
+		~TcpServer();
+
+		//************************************
+		// Method:    设置监听信息
+		//************************************
+		void SetListenInfo(string ip, int port);
 
 		//************************************
 		// Method:    开始监听
-		// Parameter: 监听IP
-		// Parameter: 监听端口
 		//************************************
-		bool Listen(TCHAR* ip, int port);
+		bool Listen();
 
 		//************************************
 		// Method:    向对端发送数据

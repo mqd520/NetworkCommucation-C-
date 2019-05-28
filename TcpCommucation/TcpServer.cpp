@@ -8,44 +8,46 @@
 
 namespace tc
 {
-	CTcpServer::CTcpServer() :
-		m_bListening(false)
+	TcpServer::TcpServer() :
+		bListening(false)
 	{
 
 	}
 
-	CTcpServer::~CTcpServer()
+	TcpServer::~TcpServer()
 	{
 
 	}
 
-	bool CTcpServer::Listen(TCHAR* ip, int port)
+	void TcpServer::SetListenInfo(string ip, int port)
 	{
-		if (!m_bListening)
+		if (!bListening)
 		{
-			_tcscpy(m_strServerIP, ip);
-			m_nServerPort = port;
+			strSelfIP = ip;
+			nSelfPort = port;
+		}
+	}
 
-			//初始化服务端socket
-			m_bListening = true;
-			m_socket = m_socketAPI.CreateTcpSocket();
-			m_socketAPI.SetNonBlock(m_socket);
-			m_socketAPI.Bind(m_socket, m_strServerIP, m_nServerPort);
-			m_socketAPI.Listen(m_socket);
-			m_socketAddr = m_socketAPI.GetSocketAddr(m_strServerIP, m_nServerPort);
-
-			PrintfInfo(_T("Listen success: %s:%d"), m_strServerIP, m_nServerPort);
-			PrintfDebug(_T("Listen success: %s:%d, socket: %d"), m_strServerIP, m_nServerPort, m_socket);
+	bool TcpServer::Listen()
+	{
+		if (!bListening)
+		{
+			bListening = true;
+			socket = m_socketAPI.CreateTcpSocket();
+			m_socketAPI.SetNonBlock(socket);
+			m_socketAPI.Bind(socket, strSelfIP, nSelfPort);
+			m_socketAPI.Listen(socket);
+			m_socketAddr = m_socketAPI.GetSocketAddr(strSelfIP, nSelfPort);
 
 			//加入select队列
-			CTcpCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::Accept);
+			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Accept);
 
 			return true;
 		}
 		return true;
 	}
 
-	void CTcpServer::OnRecvTcpEvent(TcpEvt* pEvent)
+	void TcpServer::OnRecvTcpEvent(TcpEvt* pEvent)
 	{
 		if (pEvent->GetEvtType() == ETcpEvt::RecvNewConn)//收到新连接
 		{
@@ -88,7 +90,7 @@ namespace tc
 		__super::OnRecvTcpEvent(pEvent);
 	}
 
-	void CTcpServer::AddAllowIP(TCHAR* ip)
+	void TcpServer::AddAllowIP(TCHAR* ip)
 	{
 		bool exist = false;
 		for (int i = 0; i < (int)m_vecAllowIP.size(); i++)
@@ -107,7 +109,7 @@ namespace tc
 		}
 	}
 
-	void CTcpServer::RemoveAllowIP(TCHAR* ip)
+	void TcpServer::RemoveAllowIP(TCHAR* ip)
 	{
 		for (vector<TCHAR*>::iterator it = m_vecAllowIP.begin(); it < m_vecAllowIP.end(); it++)
 		{
@@ -119,12 +121,12 @@ namespace tc
 		}
 	}
 
-	void CTcpServer::ClearAllowIP()
+	void TcpServer::ClearAllowIP()
 	{
 		m_vecAllowIP.clear();
 	}
 
-	bool CTcpServer::IsAllow(TCHAR* ip)
+	bool TcpServer::IsAllow(TCHAR* ip)
 	{
 		bool result = true;
 		int count = (int)m_vecAllowIP.size();
@@ -143,12 +145,12 @@ namespace tc
 		return result;
 	}
 
-	bool CTcpServer::Send(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
+	bool TcpServer::Send(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
 	{
 		return __super::SendData(socket, pBuf, len, asyncs, actualLen);
 	}
 
-	void CTcpServer::CloseClient(SOCKET client)
+	void TcpServer::CloseClient(SOCKET client)
 	{
 		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(client);
 		if (pConn)

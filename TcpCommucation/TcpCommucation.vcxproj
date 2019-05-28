@@ -98,6 +98,7 @@
     <ClInclude Include="Include\tc\RecvDataEvt.h" />
     <ClInclude Include="Include\tc\RecvNewConnEvt.h" />
     <ClInclude Include="Include\tc\SendDataResultEvt.h" />
+    <ClInclude Include="Include\tc\SocketTool.h" />
     <ClInclude Include="Include\tc\TcpCommuMgr.h" />
     <ClInclude Include="Include\tc\TcpEvt.h" />
     <ClInclude Include="Include\tc\TcpServer.h" />
@@ -117,7 +118,6 @@
     <ClInclude Include="ServerTcpConnection.h" />
     <ClInclude Include="SocketAPI.h" />
     <ClInclude Include="SocketSingal.h" />
-    <ClInclude Include="SocketTool.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TcpClient.h" />

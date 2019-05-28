@@ -10,8 +10,8 @@ namespace tc
 		m_bIsConnecting(false),
 		m_bIsConnected(false)
 	{
-		_tcscpy(m_strServerIP, strServerIP);
-		m_nServerPort = nServerPort;
+		_tcscpy(strServerIP, strServerIP);
+		nServerPort = nServerPort;
 	}
 
 	CTcpClient::~CTcpClient()
@@ -21,21 +21,21 @@ namespace tc
 
 	void CTcpClient::Init()
 	{
-		if (m_socket == INVALID_SOCKET)
+		if (socket == INVALID_SOCKET)
 		{
-			m_socket = m_socketAPI.CreateTcpSocket();
+			socket = m_socketAPI.CreateTcpSocket();
 			SOCKADDR_IN addr;
 			addr.sin_family = AF_INET;
-			addr.sin_port = htons(m_nServerPort);
+			addr.sin_port = htons(nSelfPort);
 #ifdef _UNICODE
-			string str = UTF8ToMultiByte(m_strServerIP);
+			string str = UTF8ToMultiByte(strSelfIP);
 			addr.sin_addr.S_un.S_addr = inet_addr(str.c_str());
 #else
-			addr.sin_addr.S_un.S_addr = inet_addr(m_strServerIP);
+			addr.sin_addr.S_un.S_addr = inet_addr(strSelfIP);
 #endif // _UNICODE
-			m_socketAPI.SetNonBlock(m_socket);
+			m_socketAPI.SetNonBlock(socket);
 
-			CTcpCommuMgr::GetSelect()->AddSocket(m_socket, ESelectSocketType::Connect);
+			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Connect);
 		}
 	}
 
@@ -45,7 +45,7 @@ namespace tc
 		if (!m_bIsConnecting && !m_bIsConnected)
 		{
 			m_bIsConnecting = true;
-			m_socketAPI.Connect1(m_socket, m_strServerIP, m_nServerPort);
+			m_socketAPI.Connect1(socket, strSelfIP, nSelfPort);
 		}
 	}
 
@@ -57,7 +57,7 @@ namespace tc
 
 	bool CTcpClient::Send(BYTE* pBuf, int len, bool asyncs/* = true*/, int* actualLen/* = NULL*/)
 	{
-		return __super::SendData(m_socket, pBuf, len, asyncs, actualLen);
+		return __super::SendData(socket, pBuf, len, asyncs, actualLen);
 	}
 
 	void CTcpClient::OnRecvTcpEvent(TcpEvt* pEvent)

@@ -227,7 +227,7 @@
     <ClInclude Include="Include\tc\ConnectSrvResultEvt.h">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClInclude>
-    <ClInclude Include="SocketTool.h">
+    <ClInclude Include="Include\tc\SocketTool.h">
       <Filter>04 Socket管理</Filter>
     </ClInclude>
   </ItemGroup>

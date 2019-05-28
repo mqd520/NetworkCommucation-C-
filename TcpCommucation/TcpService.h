@@ -8,15 +8,15 @@
 
 namespace tc
 {
-	///tcp服务
-	class CTcpService
+	// tcp服务
+	class TcpService
 	{
 	protected:
 		CSocketAPI m_socketAPI;			// socket api
-		SOCKET m_socket;				// socket,服务端(客户端)socket
-		TCHAR m_strServerIP[20];		// socket关联的服务端IP
-		int m_nServerPort;				// socket关联的服务端端口
-		LPTcpEventCallback m_lpCallback;// tcp事件回调函数指针
+		SOCKET socket;				// 关联的socket
+		string strSelfIP;		// socket关联的服务端IP
+		int nSelfPort;				// socket关联的服务端端口
+		LPTcpEventCallback lpCallback;// tcp事件回调函数指针
 		void* pParam;					// 事件附加参数
 
 	protected:
@@ -44,8 +44,8 @@ namespace tc
 		void DispatchTcpEvt(TcpEvt* pEvent);
 
 	public:
-		CTcpService();
-		~CTcpService();
+		TcpService();
+		~TcpService();
 
 		//************************************
 		// Method:    获取服务关联的socket
@@ -53,14 +53,14 @@ namespace tc
 		SOCKET GetSocket();
 
 		//************************************
-		// Method:    获取服务端IP
+		// Method:    获取自身关联的IP
 		//************************************
-		TCHAR* GetServerIP();
+		string GetSelfIP();
 
 		//************************************
-		// Method:    获取服务端端口
+		// Method:    获取自身关联的端口
 		//************************************
-		int GetServerPort();
+		int GetSelfPort();
 
 		//************************************
 		// Method:    注册tcp事件回调函数

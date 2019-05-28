@@ -12,7 +12,7 @@ namespace tc
 		int nActualLen;	// 实际发送长度
 
 	public:
-		SendDataResultEvt(CTcpService* pSrv, bool success, int len, int actualLen);
+		SendDataResultEvt(TcpService* pSrv, bool success, int len, int actualLen);
 		~SendDataResultEvt();
 
 		//************************************

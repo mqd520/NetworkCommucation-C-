@@ -9,7 +9,7 @@ namespace tc
 		bool bSuccess;
 
 	public:
-		ConnectSrvResultEvt(CTcpService* pSrv, bool success);
+		ConnectSrvResultEvt(TcpService* pSrv, bool success);
 		~ConnectSrvResultEvt();
 
 		bool GetConnectResult();

@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+
+using namespace std;
 
 namespace tc
 {
@@ -29,6 +32,8 @@ namespace tc
 		// Parameter: int len:		»º³åÇø³¤¶È
 		//************************************
 		static void ReverseBuf(BYTE* pBuf, int len);
+
+
 
 	private:
 

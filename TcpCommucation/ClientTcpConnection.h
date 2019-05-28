@@ -8,7 +8,7 @@ namespace tc
 	class CClientTcpConnection : public CTcpConnection
 	{
 	public:
-		CClientTcpConnection(CTcpService* pSrv, SOCKET sendrecv);
+		CClientTcpConnection(TcpService* pSrv, SOCKET sendrecv);
 		~CClientTcpConnection();
 	};
 }

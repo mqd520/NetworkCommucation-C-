@@ -16,7 +16,7 @@ namespace tc
 		// Parameter: 关联的tcp服务对象
 		// Parameter: 关联的用于接收数据的socket
 		//************************************
-		RecvDataEvt(CTcpService* pSrv, SOCKET recv, BYTE* pBuf, int len);
+		RecvDataEvt(TcpService* pSrv, SOCKET recv, BYTE* pBuf, int len);
 		~RecvDataEvt();
 
 		//************************************

@@ -12,7 +12,7 @@ namespace tc
 	{
 	protected:
 		CSocketAPI m_socketAPI;//socket api
-		CTcpService* m_pTcpSrv;//tcp服务对象
+		TcpService* m_pTcpSrv;//tcp服务对象
 		SOCKET m_sendrecvSocket;//用于发送(接收)数据的socket
 		BYTE* m_pAsyncSendBuf;//异步发送缓冲区                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 		int m_nAsyncSendLen;//异步发送数据长度
@@ -34,7 +34,7 @@ namespace tc
 		// Parameter: tcp服务对象
 		// Parameter: 用于发送(接收)数据的socket
 		//************************************
-		CTcpConnection(CTcpService* pSrv, SOCKET sendrecv);
+		CTcpConnection(TcpService* pSrv, SOCKET sendrecv);
 		~CTcpConnection();
 
 		//************************************
@@ -57,7 +57,7 @@ namespace tc
 		// Method:    获取关联的tcp服务对象
 		// Returns:   tcp服务对象
 		//************************************
-		CTcpService* GetTcpService();
+		TcpService* GetTcpService();
 
 		//************************************
 		// Method:    异步发送数据

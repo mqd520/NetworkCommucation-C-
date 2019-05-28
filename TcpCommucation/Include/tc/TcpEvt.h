@@ -3,13 +3,13 @@
 
 namespace tc
 {
-	class CTcpService;
+	class TcpService;
 
 	//tcp服务事件基类
 	class TcpEvt
 	{
 	protected:
-		CTcpService* pTcpSrv;	// tcp服务对象
+		TcpService* pTcpSrv;	// tcp服务对象
 		SOCKET socket;			// 关联的用于发送(接收)数据的socket
 		int evt;				// 事件类型
 
@@ -19,7 +19,7 @@ namespace tc
 		// Parameter: 关联的tcp服务对象
 		// Parameter: 关联的用于发送(接收)数据的socket
 		//************************************
-		TcpEvt(CTcpService* pSrv, SOCKET sendrecv = NULL);
+		TcpEvt(TcpService* pSrv, SOCKET sendrecv = NULL);
 		virtual ~TcpEvt();
 
 		//************************************
@@ -30,7 +30,7 @@ namespace tc
 		//************************************
 		// Method:    获取tcp服务对象
 		//************************************
-		CTcpService* GetTcpSrv();
+		TcpService* GetTcpSrv();
 
 		//************************************
 		// Method:    获取用于发送(接收)数据的socket

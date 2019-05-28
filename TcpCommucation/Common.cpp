@@ -24,7 +24,7 @@ namespace tc
 		TCHAR dest[PRINTFMAXLEN] = { 0 };
 		SYSTEMTIME st = { 0 };
 		GetLocalTime(&st);
-		wsprintf(dest, L"[%d-%02d-%02d %02d:%02d:%02d] %s \n", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, msg1);
+		//wsprintf(dest, L"[%d-%02d-%02d %02d:%02d:%02d] %s \n", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, msg1);
 		dest[PRINTFMAXLEN - 1] = 0;
 
 		//…Ë÷√—’…´

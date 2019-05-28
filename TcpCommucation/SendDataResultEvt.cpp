@@ -5,7 +5,7 @@
 
 namespace tc
 {
-	SendDataResultEvt::SendDataResultEvt(CTcpService* pSrv, bool success, int len, int actualLen)
+	SendDataResultEvt::SendDataResultEvt(TcpService* pSrv, bool success, int len, int actualLen)
 		:TcpEvt(pSrv),
 		bSuccess(success),
 		nLen(len),

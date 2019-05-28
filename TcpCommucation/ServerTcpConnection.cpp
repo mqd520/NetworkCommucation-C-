@@ -6,7 +6,7 @@
 
 namespace tc
 {
-	CServerTcpConnection::CServerTcpConnection(CTcpService* pTcpSrv, SOCKET client, SOCKET server) :
+	CServerTcpConnection::CServerTcpConnection(TcpService* pTcpSrv, SOCKET client, SOCKET server) :
 		CTcpConnection(pTcpSrv, client),
 		m_serverSocket(server)
 	{
@@ -15,8 +15,8 @@ namespace tc
 		m_socketAPI.GetPeerIpAndPort(client, m_peerAddress.ip, &m_peerAddress.port);
 		if (pTcpSrv)
 		{
-			_tcscpy(m_localAddress.ip, pTcpSrv->GetServerIP());
-			m_localAddress.port = pTcpSrv->GetServerPort();
+			_tcscpy(m_localAddress.ip, pTcpSrv->GetSelfIP());
+			m_localAddress.port = pTcpSrv->GetSelfPort();
 		}
 	}
 
@@ -55,12 +55,12 @@ namespace tc
 		if (pResult->success)
 		{
 			PrintfDebug(_T("[%s:%d][socket: %d] send data to [%s:%d] successed, size: %d, client socket: %d"),
-				m_pTcpSrv->GetServerIP(), m_pTcpSrv->GetServerPort(), m_pTcpSrv->GetSocket(), ip, port, pResult->len, m_sendrecvSocket);
+				m_pTcpSrv->GetSelfIP(), m_pTcpSrv->GetSelfPort(), m_pTcpSrv->GetSocket(), ip, port, pResult->len, m_sendrecvSocket);
 		}
 		else
 		{
 			PrintfDebug(_T("[%s:%d][socket: %d] send data to [%s:%d] failed, size: %d, actual size: %d"),
-				m_pTcpSrv->GetServerIP(), m_pTcpSrv->GetServerPort(), m_pTcpSrv->GetSocket(), ip, port, m_sendrecvSocket, pResult->len, pResult->actualLen);
+				m_pTcpSrv->GetSelfIP(), m_pTcpSrv->GetSelfPort(), m_pTcpSrv->GetSocket(), ip, port, m_sendrecvSocket, pResult->len, pResult->actualLen);
 		}
 #endif // _DEBUG
 
@@ -77,7 +77,7 @@ namespace tc
 
 #ifdef _DEBUG
 		PrintfDebug(_T("Net error, server: %s:%d[socket: %d, server client socket: %d], client: %s:%d"),
-			m_pTcpSrv->GetServerIP(), m_pTcpSrv->GetServerPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket, ip, port);
+			m_pTcpSrv->GetSelfIP(), m_pTcpSrv->GetSelfPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket, ip, port);
 #endif // _DEBUG
 
 		//m_pTcpSrv->OnNetError(ip, port);

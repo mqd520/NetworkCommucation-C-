@@ -5,7 +5,7 @@
 
 namespace tc
 {
-	ConnectSrvResultEvt::ConnectSrvResultEvt(CTcpService* pSrv, bool success) :
+	ConnectSrvResultEvt::ConnectSrvResultEvt(TcpService* pSrv, bool success) :
 		TcpEvt(pSrv),
 		bSuccess(success)
 	{

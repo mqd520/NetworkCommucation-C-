@@ -16,7 +16,7 @@ namespace tc
 		// Parameter: 客户端socket
 		// Parameter: 服务端socket
 		//************************************
-		CServerTcpConnection(CTcpService* pTcpSrv, SOCKET client, SOCKET server);
+		CServerTcpConnection(TcpService* pTcpSrv, SOCKET client, SOCKET server);
 		~CServerTcpConnection();
 
 		//获取服务端socket

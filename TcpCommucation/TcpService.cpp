@@ -7,42 +7,42 @@
 
 namespace tc
 {
-	CTcpService::CTcpService() :
-		m_socket(INVALID_SOCKET),
-		m_nServerPort(0),
-		m_lpCallback(NULL)
+	TcpService::TcpService() :
+		socket(INVALID_SOCKET),
+		nSelfPort(0),
+		lpCallback(NULL)
 	{
-		memset(m_strServerIP, 0, TC_MAXIPSTRELN * sizeof(TCHAR));
 		CTcpCommuMgr::GetTcpServiceMgr()->PushTcpService(this);
+		strSelfIP = "";
 	}
 
-	CTcpService::~CTcpService()
+	TcpService::~TcpService()
 	{
 
 	}
 
-	SOCKET CTcpService::GetSocket()
+	SOCKET TcpService::GetSocket()
 	{
-		return m_socket;
+		return socket;
 	}
 
-	TCHAR* CTcpService::GetServerIP()
+	string TcpService::GetSelfIP()
 	{
-		return m_strServerIP;
+		return strSelfIP;
 	}
 
-	int CTcpService::GetServerPort()
+	int TcpService::GetSelfPort()
 	{
-		return m_nServerPort;
+		return nSelfPort;
 	}
 
-	void CTcpService::RegTcpEventCallback(LPTcpEventCallback lpCallback, void* param)
+	void TcpService::RegTcpEventCallback(LPTcpEventCallback lpCallback, void* param)
 	{
-		m_lpCallback = lpCallback;
+		lpCallback = lpCallback;
 		pParam = param;
 	}
 
-	bool CTcpService::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
+	bool TcpService::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
 	{
 		//获取指定socket的tcp连接对象
 		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
@@ -63,16 +63,16 @@ namespace tc
 		return false;
 	}
 
-	void CTcpService::OnRecvTcpEvent(TcpEvt* pEvent)
+	void TcpService::OnRecvTcpEvent(TcpEvt* pEvent)
 	{
 		DispatchTcpEvt(pEvent);
 	}
 
-	void CTcpService::DispatchTcpEvt(TcpEvt* pEvent)
+	void TcpService::DispatchTcpEvt(TcpEvt* pEvent)
 	{
-		if (m_lpCallback)
+		if (lpCallback)
 		{
-			m_lpCallback(pEvent, pParam);	//通知事件注册方
+			lpCallback(pEvent, pParam);	//通知事件注册方
 		}
 	}
 }

@@ -5,7 +5,7 @@
 
 namespace tc
 {
-	ConnDisconnectEvt::ConnDisconnectEvt(CTcpService* pSrv, SOCKET sendrecv/* = NULL*/)
+	ConnDisconnectEvt::ConnDisconnectEvt(TcpService* pSrv, SOCKET sendrecv/* = NULL*/)
 		:TcpEvt(pSrv, sendrecv)
 	{
 		evt = ETcpEvt::ConnDisconnect;

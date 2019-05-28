@@ -15,7 +15,7 @@ namespace tc
 		bool bRecvConn;		// 是否接受新连接
 
 	public:
-		RecvNewConnEvt(CTcpService* pSrv, SOCKET client);
+		RecvNewConnEvt(TcpService* pSrv, SOCKET client);
 		~RecvNewConnEvt();
 
 		//************************************

@@ -7,7 +7,7 @@ namespace tc
 	class ConnDisconnectEvt : public TcpEvt
 	{
 	public:
-		ConnDisconnectEvt(CTcpService* pSrv, SOCKET sendrecv = NULL);
+		ConnDisconnectEvt(TcpService* pSrv, SOCKET sendrecv = NULL);
 		~ConnDisconnectEvt();
 
 		//************************************

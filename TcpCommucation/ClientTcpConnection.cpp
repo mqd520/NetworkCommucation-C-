@@ -3,7 +3,7 @@
 
 namespace tc
 {
-	CClientTcpConnection::CClientTcpConnection(CTcpService* pSrv, SOCKET sendrecv) :
+	CClientTcpConnection::CClientTcpConnection(TcpService* pSrv, SOCKET sendrecv) :
 		CTcpConnection(pSrv, sendrecv)
 	{
 

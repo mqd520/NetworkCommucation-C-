@@ -5,7 +5,7 @@
 
 namespace tc
 {
-	RecvDataEvt::RecvDataEvt(CTcpService* pSrv, SOCKET recv, BYTE* pBuf, int len) :
+	RecvDataEvt::RecvDataEvt(TcpService* pSrv, SOCKET recv, BYTE* pBuf, int len) :
 		TcpEvt(pSrv, recv),
 		pBuf(pBuf),
 		nLen(len)

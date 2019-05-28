@@ -112,7 +112,7 @@ void CServer1Dlg::OnBnClickedButton1()
 	_stscanf_s(str, _T("%d"), &port);
 	m_edPort.EnableWindow(FALSE);
 	
-	m_server.Listen(_T("192.168.43.238"), port);
+	m_server.Listen(_T("192.168.0.69"), port);
 }
 
 void OnTcpEvt(TcpEvt* pEvt, void* pParam)
@@ -122,7 +122,7 @@ void OnTcpEvt(TcpEvt* pEvt, void* pParam)
 		RecvNewConnEvt* pEvt1 = (RecvNewConnEvt*)pEvt;
 
 		char ch[50] = { 0 };
-		sprintf(ch, "recv new conn %s : %d \n", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
+		sprintf(ch, "recv new conn %s:%d \n", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
 
 		OutputDebugStringA(ch);
 	}

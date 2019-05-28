@@ -54,10 +54,10 @@ namespace tc
 	void CSocketSingal::RecvNewConnection(SOCKET socket)
 	{
 		//获取服务端socket关联的tcp服务对象
-		CTcpService* pSrv = CTcpCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+		TcpService* pSrv = CTcpCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
 		if (pSrv)
 		{
-			SOCKET client = m_socketAPI.Accept(socket, pSrv->GetServerIP(), pSrv->GetServerPort());
+			SOCKET client = m_socketAPI.Accept(socket, pSrv->GetSelfIP(), pSrv->GetSelfPort());
 			if (client > 0)
 			{
 				CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client));
@@ -95,7 +95,7 @@ namespace tc
 	void CSocketSingal::OnConnectSuccess(SOCKET socket)
 	{
 		//获取服务端socket关联的tcp服务对象
-		CTcpService* pSrv = CTcpCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+		TcpService* pSrv = CTcpCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
 		if (pSrv)
 		{
 			//连接成功后,不再需要监听是否已连接上服务端
