@@ -5,15 +5,15 @@ using namespace std;
 
 namespace tc
 {
-	//tcp服务对象管理
-	class CTcpServiceMgr
+	// tcp服务对象管理类
+	class TcpServiceMgr
 	{
 	private:
-		vector<TcpService*> m_vecTcpService;//tcp服务对象集合
+		vector<TcpService*> vecTcpService;	// tcp服务对象集合
 
 	public:
-		CTcpServiceMgr();
-		~CTcpServiceMgr();
+		TcpServiceMgr();
+		~TcpServiceMgr();
 
 		//************************************
 		// Method:    加入一个tcp服务对象

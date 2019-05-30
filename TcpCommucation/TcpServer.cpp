@@ -8,7 +8,8 @@
 
 namespace tc
 {
-	TcpServer::TcpServer() :
+	TcpServer::TcpServer(string ip /*= ""*/, int port /*= 0*/) :
+		TcpService(ip, port),
 		bListening(false)
 	{
 
@@ -23,8 +24,8 @@ namespace tc
 	{
 		if (!bListening)
 		{
-			strSelfIP = ip;
-			nSelfPort = port;
+			strIP = ip;
+			nPort = port;
 		}
 	}
 
@@ -34,11 +35,12 @@ namespace tc
 		{
 			bListening = true;
 
-			//加入select队列
+			// 加入select队列
 			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Accept);
 
 			return true;
 		}
+
 		return true;
 	}
 
@@ -47,11 +49,10 @@ namespace tc
 		if (pEvent->GetEvtType() == ETcpEvt::RecvNewConn)//收到新连接
 		{
 			SOCKET clientSocket = pEvent->GetSendRecvSocket();//获取客户端socket
-			TCHAR ip[TC_MAXIPSTRELN];
 			int port = 0;
-			m_socketAPI.GetPeerIpAndPort(clientSocket, ip, &port);
+			string ip = SocketTool::GetPeerIpAndPort(clientSocket, &port);
 
-			bool result = false;//接收连接结果
+			bool result = false;	// 接收连接结果
 			if (IsAllow(ip))
 			{
 				DispatchTcpEvt(pEvent);
@@ -85,32 +86,32 @@ namespace tc
 		__super::OnRecvTcpEvent(pEvent);
 	}
 
-	void TcpServer::AddAllowIP(TCHAR* ip)
+	void TcpServer::AddAllowIP(string ip)
 	{
 		bool exist = false;
-		for (int i = 0; i < (int)m_vecAllowIP.size(); i++)
+
+		for (int i = 0; i < (int)vecAllowIP.size(); i++)
 		{
-			if (_tcscmp(m_vecAllowIP[i], ip) == 0)
+			if (vecAllowIP[i] == ip)
 			{
 				exist = true;
 				break;
 			}
 		}
+
 		if (!exist)
 		{
-			TCHAR* strIP = new TCHAR[TC_MAXIPSTRELN]{0};
-			_tcscpy(strIP, ip);
-			m_vecAllowIP.push_back(strIP);
+			vecAllowIP.push_back(ip);
 		}
 	}
 
-	void TcpServer::RemoveAllowIP(TCHAR* ip)
+	void TcpServer::RemoveAllowIP(string ip)
 	{
-		for (vector<TCHAR*>::iterator it = m_vecAllowIP.begin(); it < m_vecAllowIP.end(); it++)
+		for (vector<string>::iterator it = vecAllowIP.begin(); it < vecAllowIP.end(); it++)
 		{
-			if (_tcscmp(*it, ip) == 0)
+			if (*it == ip)
 			{
-				m_vecAllowIP.erase(it);
+				vecAllowIP.erase(it);
 				break;
 			}
 		}
@@ -118,19 +119,19 @@ namespace tc
 
 	void TcpServer::ClearAllowIP()
 	{
-		m_vecAllowIP.clear();
+		vecAllowIP.clear();
 	}
 
-	bool TcpServer::IsAllow(TCHAR* ip)
+	bool TcpServer::IsAllow(string ip)
 	{
 		bool result = true;
-		int count = (int)m_vecAllowIP.size();
+		int count = (int)vecAllowIP.size();
 		if (count > 0)
 		{
 			result = false;
 			for (int i = 0; i < count; i++)
 			{
-				if (_tcscmp(m_vecAllowIP[i], ip) == 0)
+				if (vecAllowIP[i] == ip)
 				{
 					result = true;
 					break;

@@ -1,27 +1,30 @@
 #pragma once
 #include <vector>
-#include "SocketAPI.h"
 #include "Def.h"
+#include "Include/tc/SocketTool.h"
 #include "ThreadLock.h"
 
 using namespace std;
 
 namespace tc
 {
-	//select类
+	// select类
 	class CSelect
 	{
+	public:
+		CSelect();
+		~CSelect();
+
 	private:
-		CSocketAPI m_socketAPI;//socket api
-		vector<SelectSocketData> m_vecSocket;//需要监听的socket集合
-		fd_set m_readFdSet;//可读socket集合
-		fd_set m_writeFdSet;//可写socket集合
-		fd_set m_exceptFdSet;//异常socket集合
-		vector<vector<SelectSocketData>> m_group;//socket分组
-		timeval m_selectTimeout;//
-		vector<ProcessingSocketData> m_vecProcessingData;//正在进行处理的socket数据集合
-		CThreadLock m_lock1;//线程锁,针对m_vecSocket变量
-		CThreadLock m_lock2;//线程锁,针对m_vecProcessingData变量
+		vector<SelectSocketData> vecListenSocket;	//需要监听的socket集合
+		fd_set fsRead;			// 可读socket集合
+		fd_set fsWrite;			// 可写socket集合
+		fd_set fsExcept;		// 异常socket集合
+		vector<vector<SelectSocketData>> groupSocket;	// socket分组
+		timeval m_selectTimeout;
+		vector<ProcessingSocketData> vecProcessingSocketData; // 正在进行处理的socket数据集合
+		CThreadLock m_lock1;	// 线程锁, 针对vecListenSocket变量
+		CThreadLock m_lock2;	// 线程锁, 针对vecProcessingSocketData变量
 
 	private:
 		//************************************
@@ -37,7 +40,7 @@ namespace tc
 		//************************************
 		// Method:    判断指定socket的信号是否正在被处理
 		// Parameter: socket
-		// Parameter: 信号类型
+		// Parameter: socket类型: ESelectSocketType
 		//************************************
 		bool IsProcessingSingal(SOCKET socket, int type);
 
@@ -66,9 +69,6 @@ namespace tc
 		void CheckSocketCanWrite(SelectSocketData socketData);
 
 	public:
-		CSelect();
-		~CSelect();
-
 		//************************************
 		// Method:    socket队列是否为空
 		//************************************
@@ -77,7 +77,7 @@ namespace tc
 		//************************************
 		// Method:    添加socket
 		// Parameter: socket
-		// Parameter: 类型
+		// Parameter: socket类型: ESelectSocketType
 		//************************************
 		void AddSocket(SOCKET socket, int type);
 
@@ -96,7 +96,7 @@ namespace tc
 		//************************************
 		// Method:    socket信号处理完毕事件处理
 		// Parameter: socket
-		// Parameter: 信号类型
+		// Parameter: socket类型: ESelectSocketType
 		//************************************
 		void OnProcessingSocketCmp(SOCKET socket, int type);
 

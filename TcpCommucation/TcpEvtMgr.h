@@ -6,15 +6,15 @@ using namespace std;
 
 namespace tc
 {
-	//tcp事件管理对象
-	class CTcpEvtMgr
+	// tcp事件管理类
+	class TcpEvtMgr
 	{
 	private:
-		queue<TcpEvt*> m_queueEvent;//tcp事件队列
+		queue<TcpEvt*> queueEvent;	// tcp事件队列
 
 	public:
-		CTcpEvtMgr();
-		~CTcpEvtMgr();
+		TcpEvtMgr();
+		~TcpEvtMgr();
 
 		//************************************
 		// Method:    tcp事件队列是否为空

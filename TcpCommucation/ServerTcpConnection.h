@@ -3,11 +3,11 @@
 
 namespace tc
 {
-	//服务端tcp连接对象
+	// 服务端tcp连接对象
 	class CServerTcpConnection : public CTcpConnection
 	{
 	private:
-		SOCKET m_serverSocket;//服务端socket
+		SOCKET m_serverSocket;	//服务端socket
 
 	public:
 		//************************************

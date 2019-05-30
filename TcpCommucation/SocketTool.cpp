@@ -156,9 +156,99 @@ namespace tc
 		return client;
 	}
 
-	void SocketTool::CloseSocket(SOCKET socket)
+	bool SocketTool::Recv(SOCKET socket, BYTE* pBuf, int len, int* actuallyLen, bool b /*= true*/)
 	{
-		::closesocket(socket);
+		int ret = ::recv(socket, (char*)pBuf, len, 0);
+
+		if (actuallyLen != NULL)
+		{
+			*actuallyLen = ret;
+		}
+
+		if (ret > 0)
+		{
+			return true;
+		}
+		else
+		{
+			if (ret == SOCKET_ERROR)
+			{
+				char ch[100] = { 0 };
+				sprintf_s(ch, "recv fail, socket: %d", socket);
+				ProcessErrorInfo("recv", WSAGetLastError(), ch, b);
+			}
+
+			return false;
+		}
+	}
+
+	bool SocketTool::Send(SOCKET socket, BYTE* pBuf, int len, int* actuallyLen, bool b /*= true*/)
+	{
+		int ret = ::send(socket, (const char*)pBuf, len, 0);
+
+		if (actuallyLen != NULL)
+		{
+			*actuallyLen = ret;
+		}
+
+		if (ret > 0)
+		{
+			return true;
+		}
+		else
+		{
+			if (ret == SOCKET_ERROR)
+			{
+				char ch[100] = { 0 };
+				sprintf_s(ch, "send fail, socket: %d", socket);
+				ProcessErrorInfo("send", WSAGetLastError(), ch, b);
+			}
+
+			return false;
+		}
+	}
+
+	bool SocketTool::Connect(SOCKET socket, string ip, int port, bool b /*= true*/)
+	{
+		SOCKADDR_IN addr = GetSocketAddr(ip, port);
+		int ret = ::connect(socket, (SOCKADDR*)&addr, sizeof(addr));
+
+		if (ret == SOCKET_ERROR)
+		{
+			char ch[100] = { 0 };
+			sprintf_s(ch, "connect fail, socket: %d, ip: %s, port: %d", socket, ip.c_str(), port);
+			ProcessErrorInfo("connect", WSAGetLastError(), ch, b);
+			return false;
+		}
+
+		return true;
+	}
+
+	int SocketTool::Select(int nfds, fd_set* readfds, fd_set *writefds, fd_set *exceptfds, const struct timeval *timeout, bool b /*= true*/)
+	{
+		int ret = ::select(nfds, readfds, writefds, exceptfds, timeout);
+
+		if (ret == SOCKET_ERROR)
+		{
+			ProcessErrorInfo("select", WSAGetLastError(), "select fail", b);
+		}
+
+		return ret;
+	}
+
+	bool SocketTool::CloseSocket(SOCKET socket, bool b /*= true*/)
+	{
+		int ret = ::closesocket(socket);
+
+		if (ret == SOCKET_ERROR)
+		{
+			char ch[100] = { 0 };
+			sprintf_s(ch, "closesocket fail, socket: %d", socket);
+			ProcessErrorInfo("closesocket", WSAGetLastError(), ch, b);
+			return false;
+		}
+
+		return true;
 	}
 
 	void SocketTool::SetNonBlock(SOCKET socket, bool nonblock /*= true*/)

@@ -1,5 +1,5 @@
 #pragma once
-#include "../../SocketAPI.h"
+#include "Include/tc/SocketTool.h"
 #include "../../TcpConnectionMgr.h"
 #include "../../Def.h"
 #include "../../TcpService.h"
@@ -9,21 +9,20 @@ using namespace std;
 
 namespace tc
 {
-	//tcp服务端
+	// tcp服务端类
 	class TcpServer : public TcpService
 	{
 	protected:
-		CSocketAPI m_socketAPI;			//socket管理对象
-		bool bListening;				//是否正在监听
-		vector<TCHAR*> m_vecAllowIP;	//允许的客户端IP
-		SOCKADDR_IN m_socketAddr;		//socket addr
+		bool bListening;				// 是否正在监听
+		vector<string> vecAllowIP;		// 允许的客户端IP
+		SOCKADDR_IN socketAddr;			// socket addr
 
 	protected:
 		//************************************
 		// Method:    指定IP是否被允许
 		// Parameter: ip
 		//************************************
-		bool IsAllow(TCHAR* ip);
+		bool IsAllow(string ip);
 
 		//************************************
 		// Method:    收到tcp事件处理
@@ -32,7 +31,7 @@ namespace tc
 		void OnRecvTcpEvent(TcpEvt* pEvent);
 
 	public:
-		TcpServer();
+		TcpServer(string ip = "", int port = 0);
 		~TcpServer();
 
 		//************************************
@@ -66,16 +65,16 @@ namespace tc
 		// Method:    增加一个允许IP
 		// Parameter: ip
 		//************************************
-		void AddAllowIP(TCHAR* ip);
+		void AddAllowIP(string ip);
 
 		//************************************
 		// Method:    移除指定的允许IP
 		// Parameter: ip
 		//************************************
-		void RemoveAllowIP(TCHAR* ip);
+		void RemoveAllowIP(string ip);
 
 		//************************************
-		// Method:    清除所有允许IP,表示允许所有IP
+		// Method:    清除所有允许IP, 表示允许所有IP
 		//************************************
 		void ClearAllowIP();
 	};

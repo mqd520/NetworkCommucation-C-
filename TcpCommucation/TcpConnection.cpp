@@ -6,6 +6,7 @@
 #include "Include/tc/RecvDataEvt.h"
 #include "Include/tc/ConnDisconnectEvt.h"
 #include "Include/tc/SendDataResultEvt.h"
+#include "Include/tc/SocketTool.h"
 
 namespace tc
 {
@@ -52,7 +53,6 @@ namespace tc
 	{
 		if (!success)
 		{
-			PrintfError(_T("Send data to %s:%d failed"), m_peerAddress.ip, m_peerAddress.port);
 			OnConnDisconnect();
 		}
 	}
@@ -60,7 +60,7 @@ namespace tc
 	bool CTcpConnection::SendData(BYTE* pBuf, int len, int* actualLen)
 	{
 		int len1 = 0;//实际发送长度
-		bool result = m_socketAPI.Send(m_sendrecvSocket, pBuf, len, &len1);
+		bool result = SocketTool::Send(m_sendrecvSocket, pBuf, len, &len1);
 
 		if (actualLen != NULL)
 		{
@@ -89,7 +89,7 @@ namespace tc
 		{
 			int len = 0;
 			m_nAsyncSendStatus = EAsyncSendStatus::Sending;
-			bool result = m_socketAPI.Send(m_sendrecvSocket, m_pAsyncSendBuf, m_nAsyncSendLen, &len);
+			bool result = SocketTool::Send(m_sendrecvSocket, m_pAsyncSendBuf, m_nAsyncSendLen, &len);
 
 			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new SendDataResultEvt(m_pTcpSrv, result, m_nAsyncSendLen, len));
 
@@ -106,23 +106,23 @@ namespace tc
 	void CTcpConnection::OnRecvPeerData()
 	{
 		BYTE* pRecvBuf = new BYTE[TC_TCPRECVBUFFERSIZE];
-		int len = m_socketAPI.Recv(m_sendrecvSocket, pRecvBuf, TC_TCPRECVBUFFERSIZE);
-		if (len > 0)//接收数据成功
+		int len = 0;
+		bool b = SocketTool::Recv(m_sendrecvSocket, pRecvBuf, TC_TCPRECVBUFFERSIZE, &len);
+		if (b)	// 接收数据成功
 		{
-			PrintfDebug(_T("[%s:%d][socket: %d] recved [%s:%d][socket: %d] data, size: %d"),
-				m_localAddress.ip, m_localAddress.port, m_pTcpSrv->GetSocket(), m_peerAddress.ip, m_peerAddress.port, m_sendrecvSocket, len);
-
 			RecvDataEvt* pEvent = new RecvDataEvt(m_pTcpSrv, m_sendrecvSocket, pRecvBuf, len);
 			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
 		}
-		else//接收数据失败
+		else   // 接收数据失败
 		{
 			delete pRecvBuf;
-			if (len == SOCKET_ERROR)//发生了异常
+
+			if (len == 0) // 没有接收到任何数据
 			{
-				OnConnDisconnect();
+
 			}
-			else if (len == 0)//对方断开了连接
+
+			if (len < 0)	// 发生异常了
 			{
 				OnConnDisconnect();
 			}

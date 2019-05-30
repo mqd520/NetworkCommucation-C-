@@ -80,18 +80,54 @@ namespace tc
 
 		//************************************
 		// Method:    开始监听服务端
+		// Parameter: socket: socket
+		// Parameter: ip: 服务端IP
+		// Parameter: port: 服务端端口
 		//************************************
 		static bool Listen(SOCKET socket, string ip, int port, int backlog = SOMAXCONN, bool b = true);
 
 		//************************************
 		// Method:    接收新连接
+		// Parameter: ip: 服务端IP
+		// Parameter: port: 服务端端口
 		//************************************
 		static SOCKET Accept(SOCKET socket, string ip, int port, bool b = true);
 
 		//************************************
+		// Method:    接收数据
+		// Parameter: socket: socket
+		// Parameter: pBuf: 接收数据缓冲区指针
+		// Parameter: len: 接收数据缓冲区长度
+		// Parameter: actuallyLen: 实际接收长度
+		//************************************
+		static bool Recv(SOCKET socket, BYTE* pBuf, int len, int* actuallyLen, bool b = true);
+
+		//************************************
+		// Method:    发送数据
+		// Parameter: socket: socket
+		// Parameter: pBuf: 发送数据缓冲区指针
+		// Parameter: len: 发送数据缓冲区长度
+		// Parameter: actuallyLen: 实际发送长度
+		//************************************
+		static bool Send(SOCKET socket, BYTE* pBuf, int len, int* actuallyLen, bool b = true);
+
+		//************************************
+		// Method:    连接服务端
+		// Parameter: socket: socket
+		// Parameter: ip: 服务端IP
+		// Parameter: port: 服务端端口
+		//************************************
+		static bool Connect(SOCKET socket, string ip, int port, bool b = true);
+
+		//************************************
+		// Method:    查找信号
+		//************************************
+		static int Select(int nfds, fd_set* readfds, fd_set *writefds, fd_set *exceptfds, const struct timeval *timeout, bool b = true);
+
+		//************************************
 		// Method:    关闭socket
 		//************************************
-		static void CloseSocket(SOCKET socket);
+		static bool CloseSocket(SOCKET socket, bool b = true);
 
 		//************************************
 		// Method:    设置socket非阻塞

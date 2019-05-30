@@ -1,38 +1,37 @@
 #pragma once
 #include <queue>
 #include "Def.h"
-#include "SocketAPI.h"
+#include "Include/tc/SocketTool.h"
 
 using namespace std;
 
 namespace tc
 {
-	//socket信号处理
-	class CSocketSingal
+	// socket信号处理类
+	class SocketSingalProcess
 	{
 	protected:
-		queue<SocketSingalData> m_queueSocketData;//有信号的socket数据队列
-		CSocketAPI m_socketAPI;//
+		queue<SocketSingalData> quSignalSocketData;	// 有信号的socket数据队列
 
 	protected:
 		//************************************
 		// Method:    处理socket可读信号
 		// Parameter: socket
-		// Parameter: socket类型
+		// Parameter: socket类型: ESelectSocketType
 		//************************************
 		virtual void ProcessReadSingal(SOCKET socket, int type);
 
 		//************************************
 		// Method:    处理socket可写信号
 		// Parameter: socket
-		// Parameter: socket类型
+		// Parameter: socket类型: ESelectSocketType
 		//************************************
 		virtual void ProcessWriteSingal(SOCKET socket, int type);
 
 		//************************************
 		// Method:    处理socket异常信号
 		// Parameter: socket
-		// Parameter: socket类型
+		// Parameter: socket类型: ESelectSocketType
 		//************************************
 		virtual void ProcessExceptSingal(SOCKET socket, int type);
 
@@ -67,8 +66,8 @@ namespace tc
 		void OnConnectFail(SOCKET socket);
 
 	public:
-		CSocketSingal();
-		~CSocketSingal();
+		SocketSingalProcess();
+		~SocketSingalProcess();
 
 		//************************************
 		// Method:    加入一个socket信号数据

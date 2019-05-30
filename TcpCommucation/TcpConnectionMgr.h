@@ -10,11 +10,10 @@ using namespace std;
 
 namespace tc
 {
-	//tcp连接管理对象
+	// tcp连接管理类
 	class CTcpConnectionMgr
 	{
 	private:
-		CSocketAPI m_socketAPI;//socket api
 		vector<CTcpConnection*> m_vecTcpConnection;//tcp连接集合
 		CThreadLock m_lock;
 

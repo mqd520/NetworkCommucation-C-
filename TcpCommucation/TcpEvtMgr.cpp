@@ -5,43 +5,43 @@
 
 namespace tc
 {
-	CTcpEvtMgr::CTcpEvtMgr()
+	TcpEvtMgr::TcpEvtMgr()
 	{
 
 	}
 
-	CTcpEvtMgr::~CTcpEvtMgr()
+	TcpEvtMgr::~TcpEvtMgr()
 	{
-		while (m_queueEvent.size() > 0)
+		while (queueEvent.size() > 0)
 		{
-			TcpEvt* pEvent = m_queueEvent.front();
-			m_queueEvent.pop();
+			TcpEvt* pEvent = queueEvent.front();
+			queueEvent.pop();
 
 			delete pEvent;
 		}
 	}
 
-	bool CTcpEvtMgr::IsEmpty()
+	bool TcpEvtMgr::IsEmpty()
 	{
-		return m_queueEvent.size() == 0;
+		return queueEvent.size() == 0;
 	}
 
-	void CTcpEvtMgr::PushTcpEvent(TcpEvt* pEvent)
+	void TcpEvtMgr::PushTcpEvent(TcpEvt* pEvent)
 	{
-		m_queueEvent.push(pEvent);
+		queueEvent.push(pEvent);
 	}
 
-	void CTcpEvtMgr::ProcessTcpEvt()
+	void TcpEvtMgr::ProcessTcpEvt()
 	{
-		while (m_queueEvent.size() > 0)
+		while (queueEvent.size() > 0)
 		{
 			if (CTcpCommuMgr::IsExited())//指示需要退出了
 			{
 				break;
 			}
 
-			TcpEvt* pEvent = m_queueEvent.front();
-			m_queueEvent.pop();
+			TcpEvt* pEvent = queueEvent.front();
+			queueEvent.pop();
 
 			TcpService* pSrv = pEvent->GetTcpSrv();
 			if (pSrv)

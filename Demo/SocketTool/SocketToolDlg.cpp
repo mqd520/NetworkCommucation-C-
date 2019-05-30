@@ -38,6 +38,9 @@ BEGIN_MESSAGE_MAP(CSocketToolDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CSocketToolDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CSocketToolDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CSocketToolDlg::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON5, &CSocketToolDlg::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON6, &CSocketToolDlg::OnBnClickedButton6)
+	ON_BN_CLICKED(IDC_BUTTON7, &CSocketToolDlg::OnBnClickedButton7)
 END_MESSAGE_MAP()
 
 
@@ -136,4 +139,32 @@ void CSocketToolDlg::OnBnClickedButton4()
 	string ip = SocketTool::GetLocalIP();
 	OutputDebugStringA(ip.c_str());
 	OutputDebugStringA("\n");
+}
+
+
+void CSocketToolDlg::OnBnClickedButton5()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	SocketTool::Init();
+	SOCKET socket = SocketTool::CreateTcpSocket();
+	bool b1 = SocketTool::Connect(socket, SocketTool::GetLocalIP(), 8085);
+}
+
+
+void CSocketToolDlg::OnBnClickedButton6()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	SocketTool::Init();
+	SOCKET socket = SocketTool::CreateTcpSocket();
+	SocketTool::SetNonBlock(socket);
+	bool b1 = SocketTool::Connect(socket, "192.168.0.168", 8085);
+}
+
+
+void CSocketToolDlg::OnBnClickedButton7()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
 }

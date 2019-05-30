@@ -3,28 +3,28 @@
 
 namespace tc
 {
-	CTcpServiceMgr::CTcpServiceMgr()
+	TcpServiceMgr::TcpServiceMgr()
 	{
 
 	}
 
-	CTcpServiceMgr::~CTcpServiceMgr()
+	TcpServiceMgr::~TcpServiceMgr()
 	{
 		
 	}
 
-	void CTcpServiceMgr::PushTcpService(TcpService* srv)
+	void TcpServiceMgr::PushTcpService(TcpService* srv)
 	{
-		m_vecTcpService.push_back(srv);
+		vecTcpService.push_back(srv);
 	}
 
-	TcpService* CTcpServiceMgr::GetTcpSrvBySocket(SOCKET socket)
+	TcpService* TcpServiceMgr::GetTcpSrvBySocket(SOCKET socket)
 	{
-		for (int i = 0; i < (int)m_vecTcpService.size(); i++)
+		for (int i = 0; i < (int)vecTcpService.size(); i++)
 		{
-			if (m_vecTcpService[i]->GetSocket() == socket)
+			if (vecTcpService[i]->GetSocket() == socket)
 			{
-				return m_vecTcpService[i];
+				return vecTcpService[i];
 			}
 		}
 		return NULL;

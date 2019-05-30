@@ -27,14 +27,14 @@ namespace tc
 		static CTcpEvtThread m_tcpEvtThread;//tcp事件线程
 
 		static CSelect m_Select;//select对象
-		static CSocketSingal m_recvSingal;//收数据信号处理对象
-		static CSocketSingal m_sendSingal;//发数据信号处理对象
-		static CSocketSingal m_otherSingal;//其它信号处理对象
+		static SocketSingalProcess m_recvSingal;//收数据信号处理对象
+		static SocketSingalProcess m_sendSingal;//发数据信号处理对象
+		static SocketSingalProcess m_otherSingal;//其它信号处理对象
 		
 		static CTcpConnectionMgr m_tcpConnMgr;//tcp连接管理对象
-		static CTcpServiceMgr m_tcpServiceMgr;//tcp服务管理对象
+		static TcpServiceMgr m_tcpServiceMgr;//tcp服务管理对象
 		//static CTcpServiceMgr* m_tcpServiceMgr;//tcp服务管理对象
-		static CTcpEvtMgr m_tcpEvtMgr;//tcp事件管理对象
+		static TcpEvtMgr m_tcpEvtMgr;//tcp事件管理对象
 
 	private:
 		CTcpCommuMgr();
@@ -95,17 +95,17 @@ namespace tc
 		//************************************
 		// Method:    获取收数据信号处理对象
 		//************************************
-		static CSocketSingal* GetRecvDataSingal();
+		static SocketSingalProcess* GetRecvDataSingal();
 
 		//************************************
 		// Method:    获取发数据信号处理对象
 		//************************************
-		static CSocketSingal* GetSendDataSingal();
+		static SocketSingalProcess* GetSendDataSingal();
 
 		//************************************
 		// Method:    获取其它信号处理对象
 		//************************************
-		static CSocketSingal* GetOtherSingal();
+		static SocketSingalProcess* GetOtherSingal();
 
 		//************************************
 		// Method:    获取TcpConnectionMgr对象
@@ -115,11 +115,11 @@ namespace tc
 		//************************************
 		// Method:    获取tcp服务管理对象
 		//************************************
-		static CTcpServiceMgr* GetTcpServiceMgr();
+		static TcpServiceMgr* GetTcpServiceMgr();
 
 		//************************************
 		// Method:    获取tcp事件管理对象
 		//************************************
-		static CTcpEvtMgr* GetTcpEvtMgr();
+		static TcpEvtMgr* GetTcpEvtMgr();
 	};
 }

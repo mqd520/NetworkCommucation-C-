@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "SocketAPI.h"
+#include "Include/tc/SocketTool.h"
 
 using namespace std;
 using namespace tc;
@@ -13,32 +13,24 @@ using namespace tc;
 // 网络地址
 typedef struct tagNetAddress
 {
-	TCHAR ip[TC_MAXIPSTRELN];	// ip
-	int port;					// 端口
+	string ip;	// ip
+	int port;	// 端口
 }NetAddress;
 
 // select队列socket类型
-class ESelectSocketType
+enum ESelectSocketType
 {
-public:
-	enum
-	{
-		Accept,			// 接收新连接的服务端socket
-		ReadWriteData,	// 读写数据的socket
-		Connect			// 连接服务端的客户端socket
-	};
+	Accept,			// 接收新连接的服务端socket
+	ReadWriteData,	// 读写数据的socket
+	Connect			// 连接服务端的客户端socket
 };
 
-//异步发送状态
-class EAsyncSendStatus
+// 异步发送状态
+enum EAsyncSendStatus
 {
-public:
-	enum
-	{
-		PreSend,//准备发送
-		Sending,//正在发送
-		SendCmp//发送完成
-	};
+	PreSend,	// 准备发送
+	Sending,	// 正在发送
+	SendCmp		// 发送完成
 };
 
 // select队列socket数据结构
@@ -59,15 +51,11 @@ typedef struct tagSendPeerDataResult
 }SendPeerDataResult;
 
 // socket信号类型
-class ESocketSingalType
+enum ESocketSingalType
 {
-public:
-	enum
-	{
-		Read,	// 可读
-		Write,	// 可写
-		Except	// 异常
-	};
+	Read,	// 可读
+	Write,	// 可写
+	Except	// 异常
 };
 
 // socket信号数据

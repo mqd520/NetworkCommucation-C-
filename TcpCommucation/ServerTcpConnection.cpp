@@ -10,9 +10,8 @@ namespace tc
 		CTcpConnection(pTcpSrv, client),
 		m_serverSocket(server)
 	{
-		memset(m_localAddress.ip, 0, TC_MAXIPSTRELN);
-		memset(m_peerAddress.ip, 0, TC_MAXIPSTRELN);
-		m_socketAPI.GetPeerIpAndPort(client, m_peerAddress.ip, &m_peerAddress.port);
+		m_localAddress.ip = "";
+		m_peerAddress.ip = SocketTool::GetPeerIpAndPort(client, &m_peerAddress.port);
 		if (pTcpSrv)
 		{
 			//_tcscpy(m_localAddress.ip, pTcpSrv->GetSelfIP());
@@ -44,42 +43,42 @@ namespace tc
 	{
 		//__super::OnSendDataCompleted(pResult);
 
-		TCHAR ip[TC_MAXIPSTRELN];
-		int port = 0;
-		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
-
-		_tcscpy(pResult->ip, ip);
-		pResult->port = port;
-
-#ifdef _DEBUG
-		if (pResult->success)
-		{
-			PrintfDebug(_T("[%s:%d][socket: %d] send data to [%s:%d] successed, size: %d, client socket: %d"),
-				m_pTcpSrv->GetSelfIP(), m_pTcpSrv->GetSelfPort(), m_pTcpSrv->GetSocket(), ip, port, pResult->len, m_sendrecvSocket);
-		}
-		else
-		{
-			PrintfDebug(_T("[%s:%d][socket: %d] send data to [%s:%d] failed, size: %d, actual size: %d"),
-				m_pTcpSrv->GetSelfIP(), m_pTcpSrv->GetSelfPort(), m_pTcpSrv->GetSocket(), ip, port, m_sendrecvSocket, pResult->len, pResult->actualLen);
-		}
-#endif // _DEBUG
-
-		//m_pTcpSrv->OnSendPeerDataCompleted(pResult);
+//		TCHAR ip[TC_MAXIPSTRELN];
+//		int port = 0;
+//		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
+//
+//		_tcscpy(pResult->ip, ip);
+//		pResult->port = port;
+//
+//#ifdef _DEBUG
+//		if (pResult->success)
+//		{
+//			PrintfDebug(_T("[%s:%d][socket: %d] send data to [%s:%d] successed, size: %d, client socket: %d"),
+//				m_pTcpSrv->GetIP(), m_pTcpSrv->GetPort(), m_pTcpSrv->GetSocket(), ip, port, pResult->len, m_sendrecvSocket);
+//		}
+//		else
+//		{
+//			PrintfDebug(_T("[%s:%d][socket: %d] send data to [%s:%d] failed, size: %d, actual size: %d"),
+//				m_pTcpSrv->GetIP(), m_pTcpSrv->GetPort(), m_pTcpSrv->GetSocket(), ip, port, m_sendrecvSocket, pResult->len, pResult->actualLen);
+//		}
+//#endif // _DEBUG
+//
+//		//m_pTcpSrv->OnSendPeerDataCompleted(pResult);
 	}
 
 	void CServerTcpConnection::OnNetError()
 	{
-		__super::OnNetError();
-
-		TCHAR ip[TC_MAXIPSTRELN];
-		int port = 0;
-		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
-
-#ifdef _DEBUG
-		PrintfDebug(_T("Net error, server: %s:%d[socket: %d, server client socket: %d], client: %s:%d"),
-			m_pTcpSrv->GetSelfIP(), m_pTcpSrv->GetSelfPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket, ip, port);
-#endif // _DEBUG
-
-		//m_pTcpSrv->OnNetError(ip, port);
+//		__super::OnNetError();
+//
+//		TCHAR ip[TC_MAXIPSTRELN];
+//		int port = 0;
+//		m_socketAPI.GetPeerIpAndPort(m_sendrecvSocket, ip, &port);
+//
+//#ifdef _DEBUG
+//		PrintfDebug(_T("Net error, server: %s:%d[socket: %d, server client socket: %d], client: %s:%d"),
+//			m_pTcpSrv->GetIP(), m_pTcpSrv->GetPort(), m_pTcpSrv->GetSocket(), m_sendrecvSocket, ip, port);
+//#endif // _DEBUG
+//
+//		//m_pTcpSrv->OnNetError(ip, port);
 	}
 }

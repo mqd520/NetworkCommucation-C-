@@ -120,9 +120,6 @@
     <ClInclude Include="TcpServiceMgr.h">
       <Filter>06 Tcp通信管理\05 Tcp服务</Filter>
     </ClInclude>
-    <ClInclude Include="SocketAPI.h">
-      <Filter>04 Socket管理</Filter>
-    </ClInclude>
     <ClInclude Include="ServerTcpConnection.h">
       <Filter>06 Tcp通信管理\04 Tcp连接</Filter>
     </ClInclude>
@@ -297,9 +294,6 @@
     </ClCompile>
     <ClCompile Include="TcpServiceMgr.cpp">
       <Filter>06 Tcp通信管理\05 Tcp服务</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketAPI.cpp">
-      <Filter>04 Socket管理</Filter>
     </ClCompile>
     <ClCompile Include="ServerTcpConnection.cpp">
       <Filter>06 Tcp通信管理\04 Tcp连接</Filter>

@@ -1,26 +1,32 @@
 #pragma once
-#include "SocketAPI.h"
+#include "Include/tc/SocketTool.h"
 #include "TcpService.h"
 
 namespace tc
 {
-	//tcp客户端
-	class CTcpClient : public TcpService
+	// tcp客户端类
+	class TcpClient : public TcpService
 	{
 	public:
-		CTcpClient(TCHAR* strServerIP, int nServerPort);
-		~CTcpClient();
+		TcpClient(string ip = "", int port = 0);
+		~TcpClient();
 
 	private:
-		CSocketAPI m_socketAPI;//
-		bool m_bIsConnecting;//是否正在进行连接
-		bool m_bIsConnected;//是否已连接上
+		bool bIsConnecting;		// 是否正在进行连接
+		bool bIsConnected;		// 是否已连接上
 
 	private:
 		//************************************
 		// Method:    初始化
 		//************************************
 		void Init();
+
+		//************************************
+		// Method:    设置连接信息
+		// Parameter: ip:	服务端IP
+		// Parameter: port:	服务端端口
+		//************************************
+		void SetConnectInfo(string ip, int port);
 
 		//************************************
 		// Method:    重连

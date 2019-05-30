@@ -7,13 +7,14 @@
 
 namespace tc
 {
-	TcpService::TcpService() :
+	TcpService::TcpService(string ip /*= ""*/, int port /*= 0*/) :
 		socket(INVALID_SOCKET),
-		nSelfPort(0),
+		strIP(ip),
+		nPort(port),
 		lpCallback(NULL)
 	{
+		strIP = "";
 		CTcpCommuMgr::GetTcpServiceMgr()->PushTcpService(this);
-		strSelfIP = "";
 	}
 
 	TcpService::~TcpService()
@@ -26,14 +27,14 @@ namespace tc
 		return socket;
 	}
 
-	string TcpService::GetSelfIP()
+	string TcpService::GetIP()
 	{
-		return strSelfIP;
+		return strIP;
 	}
 
-	int TcpService::GetSelfPort()
+	int TcpService::GetPort()
 	{
-		return nSelfPort;
+		return nPort;
 	}
 
 	void TcpService::RegTcpEventCallback(LPTcpEventCallback lpCallback, void* param)
@@ -44,17 +45,17 @@ namespace tc
 
 	bool TcpService::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
 	{
-		//获取指定socket的tcp连接对象
+		// 获取指定socket的tcp连接对象
 		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
 
 		if (pConn)
 		{
-			if (asyncs)//异步发送
+			if (asyncs)	// 异步发送
 			{
 				pConn->SetAsyncSendData(pBuf, len, actualLen);
 				return true;
 			}
-			else//同步发送
+			else //同步发送
 			{
 				pConn->SendData(pBuf, len, actualLen);
 			}
@@ -72,7 +73,7 @@ namespace tc
 	{
 		if (lpCallback)
 		{
-			lpCallback(pEvent, pParam);	//通知事件注册方
+			lpCallback(pEvent, pParam);	// 通知事件注册方
 		}
 	}
 }

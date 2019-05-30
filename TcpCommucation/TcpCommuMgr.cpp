@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "SocketAPI.h"
+#include "Include/tc/SocketTool.h"
 
 namespace tc
 {
@@ -13,17 +13,17 @@ namespace tc
 	CTcpEvtThread CTcpCommuMgr::m_tcpEvtThread;
 
 	CSelect CTcpCommuMgr::m_Select;
-	CSocketSingal CTcpCommuMgr::m_otherSingal;
-	CSocketSingal CTcpCommuMgr::m_recvSingal;
-	CSocketSingal CTcpCommuMgr::m_sendSingal;
+	SocketSingalProcess CTcpCommuMgr::m_otherSingal;
+	SocketSingalProcess CTcpCommuMgr::m_recvSingal;
+	SocketSingalProcess CTcpCommuMgr::m_sendSingal;
 
 	CTcpConnectionMgr CTcpCommuMgr::m_tcpConnMgr;
-	CTcpServiceMgr CTcpCommuMgr::m_tcpServiceMgr;
-	CTcpEvtMgr CTcpCommuMgr::m_tcpEvtMgr;
+	TcpServiceMgr CTcpCommuMgr::m_tcpServiceMgr;
+	TcpEvtMgr CTcpCommuMgr::m_tcpEvtMgr;
 
 	void CTcpCommuMgr::Init()
 	{
-		CSocketAPI::Init();
+		SocketTool::Init();
 		GetSelectThread()->Run();//启动select线程
 		GetRecvThread()->Run();//启动收数据线程
 		GetSendThread()->Run();//启动发送数据线程
@@ -84,17 +84,17 @@ namespace tc
 		return &m_Select;
 	}
 
-	CSocketSingal* CTcpCommuMgr::GetRecvDataSingal()
+	SocketSingalProcess* CTcpCommuMgr::GetRecvDataSingal()
 	{
 		return &m_recvSingal;
 	}
 
-	CSocketSingal* CTcpCommuMgr::GetSendDataSingal()
+	SocketSingalProcess* CTcpCommuMgr::GetSendDataSingal()
 	{
 		return &m_sendSingal;
 	}
 
-	CSocketSingal* CTcpCommuMgr::GetOtherSingal()
+	SocketSingalProcess* CTcpCommuMgr::GetOtherSingal()
 	{
 		return &m_otherSingal;
 	}
@@ -104,12 +104,12 @@ namespace tc
 		return &m_tcpConnMgr;
 	}
 
-	CTcpServiceMgr* CTcpCommuMgr::GetTcpServiceMgr()
+	TcpServiceMgr* CTcpCommuMgr::GetTcpServiceMgr()
 	{
 		return &m_tcpServiceMgr;
 	}
 
-	CTcpEvtMgr* CTcpCommuMgr::GetTcpEvtMgr()
+	TcpEvtMgr* CTcpCommuMgr::GetTcpEvtMgr()
 	{
 		return &m_tcpEvtMgr;
 	}
