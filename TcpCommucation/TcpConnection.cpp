@@ -18,7 +18,7 @@ namespace tc
 		m_nAsyncSendStatus(EAsyncSendStatus::SendCmp),
 		m_bCanAsyncSend(true)
 	{
-		CTcpCommuMgr::GetSelect()->AddSocket(sendrecv, ESelectSocketType::ReadWriteData);//加入select队列
+		CTcpCommuMgr::GetSelect()->AddSocket(sendrecv, ESocketType::SendRecvData);	// 加入select队列
 	}
 
 	CTcpConnection::~CTcpConnection()
@@ -143,7 +143,7 @@ namespace tc
 
 	void CTcpConnection::Close()
 	{
-		CTcpCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//移除select队列中socket
-		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除tcp连接对象
+		CTcpCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);	// 移除select队列中socket
+		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);	// 移除tcp连接对象
 	}
 }

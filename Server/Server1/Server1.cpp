@@ -52,9 +52,10 @@ void OnLog(int type, string log, void* pParam1, void* pParam2);
 //************************************
 // Method:    tcp事件回调函数
 // Parameter: tcp事件对象
-// Parameter: 附加参数
+// Parameter: 附加参数1
+// Parameter: 附加参数2
 //************************************
-void OnTcpEvt(TcpEvt* pEvt, void* pParam);
+void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2);
 
 // CServer1App 初始化
 
@@ -80,9 +81,9 @@ BOOL CServer1App::InitInstance()
 	// 激活“Windows Native”视觉管理器，以便在 MFC 控件中启用主题
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
-	CTcpCommuMgr::Init();
-	CTcpCommuMgr::GetLogMgr()->RegCallback(OnLog, &theApp, NULL);	// 注册日志事件
-	tcpSrv.RegTcpEventCallback(OnTcpEvt, &theApp);	// 注册tcp事件
+	CTcpCommuMgr::Init(OnLog, &theApp);
+	pTcpSrv = new TcpServer();
+	pTcpSrv->RegTcpEventCallback(OnTcpEvt, &theApp);	// 注册tcp事件
 
 	// 标准初始化
 	// 如果未使用这些功能并希望减小
@@ -125,7 +126,7 @@ BOOL CServer1App::InitInstance()
 
 TcpServer* CServer1App::GetTcpSrv()
 {
-	return &tcpSrv;
+	return pTcpSrv;
 }
 
 void OnLog(int type, string log, void* pParam1, void* pParam2)
@@ -133,7 +134,7 @@ void OnLog(int type, string log, void* pParam1, void* pParam2)
 	OutputDebugStringA(log.c_str());
 }
 
-void OnTcpEvt(TcpEvt* pEvt, void* pParam)
+void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
 {
 	if (pEvt->GetEvtType() == ETcpEvt::RecvNewConn)
 	{
@@ -144,5 +145,18 @@ void OnTcpEvt(TcpEvt* pEvt, void* pParam)
 
 		OutputDebugStringA(ch);
 	}
+	else if (pEvt->GetEvtType() == ETcpEvt::RecvData)
+	{
+		SOCKET socket = pEvt->GetSendRecvSocket();
+	}
 }
 
+
+
+int CServer1App::ExitInstance()
+{
+	// TODO:  在此添加专用代码和/或调用基类
+	CTcpCommuMgr::Exit();
+
+	return CWinApp::ExitInstance();
+}

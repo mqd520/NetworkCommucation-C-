@@ -1,7 +1,7 @@
 #include "stdafx.h"
+#include "Include/tc/Def1.h"
 #include "SelectThread.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include <tchar.h>
 #include "Common.h"
 
 namespace tc
@@ -20,8 +20,8 @@ namespace tc
 	{
 		if (!m_bRun)
 		{
-			PrintfInfo(_T("Select thread run"));
 			__super::Run();
+			CTcpCommuMgr::GetLogMgr()->AddLog(ELogType::Debug, "select thread run.");
 		}
 	}
 
@@ -29,7 +29,7 @@ namespace tc
 	{
 		if (CTcpCommuMgr::GetSelect()->IsEmpty())
 		{
-			SetSleepTime(10);
+			SetSleepTime();
 		}
 		else
 		{

@@ -21,11 +21,11 @@ namespace tc
 
 	void SocketSingalProcess::ProcessReadSingal(SOCKET socket, int type)
 	{
-		if (type == ESelectSocketType::Accept)	// 指示socket用于接收客户端连接
+		if (type == ESocketType::Accept)	// 指示socket用于接收客户端连接
 		{
 			RecvNewConnection(socket);
 		}
-		else if (type == ESelectSocketType::ReadWriteData)	// 指示socket用于收发数据
+		else if (type == ESocketType::SendRecvData)	// 指示socket用于收发数据
 		{
 			RecvPeerData(socket);
 		}
@@ -33,11 +33,11 @@ namespace tc
 
 	void SocketSingalProcess::ProcessWriteSingal(SOCKET socket, int type)
 	{
-		if (type == ESelectSocketType::ReadWriteData)	// 指示socket用于收发数据
+		if (type == ESocketType::SendRecvData)	// 指示socket用于收发数据
 		{
 			SendData(socket);
 		}
-		else if (type == ESelectSocketType::Connect)	// 指示socket用于连接服务端
+		else if (type == ESocketType::Connect)	// 指示socket用于连接服务端
 		{
 			OnConnectSuccess(socket);
 		}
@@ -45,7 +45,7 @@ namespace tc
 
 	void SocketSingalProcess::ProcessExceptSingal(SOCKET socket, int type)
 	{
-		if (type == ESelectSocketType::Connect)	// 指示socket用于连接服务端
+		if (type == ESocketType::Connect)	// 指示socket用于连接服务端
 		{
 			OnConnectFail(socket);
 		}
@@ -62,6 +62,19 @@ namespace tc
 			//{
 			//	CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client));
 			//}
+
+			while (true)
+			{
+				SOCKET client = SocketTool::Accept(socket, pSrv->GetIP(), pSrv->GetPort(), false);
+				if (client != INVALID_SOCKET)
+				{
+					CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client));
+				}
+				else
+				{
+					break;
+				}
+			}
 		}
 	}
 
@@ -110,7 +123,7 @@ namespace tc
 			CTcpCommuMgr::GetTcpConnectionMgr()->PushTcpConn(pConn);
 
 			// 客户端socket立刻转变为收发数据的socket
-			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::ReadWriteData);
+			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESocketType::SendRecvData);
 		}
 	}
 

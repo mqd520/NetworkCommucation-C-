@@ -13,7 +13,7 @@ namespace tc
 
 	}
 
-	void LogMgr::RegCallback(LPLogCallback lpfnCallback, void* pParam1, void* pParam2)
+	void LogMgr::RegCallback(LPLogCallback lpfnCallback, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
 		bool b = false;
 

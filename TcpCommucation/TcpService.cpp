@@ -11,9 +11,10 @@ namespace tc
 		socket(INVALID_SOCKET),
 		strIP(ip),
 		nPort(port),
-		lpCallback(NULL)
+		lpCallback(NULL),
+		pParam1(NULL),
+		pParam2(NULL)
 	{
-		strIP = "";
 		CTcpCommuMgr::GetTcpServiceMgr()->PushTcpService(this);
 	}
 
@@ -37,10 +38,11 @@ namespace tc
 		return nPort;
 	}
 
-	void TcpService::RegTcpEventCallback(LPTcpEventCallback lpCallback, void* param)
+	void TcpService::RegTcpEventCallback(LPTcpEventCallback lpCallback, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
-		lpCallback = lpCallback;
-		pParam = param;
+		TcpService::lpCallback = lpCallback;
+		TcpService::pParam1 = pParam1;
+		TcpService::pParam2 = pParam2;
 	}
 
 	bool TcpService::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
@@ -73,7 +75,7 @@ namespace tc
 	{
 		if (lpCallback)
 		{
-			lpCallback(pEvent, pParam);	// 通知事件注册方
+			lpCallback(pEvent, pParam1, pParam2);	// 通知事件注册方
 		}
 	}
 }

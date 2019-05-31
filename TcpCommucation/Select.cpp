@@ -48,11 +48,14 @@ namespace tc
 			if (it->socket == socket)
 			{
 				vecListenSocket.erase(it);
+				RemoveProcessingSocket(socket);	// 移除正在处理的socket
+				
 				if (close)
 				{
-					SocketTool::CloseSocket(socket);
+					SocketTool::ShutDown(socket, false);
+					SocketTool::CloseSocket(socket, false);
 				}
-				RemoveProcessingSocket(socket);	// 移除正在处理的socket
+
 				break;
 			}
 		}
@@ -203,11 +206,11 @@ namespace tc
 			if (!IsProcessingSingal(socketData.socket, ESocketSingalType::Read))
 			{
 				SocketSingalData data = { socketData.socket, ESocketSingalType::Read, socketData.type };
-				if (socketData.type == ESelectSocketType::Accept)	// 指示socket用于接收新连接
+				if (socketData.type == ESocketType::Accept)	// 指示socket用于接收新连接
 				{
 					CTcpCommuMgr::GetOtherSingal()->PushSocket(data);
 				}
-				else if (socketData.type == ESelectSocketType::ReadWriteData)	// 指示socket用于读写数据
+				else if (socketData.type == ESocketType::SendRecvData)	// 指示socket用于读写数据
 				{
 					CTcpCommuMgr::GetRecvDataSingal()->PushSocket(data);
 				}
@@ -224,11 +227,11 @@ namespace tc
 			if (!IsProcessingSingal(socketData.socket, ESocketSingalType::Write))
 			{
 				SocketSingalData data = { socketData.socket, ESocketSingalType::Write, socketData.type };
-				if (socketData.type == ESelectSocketType::ReadWriteData)	// 指示socket用于读写数据
+				if (socketData.type == ESocketType::SendRecvData)	// 指示socket用于读写数据
 				{
 					CTcpCommuMgr::GetSendDataSingal()->PushSocket(data);
 				}
-				else if (socketData.type == ESelectSocketType::Connect)		// 指示socket用于连接服务端
+				else if (socketData.type == ESocketType::Connect)		// 指示socket用于连接服务端
 				{
 					CTcpCommuMgr::GetOtherSingal()->PushSocket(data);
 				}
@@ -276,7 +279,8 @@ namespace tc
 		// 关闭所有socket
 		for (int i = 0; i < (int)vecListenSocket.size(); i++)
 		{
-			SocketTool::CloseSocket(vecListenSocket[i].socket);
+			SocketTool::ShutDown(vecListenSocket[i].socket, false);
+			SocketTool::CloseSocket(vecListenSocket[i].socket, false);
 		}
 	}
 }

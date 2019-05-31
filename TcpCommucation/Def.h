@@ -11,12 +11,12 @@ using namespace tc;
 #define TC_MAXIPSTRELN				20		//ip字符串最大长度
 
 
-// select队列socket类型
-enum ESelectSocketType
+// socket类型
+enum ESocketType
 {
-	Accept,			// 接收新连接的服务端socket
-	ReadWriteData,	// 读写数据的socket
-	Connect			// 连接服务端的客户端socket
+	Accept,			// 用于接收新连接(服务端的socket)
+	SendRecvData,	// 用于收(发)数据的socket
+	Connect			// 用于连接服务端的socket(客户端的socket)
 };
 
 // 异步发送状态

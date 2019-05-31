@@ -23,6 +23,11 @@ namespace tc
 			CServerTcpConnection* conn = new CServerTcpConnection(pTcpSrv, socket, pTcpSrv->GetSocket());
 			CTcpCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);
 		}
+		else
+		{
+			SocketTool::ShutDown(socket);
+			SocketTool::CloseSocket(socket);
+		}
 	}
 
 	void RecvNewConnEvt::Refuse()

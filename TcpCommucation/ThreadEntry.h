@@ -1,7 +1,11 @@
 #pragma once
 
+#define SLEEPTIME	5	// 线程默认休眠时间
+
 namespace tc
 {
+
+
 	class CThread;
 
 	//线程入口类
@@ -17,7 +21,7 @@ namespace tc
 		//************************************
 		// Method:    设置休眠时间
 		//************************************
-		void SetSleepTime(int millsecond);
+		void SetSleepTime(int millsecond = SLEEPTIME);
 
 	protected:
 		friend class CThread;

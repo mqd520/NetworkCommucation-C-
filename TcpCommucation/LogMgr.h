@@ -49,7 +49,7 @@ namespace tc
 		// Parameter: pParam1:	附加参数1
 		// Parameter: pParam2:	附加参数2
 		//************************************
-		void RegCallback(LPLogCallback lpfnCallback, void* pParam1, void* pParam2);
+		void RegCallback(LPLogCallback lpfnCallback, void* pParam1 = NULL, void* pParam2 = NULL);
 
 		//************************************
 		// Method:    移除日志回调函数

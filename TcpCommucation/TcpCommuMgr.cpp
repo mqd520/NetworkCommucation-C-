@@ -23,9 +23,14 @@ namespace tc
 	TcpEvtMgr CTcpCommuMgr::m_tcpEvtMgr;
 	LogMgr CTcpCommuMgr::logMgr;
 
-	void CTcpCommuMgr::Init()
+	void CTcpCommuMgr::Init(LPLogCallback lpfnCallback /*= NULL*/, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
 		SocketTool::Init();
+
+		if (lpfnCallback != NULL)
+		{
+			logMgr.RegCallback(lpfnCallback, pParam1, pParam2);
+		}
 
 		logThread.Run();		// 启动日志线程 
 		GetSelectThread()->Run();//启动select线程

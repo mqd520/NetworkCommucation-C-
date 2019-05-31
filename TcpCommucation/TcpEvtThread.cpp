@@ -1,9 +1,9 @@
 #include "stdafx.h"
+#include "Include/tc/Def1.h"
 #include "TcpEvtThread.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Common.h"
 #include "TcpEvtMgr.h"
-#include <tchar.h>
 
 namespace tc
 {
@@ -21,8 +21,8 @@ namespace tc
 	{
 		if (!m_bRun)
 		{
-			PrintfInfo(_T("Tcp event thread run"));
 			__super::Run();
+			CTcpCommuMgr::GetLogMgr()->AddLog(ELogType::Debug, "tcp evt thread run.");
 		}
 	}
 
@@ -30,7 +30,7 @@ namespace tc
 	{
 		if (CTcpCommuMgr::GetTcpEvtMgr()->IsEmpty())
 		{
-			SetSleepTime(10);
+			SetSleepTime();
 		}
 		else
 		{

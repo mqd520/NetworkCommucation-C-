@@ -48,8 +48,11 @@ namespace tc
 
 		//************************************
 		// Method:    初始化
+		// Parameter: lpfnCallback:	日志回调函数指针(参看: LPLogCallback)
+		// Parameter: pParam1:	附加参数1
+		// Parameter: pParam2:	附加参数2
 		//************************************
-		static void Init();
+		static void Init(LPLogCallback lpfnCallback = NULL, void* pParam1 = NULL, void* pParam2 = NULL);
 
 		//************************************
 		// Method:    退出

@@ -17,13 +17,14 @@ namespace tc
 		string strIP;			// socket关联的服务端IP
 		int nPort;				// socket关联的服务端端口
 		LPTcpEventCallback lpCallback;	// tcp事件回调函数指针
-		void* pParam;					// 事件附加参数
+		void* pParam1;					// 事件附加参数1
+		void* pParam2;					// 事件附加参数2
 
 	protected:
 		friend class TcpEvtMgr;
 		//************************************
 		// Method:    收到tcp事件处理
-		// Parameter: tcp事件
+		// Parameter: pEvent: tcp事件
 		//************************************
 		virtual void OnRecvTcpEvent(TcpEvt* pEvent);
 
@@ -65,8 +66,9 @@ namespace tc
 		//************************************
 		// Method:    注册tcp事件回调函数
 		// Parameter: lpCallback:	回调函数
-		// Parameter: pParam:		附加参数
+		// Parameter: pParam1:		附加参数1
+		// Parameter: pParam1:		附加参数2
 		//************************************
-		void RegTcpEventCallback(LPTcpEventCallback lpCallback, void* param);
+		void RegTcpEventCallback(LPTcpEventCallback lpCallback, void* pParam1 = NULL, void* pParam2 = NULL);
 	};
 }

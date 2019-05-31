@@ -43,7 +43,7 @@ namespace tc
 		}
 	}
 
-	void CThreadEntry::SetSleepTime(int millsecond)
+	void CThreadEntry::SetSleepTime(int millsecond /*= SLEEPTIME*/)
 	{
 		m_nSleepMillSecond = millsecond;
 	}

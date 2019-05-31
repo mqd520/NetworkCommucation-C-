@@ -71,7 +71,11 @@ namespace tc
 		WSADATA wsaData;
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 		{
-			ProcessErrorInfo("WSAStartup", WSAGetLastError(), "", b);
+			if (b)
+			{
+				ProcessErrorInfo("WSAStartup", WSAGetLastError(), "", b);
+			}
+
 			return false;
 		}
 		return true;
@@ -87,7 +91,10 @@ namespace tc
 		SOCKET s = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (s == INVALID_SOCKET)
 		{
-			ProcessErrorInfo("socket", WSAGetLastError(), "create socket fail", b);
+			if (b)
+			{
+				ProcessErrorInfo("socket", WSAGetLastError(), "create socket fail", b);
+			}
 		}
 
 		return s;
@@ -119,9 +126,13 @@ namespace tc
 		}
 		else
 		{
-			char ch[50] = { 0 };
-			sprintf_s(ch, "bind fail, ip: %s, port: %d", ip.c_str(), port);
-			ProcessErrorInfo("bind", WSAGetLastError(), ch, b);
+			if (b)
+			{
+				char ch[50] = { 0 };
+				sprintf_s(ch, "bind fail, ip: %s, port: %d", ip.c_str(), port);
+				ProcessErrorInfo("bind", WSAGetLastError(), ch, b);
+			}
+
 			return false;
 		}
 	}
@@ -135,9 +146,13 @@ namespace tc
 		}
 		else
 		{
-			char ch[100] = { 0 };
-			sprintf_s(ch, "listen fail, socket: %d, ip: %s, port: %d", socket, ip.c_str(), port);
-			ProcessErrorInfo("listen", WSAGetLastError(), ch, b);
+			if (b)
+			{
+				char ch[100] = { 0 };
+				sprintf_s(ch, "listen fail, socket: %d, ip: %s, port: %d", socket, ip.c_str(), port);
+				ProcessErrorInfo("listen", WSAGetLastError(), ch, b);
+			}
+
 			return false;
 		}
 	}
@@ -148,9 +163,12 @@ namespace tc
 		SOCKET client = ::accept(socket, (SOCKADDR*)&addr, NULL);
 		if (client == INVALID_SOCKET)
 		{
-			char ch[100] = { 0 };
-			sprintf_s(ch, "accept fail, socket: %d, ip: %s, port: %d", socket, ip.c_str(), port);
-			ProcessErrorInfo("accept", WSAGetLastError(), ch, b);
+			if (b)
+			{
+				char ch[100] = { 0 };
+				sprintf_s(ch, "accept fail, socket: %d, ip: %s, port: %d", socket, ip.c_str(), port);
+				ProcessErrorInfo("accept", WSAGetLastError(), ch, b);
+			}
 		}
 
 		return client;
@@ -173,9 +191,12 @@ namespace tc
 		{
 			if (ret == SOCKET_ERROR)
 			{
-				char ch[100] = { 0 };
-				sprintf_s(ch, "recv fail, socket: %d", socket);
-				ProcessErrorInfo("recv", WSAGetLastError(), ch, b);
+				if (b)
+				{
+					char ch[100] = { 0 };
+					sprintf_s(ch, "recv fail, socket: %d", socket);
+					ProcessErrorInfo("recv", WSAGetLastError(), ch, b);
+				}
 			}
 
 			return false;
@@ -199,9 +220,12 @@ namespace tc
 		{
 			if (ret == SOCKET_ERROR)
 			{
-				char ch[100] = { 0 };
-				sprintf_s(ch, "send fail, socket: %d", socket);
-				ProcessErrorInfo("send", WSAGetLastError(), ch, b);
+				if (b)
+				{
+					char ch[100] = { 0 };
+					sprintf_s(ch, "send fail, socket: %d", socket);
+					ProcessErrorInfo("send", WSAGetLastError(), ch, b);
+				}
 			}
 
 			return false;
@@ -215,9 +239,13 @@ namespace tc
 
 		if (ret == SOCKET_ERROR)
 		{
-			char ch[100] = { 0 };
-			sprintf_s(ch, "connect fail, socket: %d, ip: %s, port: %d", socket, ip.c_str(), port);
-			ProcessErrorInfo("connect", WSAGetLastError(), ch, b);
+			if (b)
+			{
+				char ch[100] = { 0 };
+				sprintf_s(ch, "connect fail, socket: %d, ip: %s, port: %d", socket, ip.c_str(), port);
+				ProcessErrorInfo("connect", WSAGetLastError(), ch, b);
+			}
+
 			return false;
 		}
 
@@ -230,10 +258,28 @@ namespace tc
 
 		if (ret == SOCKET_ERROR)
 		{
-			ProcessErrorInfo("select", WSAGetLastError(), "select fail", b);
+			if (b)
+			{
+				ProcessErrorInfo("select", WSAGetLastError(), "select fail", b);
+			}
 		}
-
 		return ret;
+	}
+
+
+	void SocketTool::ShutDown(SOCKET socket, int how /*= SD_BOTH*/, bool b /*= true*/)
+	{
+		int ret = ::shutdown(socket, how);
+
+		if (ret == SOCKET_ERROR)
+		{
+			if (b)
+			{
+				char ch[100] = { 0 };
+				sprintf_s(ch, "shutdown fail, socket: %d", socket);
+				ProcessErrorInfo("shutdown", WSAGetLastError(), ch, b);
+			}
+		}
 	}
 
 	bool SocketTool::CloseSocket(SOCKET socket, bool b /*= true*/)
@@ -242,9 +288,12 @@ namespace tc
 
 		if (ret == SOCKET_ERROR)
 		{
-			char ch[100] = { 0 };
-			sprintf_s(ch, "closesocket fail, socket: %d", socket);
-			ProcessErrorInfo("closesocket", WSAGetLastError(), ch, b);
+			if (b)
+			{
+				char ch[100] = { 0 };
+				sprintf_s(ch, "closesocket fail, socket: %d", socket);
+				ProcessErrorInfo("closesocket", WSAGetLastError(), ch, b);
+			}
 			return false;
 		}
 

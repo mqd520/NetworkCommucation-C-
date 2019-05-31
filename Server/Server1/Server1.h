@@ -25,7 +25,7 @@ public:
 	CServer1App();
 
 protected:
-	TcpServer tcpSrv;	// tcp服务
+	TcpServer* pTcpSrv;	// tcp服务
 
 public:
 	TcpServer* GetTcpSrv();
@@ -37,6 +37,7 @@ public:
 // 实现
 
 	DECLARE_MESSAGE_MAP()
+	virtual int ExitInstance();
 };
 
 extern CServer1App theApp;

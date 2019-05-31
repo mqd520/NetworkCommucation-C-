@@ -1,8 +1,8 @@
 #include "stdafx.h"
+#include "Include/tc/Def1.h"
 #include "SendThread.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Common.h"
-#include <tchar.h>
 
 namespace tc
 {
@@ -20,8 +20,8 @@ namespace tc
 	{
 		if (!m_bRun)
 		{
-			PrintfInfo(_T("Send thread run"));
 			__super::Run();
+			CTcpCommuMgr::GetLogMgr()->AddLog(ELogType::Debug, "send thread run.");
 		}
 	}
 
@@ -29,7 +29,7 @@ namespace tc
 	{
 		if (CTcpCommuMgr::GetSendDataSingal()->IsEmpty())
 		{
-			SetSleepTime(10);
+			SetSleepTime();
 		}
 		else
 		{

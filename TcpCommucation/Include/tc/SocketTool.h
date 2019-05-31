@@ -127,6 +127,11 @@ namespace tc
 		//************************************
 		// Method:    ¹Ø±Õsocket
 		//************************************
+		static void ShutDown(SOCKET socket, int how = SD_BOTH, bool b = true);
+
+		//************************************
+		// Method:    ¹Ø±Õsocket
+		//************************************
 		static bool CloseSocket(SOCKET socket, bool b = true);
 
 		//************************************

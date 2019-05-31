@@ -27,11 +27,11 @@ enum ELogType
 	None1	// 其它
 };
 
-
 // tcp事件回调函数指针
 // pEvent	tcp事件对象
-// pEvent	事件附加参数
-typedef void(*LPTcpEventCallback)(TcpEvt* pEvt, void* pParam);
+// pParam1	附加参数1
+// pParam2	附加参数2
+typedef void(*LPTcpEventCallback)(TcpEvt* pEvt, void* pParam1, void* pParam2);
 
 // 日志回调函数指针
 // type		日志类型: ELogType

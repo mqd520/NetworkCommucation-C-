@@ -40,9 +40,10 @@ namespace tc
 				bool b1 = SocketTool::Bind(socket, strIP.c_str(), nPort);
 				if (b1)
 				{
+					SocketTool::SetNonBlock(socket);	// 设置非阻塞
 					bool b2 = SocketTool::Listen(socket, strIP, nPort);
 					bListening = true;
-					CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Accept);
+					CTcpCommuMgr::GetSelect()->AddSocket(socket, ESocketType::Accept);
 				}
 			}
 		}
@@ -61,43 +62,6 @@ namespace tc
 
 	void TcpServer::OnRecvTcpEvent(TcpEvt* pEvent)
 	{
-		if (pEvent->GetEvtType() == ETcpEvt::RecvNewConn)//收到新连接
-		{
-			SOCKET clientSocket = pEvent->GetSendRecvSocket();//获取客户端socket
-			int port = 0;
-			string ip = SocketTool::GetPeerIpAndPort(clientSocket, &port);
-
-			bool result = false;	// 接收连接结果
-			if (IsAllow(ip))
-			{
-				DispatchTcpEvt(pEvent);
-
-				//CRecvNewConnEvt* pRecvEvent = (CRecvNewConnEvt*)pEvent;
-				//if (pRecvEvent->m_bRefuse)//用户拒绝了新连接
-				//{
-				//	m_socketAPI.CloseSocket(pRecvEvent->GetSendRecvSocket());//关闭客户端socket
-
-				//	PrintfInfo(_T("[%s:%d][socket: %d] refuse a new connection [%s:%d][socket: %d]"),
-				//		this->GetServerIP(), this->GetServerPort(), this->GetSocket(), ip, port, clientSocket);
-				//}
-				//else//用户允许了新连接
-				//{
-				//	//创建tcp连接对象
-				//	CServerTcpConnection* conn = new CServerTcpConnection(this, pRecvEvent->GetSendRecvSocket(), m_socket);
-				//	CTcpCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);//加入tcp连接对象
-				//	result = true;
-				//}
-			}
-			else
-			{
-				//...
-			}
-
-			//CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(this, clientSocket, ip, port));
-
-			return;
-		}
-
 		__super::OnRecvTcpEvent(pEvent);
 	}
 
