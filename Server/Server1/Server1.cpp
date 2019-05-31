@@ -5,9 +5,12 @@
 #include "stdafx.h"
 #include "Server1.h"
 #include "Server1Dlg.h"
-#include "tc/TcpCommuMgr.h"
 
+#include "tc/TcpCommuMgr.h"
+#include "tc/TcpEvt.h"
+#include "tc/RecvNewConnEvt.h"
 using namespace tc;
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,6 +40,21 @@ CServer1App::CServer1App()
 
 CServer1App theApp;
 
+//************************************
+// Method:    日志事件处理
+// Parameter: int type: 日志类型(ELogType)
+// Parameter: string log:	日志内容
+// Parameter: void * pParam1
+// Parameter: void * pParam2
+//************************************
+void OnLog(int type, string log, void* pParam1, void* pParam2);
+
+//************************************
+// Method:    tcp事件回调函数
+// Parameter: tcp事件对象
+// Parameter: 附加参数
+//************************************
+void OnTcpEvt(TcpEvt* pEvt, void* pParam);
 
 // CServer1App 初始化
 
@@ -63,6 +81,8 @@ BOOL CServer1App::InitInstance()
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
 	CTcpCommuMgr::Init();
+	CTcpCommuMgr::GetLogMgr()->RegCallback(OnLog, &theApp, NULL);	// 注册日志事件
+	tcpSrv.RegTcpEventCallback(OnTcpEvt, &theApp);	// 注册tcp事件
 
 	// 标准初始化
 	// 如果未使用这些功能并希望减小
@@ -101,5 +121,28 @@ BOOL CServer1App::InitInstance()
 	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
 	//  而不是启动应用程序的消息泵。
 	return FALSE;
+}
+
+TcpServer* CServer1App::GetTcpSrv()
+{
+	return &tcpSrv;
+}
+
+void OnLog(int type, string log, void* pParam1, void* pParam2)
+{
+	OutputDebugStringA(log.c_str());
+}
+
+void OnTcpEvt(TcpEvt* pEvt, void* pParam)
+{
+	if (pEvt->GetEvtType() == ETcpEvt::RecvNewConn)
+	{
+		RecvNewConnEvt* pEvt1 = (RecvNewConnEvt*)pEvt;
+
+		char ch[50] = { 0 };
+		sprintf_s(ch, "recv new conn %s:%d \n", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
+
+		OutputDebugStringA(ch);
+	}
 }
 

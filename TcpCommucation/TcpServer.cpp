@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Include/tc/Def1.h"
 #include "Include/tc/TcpServer.h"
 #include "Common.h"
 #include "TcpConnectionMgr.h"
@@ -33,15 +34,29 @@ namespace tc
 	{
 		if (!bListening)
 		{
-			bListening = true;
-
-			// 加入select队列
-			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Accept);
-
-			return true;
+			socket = SocketTool::CreateTcpSocket();
+			if (socket != INVALID_SOCKET)
+			{
+				bool b1 = SocketTool::Bind(socket, strIP.c_str(), nPort);
+				if (b1)
+				{
+					bool b2 = SocketTool::Listen(socket, strIP, nPort);
+					bListening = true;
+					CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Accept);
+				}
+			}
 		}
 
-		return true;
+		if (bListening)
+		{
+			CTcpCommuMgr::GetLogMgr()->AddLog(ELogType::Debug, "listen success: %s:%d", strIP.c_str(), nPort);
+		}
+		else
+		{
+			CTcpCommuMgr::GetLogMgr()->AddLog(ELogType::Err, "listen fail: %s:%d", strIP.c_str(), nPort);
+		}
+
+		return bListening;
 	}
 
 	void TcpServer::OnRecvTcpEvent(TcpEvt* pEvent)

@@ -10,12 +10,6 @@ using namespace tc;
 #define TC_TCPSENDBUFFERSIZE		1024	//tcp异步发送缓冲区默认大小
 #define TC_MAXIPSTRELN				20		//ip字符串最大长度
 
-// 网络地址
-typedef struct tagNetAddress
-{
-	string ip;	// ip
-	int port;	// 端口
-}NetAddress;
 
 // select队列socket类型
 enum ESelectSocketType
@@ -33,6 +27,21 @@ enum EAsyncSendStatus
 	SendCmp		// 发送完成
 };
 
+// socket信号类型
+enum ESocketSingalType
+{
+	Read,	// 可读
+	Write,	// 可写
+	Except	// 异常
+};
+
+// 网络地址
+typedef struct tagNetAddress
+{
+	string ip;	// ip
+	int port;	// 端口
+}NetAddress;
+
 // select队列socket数据结构
 typedef struct tagSelectSocketData
 {
@@ -49,14 +58,6 @@ typedef struct tagSendPeerDataResult
 	int len;		//发送数据字节长度
 	int actualLen;	//实际发送字节长度
 }SendPeerDataResult;
-
-// socket信号类型
-enum ESocketSingalType
-{
-	Read,	// 可读
-	Write,	// 可写
-	Except	// 异常
-};
 
 // socket信号数据
 typedef struct tagSocketSingalData

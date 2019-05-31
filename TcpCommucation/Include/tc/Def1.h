@@ -1,11 +1,8 @@
 #pragma once
 
-#include "Include/tc/TcpEvt.h"
+#include "TcpEvt.h"
 
-// tcp事件回调函数指针
-// pEvent	tcp事件对象
-// pEvent	事件附加参数
-typedef void(*LPTcpEventCallback)(TcpEvt* pEvt, void* pParam);
+using namespace tc;
 
 // tcp事件
 enum ETcpEvt
@@ -19,3 +16,26 @@ enum ETcpEvt
 
 	None				// 无
 };
+
+// 日志类型
+enum ELogType
+{
+	Info,	// 消息
+	Debug,	// 调试
+	Err,	// 错误
+
+	None1	// 其它
+};
+
+
+// tcp事件回调函数指针
+// pEvent	tcp事件对象
+// pEvent	事件附加参数
+typedef void(*LPTcpEventCallback)(TcpEvt* pEvt, void* pParam);
+
+// 日志回调函数指针
+// type		日志类型: ELogType
+// log		日志内容
+// pParam1	附加参数1
+// pParam1	附加参数2
+typedef void(*LPLogCallback)(int type, string log, void* pParam1, void* pParam2);

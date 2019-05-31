@@ -16,14 +16,18 @@ namespace tc
 	SocketSingalProcess CTcpCommuMgr::m_otherSingal;
 	SocketSingalProcess CTcpCommuMgr::m_recvSingal;
 	SocketSingalProcess CTcpCommuMgr::m_sendSingal;
+	LogThread CTcpCommuMgr::logThread;
 
 	CTcpConnectionMgr CTcpCommuMgr::m_tcpConnMgr;
 	TcpServiceMgr CTcpCommuMgr::m_tcpServiceMgr;
 	TcpEvtMgr CTcpCommuMgr::m_tcpEvtMgr;
+	LogMgr CTcpCommuMgr::logMgr;
 
 	void CTcpCommuMgr::Init()
 	{
 		SocketTool::Init();
+
+		logThread.Run();		// 启动日志线程 
 		GetSelectThread()->Run();//启动select线程
 		GetRecvThread()->Run();//启动收数据线程
 		GetSendThread()->Run();//启动发送数据线程
@@ -36,6 +40,7 @@ namespace tc
 		m_bExited = true;
 
 		//退出线程
+		logThread.Exit();
 		GetSelectThread()->Exit();
 		GetRecvThread()->Exit();
 		GetSendThread()->Exit();
@@ -112,5 +117,10 @@ namespace tc
 	TcpEvtMgr* CTcpCommuMgr::GetTcpEvtMgr()
 	{
 		return &m_tcpEvtMgr;
+	}
+
+	LogMgr* CTcpCommuMgr::GetLogMgr()
+	{
+		return &logMgr;
 	}
 }

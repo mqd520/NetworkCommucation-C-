@@ -4,9 +4,6 @@
 
 #pragma once
 #include "afxwin.h"
-#include "tc/TcpServer.h"
-
-using namespace tc;
 
 // CServer1Dlg ¶Ô»°¿ò
 class CServer1Dlg : public CDialogEx
@@ -37,7 +34,4 @@ public:
 	// ¼àÌý°´Å¥
 	CButton m_btnListen;
 	afx_msg void OnBnClickedButton1();
-
-protected:
-	CTcpServer m_server;
 };

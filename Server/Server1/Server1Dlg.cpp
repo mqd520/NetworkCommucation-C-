@@ -6,7 +6,6 @@
 #include "Server1.h"
 #include "Server1Dlg.h"
 #include "afxdialogex.h"
-#include "tc/RecvNewConnEvt.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -14,13 +13,6 @@
 
 
 // CServer1Dlg 对话框
-
-//************************************
-// Method:    tcp事件回调函数
-// Parameter: tcp事件对象
-// Parameter: 附加参数
-//************************************
-void OnTcpEvt(TcpEvt* pEvt, void* pParam);
 
 CServer1Dlg::CServer1Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CServer1Dlg::IDD, pParent)
@@ -56,8 +48,6 @@ BOOL CServer1Dlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化代码
 	CString str = _T("8085");
 	m_edPort.SetWindowText(str);
-
-	m_server.RegTcpEventCallback(OnTcpEvt, this);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -103,7 +93,7 @@ HCURSOR CServer1Dlg::OnQueryDragIcon()
 void CServer1Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	
+
 	m_btnListen.EnableWindow(FALSE);
 
 	CString str;
@@ -111,19 +101,7 @@ void CServer1Dlg::OnBnClickedButton1()
 	int port = 0;
 	_stscanf_s(str, _T("%d"), &port);
 	m_edPort.EnableWindow(FALSE);
-	
-	m_server.Listen(_T("192.168.0.69"), port);
-}
 
-void OnTcpEvt(TcpEvt* pEvt, void* pParam)
-{
-	if (pEvt->GetEvtType() == ETcpEvt::RecvNewConn)
-	{
-		RecvNewConnEvt* pEvt1 = (RecvNewConnEvt*)pEvt;
-
-		char ch[50] = { 0 };
-		sprintf(ch, "recv new conn %s:%d \n", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
-
-		OutputDebugStringA(ch);
-	}
+	theApp.GetTcpSrv()->SetListenInfo(SocketTool::GetLocalIP(), port);
+	bool b = theApp.GetTcpSrv()->Listen();
 }

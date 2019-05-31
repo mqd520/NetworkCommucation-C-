@@ -55,6 +55,9 @@
     <Filter Include="07 流处理">
       <UniqueIdentifier>{eb870d64-278d-46a7-9a59-c5b609da3673}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09 日志处理">
+      <UniqueIdentifier>{fe933227-69a7-43ff-9744-11782c089464}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryTool.h">
@@ -176,9 +179,6 @@
     <ClInclude Include="Timer.h">
       <Filter>05 定时器管理\00 定时器处理</Filter>
     </ClInclude>
-    <ClInclude Include="Def.h">
-      <Filter>06 Tcp通信管理</Filter>
-    </ClInclude>
     <ClInclude Include="Include\tc\MemoryStream.h">
       <Filter>07 流处理</Filter>
     </ClInclude>
@@ -197,9 +197,6 @@
     <ClInclude Include="Include\tc\NCTool.h">
       <Filter>00 公共</Filter>
     </ClInclude>
-    <ClInclude Include="Include\tc\TcpCommuMgr.h">
-      <Filter>06 Tcp通信管理</Filter>
-    </ClInclude>
     <ClInclude Include="Include\tc\TcpServer.h">
       <Filter>06 Tcp通信管理\07 Tcp服务端</Filter>
     </ClInclude>
@@ -215,9 +212,6 @@
     <ClInclude Include="Include\tc\SendDataResultEvt.h">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\tc\Def1.h">
-      <Filter>06 Tcp通信管理</Filter>
-    </ClInclude>
     <ClInclude Include="Include\tc\TcpEvt.h">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClInclude>
@@ -227,6 +221,15 @@
     <ClInclude Include="Include\tc\SocketTool.h">
       <Filter>04 Socket管理</Filter>
     </ClInclude>
+    <ClInclude Include="LogMgr.h">
+      <Filter>09 日志处理</Filter>
+    </ClInclude>
+    <ClInclude Include="Def.h" />
+    <ClInclude Include="Include\tc\Def1.h" />
+    <ClInclude Include="LogThread.h">
+      <Filter>09 日志处理</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\TcpCommuMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoryTool.cpp">
@@ -374,9 +377,6 @@
     <ClCompile Include="MemoryStream.cpp">
       <Filter>07 流处理</Filter>
     </ClCompile>
-    <ClCompile Include="TcpCommuMgr.cpp">
-      <Filter>06 Tcp通信管理</Filter>
-    </ClCompile>
     <ClCompile Include="RecvNewConnEvt.cpp">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
     </ClCompile>
@@ -389,6 +389,13 @@
     <ClCompile Include="SocketTool.cpp">
       <Filter>04 Socket管理</Filter>
     </ClCompile>
+    <ClCompile Include="LogMgr.cpp">
+      <Filter>09 日志处理</Filter>
+    </ClCompile>
+    <ClCompile Include="LogThread.cpp">
+      <Filter>09 日志处理</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpCommuMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

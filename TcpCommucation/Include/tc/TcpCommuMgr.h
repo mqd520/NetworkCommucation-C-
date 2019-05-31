@@ -4,6 +4,7 @@
 #include "../../SendThread.h"
 #include "../../CommonThread.h"
 #include "../../TcpEvtThread.h"
+#include "../../LogThread.h"
 
 #include "../../Select.h"
 #include "../../SocketSingal.h"
@@ -11,6 +12,7 @@
 #include "../../TcpConnectionMgr.h"
 #include "../../TcpServiceMgr.h"
 #include "../../TcpEvtMgr.h"
+#include "../../LogMgr.h"
 
 namespace tc
 {
@@ -30,11 +32,13 @@ namespace tc
 		static SocketSingalProcess m_recvSingal;//收数据信号处理对象
 		static SocketSingalProcess m_sendSingal;//发数据信号处理对象
 		static SocketSingalProcess m_otherSingal;//其它信号处理对象
+		static LogThread logThread;		// 日志线程
 		
 		static CTcpConnectionMgr m_tcpConnMgr;//tcp连接管理对象
 		static TcpServiceMgr m_tcpServiceMgr;//tcp服务管理对象
 		//static CTcpServiceMgr* m_tcpServiceMgr;//tcp服务管理对象
 		static TcpEvtMgr m_tcpEvtMgr;//tcp事件管理对象
+		static LogMgr logMgr;	// 日志管理对象
 
 	private:
 		CTcpCommuMgr();
@@ -121,5 +125,10 @@ namespace tc
 		// Method:    获取tcp事件管理对象
 		//************************************
 		static TcpEvtMgr* GetTcpEvtMgr();
+
+		//************************************
+		// Method:    获取日志管理对象
+		//************************************
+		static LogMgr* GetLogMgr();
 	};
 }

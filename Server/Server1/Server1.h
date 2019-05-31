@@ -10,6 +10,10 @@
 
 #include "resource.h"		// 主符号
 
+#include "tc/TcpServer.h"
+
+using namespace tc;
+
 
 // CServer1App: 
 // 有关此类的实现，请参阅 Server1.cpp
@@ -19,6 +23,12 @@ class CServer1App : public CWinApp
 {
 public:
 	CServer1App();
+
+protected:
+	TcpServer tcpSrv;	// tcp服务
+
+public:
+	TcpServer* GetTcpSrv();
 
 // 重写
 public:
