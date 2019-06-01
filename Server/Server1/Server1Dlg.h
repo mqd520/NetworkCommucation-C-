@@ -4,22 +4,23 @@
 
 #pragma once
 #include "afxwin.h"
+#include "afxcmn.h"
 
 // CServer1Dlg 对话框
 class CServer1Dlg : public CDialogEx
 {
-// 构造
+	// 构造
 public:
 	CServer1Dlg(CWnd* pParent = NULL);	// 标准构造函数
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_SERVER1_DIALOG };
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
 
-// 实现
+	// 实现
 protected:
 	HICON m_hIcon;
 
@@ -28,10 +29,16 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
-public:
+
+protected:
+	afx_msg LRESULT OnRecvConn(WPARAM wParam, LPARAM lParam);
+
+protected:
 	// 端口
 	CEdit m_edPort;
 	// 监听按钮
 	CButton m_btnListen;
 	afx_msg void OnBnClickedButton1();
+	// 客户端列表
+	CListCtrl m_lcClients;
 };

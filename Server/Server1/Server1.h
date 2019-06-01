@@ -9,10 +9,8 @@
 #endif
 
 #include "resource.h"		// 主符号
-
-#include "tc/TcpServer.h"
-
-using namespace tc;
+#include "Service1.h"
+#include "LogSrv.h"
 
 
 // CServer1App: 
@@ -25,10 +23,13 @@ public:
 	CServer1App();
 
 protected:
-	TcpServer* pTcpSrv;	// tcp服务
+	Service1 srv1;
+	LogSrv logSrv;
 
 public:
-	TcpServer* GetTcpSrv();
+	Service1* GetSrv1();
+
+	LogSrv* GetLogSrv();
 
 // 重写
 public:

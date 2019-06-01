@@ -6,6 +6,12 @@
 #include "Server1.h"
 #include "Server1Dlg.h"
 #include "afxdialogex.h"
+#include "MSG.h"
+#include "Def.h"
+
+#include "tc/UTF16Str.h"
+
+using namespace tc;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -15,7 +21,7 @@
 // CServer1Dlg 对话框
 
 CServer1Dlg::CServer1Dlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CServer1Dlg::IDD, pParent)
+: CDialogEx(CServer1Dlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -25,12 +31,14 @@ void CServer1Dlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT1, m_edPort);
 	DDX_Control(pDX, IDC_BUTTON1, m_btnListen);
+	DDX_Control(pDX, IDC_LIST1, m_lcClients);
 }
 
 BEGIN_MESSAGE_MAP(CServer1Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CServer1Dlg::OnBnClickedButton1)
+	ON_MESSAGE(WM_USER_RECVCONN, &CServer1Dlg::OnRecvConn)
 END_MESSAGE_MAP()
 
 
@@ -48,6 +56,11 @@ BOOL CServer1Dlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化代码
 	CString str = _T("8085");
 	m_edPort.SetWindowText(str);
+
+	m_lcClients.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
+	m_lcClients.InsertColumn(0, _T("序号"), LVCFMT_CENTER, 50);
+	m_lcClients.InsertColumn(1, _T("地址"), LVCFMT_CENTER, 180);
+
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -102,6 +115,26 @@ void CServer1Dlg::OnBnClickedButton1()
 	_stscanf_s(str, _T("%d"), &port);
 	m_edPort.EnableWindow(FALSE);
 
-	theApp.GetTcpSrv()->SetListenInfo(SocketTool::GetLocalIP(), port);
-	bool b = theApp.GetTcpSrv()->Listen();
+	theApp.GetSrv1()->GetMainTcpSrv()->SetListenInfo(SocketTool::GetLocalIP(), port);
+	bool b = theApp.GetSrv1()->GetMainTcpSrv()->Listen();
+}
+
+LRESULT CServer1Dlg::OnRecvConn(WPARAM wParam, LPARAM lParam)
+{
+	int id = wParam;
+
+	ClientConnInfo info = theApp.GetSrv1()->GetClientConnInfoMgr()->GetInfo(id);
+	if (info.ip != "")
+	{
+		CString str1;
+		str1.Format(_T("%02d"), id + 1);
+		CString str2;
+		wstring str3 = UTF16Str::FromGB2312(info.ip);
+		str2.Format(_T("%s:%d"), str3.c_str(), info.port);
+
+		m_lcClients.InsertItem(id, str1.GetBuffer());
+		m_lcClients.SetItemText(id, 1, str2.GetBuffer());
+	}
+
+	return 0;
 }

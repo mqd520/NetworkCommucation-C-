@@ -5,10 +5,10 @@
 #include "stdafx.h"
 #include "Server1.h"
 #include "Server1Dlg.h"
+#include "MSG.h"
+#include "Def.h"
 
 #include "tc/TcpCommuMgr.h"
-#include "tc/TcpEvt.h"
-#include "tc/RecvNewConnEvt.h"
 using namespace tc;
 
 
@@ -23,6 +23,8 @@ BEGIN_MESSAGE_MAP(CServer1App, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
+
+void OnTcpCommLog(int type, string log, void* pParam1, void* pParam2);
 
 // CServer1App 构造
 
@@ -39,23 +41,6 @@ CServer1App::CServer1App()
 // 唯一的一个 CServer1App 对象
 
 CServer1App theApp;
-
-//************************************
-// Method:    日志事件处理
-// Parameter: int type: 日志类型(ELogType)
-// Parameter: string log:	日志内容
-// Parameter: void * pParam1
-// Parameter: void * pParam2
-//************************************
-void OnLog(int type, string log, void* pParam1, void* pParam2);
-
-//************************************
-// Method:    tcp事件回调函数
-// Parameter: tcp事件对象
-// Parameter: 附加参数1
-// Parameter: 附加参数2
-//************************************
-void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2);
 
 // CServer1App 初始化
 
@@ -81,9 +66,8 @@ BOOL CServer1App::InitInstance()
 	// 激活“Windows Native”视觉管理器，以便在 MFC 控件中启用主题
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
-	CTcpCommuMgr::Init(OnLog, &theApp);
-	pTcpSrv = new TcpServer();
-	pTcpSrv->RegTcpEventCallback(OnTcpEvt, &theApp);	// 注册tcp事件
+	CTcpCommuMgr::Init(OnTcpCommLog, &theApp);
+	srv1.Init();
 
 	// 标准初始化
 	// 如果未使用这些功能并希望减小
@@ -124,35 +108,6 @@ BOOL CServer1App::InitInstance()
 	return FALSE;
 }
 
-TcpServer* CServer1App::GetTcpSrv()
-{
-	return pTcpSrv;
-}
-
-void OnLog(int type, string log, void* pParam1, void* pParam2)
-{
-	OutputDebugStringA(log.c_str());
-}
-
-void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
-{
-	if (pEvt->GetEvtType() == ETcpEvt::RecvNewConn)
-	{
-		RecvNewConnEvt* pEvt1 = (RecvNewConnEvt*)pEvt;
-
-		char ch[50] = { 0 };
-		sprintf_s(ch, "recv new conn %s:%d \n", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
-
-		OutputDebugStringA(ch);
-	}
-	else if (pEvt->GetEvtType() == ETcpEvt::RecvData)
-	{
-		SOCKET socket = pEvt->GetSendRecvSocket();
-	}
-}
-
-
-
 int CServer1App::ExitInstance()
 {
 	// TODO:  在此添加专用代码和/或调用基类
@@ -160,3 +115,28 @@ int CServer1App::ExitInstance()
 
 	return CWinApp::ExitInstance();
 }
+
+Service1* CServer1App::GetSrv1()
+{
+	return &srv1;
+}
+
+LogSrv* CServer1App::GetLogSrv()
+{
+	return &logSrv;
+}
+
+//************************************
+// Method:    TcpComm日志事件处理
+// Parameter: int type: 日志类型(ELogType)
+// Parameter: string log:	日志内容
+// Parameter: void * pParam1
+// Parameter: void * pParam2
+//************************************
+void OnTcpCommLog(int type, string log, void* pParam1, void* pParam2)
+{
+	OutputDebugStringA(log.c_str());
+	
+	theApp.GetLogSrv()->Add(log);
+}
+

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="00 数据定义">
+      <UniqueIdentifier>{af5ff26e-e312-4ef0-8bd4-01cf42c13b1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01 服务">
+      <UniqueIdentifier>{1e73b785-b709-432e-a80f-9309bfc28a10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -33,6 +39,21 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Service1.h">
+      <Filter>01 服务</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientConnInfoMgr.h">
+      <Filter>01 服务</Filter>
+    </ClInclude>
+    <ClInclude Include="Def.h">
+      <Filter>00 数据定义</Filter>
+    </ClInclude>
+    <ClInclude Include="MSG.h">
+      <Filter>00 数据定义</Filter>
+    </ClInclude>
+    <ClInclude Include="LogSrv.h">
+      <Filter>01 服务</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server1.cpp">
@@ -43,6 +64,15 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientConnInfoMgr.cpp">
+      <Filter>01 服务</Filter>
+    </ClCompile>
+    <ClCompile Include="Service1.cpp">
+      <Filter>01 服务</Filter>
+    </ClCompile>
+    <ClCompile Include="LogSrv.cpp">
+      <Filter>01 服务</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

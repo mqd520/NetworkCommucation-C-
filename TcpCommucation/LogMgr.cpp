@@ -81,7 +81,7 @@ namespace tc
 		SYSTEMTIME st = { 0 };
 		GetLocalTime(&st);
 		char ch[1024] = { 0 };
-		sprintf_s(ch, "[%s] [%d-%02d-%02d %02d:%02d:%02d] %s \n", strLogType.c_str(), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, log);
+		sprintf_s(ch, "[%s] [%d-%02d-%02d %02d:%02d:%02d] %s", strLogType.c_str(), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, log);
 
 		LogInfo info = { type, ch };
 		quLogs.push(info);
