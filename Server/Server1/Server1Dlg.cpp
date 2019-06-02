@@ -38,7 +38,8 @@ BEGIN_MESSAGE_MAP(CServer1Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CServer1Dlg::OnBnClickedButton1)
-	ON_MESSAGE(WM_USER_RECVCONN, &CServer1Dlg::OnRecvConn)
+	ON_MESSAGE(WM_USER_RECVNEWCLIENT, &CServer1Dlg::OnRecvNewClient)
+	ON_MESSAGE(WM_USER_CLIENTDISCONN, &CServer1Dlg::OnClientDisconnect)
 END_MESSAGE_MAP()
 
 
@@ -119,7 +120,7 @@ void CServer1Dlg::OnBnClickedButton1()
 	bool b = theApp.GetSrv1()->GetMainTcpSrv()->Listen();
 }
 
-LRESULT CServer1Dlg::OnRecvConn(WPARAM wParam, LPARAM lParam)
+LRESULT CServer1Dlg::OnRecvNewClient(WPARAM wParam, LPARAM lParam)
 {
 	int id = wParam;
 
@@ -134,6 +135,22 @@ LRESULT CServer1Dlg::OnRecvConn(WPARAM wParam, LPARAM lParam)
 
 		m_lcClients.InsertItem(id, str1.GetBuffer());
 		m_lcClients.SetItemText(id, 1, str2.GetBuffer());
+	}
+
+	return 0;
+}
+
+LRESULT CServer1Dlg::OnClientDisconnect(WPARAM wParam, LPARAM lParam)
+{
+	int id = wParam;
+
+	ClientConnInfo info = theApp.GetSrv1()->GetClientConnInfoMgr()->GetInfo(id);
+	if (info.ip != "")
+	{
+		for (int i = 0; i < m_lcClients.GetItemCount(); i++)
+		{
+
+		}
 	}
 
 	return 0;

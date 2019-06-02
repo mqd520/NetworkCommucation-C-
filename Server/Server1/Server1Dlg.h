@@ -31,7 +31,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 protected:
-	afx_msg LRESULT OnRecvConn(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnRecvNewClient(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnClientDisconnect(WPARAM wParam, LPARAM lParam);
 
 protected:
 	// ¶Ë¿Ú

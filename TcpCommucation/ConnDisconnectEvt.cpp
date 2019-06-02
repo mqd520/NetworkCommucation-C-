@@ -15,4 +15,19 @@ namespace tc
 	{
 
 	}
+
+	int ConnDisconnectEvt::GetReason()
+	{
+		return 0;
+	}
+
+	string ConnDisconnectEvt::GetPeerIp()
+	{
+		return strIP;
+	}
+
+	int ConnDisconnectEvt::GetPeerPort()
+	{
+		return nPort;
+	}
 }

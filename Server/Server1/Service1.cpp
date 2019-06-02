@@ -29,11 +29,17 @@ void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
 
 		ClientConnInfoMgr* mgr = theApp.GetSrv1()->GetClientConnInfoMgr();
 		int id = mgr->Add(pEvt1->GetClientIP(), pEvt1->GetClientPort(), pEvt1->GetSendRecvSocket());
-		::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_RECVCONN, id, NULL);
+		::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_RECVNEWCLIENT, id, NULL);
 	}
 	else if (pEvt->GetEvtType() == ETcpEvt::RecvData)
 	{
 		SOCKET socket = pEvt->GetSendRecvSocket();
+	}
+	else if (pEvt->GetEvtType() == ETcpEvt::ConnDisconnect)
+	{
+		ClientConnInfoMgr* mgr = theApp.GetSrv1()->GetClientConnInfoMgr();
+		mgr->Remove(pEvt->GetSendRecvSocket());
+		::SendMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_CLIENTDISCONN, 1, 0);
 	}
 }
 
