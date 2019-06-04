@@ -18,6 +18,7 @@ namespace tc
 		m_nAsyncSendStatus(EAsyncSendStatus::SendCmp),
 		m_bCanAsyncSend(true)
 	{
+		SocketTool::SetNonBlock(sendrecv);
 		CTcpCommuMgr::GetSelect()->AddSocket(sendrecv, ESocketType::SendRecvData);	// 加入select队列
 	}
 

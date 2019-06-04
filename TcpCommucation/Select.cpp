@@ -65,7 +65,7 @@ namespace tc
 
 	void CSelect::Select()
 	{
-		Sleep(3 * 1000);	// 调试时使用,无意义,可注释掉
+		Sleep(1 * 1000);	// 调试时使用,无意义,可注释掉
 
 		if (CTcpCommuMgr::IsExited())	// 指示需要退出了
 		{
@@ -94,16 +94,25 @@ namespace tc
 				SocketTool::Select(0, &fsRead, &fsWrite, &fsExcept, &m_selectTimeout);
 
 				// 检查socket的"异常"信号
-				if (fsExcept.fd_count > 0)
+				//if (fsExcept.fd_count > 0)
+				//{
+				//	for (int k = 0; k < (int)groupSocket[i].size(); k++)
+				//	{
+				//		if (CTcpCommuMgr::IsExited())	// 指示需要退出了
+				//		{
+				//			return;	//立刻返回, 不再处理后面的队列
+				//		}
+				//		CheckSocketExcept(groupSocket[i][k]);
+				//	}
+				//}
+
+				for (int k = 0; k < (int)groupSocket[i].size(); k++)
 				{
-					for (int k = 0; k < (int)groupSocket[i].size(); k++)
+					if (CTcpCommuMgr::IsExited())	// 指示需要退出了
 					{
-						if (CTcpCommuMgr::IsExited())	// 指示需要退出了
-						{
-							return;	//立刻返回, 不再处理后面的队列
-						}
-						CheckSocketExcept(groupSocket[i][k]);
+						return;	//立刻返回, 不再处理后面的队列
 					}
+					CheckSocketExcept(groupSocket[i][k]);
 				}
 
 				// 检查socket的"可读"信号
