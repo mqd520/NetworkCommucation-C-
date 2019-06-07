@@ -125,12 +125,12 @@ namespace tc
 		return __super::SendData(socket, pBuf, len, asyncs, actualLen);
 	}
 
-	void TcpServer::CloseClient(SOCKET client)
+	void TcpServer::CloseClient(SOCKET client, bool b /*= false*/)
 	{
 		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(client);
 		if (pConn)
 		{
-			pConn->Close();
+			pConn->Close(b);
 		}
 	}
 }

@@ -131,12 +131,16 @@ namespace tc
 
 	void CTcpConnection::OnNetError()
 	{
-		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除指定发送(接收)数据的socket关联的tcp连接
+		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);	//移除指定发送(接收)数据的socket关联的tcp连接
 	}
 
-	void CTcpConnection::Close()
+	void CTcpConnection::Close(bool b /*= false*/)
 	{
 		CTcpCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);	// 移除select队列中socket
+		if (b)
+		{
+			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
+		}
 		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);	// 移除tcp连接对象
 	}
 }

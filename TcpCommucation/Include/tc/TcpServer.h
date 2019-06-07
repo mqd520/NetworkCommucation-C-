@@ -57,9 +57,10 @@ namespace tc
 
 		//************************************
 		// Method:    关闭指定客户端
-		// Parameter: 客户端SOCKET
+		// Parameter: client:	客户端SOCKET
+		// Parameter: b:	是否产生连接断开事件, 默认: false
 		//************************************
-		void CloseClient(SOCKET client);
+		void CloseClient(SOCKET client, bool b = false);
 
 		//************************************
 		// Method:    增加一个允许IP
