@@ -118,15 +118,7 @@ namespace tc
 		{
 			delete pRecvBuf;
 
-			if (len == 0) // 没有接收到任何数据
-			{
-
-			}
-
-			if (len < 0)	// 发生异常了
-			{
-				OnConnDisconnect();
-			}
+			OnConnDisconnect();	// 连接断开了
 		}
 	}
 

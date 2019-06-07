@@ -39,7 +39,7 @@ void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
 	{
 		ClientConnInfoMgr* mgr = theApp.GetSrv1()->GetClientConnInfoMgr();
 		mgr->Remove(pEvt->GetSendRecvSocket());
-		::SendMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_CLIENTDISCONN, 1, 0);
+		::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_CLIENTDISCONN, NULL, NULL);
 	}
 }
 

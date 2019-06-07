@@ -21,7 +21,7 @@ using namespace tc;
 // CServer1Dlg ¶Ô»°¿ò
 
 CServer1Dlg::CServer1Dlg(CWnd* pParent /*=NULL*/)
-: CDialogEx(CServer1Dlg::IDD, pParent)
+	: CDialogEx(CServer1Dlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -142,15 +142,18 @@ LRESULT CServer1Dlg::OnRecvNewClient(WPARAM wParam, LPARAM lParam)
 
 LRESULT CServer1Dlg::OnClientDisconnect(WPARAM wParam, LPARAM lParam)
 {
-	int id = wParam;
+	m_lcClients.DeleteAllItems();
 
-	ClientConnInfo info = theApp.GetSrv1()->GetClientConnInfoMgr()->GetInfo(id);
-	if (info.ip != "")
+	vector<ClientConnInfo> vec = theApp.GetSrv1()->GetClientConnInfoMgr()->GetAll();
+	for (int i = 0; i < (int)vec.size(); i++)
 	{
-		for (int i = 0; i < m_lcClients.GetItemCount(); i++)
-		{
+		CString no, addr;
+		no.Format(_T("%02d"), i + 1);
+		wstring ip = UTF16Str::FromGB2312(vec[i].ip);
+		addr.Format(_T("%s:%d"), ip.c_str(), vec[i].port);
 
-		}
+		m_lcClients.InsertItem(i, no.GetBuffer());
+		m_lcClients.SetItemText(i, 1, addr.GetBuffer());
 	}
 
 	return 0;

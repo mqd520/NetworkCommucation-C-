@@ -123,3 +123,15 @@ ClientConnInfo ClientConnInfoMgr::GetInfoByNetId(int socket)
 
 	return info;
 }
+
+vector<ClientConnInfo> ClientConnInfoMgr::GetAll()
+{
+	vector<ClientConnInfo> vec;
+
+	for (vector<ClientConnInfo>::iterator it = vecClients.begin(); it != vecClients.end(); it++)
+	{
+		vec.push_back(*it);
+	}
+
+	return vec;
+}

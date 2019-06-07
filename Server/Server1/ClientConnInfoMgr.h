@@ -32,4 +32,6 @@ public:
 	ClientConnInfo GetInfo(string ip, int port);
 
 	ClientConnInfo GetInfoByNetId(int socket);
+
+	vector<ClientConnInfo> GetAll();
 };
