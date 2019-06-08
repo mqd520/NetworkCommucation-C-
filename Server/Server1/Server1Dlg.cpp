@@ -60,12 +60,6 @@ BOOL CServer1Dlg::OnInitDialog()
 	CString str = _T("8085");
 	m_edPort.SetWindowText(str);
 
-	CString addr = L"192.168.0.69:56667";
-	//addr.Replace(_T(":"), _T(" "));
-	wchar_t ip[20] = { 0 };
-	int port = 0;
-	_stscanf_s(addr.GetBuffer(), _T("%s"), ip);
-
 	m_lcClients.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 	m_lcClients.InsertColumn(0, _T("序号"), LVCFMT_CENTER, 50);
 	m_lcClients.InsertColumn(1, _T("地址"), LVCFMT_CENTER, 180);
@@ -115,6 +109,10 @@ HCURSOR CServer1Dlg::OnQueryDragIcon()
 void CServer1Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
+
+	char* str3 = "123";
+	str3[0] = 1;
+	return;
 
 	m_btnListen.EnableWindow(FALSE);
 
@@ -175,11 +173,15 @@ void CServer1Dlg::OnBnClickedButton2()
 	if (index > -1)
 	{
 		CString addr = m_lcClients.GetItemText(index, 1);
-		addr.Replace(_T(":"), _T(" "));
-		wchar_t ip[20] = { 0 };
+		CString ip;
 		int port = 0;
-		_stscanf_s(addr.GetBuffer(), _T("%s %d"), ip, 12, port);
-		string ip1 = GB2312Str::FromUTF16(ip);
+		int index = addr.Find(_T(":"));
+		if (index > -1)
+		{
+			ip = addr.Left(index);
+			port = static_cast<int>(stol(addr.Mid(index + 1, addr.GetLength() - index - 1).GetBuffer()));
+		}
+		string ip1 = GB2312Str::FromUTF16(ip.GetBuffer());
 
 		ClientConnInfo info = theApp.GetSrv1()->GetClientConnInfoMgr()->GetInfo(ip1, port);
 		theApp.GetSrv1()->GetClientConnInfoMgr()->Remove(ip1, port);

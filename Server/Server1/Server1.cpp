@@ -7,6 +7,7 @@
 #include "Server1Dlg.h"
 #include "MSG.h"
 #include "Def.h"
+#include "ExceptionHandler.h"
 
 #include "tc/TcpCommuMgr.h"
 using namespace tc;
@@ -23,7 +24,7 @@ BEGIN_MESSAGE_MAP(CServer1App, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
-
+void OnException(void* pParam1, void* pParam2);
 void OnTcpCommLog(int type, string log, void* pParam1, void* pParam2);
 
 // CServer1App 构造
@@ -65,6 +66,10 @@ BOOL CServer1App::InitInstance()
 
 	// 激活“Windows Native”视觉管理器，以便在 MFC 控件中启用主题
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
+
+	ExceptionHandler::Init();
+	ExceptionHandler::SetFileName("Server1.exe");
+	ExceptionHandler::RegExceptionCallback(OnException);
 
 	CTcpCommuMgr::Init(OnTcpCommLog, &theApp);
 	srv1.Init();
@@ -124,6 +129,11 @@ Service1* CServer1App::GetSrv1()
 LogSrv* CServer1App::GetLogSrv()
 {
 	return &logSrv;
+}
+
+void OnException(void* pParam1, void* pParam2)
+{
+	theApp.GetLogSrv()->Add("a fatal error has occured, the program will be shut down, please contact the administrator");
 }
 
 //************************************

@@ -108,6 +108,7 @@
   <ItemGroup>
     <ClInclude Include="ClientConnInfoMgr.h" />
     <ClInclude Include="Def.h" />
+    <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="LogSrv.h" />
     <ClInclude Include="MSG.h" />
     <ClInclude Include="Resource.h" />
@@ -119,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientConnInfoMgr.cpp" />
+    <ClCompile Include="ExceptionHandler.cpp" />
     <ClCompile Include="LogSrv.cpp" />
     <ClCompile Include="Server1.cpp" />
     <ClCompile Include="Server1Dlg.cpp" />
