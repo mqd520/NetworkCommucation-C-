@@ -42,4 +42,6 @@ protected:
 	afx_msg void OnBnClickedButton1();
 	// 客户端列表
 	CListCtrl m_lcClients;
+public:
+	afx_msg void OnBnClickedButton2();
 };

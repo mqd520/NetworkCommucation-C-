@@ -10,6 +10,7 @@
 #include "Def.h"
 
 #include "tc/UTF16Str.h"
+#include "tc/GB2312Str.h"
 
 using namespace tc;
 
@@ -40,6 +41,7 @@ BEGIN_MESSAGE_MAP(CServer1Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CServer1Dlg::OnBnClickedButton1)
 	ON_MESSAGE(WM_USER_RECVNEWCLIENT, &CServer1Dlg::OnRecvNewClient)
 	ON_MESSAGE(WM_USER_CLIENTDISCONN, &CServer1Dlg::OnClientDisconnect)
+	ON_BN_CLICKED(IDC_BUTTON2, &CServer1Dlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -57,6 +59,12 @@ BOOL CServer1Dlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化代码
 	CString str = _T("8085");
 	m_edPort.SetWindowText(str);
+
+	CString addr = L"192.168.0.69:56667";
+	//addr.Replace(_T(":"), _T(" "));
+	wchar_t ip[20] = { 0 };
+	int port = 0;
+	_stscanf_s(addr.GetBuffer(), _T("%s"), ip);
 
 	m_lcClients.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 	m_lcClients.InsertColumn(0, _T("序号"), LVCFMT_CENTER, 50);
@@ -157,4 +165,38 @@ LRESULT CServer1Dlg::OnClientDisconnect(WPARAM wParam, LPARAM lParam)
 	}
 
 	return 0;
+}
+
+void CServer1Dlg::OnBnClickedButton2()
+{
+	// TODO:  在此添加控件通知处理程序代码
+
+	int index = m_lcClients.GetSelectionMark();
+	if (index > -1)
+	{
+		CString addr = m_lcClients.GetItemText(index, 1);
+		addr.Replace(_T(":"), _T(" "));
+		wchar_t ip[20] = { 0 };
+		int port = 0;
+		_stscanf_s(addr.GetBuffer(), _T("%s %d"), ip, 12, port);
+		string ip1 = GB2312Str::FromUTF16(ip);
+
+		ClientConnInfo info = theApp.GetSrv1()->GetClientConnInfoMgr()->GetInfo(ip1, port);
+		theApp.GetSrv1()->GetClientConnInfoMgr()->Remove(ip1, port);
+		theApp.GetSrv1()->GetMainTcpSrv()->CloseClient(info.socket, true);
+
+		m_lcClients.DeleteItem(index);
+
+		vector<ClientConnInfo> vec = theApp.GetSrv1()->GetClientConnInfoMgr()->GetAll();
+		for (int i = 0; i < (int)vec.size(); i++)
+		{
+			CString no, addr;
+			no.Format(_T("%02d"), i + 1);
+			wstring ip = UTF16Str::FromGB2312(vec[i].ip);
+			addr.Format(_T("%s:%d"), ip.c_str(), vec[i].port);
+
+			m_lcClients.InsertItem(i, no.GetBuffer());
+			m_lcClients.SetItemText(i, 1, addr.GetBuffer());
+		}
+	}
 }
