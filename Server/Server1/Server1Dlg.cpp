@@ -110,10 +110,6 @@ void CServer1Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
 
-	char* str3 = "123";
-	str3[0] = 1;
-	return;
-
 	m_btnListen.EnableWindow(FALSE);
 
 	CString str;

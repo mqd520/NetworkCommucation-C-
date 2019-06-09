@@ -2,6 +2,7 @@
 #include "TcpEvtMgr.h"
 #include "TcpService.h"
 #include "Include/tc/TcpCommuMgr.h"
+#include <assert.h>
 
 namespace tc
 {
@@ -41,6 +42,7 @@ namespace tc
 			}
 
 			TcpEvt* pEvent = queueEvent.front();
+			assert(!queueEvent.empty());
 			queueEvent.pop();
 
 			TcpService* pSrv = pEvent->GetTcpSrv();

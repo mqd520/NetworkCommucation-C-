@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LogMgr.h"
+#include <assert.h>
 
 namespace tc
 {
@@ -96,6 +97,8 @@ namespace tc
 		while (!quLogs.empty())
 		{
 			LogInfo info = quLogs.front();
+			
+			assert(!quLogs.empty());
 			quLogs.pop();
 
 			for (vector<LogCallbackInfo>::iterator it = vecCallbacks.begin(); it != vecCallbacks.end(); it++)
