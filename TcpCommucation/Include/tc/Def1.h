@@ -4,8 +4,8 @@
 
 using namespace tc;
 
-// tcp事件
-enum ETcpEvt
+// tcp事件类型
+enum class ETcpEvt : int
 {
 	RecvNewConn,		// 收到新连接
 	RecvData,			// 收到对端数据
@@ -18,13 +18,13 @@ enum ETcpEvt
 };
 
 // 日志类型
-enum ELogType
+enum class ETcpLogType : int
 {
 	Info,	// 消息
 	Debug,	// 调试
 	Err,	// 错误
 
-	None1	// 其它
+	None	// 其它
 };
 
 // tcp事件回调函数指针

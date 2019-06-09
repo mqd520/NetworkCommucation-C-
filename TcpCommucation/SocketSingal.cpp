@@ -6,6 +6,7 @@
 #include "ClientTcpConnection.h"
 #include "Include/tc/RecvNewConnEvt.h"
 #include "Include/tc/ConnectSrvResultEvt.h"
+#include <assert.h>
 
 namespace tc
 {
@@ -152,6 +153,7 @@ namespace tc
 			}
 
 			SocketSingalData data = quSignalSocketData.front();
+			assert(!quSignalSocketData.empty());
 			quSignalSocketData.pop();
 
 			if (data.singaltype == ESocketSingalType::Read)	// 处理可读信号

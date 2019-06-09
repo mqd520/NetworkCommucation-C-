@@ -12,7 +12,7 @@ using namespace tc;
 
 
 // socket类型
-enum ESocketType
+enum class ESocketType : int
 {
 	Accept,			// 用于接收新连接(服务端的socket)
 	SendRecvData,	// 用于收(发)数据的socket
@@ -20,7 +20,7 @@ enum ESocketType
 };
 
 // 异步发送状态
-enum EAsyncSendStatus
+enum class EAsyncSendStatus : int
 {
 	PreSend,	// 准备发送
 	Sending,	// 正在发送
@@ -28,7 +28,7 @@ enum EAsyncSendStatus
 };
 
 // socket信号类型
-enum ESocketSingalType
+enum class ESocketSingalType : int
 {
 	Read,	// 可读
 	Write,	// 可写

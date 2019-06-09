@@ -226,9 +226,6 @@
     </ClInclude>
     <ClInclude Include="Def.h" />
     <ClInclude Include="Include\tc\Def1.h" />
-    <ClInclude Include="LogThread.h">
-      <Filter>09 日志处理</Filter>
-    </ClInclude>
     <ClInclude Include="Include\tc\TcpCommuMgr.h" />
   </ItemGroup>
   <ItemGroup>
@@ -390,9 +387,6 @@
       <Filter>04 Socket管理</Filter>
     </ClCompile>
     <ClCompile Include="LogMgr.cpp">
-      <Filter>09 日志处理</Filter>
-    </ClCompile>
-    <ClCompile Include="LogThread.cpp">
       <Filter>09 日志处理</Filter>
     </ClCompile>
     <ClCompile Include="TcpCommuMgr.cpp" />

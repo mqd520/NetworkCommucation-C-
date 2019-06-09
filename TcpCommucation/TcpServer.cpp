@@ -50,11 +50,11 @@ namespace tc
 
 		if (bListening)
 		{
-			CTcpCommuMgr::GetLogMgr()->AddLog(ELogType::Debug, "listen success: %s:%d", strIP.c_str(), nPort);
+			CTcpCommuMgr::GetLogMgr()->AddLog(ETcpLogType::Debug, "listen success: %s:%d", strIP.c_str(), nPort);
 		}
 		else
 		{
-			CTcpCommuMgr::GetLogMgr()->AddLog(ELogType::Err, "listen fail: %s:%d", strIP.c_str(), nPort);
+			CTcpCommuMgr::GetLogMgr()->AddLog(ETcpLogType::Err, "listen fail: %s:%d", strIP.c_str(), nPort);
 		}
 
 		return bListening;

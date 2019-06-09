@@ -22,7 +22,7 @@ namespace tc
 		if (!m_bRun)
 		{
 			__super::Run();
-			CTcpCommuMgr::GetLogMgr()->AddLog(ELogType::Debug, "tcp evt thread run.");
+			CTcpCommuMgr::GetLogMgr()->AddLog(ETcpLogType::Debug, "tcp evt thread run.");
 		}
 	}
 

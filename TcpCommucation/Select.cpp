@@ -80,14 +80,12 @@ namespace tc
 			for (int i = 0; i < (int)groupSocket.size(); i++)
 			{
 				FD_ZERO(&fsRead);
-				FD_ZERO(&fsWrite);
 				FD_ZERO(&fsExcept);
 
 				// 遍历分组,将socket分别加入异常集合和读写集合
 				for (int j = 0; j < (int)groupSocket[i].size(); j++)
 				{
 					FD_SET(groupSocket[i][j].socket, &fsRead);
-					FD_SET(groupSocket[i][j].socket, &fsWrite);
 					FD_SET(groupSocket[i][j].socket, &fsExcept);
 				}
 
@@ -116,19 +114,6 @@ namespace tc
 							return;	//立刻返回, 不再处理后面的队列
 						}
 						CheckSocketCanRead(groupSocket[i][k]);
-					}
-				}
-
-				// 检查socket的"可写"信号
-				if (fsWrite.fd_count > 0)
-				{
-					for (int k = 0; k < (int)groupSocket[i].size(); k++)
-					{
-						if (CTcpCommuMgr::IsExited())	// 指示需要退出了
-						{
-							return;	// 立刻返回, 不再处理后面的队列
-						}
-						CheckSocketCanWrite(groupSocket[i][k]);
 					}
 				}
 			}

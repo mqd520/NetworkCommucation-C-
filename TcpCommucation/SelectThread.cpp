@@ -21,7 +21,7 @@ namespace tc
 		if (!m_bRun)
 		{
 			__super::Run();
-			CTcpCommuMgr::GetLogMgr()->AddLog(ELogType::Debug, "select thread run.");
+			CTcpCommuMgr::GetLogMgr()->AddLog(ETcpLogType::Debug, "select thread run.");
 		}
 	}
 

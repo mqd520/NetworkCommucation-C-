@@ -105,7 +105,6 @@
     <ClInclude Include="Include\tc\UTF16Str.h" />
     <ClInclude Include="LinkList.h" />
     <ClInclude Include="LogMgr.h" />
-    <ClInclude Include="LogThread.h" />
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="OtherTool.h" />
@@ -145,7 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LogMgr.cpp" />
-    <ClCompile Include="LogThread.cpp" />
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="ClientTcpConnection.cpp" />
     <ClCompile Include="GB2312Str.cpp" />

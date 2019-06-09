@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Def.h"
-#include "Include/tc/Def1.h"
 #include "Include/tc/TcpEvt.h"
 
 namespace tc
@@ -18,7 +17,7 @@ namespace tc
 
 	}
 
-	int TcpEvt::GetEvtType()
+	ETcpEvt TcpEvt::GetEvtType()
 	{
 		return evt;
 	}

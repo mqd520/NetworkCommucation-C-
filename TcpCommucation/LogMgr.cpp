@@ -57,67 +57,15 @@ namespace tc
 
 	void LogMgr::AddLog(int type, string format, ...)
 	{
-		lock1.Lock();
-
 		char log[1024] = { 0 };
 		va_list  argPtr;
 		va_start(argPtr, format);
 		vsprintf_s(log, 1024 - 1, format.c_str(), argPtr);
 		va_end(argPtr);
 
-		string strLogType = "";
-		switch (type)
+		for (vector<LogCallbackInfo>::iterator it = vecCallbacks.begin(); it != vecCallbacks.end(); it++)
 		{
-		case ELogType::Info:
-			strLogType = "Info";
-			break;
-		case ELogType::Debug:
-			strLogType = "Debug";
-			break;
-		case ELogType::Err:
-			strLogType = "Err";
-			break;
+			it->lpfn(type, log, it->pParam1, it->pParam2);
 		}
-
-		SYSTEMTIME st = { 0 };
-		GetLocalTime(&st);
-		char ch[1024] = { 0 };
-		sprintf_s(ch, "[%s] [%d-%02d-%02d %02d:%02d:%02d] %s", strLogType.c_str(), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, log);
-
-		LogInfo info = { type, ch };
-		quLogs.push(info);
-
-		lock1.Unlock();
-	}
-
-	void LogMgr::ProcessLog()
-	{
-		lock1.Lock();
-
-		while (!quLogs.empty())
-		{
-			LogInfo info = quLogs.front();
-			
-			assert(!quLogs.empty());
-			quLogs.pop();
-
-			for (vector<LogCallbackInfo>::iterator it = vecCallbacks.begin(); it != vecCallbacks.end(); it++)
-			{
-				it->lpfn(info.type, info.log, it->pParam1, it->pParam2);
-			}
-		}
-
-		lock1.Unlock();
-	}
-
-	bool LogMgr::IsEmpty()
-	{
-		lock1.Lock();
-
-		bool b = quLogs.empty();
-
-		lock1.Unlock();
-
-		return b;
 	}
 }

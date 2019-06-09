@@ -16,12 +16,6 @@ namespace tc
 		void* pParam2;		// 附加参数2
 	}LogCallbackInfo;
 
-	// 日志信息
-	typedef struct tagLogInfo
-	{
-		int type;		// 日志类型: ELogType
-		string log;		// 日志内容
-	}LogInfo;
 
 	// 日志管理类
 	class LogMgr
@@ -32,15 +26,6 @@ namespace tc
 
 	private:
 		vector<LogCallbackInfo> vecCallbacks;	// 回调函数信息集合
-		queue<LogInfo> quLogs;			// 日志队列
-		CThreadLock lock1;				// 线程锁, 针对: quLogs
-
-	private:
-		friend class LogThread;
-		//************************************
-		// Method:    处理日志
-		//************************************
-		void ProcessLog();
 
 	public:
 		//************************************
@@ -68,10 +53,5 @@ namespace tc
 		// Parameter: format:	格式化字符串
 		//************************************
 		void AddLog(int type, string format, ...);
-
-		//************************************
-		// Method:    日志是否为空
-		//************************************
-		bool IsEmpty();
 	};
 }

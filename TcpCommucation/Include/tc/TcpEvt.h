@@ -1,5 +1,6 @@
 #pragma once
 #include "Include/tc/SocketTool.h"
+#include "Include/tc/Def1.h"
 
 namespace tc
 {
@@ -11,7 +12,7 @@ namespace tc
 	protected:
 		TcpService* pTcpSrv;	// tcp服务对象
 		SOCKET socket;			// 关联的用于发送(接收)数据的socket
-		int evt;				// 事件类型: ETcpEvt
+		ETcpEvt evt;			// 事件类型
 
 	public:
 		//************************************
@@ -25,7 +26,7 @@ namespace tc
 		//************************************
 		// Method:    获取事件类型
 		//************************************
-		int GetEvtType();
+		ETcpEvt GetEvtType();
 
 		//************************************
 		// Method:    获取tcp服务对象

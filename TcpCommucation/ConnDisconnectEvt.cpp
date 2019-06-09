@@ -8,7 +8,7 @@ namespace tc
 	ConnDisconnectEvt::ConnDisconnectEvt(TcpService* pSrv, SOCKET sendrecv/* = NULL*/)
 		:TcpEvt(pSrv, sendrecv)
 	{
-		evt = ETcpEvt::ConnDisconnect;
+		evt = static_cast<int>(ETcpEvt::ConnDisconnect);
 	}
 
 	ConnDisconnectEvt::~ConnDisconnectEvt()
