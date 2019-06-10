@@ -17,23 +17,23 @@ namespace tc
 		//************************************
 		// Method:    处理socket可读信号
 		// Parameter: socket
-		// Parameter: socket类型: ESelectSocketType
+		// Parameter: socket类型: ESocketType
 		//************************************
-		virtual void ProcessReadSingal(SOCKET socket, int type);
+		virtual void ProcessReadSingal(SOCKET socket, ESocketType type);
 
 		//************************************
 		// Method:    处理socket可写信号
 		// Parameter: socket
-		// Parameter: socket类型: ESelectSocketType
+		// Parameter: socket类型: ESocketType
 		//************************************
-		virtual void ProcessWriteSingal(SOCKET socket, int type);
+		virtual void ProcessWriteSingal(SOCKET socket, ESocketType type);
 
 		//************************************
 		// Method:    处理socket异常信号
 		// Parameter: socket
-		// Parameter: socket类型: ESelectSocketType
+		// Parameter: socket类型: ESocketType
 		//************************************
-		virtual void ProcessExceptSingal(SOCKET socket, int type);
+		virtual void ProcessExceptSingal(SOCKET socket, ESocketType type);
 
 		//************************************
 		// Method:    接收新连接

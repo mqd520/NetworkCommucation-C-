@@ -15,7 +15,7 @@ namespace tc
 		m_sendrecvSocket(sendrecv),
 		m_pAsyncSendBuf(NULL),
 		m_nAsyncSendLen(0),
-		m_nAsyncSendStatus(EAsyncSendStatus::SendCmp),
+		//m_nAsyncSendStatus(EAsyncSendStatus::SendCmp),
 		m_bCanAsyncSend(true)
 	{
 		SocketTool::SetNonBlock(sendrecv);
@@ -81,27 +81,27 @@ namespace tc
 		memcpy(m_pAsyncSendBuf, pBuf, len);
 		m_nAsyncSendLen = len;
 
-		m_nAsyncSendStatus = EAsyncSendStatus::PreSend;
+		//m_nAsyncSendStatus = EAsyncSendStatus::PreSend;
 	}
 
 	void CTcpConnection::AsyncSendData()
 	{
-		if (m_nAsyncSendStatus == EAsyncSendStatus::PreSend && m_pAsyncSendBuf && m_nAsyncSendLen > 0)
-		{
-			int len = 0;
-			m_nAsyncSendStatus = EAsyncSendStatus::Sending;
-			bool result = SocketTool::Send(m_sendrecvSocket, m_pAsyncSendBuf, m_nAsyncSendLen, &len);
+		//if (m_nAsyncSendStatus == EAsyncSendStatus::PreSend && m_pAsyncSendBuf && m_nAsyncSendLen > 0)
+		//{
+		//	int len = 0;
+		//	m_nAsyncSendStatus = EAsyncSendStatus::Sending;
+		//	bool result = SocketTool::Send(m_sendrecvSocket, m_pAsyncSendBuf, m_nAsyncSendLen, &len);
 
-			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new SendDataResultEvt(m_pTcpSrv, result, m_nAsyncSendLen, len));
+		//	CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new SendDataResultEvt(m_pTcpSrv, result, m_nAsyncSendLen, len));
 
-			delete m_pAsyncSendBuf;
-			m_pAsyncSendBuf = NULL;
-			m_nAsyncSendLen = 0;
+		//	delete m_pAsyncSendBuf;
+		//	m_pAsyncSendBuf = NULL;
+		//	m_nAsyncSendLen = 0;
 
-			m_nAsyncSendStatus = EAsyncSendStatus::SendCmp;
+		//	m_nAsyncSendStatus = EAsyncSendStatus::SendCmp;
 
-			ProcessSendResult(result);
-		}
+		//	ProcessSendResult(result);
+		//}
 	}
 
 	void CTcpConnection::OnRecvPeerData()

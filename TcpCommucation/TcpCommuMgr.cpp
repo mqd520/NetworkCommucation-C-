@@ -22,7 +22,7 @@ namespace tc
 	TcpEvtMgr CTcpCommuMgr::m_tcpEvtMgr;
 	LogMgr CTcpCommuMgr::logMgr;
 
-	void CTcpCommuMgr::Init(LPLogCallback lpfnCallback /*= NULL*/, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
+	void CTcpCommuMgr::Init(LPTcpLogCallback lpfnCallback /*= NULL*/, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
 		SocketTool::Init();
 

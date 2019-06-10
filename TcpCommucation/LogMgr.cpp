@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "LogMgr.h"
-#include <assert.h>
 
 namespace tc
 {
@@ -14,7 +13,7 @@ namespace tc
 
 	}
 
-	void LogMgr::RegCallback(LPLogCallback lpfnCallback, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
+	void LogMgr::RegCallback(LPTcpLogCallback lpfnCallback, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
 		bool b = false;
 
@@ -38,7 +37,7 @@ namespace tc
 		}
 	}
 
-	void LogMgr::RemoveCallback(LPLogCallback lpfnCallback)
+	void LogMgr::RemoveCallback(LPTcpLogCallback lpfnCallback)
 	{
 		for (vector<LogCallbackInfo>::iterator it = vecCallbacks.begin(); it != vecCallbacks.end(); it++)
 		{
@@ -55,7 +54,7 @@ namespace tc
 		vecCallbacks.clear();
 	}
 
-	void LogMgr::AddLog(int type, string format, ...)
+	void LogMgr::AddLog(ETcpLogType type, string format, ...)
 	{
 		char log[1024] = { 0 };
 		va_list  argPtr;

@@ -11,7 +11,7 @@ namespace tc
 	// 回调函数信息
 	typedef struct tagLogCallbackInfo
 	{
-		LPLogCallback lpfn;	// 回调函数指针
+		LPTcpLogCallback lpfn;	// 回调函数指针
 		void* pParam1;		// 附加参数1
 		void* pParam2;		// 附加参数2
 	}LogCallbackInfo;
@@ -34,13 +34,13 @@ namespace tc
 		// Parameter: pParam1:	附加参数1
 		// Parameter: pParam2:	附加参数2
 		//************************************
-		void RegCallback(LPLogCallback lpfnCallback, void* pParam1 = NULL, void* pParam2 = NULL);
+		void RegCallback(LPTcpLogCallback lpfnCallback, void* pParam1 = NULL, void* pParam2 = NULL);
 
 		//************************************
 		// Method:    移除日志回调函数
 		// Parameter: lpfnCallback:	回调函数指针(参看: LPLogCallback)
 		//************************************
-		void RemoveCallback(LPLogCallback lpfnCallback);
+		void RemoveCallback(LPTcpLogCallback lpfnCallback);
 
 		//************************************
 		// Method:    移除日志回调函数
@@ -49,9 +49,9 @@ namespace tc
 
 		//************************************
 		// Method:    增加一条日志
-		// Parameter: type:	日志类型(参看: ELogType)
+		// Parameter: type:	日志类型(参看: ETcpLogType)
 		// Parameter: format:	格式化字符串
 		//************************************
-		void AddLog(int type, string format, ...);
+		void AddLog(ETcpLogType type, string format, ...);
 	};
 }

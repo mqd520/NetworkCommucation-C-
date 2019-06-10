@@ -40,9 +40,9 @@ namespace tc
 		//************************************
 		// Method:    判断指定socket的信号是否正在被处理
 		// Parameter: socket
-		// Parameter: socket类型: ESelectSocketType
+		// Parameter: socket类型: ESocketSingalType
 		//************************************
-		bool IsProcessingSingal(SOCKET socket, int type);
+		bool IsProcessingSingal(SOCKET socket, ESocketSingalType type);
 
 		//************************************
 		// Method:    移除正在进行处理的socket
@@ -77,9 +77,9 @@ namespace tc
 		//************************************
 		// Method:    添加socket
 		// Parameter: socket
-		// Parameter: socket类型: ESelectSocketType
+		// Parameter: socket类型: ESocketType
 		//************************************
-		void AddSocket(SOCKET socket, int type);
+		void AddSocket(SOCKET socket, ESocketType type);
 
 		//************************************
 		// Method:    移除指定的socket
@@ -96,9 +96,9 @@ namespace tc
 		//************************************
 		// Method:    socket信号处理完毕事件处理
 		// Parameter: socket
-		// Parameter: socket类型: ESelectSocketType
+		// Parameter: socket类型: ESocketSingalType
 		//************************************
-		void OnProcessingSocketCmp(SOCKET socket, int type);
+		void OnProcessingSocketCmp(SOCKET socket, ESocketSingalType type);
 
 		//************************************
 		// Method:    指示用户退出

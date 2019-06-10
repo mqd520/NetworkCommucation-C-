@@ -50,7 +50,7 @@ namespace tc
 		// Parameter: pParam1:	附加参数1
 		// Parameter: pParam2:	附加参数2
 		//************************************
-		static void Init(LPLogCallback lpfnCallback = NULL, void* pParam1 = NULL, void* pParam2 = NULL);
+		static void Init(LPTcpLogCallback lpfnCallback = NULL, void* pParam1 = NULL, void* pParam2 = NULL);
 
 		//************************************
 		// Method:    退出

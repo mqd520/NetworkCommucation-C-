@@ -30,7 +30,7 @@ namespace tc
 		return b;
 	}
 
-	void CSelect::AddSocket(SOCKET socket, int type)
+	void CSelect::AddSocket(SOCKET socket, ESocketType type)
 	{
 		m_lock1.Lock();
 
@@ -143,7 +143,7 @@ namespace tc
 		m_lock1.Unlock();
 	}
 
-	bool CSelect::IsProcessingSingal(SOCKET socket, int type)
+	bool CSelect::IsProcessingSingal(SOCKET socket, ESocketSingalType type)
 	{
 		m_lock2.Lock();
 
@@ -224,7 +224,7 @@ namespace tc
 		}
 	}
 
-	void CSelect::OnProcessingSocketCmp(SOCKET socket, int type)
+	void CSelect::OnProcessingSocketCmp(SOCKET socket, ESocketSingalType type)
 	{
 		m_lock2.Lock();
 

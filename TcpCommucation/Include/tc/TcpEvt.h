@@ -1,6 +1,6 @@
 #pragma once
 #include "Include/tc/SocketTool.h"
-#include "Include/tc/Def1.h"
+#include "Def1.h"
 
 namespace tc
 {

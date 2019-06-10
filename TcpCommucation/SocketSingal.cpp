@@ -20,7 +20,7 @@ namespace tc
 
 	}
 
-	void SocketSingalProcess::ProcessReadSingal(SOCKET socket, int type)
+	void SocketSingalProcess::ProcessReadSingal(SOCKET socket, ESocketType type)
 	{
 		if (type == ESocketType::Accept)	// 指示socket用于接收客户端连接
 		{
@@ -32,7 +32,7 @@ namespace tc
 		}
 	}
 
-	void SocketSingalProcess::ProcessWriteSingal(SOCKET socket, int type)
+	void SocketSingalProcess::ProcessWriteSingal(SOCKET socket, ESocketType type)
 	{
 		if (type == ESocketType::SendRecvData)	// 指示socket用于收发数据
 		{
@@ -44,7 +44,7 @@ namespace tc
 		}
 	}
 
-	void SocketSingalProcess::ProcessExceptSingal(SOCKET socket, int type)
+	void SocketSingalProcess::ProcessExceptSingal(SOCKET socket, ESocketType type)
 	{
 		if (type == ESocketType::Connect)	// 指示socket用于连接服务端
 		{
