@@ -25,7 +25,7 @@ BEGIN_MESSAGE_MAP(CServer1App, CWinApp)
 END_MESSAGE_MAP()
 
 void OnException(void* pParam1, void* pParam2);
-void OnTcpCommLog(int type, string log, void* pParam1, void* pParam2);
+void OnTcpCommLog(ETcpLogType type, string log, void* pParam1, void* pParam2);
 
 // CServer1App 构造
 
@@ -138,12 +138,12 @@ void OnException(void* pParam1, void* pParam2)
 
 //************************************
 // Method:    TcpComm日志事件处理
-// Parameter: int type: 日志类型(ELogType)
+// Parameter: int type: 日志类型(ETcpLogType)
 // Parameter: string log:	日志内容
 // Parameter: void * pParam1
 // Parameter: void * pParam2
 //************************************
-void OnTcpCommLog(int type, string log, void* pParam1, void* pParam2)
+void OnTcpCommLog(ETcpLogType type, string log, void* pParam1, void* pParam2)
 {
 	OutputDebugStringA(log.c_str());
 	
