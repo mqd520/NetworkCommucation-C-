@@ -58,6 +58,9 @@
     <Filter Include="09 日志处理">
       <UniqueIdentifier>{fe933227-69a7-43ff-9744-11782c089464}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06 Tcp通信管理\00 Socket数据管理">
+      <UniqueIdentifier>{956bc1cb-c891-4bcb-9b39-868e0d143606}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryTool.h">
@@ -227,6 +230,9 @@
     <ClInclude Include="Def.h" />
     <ClInclude Include="Include\tc\Def1.h" />
     <ClInclude Include="Include\tc\TcpCommuMgr.h" />
+    <ClInclude Include="SocketDataMgr.h">
+      <Filter>06 Tcp通信管理\00 Socket数据管理</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoryTool.cpp">
@@ -390,6 +396,9 @@
       <Filter>09 日志处理</Filter>
     </ClCompile>
     <ClCompile Include="TcpCommuMgr.cpp" />
+    <ClCompile Include="SocketDataMgr.cpp">
+      <Filter>06 Tcp通信管理\00 Socket数据管理</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
