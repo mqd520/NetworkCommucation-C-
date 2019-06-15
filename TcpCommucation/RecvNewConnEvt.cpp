@@ -20,8 +20,8 @@ namespace tc
 	{
 		if (bRecvConn)
 		{
-			CServerTcpConnection* conn = new CServerTcpConnection(pTcpSrv, socket, pTcpSrv->GetSocket());
-			CTcpCommuMgr::GetTcpConnectionMgr()->PushTcpConn(conn);
+			CServerTcpConnection* conn = new CServerTcpConnection(static_cast<TcpServer*>(pTcpSrv), socket);
+			TcpCommu::GetTcpConnectionMgr()->PushTcpConn(conn);
 		}
 		else
 		{

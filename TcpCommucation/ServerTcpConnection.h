@@ -1,24 +1,22 @@
 #pragma once
 #include "TcpConnection.h"
+#include "Include/tc/TcpServer.h"
 
 namespace tc
 {
 	// 服务端tcp连接对象
 	class CServerTcpConnection : public CTcpConnection
 	{
-	private:
-		SOCKET m_serverSocket;	//服务端socket
-
 	public:
 		//************************************
 		// Method:    构造函数
 		// Parameter: tcp服务对象
-		// Parameter: 客户端socket
-		// Parameter: 服务端socket
+		// Parameter: 收发数据关联的socket
 		//************************************
-		CServerTcpConnection(TcpService* pTcpSrv, SOCKET client, SOCKET server);
+		CServerTcpConnection(TcpServer* pTcpSrv, SOCKET sendrecv);
 		~CServerTcpConnection();
 
+	public:
 		//获取服务端socket
 		SOCKET GetServerSocket();
 

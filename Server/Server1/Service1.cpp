@@ -21,9 +21,10 @@ void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
 		RecvNewConnEvt* pEvt1 = (RecvNewConnEvt*)pEvt;
 
 		char ch[50] = { 0 };
-		sprintf_s(ch, "recv new conn %s:%d \n", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
+		sprintf_s(ch, "recv new conn %s:%d", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
 
 		OutputDebugStringA(ch);
+		OutputDebugStringA("\n");
 
 		theApp.GetLogSrv()->Add(ch);
 

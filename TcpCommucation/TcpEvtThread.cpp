@@ -22,19 +22,19 @@ namespace tc
 		if (!m_bRun)
 		{
 			__super::Run();
-			CTcpCommuMgr::GetLogMgr()->AddLog(ETcpLogType::Debug, "tcp evt thread run.");
+			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Debug, "tcp evt thread run.");
 		}
 	}
 
 	void TcpEvtThread::OnThreadExecute()
 	{
-		if (CTcpCommuMgr::GetTcpEvtMgr()->IsEmpty())
+		if (TcpCommu::GetTcpEvtMgr()->IsEmpty())
 		{
 			SetSleepTime();
 		}
 		else
 		{
-			CTcpCommuMgr::GetTcpEvtMgr()->ProcessTcpEvt();
+			TcpCommu::GetTcpEvtMgr()->ProcessTcpEvt();
 		}
 	}
 }

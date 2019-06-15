@@ -23,7 +23,7 @@ namespace tc
 	void SelectSingal::RecvNewConnection(SOCKET socket)
 	{
 		// 获取服务端socket关联的tcp服务对象
-		TcpService* pSrv = CTcpCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+		TcpService* pSrv = TcpCommu::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
 		if (pSrv)
 		{
 			while (true)
@@ -31,7 +31,7 @@ namespace tc
 				SOCKET client = SocketTool::Accept(socket, pSrv->GetIP(), pSrv->GetPort(), false);
 				if (client != INVALID_SOCKET)
 				{
-					CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client));
+					TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new RecvNewConnEvt(pSrv, client));
 				}
 				else
 				{
@@ -49,7 +49,7 @@ namespace tc
 	void SelectSingal::RecvPeerData(SOCKET socket)
 	{
 		// 获取tcp连接对象
-		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+		CTcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
 		if (pConn)
 		{
 			pConn->OnRecvPeerData();
@@ -63,7 +63,7 @@ namespace tc
 
 	void SelectSingal::SendData(SOCKET socket)
 	{
-		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+		CTcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
 		if (pConn)
 		{
 			pConn->AsyncSendData();
@@ -77,7 +77,7 @@ namespace tc
 	void SelectSingal::OnConnectSuccess(SOCKET socket)
 	{
 		// 获取服务端socket关联的tcp服务对象
-		TcpService* pSrv = CTcpCommuMgr::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+		TcpService* pSrv = TcpCommu::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
 		if (pSrv)
 		{
 			//// 连接成功后,不再需要监听是否已连接上服务端
@@ -141,7 +141,7 @@ namespace tc
 
 		while (quSockets.size() > 0)
 		{
-			if (CTcpCommuMgr::IsExited())	// 指示应用程序需要退出
+			if (TcpCommu::IsExited())	// 指示应用程序需要退出
 			{
 				break;
 			}

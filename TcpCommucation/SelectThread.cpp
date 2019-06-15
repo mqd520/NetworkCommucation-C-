@@ -21,20 +21,20 @@ namespace tc
 		if (!m_bRun)
 		{
 			__super::Run();
-			CTcpCommuMgr::GetLogMgr()->AddLog(ETcpLogType::Debug, "select thread run.");
+			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Debug, "select thread run.");
 		}
 	}
 
 	void SelectThread::OnThreadExecute()
 	{
-		vector<SelectSocketData> vec = CTcpCommuMgr::GetSocketDataMgr()->GetSocket();
+		vector<SelectSocketData> vec = TcpCommu::GetSocketDataMgr()->GetSocket();
 		if (vec.empty())
 		{
 			SetSleepTime();
 		}
 		else
 		{
-			CTcpCommuMgr::GetSelect()->QuerySingal(vec);
+			TcpCommu::GetSelect()->QuerySingal(vec);
 		}
 	}
 }

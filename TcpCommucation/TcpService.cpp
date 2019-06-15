@@ -15,7 +15,7 @@ namespace tc
 		pParam1(NULL),
 		pParam2(NULL)
 	{
-		CTcpCommuMgr::GetTcpServiceMgr()->PushTcpService(this);
+		
 	}
 
 	TcpService::~TcpService()
@@ -48,7 +48,7 @@ namespace tc
 	bool TcpService::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
 	{
 		// 获取指定socket的tcp连接对象
-		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+		CTcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
 
 		if (pConn)
 		{

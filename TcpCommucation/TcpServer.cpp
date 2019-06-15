@@ -42,19 +42,23 @@ namespace tc
 				{
 					SocketTool::SetNonBlock(socket);	// ÉèÖÃ·Ç×èÈû
 					bool b2 = SocketTool::Listen(socket, strIP, nPort);
-					CTcpCommuMgr::GetSocketDataMgr()->Add(socket, ESocketType::Accept);
-					bListening = true;
+					if (b2)
+					{
+						TcpCommu::GetSocketDataMgr()->Add(socket, ESocketType::Accept);
+						TcpCommu::GetTcpServiceMgr()->PushTcpService(this);
+						bListening = true;
+					}
 				}
 			}
 		}
 
 		if (bListening)
 		{
-			CTcpCommuMgr::GetLogMgr()->AddLog(ETcpLogType::Debug, "listen success: %s:%d", strIP.c_str(), nPort);
+			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "listen success: %s:%d", strIP.c_str(), nPort);
 		}
 		else
 		{
-			CTcpCommuMgr::GetLogMgr()->AddLog(ETcpLogType::Err, "listen fail: %s:%d", strIP.c_str(), nPort);
+			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Err, "listen fail: %s:%d", strIP.c_str(), nPort);
 		}
 
 		return bListening;
@@ -127,7 +131,7 @@ namespace tc
 
 	void TcpServer::CloseClient(SOCKET client, bool b /*= false*/)
 	{
-		CTcpConnection* pConn = CTcpCommuMgr::GetTcpConnectionMgr()->GetBySendRecvSocket(client);
+		CTcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(client);
 		if (pConn)
 		{
 			pConn->Close(b);

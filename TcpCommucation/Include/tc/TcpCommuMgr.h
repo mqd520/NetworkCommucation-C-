@@ -17,8 +17,8 @@
 
 namespace tc
 {
-	//网络通信管理对象
-	class CTcpCommuMgr
+	// tcp comm
+	class TcpCommu
 	{
 	private:
 		static volatile bool m_bExited;				// 是否需要退出了
@@ -33,24 +33,21 @@ namespace tc
 		static SelectSingal selectSingal;			// select信号处理对象
 		
 		static SocketDataMgr socketDataMgr;			// socket数据管理对象
-		static TcpConnectionMgr m_tcpConnMgr;		// tcp连接管理对象
-		static TcpServiceMgr m_tcpServiceMgr;		// tcp服务管理对象
-		static TcpEvtMgr m_tcpEvtMgr;				// tcp事件管理对象
+		static TcpConnectionMgr tcpConnMgr;			// tcp连接管理对象
+		static TcpServiceMgr tcpServiceMgr;			// tcp服务管理对象
+		static TcpEvtMgr tcpEvtMgr;					// tcp事件管理对象
 		static LogMgr logMgr;						// 日志管理对象
 
 	private:
-		CTcpCommuMgr();
+		TcpCommu();
 
 	public:
-		~CTcpCommuMgr();
+		~TcpCommu();
 
 		//************************************
 		// Method:    初始化
-		// Parameter: lpfnCallback:	日志回调函数指针(参看: LPLogCallback)
-		// Parameter: pParam1:	附加参数1
-		// Parameter: pParam2:	附加参数2
 		//************************************
-		static void Init(LPTcpLogCallback lpfnCallback = NULL, void* pParam1 = NULL, void* pParam2 = NULL);
+		static void Init();
 
 		//************************************
 		// Method:    退出

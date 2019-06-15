@@ -59,6 +59,14 @@ BOOL CServer1App::InitInstance()
 
 	CWinApp::InitInstance();
 
+	TcpCommu::GetLogMgr()->RegCallback(OnTcpCommLog, &theApp);
+	TcpCommu::Init();
+
+	ExceptionHandler::Init();
+	ExceptionHandler::SetFileName("Server1.exe");
+	ExceptionHandler::RegExceptionCallback(OnException);
+
+	srv1.Init();
 
 	// 创建 shell 管理器，以防对话框包含
 	// 任何 shell 树视图控件或 shell 列表视图控件。
@@ -67,12 +75,6 @@ BOOL CServer1App::InitInstance()
 	// 激活“Windows Native”视觉管理器，以便在 MFC 控件中启用主题
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
-	ExceptionHandler::Init();
-	ExceptionHandler::SetFileName("Server1.exe");
-	ExceptionHandler::RegExceptionCallback(OnException);
-
-	CTcpCommuMgr::Init(OnTcpCommLog, &theApp);
-	srv1.Init();
 
 	// 标准初始化
 	// 如果未使用这些功能并希望减小
@@ -116,7 +118,7 @@ BOOL CServer1App::InitInstance()
 int CServer1App::ExitInstance()
 {
 	// TODO:  在此添加专用代码和/或调用基类
-	CTcpCommuMgr::Exit();
+	TcpCommu::Exit();
 
 	return CWinApp::ExitInstance();
 }
@@ -146,7 +148,8 @@ void OnException(void* pParam1, void* pParam2)
 void OnTcpCommLog(ETcpLogType type, string log, void* pParam1, void* pParam2)
 {
 	OutputDebugStringA(log.c_str());
-	
+	OutputDebugStringA("\n");
+
 	theApp.GetLogSrv()->Add(log);
 }
 

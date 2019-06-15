@@ -19,7 +19,7 @@ namespace tc
 		m_bCanAsyncSend(true)
 	{
 		SocketTool::SetNonBlock(sendrecv);
-		CTcpCommuMgr::GetSocketDataMgr()->Add(sendrecv, ESocketType::SendRecvData);
+		TcpCommu::GetSocketDataMgr()->Add(sendrecv, ESocketType::SendRecvData);
 	}
 
 	CTcpConnection::~CTcpConnection()
@@ -112,7 +112,7 @@ namespace tc
 		if (b)	// 接收数据成功
 		{
 			RecvDataEvt* pEvent = new RecvDataEvt(m_pTcpSrv, m_sendrecvSocket, pRecvBuf, len);
-			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(pEvent);
+			TcpCommu::GetTcpEvtMgr()->PushTcpEvent(pEvent);
 		}
 		else   // 接收数据失败
 		{
@@ -124,36 +124,36 @@ namespace tc
 
 	void CTcpConnection::OnConnDisconnect()
 	{
-		CTcpCommuMgr::GetSocketDataMgr()->Remove(m_sendrecvSocket);
-		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
-		
+		TcpCommu::GetSocketDataMgr()->Remove(m_sendrecvSocket);
 		SocketTool::ShutDown(m_sendrecvSocket, false);
 		SocketTool::CloseSocket(m_sendrecvSocket, false);
 
-		CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
+		TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
+
+		TcpCommu::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
 	}
 
 	void CTcpConnection::OnNetError()
 	{
-		CTcpCommuMgr::GetSocketDataMgr()->Remove(m_sendrecvSocket);
+		TcpCommu::GetSocketDataMgr()->Remove(m_sendrecvSocket);
 
 		SocketTool::ShutDown(m_sendrecvSocket, false);
 		SocketTool::CloseSocket(m_sendrecvSocket, false);
 
-		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
+		TcpCommu::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
 	}
 
 	void CTcpConnection::Close(bool b /*= false*/)
 	{
 		if (b)
 		{
-			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
+			TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
 		}
-		CTcpCommuMgr::GetSocketDataMgr()->Remove(m_sendrecvSocket);
+		TcpCommu::GetSocketDataMgr()->Remove(m_sendrecvSocket);
 
 		SocketTool::ShutDown(m_sendrecvSocket, false);
 		SocketTool::CloseSocket(m_sendrecvSocket, false);
 		
-		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
+		TcpCommu::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
 	}
 }

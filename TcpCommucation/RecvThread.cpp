@@ -21,19 +21,19 @@ namespace tc
 		if (!m_bRun)
 		{
 			__super::Run();
-			CTcpCommuMgr::GetLogMgr()->AddLog(ETcpLogType::Debug, "recv thread run.");
+			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Debug, "recv thread run.");
 		}
 	}
 
 	void RecvThread::OnThreadExecute()
 	{
-		if (CTcpCommuMgr::GetSelectSingal()->IsEmpty())
+		if (TcpCommu::GetSelectSingal()->IsEmpty())
 		{
 			SetSleepTime();
 		}
 		else
 		{
-			CTcpCommuMgr::GetSelectSingal()->ProcessSocketSingal();
+			TcpCommu::GetSelectSingal()->ProcessSocketSingal();
 		}
 	}
 }

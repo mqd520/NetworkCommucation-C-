@@ -4,41 +4,36 @@
 
 namespace tc
 {
-	volatile bool CTcpCommuMgr::m_bExited = false;
+	volatile bool TcpCommu::m_bExited = false;
 
-	SelectThread CTcpCommuMgr::selectThread;
-	SelectSingalThread CTcpCommuMgr::selectSingalThread;
-	RecvThread CTcpCommuMgr::recvThread;
-	SendThread CTcpCommuMgr::sendThread;
-	TcpEvtThread CTcpCommuMgr::tcpEvtThread;
+	SelectThread TcpCommu::selectThread;
+	SelectSingalThread TcpCommu::selectSingalThread;
+	RecvThread TcpCommu::recvThread;
+	SendThread TcpCommu::sendThread;
+	TcpEvtThread TcpCommu::tcpEvtThread;
 
-	Select CTcpCommuMgr::select;
-	SelectSingal CTcpCommuMgr::selectSingal;
+	Select TcpCommu::select;
+	SelectSingal TcpCommu::selectSingal;
 
-	SocketDataMgr CTcpCommuMgr::socketDataMgr;
-	TcpConnectionMgr CTcpCommuMgr::m_tcpConnMgr;
-	TcpServiceMgr CTcpCommuMgr::m_tcpServiceMgr;
-	TcpEvtMgr CTcpCommuMgr::m_tcpEvtMgr;
-	LogMgr CTcpCommuMgr::logMgr;
+	SocketDataMgr TcpCommu::socketDataMgr;
+	TcpConnectionMgr TcpCommu::tcpConnMgr;
+	TcpServiceMgr TcpCommu::tcpServiceMgr;
+	TcpEvtMgr TcpCommu::tcpEvtMgr;
+	LogMgr TcpCommu::logMgr;
 	
 
-	void CTcpCommuMgr::Init(LPTcpLogCallback lpfnCallback /*= NULL*/, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
+	void TcpCommu::Init()
 	{
 		SocketTool::Init();
 
-		if (lpfnCallback != NULL)
-		{
-			logMgr.RegCallback(lpfnCallback, pParam1, pParam2);
-		}
-
 		GetSelectThread()->Run();		// 启动select线程
+		GetSelectSingalThread()->Run(); // 启动select信号处理线程
 		GetRecvThread()->Run();			// 启动收数据线程
 		GetSendThread()->Run();			// 启动发数据线程
-		GetSelectSingalThread()->Run(); // 启动select信号处理线程
 		GetTcpEvtThread()->Run();		// 启动tcp事件线程(业务线程)
 	}
 
-	void CTcpCommuMgr::Exit()
+	void TcpCommu::Exit()
 	{
 		m_bExited = true;
 
@@ -55,67 +50,67 @@ namespace tc
 		select.Exit();
 	}
 
-	bool CTcpCommuMgr::IsExited()
+	bool TcpCommu::IsExited()
 	{
 		return m_bExited;
 	}
 
-	SelectThread* CTcpCommuMgr::GetSelectThread()
+	SelectThread* TcpCommu::GetSelectThread()
 	{
 		return &selectThread;
 	}
 
-	RecvThread* CTcpCommuMgr::GetRecvThread()
+	RecvThread* TcpCommu::GetRecvThread()
 	{
 		return &recvThread;
 	}
 
-	SendThread* CTcpCommuMgr::GetSendThread()
+	SendThread* TcpCommu::GetSendThread()
 	{
 		return &sendThread;
 	}
 
-	SelectSingalThread* CTcpCommuMgr::GetSelectSingalThread()
+	SelectSingalThread* TcpCommu::GetSelectSingalThread()
 	{
 		return &selectSingalThread;
 	}
 
-	TcpEvtThread* CTcpCommuMgr::GetTcpEvtThread()
+	TcpEvtThread* TcpCommu::GetTcpEvtThread()
 	{
 		return &tcpEvtThread;
 	}
 
-	Select* CTcpCommuMgr::GetSelect()
+	Select* TcpCommu::GetSelect()
 	{
 		return &select;
 	}
 
-	TcpConnectionMgr* CTcpCommuMgr::GetTcpConnectionMgr()
+	TcpConnectionMgr* TcpCommu::GetTcpConnectionMgr()
 	{
-		return &m_tcpConnMgr;
+		return &tcpConnMgr;
 	}
 
-	TcpServiceMgr* CTcpCommuMgr::GetTcpServiceMgr()
+	TcpServiceMgr* TcpCommu::GetTcpServiceMgr()
 	{
-		return &m_tcpServiceMgr;
+		return &tcpServiceMgr;
 	}
 
-	TcpEvtMgr* CTcpCommuMgr::GetTcpEvtMgr()
+	TcpEvtMgr* TcpCommu::GetTcpEvtMgr()
 	{
-		return &m_tcpEvtMgr;
+		return &tcpEvtMgr;
 	}
 
-	LogMgr* CTcpCommuMgr::GetLogMgr()
+	LogMgr* TcpCommu::GetLogMgr()
 	{
 		return &logMgr;
 	}
 
-	SocketDataMgr* CTcpCommuMgr::GetSocketDataMgr()
+	SocketDataMgr* TcpCommu::GetSocketDataMgr()
 	{
 		return &socketDataMgr;
 	}
 
-	SelectSingal* CTcpCommuMgr::GetSelectSingal()
+	SelectSingal* TcpCommu::GetSelectSingal()
 	{
 		return &selectSingal;
 	}

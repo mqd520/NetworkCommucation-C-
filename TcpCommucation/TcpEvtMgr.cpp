@@ -36,7 +36,7 @@ namespace tc
 	{
 		while (queueEvent.size() > 0)
 		{
-			if (CTcpCommuMgr::IsExited())//指示需要退出了
+			if (TcpCommu::IsExited())//指示需要退出了
 			{
 				break;
 			}

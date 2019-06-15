@@ -22,7 +22,7 @@ namespace tc
 	{
 		//Sleep(1 * 1000);	// 调试时使用,无意义,可注释掉
 
-		if (CTcpCommuMgr::IsExited())	// 指示需要退出了
+		if (TcpCommu::IsExited())	// 指示需要退出了
 		{
 			return;	// 立刻返回
 		}
@@ -121,7 +121,7 @@ namespace tc
 		if (result > 0)
 		{
 			SocketSingalData data = { socketData.socket, ESocketSingalType::Except, socketData.type };
-			CTcpCommuMgr::GetSelectSingal()->PushSocketSingal(data);
+			TcpCommu::GetSelectSingal()->PushSocketSingal(data);
 		}
 	}
 
@@ -131,7 +131,7 @@ namespace tc
 		if (result > 0)
 		{
 			SocketSingalData data = { socketData.socket, ESocketSingalType::Read, socketData.type };
-			CTcpCommuMgr::GetSelectSingal()->PushSocketSingal(data);
+			TcpCommu::GetSelectSingal()->PushSocketSingal(data);
 		}
 	}
 

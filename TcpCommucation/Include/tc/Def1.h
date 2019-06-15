@@ -23,10 +23,12 @@ namespace tc
 	enum class ETcpLogType : int
 	{
 		Info,	// 消息
+		Warn,	// 警告
 		Debug,	// 调试
 		Err,	// 错误
+		Fatal,	// 严重错误
 
-		None	// 其它
+		None	// 无
 	};
 
 	class TcpEvt;

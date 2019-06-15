@@ -6,9 +6,8 @@
 
 namespace tc
 {
-	CServerTcpConnection::CServerTcpConnection(TcpService* pTcpSrv, SOCKET client, SOCKET server) :
-		CTcpConnection(pTcpSrv, client),
-		m_serverSocket(server)
+	CServerTcpConnection::CServerTcpConnection(TcpServer* pTcpSrv, SOCKET client) :
+		CTcpConnection(pTcpSrv, client)
 	{
 		m_localAddress.ip = "";
 		m_peerAddress.ip = SocketTool::GetPeerIpAndPort(client, &m_peerAddress.port);
@@ -26,7 +25,7 @@ namespace tc
 
 	SOCKET CServerTcpConnection::GetServerSocket()
 	{
-		return m_serverSocket;
+		return m_pTcpSrv->GetSocket();
 	}
 
 	void CServerTcpConnection::OnRecvPeerData()
