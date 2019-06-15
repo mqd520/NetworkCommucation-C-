@@ -4,7 +4,7 @@
 namespace tc
 {
 	//发送数据线程
-	class CSendThread : public CThreadEntry
+	class SendThread : public CThreadEntry
 	{
 	protected:
 		//************************************
@@ -13,8 +13,8 @@ namespace tc
 		void OnThreadExecute();
 
 	public:
-		CSendThread();
-		~CSendThread();
+		SendThread();
+		~SendThread();
 
 		//************************************
 		// Method:    开始运行线程

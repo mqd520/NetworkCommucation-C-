@@ -6,17 +6,17 @@
 
 namespace tc
 {
-	CSendThread::CSendThread()
+	SendThread::SendThread()
 	{
 
 	}
 
-	CSendThread::~CSendThread()
+	SendThread::~SendThread()
 	{
 
 	}
 
-	void CSendThread::Run()
+	void SendThread::Run()
 	{
 		if (!m_bRun)
 		{
@@ -25,15 +25,8 @@ namespace tc
 		}
 	}
 
-	void CSendThread::OnThreadExecute()
+	void SendThread::OnThreadExecute()
 	{
-		if (CTcpCommuMgr::GetSendDataSingal()->IsEmpty())
-		{
-			SetSleepTime();
-		}
-		else
-		{
-			CTcpCommuMgr::GetSendDataSingal()->ProcessSocketSingal();
-		}
+		SetSleepTime();
 	}
 }

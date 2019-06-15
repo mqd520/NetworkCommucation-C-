@@ -7,17 +7,17 @@
 
 namespace tc
 {
-	CTcpEvtThread::CTcpEvtThread()
+	TcpEvtThread::TcpEvtThread()
 	{
 
 	}
 
-	CTcpEvtThread::~CTcpEvtThread()
+	TcpEvtThread::~TcpEvtThread()
 	{
 
 	}
 
-	void CTcpEvtThread::Run()
+	void TcpEvtThread::Run()
 	{
 		if (!m_bRun)
 		{
@@ -26,7 +26,7 @@ namespace tc
 		}
 	}
 
-	void CTcpEvtThread::OnThreadExecute()
+	void TcpEvtThread::OnThreadExecute()
 	{
 		if (CTcpCommuMgr::GetTcpEvtMgr()->IsEmpty())
 		{

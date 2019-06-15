@@ -2,39 +2,21 @@
 #include <queue>
 #include "Def.h"
 #include "Include/tc/SocketTool.h"
+#include "ThreadLock.h"
 
 using namespace std;
 
 namespace tc
 {
-	// socket信号处理类
-	class SocketSingalProcess
+	// select信号处理类
+	class SelectSingal
 	{
 	protected:
-		queue<SocketSingalData> quSignalSocketData;	// 有信号的socket数据队列
+		queue<SocketSingalData> quSockets;		// 有信号的socket数据队列
+		//vector<SocketSingalData> vecSockets;	// 有信号的socket数据集合
+		CThreadLock lock1;						// 线程锁, 针对: quSignalSocketData
 
 	protected:
-		//************************************
-		// Method:    处理socket可读信号
-		// Parameter: socket
-		// Parameter: socket类型: ESocketType
-		//************************************
-		virtual void ProcessReadSingal(SOCKET socket, ESocketType type);
-
-		//************************************
-		// Method:    处理socket可写信号
-		// Parameter: socket
-		// Parameter: socket类型: ESocketType
-		//************************************
-		virtual void ProcessWriteSingal(SOCKET socket, ESocketType type);
-
-		//************************************
-		// Method:    处理socket异常信号
-		// Parameter: socket
-		// Parameter: socket类型: ESocketType
-		//************************************
-		virtual void ProcessExceptSingal(SOCKET socket, ESocketType type);
-
 		//************************************
 		// Method:    接收新连接
 		// Parameter: 服务端socket
@@ -66,14 +48,14 @@ namespace tc
 		void OnConnectFail(SOCKET socket);
 
 	public:
-		SocketSingalProcess();
-		~SocketSingalProcess();
+		SelectSingal();
+		~SelectSingal();
 
 		//************************************
 		// Method:    加入一个socket信号数据
 		// Parameter: socket信号数据
 		//************************************
-		void PushSocket(SocketSingalData data);
+		void PushSocketSingal(SocketSingalData data);
 
 		//************************************
 		// Method:    处理socket信号

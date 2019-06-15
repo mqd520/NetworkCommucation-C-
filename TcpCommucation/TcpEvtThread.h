@@ -4,7 +4,7 @@
 namespace tc
 {
 	//tcp事件线程
-	class CTcpEvtThread : public CThreadEntry
+	class TcpEvtThread : public CThreadEntry
 	{
 	protected:
 		//************************************
@@ -13,8 +13,8 @@ namespace tc
 		void OnThreadExecute();
 
 	public:
-		CTcpEvtThread();
-		~CTcpEvtThread();
+		TcpEvtThread();
+		~TcpEvtThread();
 
 		//************************************
 		// Method:    开始运行线程

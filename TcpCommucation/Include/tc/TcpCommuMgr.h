@@ -2,17 +2,18 @@
 #include "../../SelectThread.h"
 #include "../../RecvThread.h"
 #include "../../SendThread.h"
-#include "../../CommonThread.h"
+#include "../../SelectSingalThread.h"
 #include "../../TcpEvtThread.h"
 #include "../../LogThread.h"
 
 #include "../../Select.h"
-#include "../../SocketSingal.h"
+#include "../../SelectSingal.h"
 
 #include "../../TcpConnectionMgr.h"
 #include "../../TcpServiceMgr.h"
 #include "../../TcpEvtMgr.h"
 #include "../../LogMgr.h"
+#include "../../SocketDataMgr.h"
 
 namespace tc
 {
@@ -20,23 +21,22 @@ namespace tc
 	class CTcpCommuMgr
 	{
 	private:
-		static volatile bool m_bExited;//是否需要退出了
+		static volatile bool m_bExited;				// 是否需要退出了
 
-		static CSelectThread m_selectThread;//select线程对象
-		static CRecvThread m_recvThread;//收数据线程对象
-		static CSendThread m_sendThread;//发数据线程对象
-		static CCommonThread m_commonThread;//通用信号处理线程对象
-		static CTcpEvtThread m_tcpEvtThread;//tcp事件线程
+		static SelectThread selectThread;			// select线程对象
+		static RecvThread recvThread;				// 收数据线程对象
+		static SendThread sendThread;				// 发数据线程对象
+		static SelectSingalThread selectSingalThread;// select信号处理线程对象
+		static TcpEvtThread tcpEvtThread;			// tcp事件线程
 
-		static CSelect m_Select;//select对象
-		static SocketSingalProcess m_recvSingal;//收数据信号处理对象
-		static SocketSingalProcess m_sendSingal;//发数据信号处理对象
-		static SocketSingalProcess m_otherSingal;//其它信号处理对象
+		static Select select;						// select对象
+		static SelectSingal selectSingal;			// select信号处理对象
 		
-		static CTcpConnectionMgr m_tcpConnMgr;//tcp连接管理对象
-		static TcpServiceMgr m_tcpServiceMgr;//tcp服务管理对象
-		static TcpEvtMgr m_tcpEvtMgr;//tcp事件管理对象
-		static LogMgr logMgr;	// 日志管理对象
+		static SocketDataMgr socketDataMgr;			// socket数据管理对象
+		static TcpConnectionMgr m_tcpConnMgr;		// tcp连接管理对象
+		static TcpServiceMgr m_tcpServiceMgr;		// tcp服务管理对象
+		static TcpEvtMgr m_tcpEvtMgr;				// tcp事件管理对象
+		static LogMgr logMgr;						// 日志管理对象
 
 	private:
 		CTcpCommuMgr();
@@ -70,52 +70,42 @@ namespace tc
 		//************************************
 		// Method:    获取select线程对象
 		//************************************
-		static CSelectThread* GetSelectThread();
+		static SelectThread* GetSelectThread();
 
 		//************************************
 		// Method:    获取收数据线程对象
 		//************************************
-		static CRecvThread* GetRecvThread();
+		static RecvThread* GetRecvThread();
 
 		//************************************
 		// Method:    获取发数据线程对象
 		//************************************
-		static CSendThread* GetSendThread();
+		static SendThread* GetSendThread();
 
 		//************************************
-		// Method:    获取通用信号处理线程对象
+		// Method:    获取select信号处理线程对象
 		//************************************
-		static CCommonThread* GetCommonThread();
+		static SelectSingalThread* GetSelectSingalThread();
 
 		//************************************
 		// Method:    获取tcp事件线程对象
 		//************************************
-		static CTcpEvtThread* GetTcpEvtThread();
+		static TcpEvtThread* GetTcpEvtThread();
 
 		//************************************
 		// Method:    获取select对象
 		//************************************
-		static CSelect* GetSelect();
+		static Select* GetSelect();
 
 		//************************************
-		// Method:    获取收数据信号处理对象
+		// Method:    获取select信号处理对象
 		//************************************
-		static SocketSingalProcess* GetRecvDataSingal();
-
-		//************************************
-		// Method:    获取发数据信号处理对象
-		//************************************
-		static SocketSingalProcess* GetSendDataSingal();
-
-		//************************************
-		// Method:    获取其它信号处理对象
-		//************************************
-		static SocketSingalProcess* GetOtherSingal();
+		static SelectSingal* GetSelectSingal();
 
 		//************************************
 		// Method:    获取TcpConnectionMgr对象
 		//************************************
-		static CTcpConnectionMgr* GetTcpConnectionMgr();
+		static TcpConnectionMgr* GetTcpConnectionMgr();
 
 		//************************************
 		// Method:    获取tcp服务管理对象
@@ -131,5 +121,10 @@ namespace tc
 		// Method:    获取日志管理对象
 		//************************************
 		static LogMgr* GetLogMgr();
+
+		//************************************
+		// Method:    获取socket数据管理对象
+		//************************************
+		static SocketDataMgr* GetSocketDataMgr();
 	};
 }

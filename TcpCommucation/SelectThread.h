@@ -4,7 +4,7 @@
 namespace tc
 {
 	//select线程
-	class CSelectThread : public CThreadEntry
+	class SelectThread : public CThreadEntry
 	{
 	protected:
 		//************************************
@@ -13,8 +13,8 @@ namespace tc
 		void OnThreadExecute();
 
 	public:
-		CSelectThread();
-		~CSelectThread();
+		SelectThread();
+		~SelectThread();
 
 		//************************************
 		// Method:    开始运行线程

@@ -4,7 +4,7 @@
 namespace tc
 {
 	//接收数据线程
-	class CRecvThread : public CThreadEntry
+	class RecvThread : public CThreadEntry
 	{
 	protected:
 		//************************************
@@ -13,8 +13,8 @@ namespace tc
 		void OnThreadExecute();
 
 	public:
-		CRecvThread();
-		~CRecvThread();
+		RecvThread();
+		~RecvThread();
 
 		//************************************
 		// Method:    开始运行线程

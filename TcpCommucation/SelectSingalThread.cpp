@@ -1,22 +1,22 @@
 #include "stdafx.h"
 #include "Include/tc/Def1.h"
-#include "CommonThread.h"
+#include "SelectSingalThread.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Common.h"
 
 namespace tc
 {
-	CCommonThread::CCommonThread()
+	SelectSingalThread::SelectSingalThread()
 	{
 
 	}
 
-	CCommonThread::~CCommonThread()
+	SelectSingalThread::~SelectSingalThread()
 	{
 
 	}
 
-	void CCommonThread::Run()
+	void SelectSingalThread::Run()
 	{
 		if (!m_bRun)
 		{
@@ -25,15 +25,15 @@ namespace tc
 		}
 	}
 
-	void CCommonThread::OnThreadExecute()
+	void SelectSingalThread::OnThreadExecute()
 	{
-		if (CTcpCommuMgr::GetOtherSingal()->IsEmpty())
+		if (CTcpCommuMgr::GetSelectSingal()->IsEmpty())
 		{
 			SetSleepTime();
 		}
 		else
 		{
-			CTcpCommuMgr::GetOtherSingal()->ProcessSocketSingal();
+			CTcpCommuMgr::GetSelectSingal()->ProcessSocketSingal();
 		}
 	}
 }

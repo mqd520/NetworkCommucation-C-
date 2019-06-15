@@ -6,17 +6,17 @@
 
 namespace tc
 {
-	CSelectThread::CSelectThread()
+	SelectThread::SelectThread()
 	{
 
 	}
 
-	CSelectThread::~CSelectThread()
+	SelectThread::~SelectThread()
 	{
 		int n = 0;
 	}
 
-	void CSelectThread::Run()
+	void SelectThread::Run()
 	{
 		if (!m_bRun)
 		{
@@ -25,15 +25,16 @@ namespace tc
 		}
 	}
 
-	void CSelectThread::OnThreadExecute()
+	void SelectThread::OnThreadExecute()
 	{
-		if (CTcpCommuMgr::GetSelect()->IsEmpty())
+		vector<SelectSocketData> vec = CTcpCommuMgr::GetSocketDataMgr()->GetSocket();
+		if (vec.empty())
 		{
 			SetSleepTime();
 		}
 		else
 		{
-			CTcpCommuMgr::GetSelect()->Select();
+			CTcpCommuMgr::GetSelect()->QuerySingal(vec);
 		}
 	}
 }

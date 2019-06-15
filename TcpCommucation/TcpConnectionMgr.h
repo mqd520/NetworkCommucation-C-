@@ -11,15 +11,15 @@ using namespace std;
 namespace tc
 {
 	// tcp连接管理类
-	class CTcpConnectionMgr
+	class TcpConnectionMgr
 	{
 	private:
 		vector<CTcpConnection*> m_vecTcpConnection;//tcp连接集合
 		CThreadLock m_lock;
 
 	public:
-		CTcpConnectionMgr();
-		~CTcpConnectionMgr();
+		TcpConnectionMgr();
+		~TcpConnectionMgr();
 
 		//增加一个tcp连接
 		void PushTcpConn(CTcpConnection* conn);

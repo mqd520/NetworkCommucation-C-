@@ -5,12 +5,12 @@
 
 namespace tc
 {
-	CTcpConnectionMgr::CTcpConnectionMgr()
+	TcpConnectionMgr::TcpConnectionMgr()
 	{
 
 	}
 
-	CTcpConnectionMgr::~CTcpConnectionMgr()
+	TcpConnectionMgr::~TcpConnectionMgr()
 	{
 		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it != m_vecTcpConnection.end();)
 		{
@@ -23,12 +23,12 @@ namespace tc
 		}
 	}
 
-	void CTcpConnectionMgr::PushTcpConn(CTcpConnection* conn)
+	void TcpConnectionMgr::PushTcpConn(CTcpConnection* conn)
 	{
 		m_vecTcpConnection.push_back(conn);
 	}
 
-	CTcpConnection* CTcpConnectionMgr::GetBySendRecvSocket(SOCKET sendrecv)
+	CTcpConnection* TcpConnectionMgr::GetBySendRecvSocket(SOCKET sendrecv)
 	{
 		for (int i = 0; i < (int)m_vecTcpConnection.size(); i++)
 		{
@@ -40,7 +40,7 @@ namespace tc
 		return NULL;
 	}
 
-	void CTcpConnectionMgr::RemoveBySendRecvSocket(SOCKET socket)
+	void TcpConnectionMgr::RemoveBySendRecvSocket(SOCKET socket)
 	{
 		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it != m_vecTcpConnection.end(); it++)
 		{
@@ -54,7 +54,7 @@ namespace tc
 		}
 	}
 
-	int CTcpConnectionMgr::Count()
+	int TcpConnectionMgr::Count()
 	{
 		return (int)m_vecTcpConnection.size();
 	}

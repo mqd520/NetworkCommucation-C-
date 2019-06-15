@@ -40,9 +40,6 @@
     <Filter Include="06 Tcp通信管理\07 Tcp服务端">
       <UniqueIdentifier>{bc7a4d26-2d09-44af-bd90-fdab95bddefe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06 Tcp通信管理\02 Socket信号处理">
-      <UniqueIdentifier>{cdf97335-b171-4316-85f3-f45927fe78cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06 Tcp通信管理\01 线程处理">
       <UniqueIdentifier>{f396dfe6-e594-4801-bfe7-cd750aed8ca3}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,9 @@
     </Filter>
     <Filter Include="06 Tcp通信管理\00 Socket数据管理">
       <UniqueIdentifier>{956bc1cb-c891-4bcb-9b39-868e0d143606}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 Tcp通信管理\02 select处理">
+      <UniqueIdentifier>{cdf97335-b171-4316-85f3-f45927fe78cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -138,16 +138,10 @@
     <ClInclude Include="RecvThread.h">
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClInclude>
-    <ClInclude Include="SocketSingal.h">
-      <Filter>06 Tcp通信管理\02 Socket信号处理</Filter>
-    </ClInclude>
     <ClInclude Include="Select.h">
-      <Filter>06 Tcp通信管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp通信管理\02 select处理</Filter>
     </ClInclude>
     <ClInclude Include="SendThread.h">
-      <Filter>06 Tcp通信管理\01 线程处理</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonThread.h">
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClInclude>
     <ClInclude Include="SelectThread.h">
@@ -233,6 +227,12 @@
     <ClInclude Include="SocketDataMgr.h">
       <Filter>06 Tcp通信管理\00 Socket数据管理</Filter>
     </ClInclude>
+    <ClInclude Include="SelectSingal.h">
+      <Filter>06 Tcp通信管理\02 select处理</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectSingalThread.h">
+      <Filter>06 Tcp通信管理\01 线程处理</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoryTool.cpp">
@@ -310,16 +310,10 @@
     <ClCompile Include="RecvThread.cpp">
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClCompile>
-    <ClCompile Include="SocketSingal.cpp">
-      <Filter>06 Tcp通信管理\02 Socket信号处理</Filter>
-    </ClCompile>
     <ClCompile Include="Select.cpp">
-      <Filter>06 Tcp通信管理\02 Socket信号处理</Filter>
+      <Filter>06 Tcp通信管理\02 select处理</Filter>
     </ClCompile>
     <ClCompile Include="SendThread.cpp">
-      <Filter>06 Tcp通信管理\01 线程处理</Filter>
-    </ClCompile>
-    <ClCompile Include="CommonThread.cpp">
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClCompile>
     <ClCompile Include="SelectThread.cpp">
@@ -398,6 +392,12 @@
     <ClCompile Include="TcpCommuMgr.cpp" />
     <ClCompile Include="SocketDataMgr.cpp">
       <Filter>06 Tcp通信管理\00 Socket数据管理</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectSingal.cpp">
+      <Filter>06 Tcp通信管理\02 select处理</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectSingalThread.cpp">
+      <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

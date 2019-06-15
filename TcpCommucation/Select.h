@@ -9,22 +9,16 @@ using namespace std;
 namespace tc
 {
 	// select类
-	class CSelect
+	class Select
 	{
 	public:
-		CSelect();
-		~CSelect();
+		Select();
+		~Select();
 
 	private:
-		vector<SelectSocketData> vecListenSocket;	//需要监听的socket集合
-		fd_set fsRead;			// 可读socket集合
-		fd_set fsWrite;			// 可写socket集合
-		fd_set fsExcept;		// 异常socket集合
-		vector<vector<SelectSocketData>> groupSocket;	// socket分组
-		timeval m_selectTimeout;
+		vector<vector<SelectSocketData>> vecGroupSocket;	// socket分组
 		vector<ProcessingSocketData> vecProcessingSocketData; // 正在进行处理的socket数据集合
-		CThreadLock m_lock1;	// 线程锁, 针对vecListenSocket变量
-		CThreadLock m_lock2;	// 线程锁, 针对vecProcessingSocketData变量
+		CThreadLock lock2;	// 线程锁, 针对vecProcessingSocketData变量
 
 	private:
 		//************************************
@@ -35,7 +29,7 @@ namespace tc
 		//************************************
 		// Method:    对所有socket进行分组
 		//************************************
-		void CalcSocketGroup();
+		void CalcSocketGroup(vector<SelectSocketData>& vec);
 
 		//************************************
 		// Method:    判断指定socket的信号是否正在被处理
@@ -51,54 +45,24 @@ namespace tc
 		void RemoveProcessingSocket(SOCKET socket);
 
 		//************************************
-		// Method:    检查指定socket是否异常
-		// Parameter: 监听socket关联数据
+		// Method:    处理socket异常
+		// Parameter: socket类型数据
+		// Parameter: fs
 		//************************************
-		void CheckSocketExcept(SelectSocketData socketData);
+		void processSocketExcept(SelectSocketData socketData, fd_set& fs);
 
 		//************************************
-		// Method:    检查指定socket是否可读
-		// Parameter: 监听socket关联数据
+		// Method:    处理socket可读
+		// Parameter: socket类型数据
+		// Parameter: fs
 		//************************************
-		void CheckSocketCanRead(SelectSocketData socketData);
-
-		//************************************
-		// Method:    检查指定socket是否可写
-		// Parameter: 监听socket关联数据
-		//************************************
-		void CheckSocketCanWrite(SelectSocketData socketData);
+		void processSocketRead(SelectSocketData socketData, fd_set& fs);
 
 	public:
 		//************************************
-		// Method:    socket队列是否为空
-		//************************************
-		bool IsEmpty();
-
-		//************************************
-		// Method:    添加socket
-		// Parameter: socket
-		// Parameter: socket类型: ESocketType
-		//************************************
-		void AddSocket(SOCKET socket, ESocketType type);
-
-		//************************************
-		// Method:    移除指定的socket
-		// Parameter: socket
-		// Parameter: 是否关闭,默认关闭
-		//************************************
-		void RemoveSocket(SOCKET socket, bool close = true);
-
-		//************************************
 		// Method:    查询socket信号
 		//************************************
-		void Select();
-
-		//************************************
-		// Method:    socket信号处理完毕事件处理
-		// Parameter: socket
-		// Parameter: socket类型: ESocketSingalType
-		//************************************
-		void OnProcessingSocketCmp(SOCKET socket, ESocketSingalType type);
+		void QuerySingal(vector<SelectSocketData>& vec);
 
 		//************************************
 		// Method:    指示用户退出

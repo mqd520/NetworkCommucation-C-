@@ -3,8 +3,8 @@
 
 namespace tc
 {
-	//通用信号处理线程
-	class CCommonThread : public CThreadEntry
+	// select 信号处理线程
+	class SelectSingalThread : public CThreadEntry
 	{
 	protected:
 		//************************************
@@ -13,8 +13,8 @@ namespace tc
 		void OnThreadExecute();
 
 	public:
-		CCommonThread();
-		~CCommonThread();
+		SelectSingalThread();
+		~SelectSingalThread();
 
 		//************************************
 		// Method:    开始运行线程

@@ -42,8 +42,8 @@ namespace tc
 				{
 					SocketTool::SetNonBlock(socket);	// ÉèÖÃ·Ç×èÈû
 					bool b2 = SocketTool::Listen(socket, strIP, nPort);
+					CTcpCommuMgr::GetSocketDataMgr()->Add(socket, ESocketType::Accept);
 					bListening = true;
-					CTcpCommuMgr::GetSelect()->AddSocket(socket, ESocketType::Accept);
 				}
 			}
 		}

@@ -19,7 +19,7 @@ namespace tc
 		m_bCanAsyncSend(true)
 	{
 		SocketTool::SetNonBlock(sendrecv);
-		CTcpCommuMgr::GetSelect()->AddSocket(sendrecv, ESocketType::SendRecvData);	// 加入select队列
+		CTcpCommuMgr::GetSocketDataMgr()->Add(sendrecv, ESocketType::SendRecvData);
 	}
 
 	CTcpConnection::~CTcpConnection()
@@ -124,23 +124,36 @@ namespace tc
 
 	void CTcpConnection::OnConnDisconnect()
 	{
-		CTcpCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);//移除select队列中socket
+		CTcpCommuMgr::GetSocketDataMgr()->Remove(m_sendrecvSocket);
+		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
+		
+		SocketTool::ShutDown(m_sendrecvSocket, false);
+		SocketTool::CloseSocket(m_sendrecvSocket, false);
+
 		CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
-		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);//移除tcp连接对象
 	}
 
 	void CTcpConnection::OnNetError()
 	{
-		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);	//移除指定发送(接收)数据的socket关联的tcp连接
+		CTcpCommuMgr::GetSocketDataMgr()->Remove(m_sendrecvSocket);
+
+		SocketTool::ShutDown(m_sendrecvSocket, false);
+		SocketTool::CloseSocket(m_sendrecvSocket, false);
+
+		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
 	}
 
 	void CTcpConnection::Close(bool b /*= false*/)
 	{
-		CTcpCommuMgr::GetSelect()->RemoveSocket(m_sendrecvSocket);	// 移除select队列中socket
 		if (b)
 		{
 			CTcpCommuMgr::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
 		}
-		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);	// 移除tcp连接对象
+		CTcpCommuMgr::GetSocketDataMgr()->Remove(m_sendrecvSocket);
+
+		SocketTool::ShutDown(m_sendrecvSocket, false);
+		SocketTool::CloseSocket(m_sendrecvSocket, false);
+		
+		CTcpCommuMgr::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
 	}
 }

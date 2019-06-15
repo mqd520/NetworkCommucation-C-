@@ -6,17 +6,17 @@
 
 namespace tc
 {
-	CRecvThread::CRecvThread()
+	RecvThread::RecvThread()
 	{
 
 	}
 
-	CRecvThread::~CRecvThread()
+	RecvThread::~RecvThread()
 	{
 
 	}
 
-	void CRecvThread::Run()
+	void RecvThread::Run()
 	{
 		if (!m_bRun)
 		{
@@ -25,15 +25,15 @@ namespace tc
 		}
 	}
 
-	void CRecvThread::OnThreadExecute()
+	void RecvThread::OnThreadExecute()
 	{
-		if (CTcpCommuMgr::GetRecvDataSingal()->IsEmpty())
+		if (CTcpCommuMgr::GetSelectSingal()->IsEmpty())
 		{
 			SetSleepTime();
 		}
 		else
 		{
-			CTcpCommuMgr::GetRecvDataSingal()->ProcessSocketSingal();
+			CTcpCommuMgr::GetSelectSingal()->ProcessSocketSingal();
 		}
 	}
 }
