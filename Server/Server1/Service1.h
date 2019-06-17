@@ -14,7 +14,7 @@ public:
 	~Service1();
 
 protected:
-	TcpServer* pMainTcpSrv;	// tcp服务
+	TcpServer mainTcpSrv;		// tcp服务
 
 protected:
 	ClientConnInfoMgr ccMgr;	// 

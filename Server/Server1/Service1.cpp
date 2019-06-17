@@ -5,6 +5,7 @@
 
 #include "tc/TcpEvt.h"
 #include "tc/RecvNewConnEvt.h"
+#include "tc/ConnDisconnectEvt.h"
 
 using namespace tc;
 
@@ -23,8 +24,8 @@ void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
 		char ch[50] = { 0 };
 		sprintf_s(ch, "recv new conn %s:%d", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
 
-		OutputDebugStringA(ch);
-		OutputDebugStringA("\n");
+		//OutputDebugStringA(ch);
+		//OutputDebugStringA("\n");
 
 		theApp.GetLogSrv()->Add(ch);
 
@@ -38,6 +39,12 @@ void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
 	}
 	else if (pEvt->GetEvtType() == ETcpEvt::ConnDisconnect)
 	{
+		ConnDisconnectEvt* pEvt1 = static_cast<ConnDisconnectEvt*>(pEvt);
+		char ch[100] = { 0 };
+		sprintf_s(ch, "connection disconn %s:%d, socket: %d", pEvt1->GetPeerIp().c_str(), pEvt1->GetPeerPort(), pEvt1->GetSendRecvSocket());
+		OutputDebugStringA(ch);
+		OutputDebugStringA("\n");
+
 		ClientConnInfoMgr* mgr = theApp.GetSrv1()->GetClientConnInfoMgr();
 		mgr->Remove(pEvt->GetSendRecvSocket());
 		::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_CLIENTDISCONN, NULL, NULL);
@@ -56,13 +63,12 @@ Service1::~Service1()
 
 void Service1::Init()
 {
-	pMainTcpSrv = new TcpServer();
-	pMainTcpSrv->RegTcpEventCallback(OnTcpEvt, theApp, NULL);
+	mainTcpSrv.RegTcpEventCallback(OnTcpEvt, &theApp, NULL);
 }
 
 TcpServer* Service1::GetMainTcpSrv()
 {
-	return pMainTcpSrv;
+	return &mainTcpSrv;
 }
 
 ClientConnInfoMgr* Service1::GetClientConnInfoMgr()
