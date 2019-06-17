@@ -1,7 +1,9 @@
 #include "stdafx.h"
+#include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/ConnDisconnectEvt.h"
 #include "Def.h"
 #include "Include/tc/Def1.h"
+#include "SocketDataMgr.h"
 
 namespace tc
 {
@@ -9,6 +11,9 @@ namespace tc
 		:TcpEvt(pSrv, sendrecv)
 	{
 		evt = ETcpEvt::ConnDisconnect;
+		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(sendrecv);
+		strIP = data.peerIp;
+		nPort = data.peerPort;
 	}
 
 	ConnDisconnectEvt::~ConnDisconnectEvt()

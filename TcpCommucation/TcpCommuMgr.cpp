@@ -43,11 +43,7 @@ namespace tc
 		GetSelectSingalThread()->Exit();
 		GetTcpEvtThread()->Exit();
 
-#if RELEASE
-		::Sleep(300);
-#endif
-
-		select.Exit();
+		Sleep(1 * 1000);
 	}
 
 	bool TcpCommu::IsExited()

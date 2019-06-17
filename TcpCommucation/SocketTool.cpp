@@ -176,7 +176,9 @@ namespace tc
 
 	bool SocketTool::Recv(SOCKET socket, BYTE* pBuf, int len, int* actuallyLen, bool b /*= true*/)
 	{
+		bool connected = false;
 		int ret = ::recv(socket, (char*)pBuf, len, 0);
+		int n = errno;
 
 		if (actuallyLen != NULL)
 		{
@@ -185,7 +187,7 @@ namespace tc
 
 		if (ret > 0)
 		{
-			return true;
+			connected = true;
 		}
 		else
 		{
@@ -198,9 +200,16 @@ namespace tc
 					ProcessErrorInfo("recv", WSAGetLastError(), ch, b);
 				}
 			}
-
-			return false;
+			else
+			{
+				if (n == EINTR)
+				{
+					connected = true;
+				}
+			}
 		}
+
+		return connected;
 	}
 
 	bool SocketTool::Send(SOCKET socket, BYTE* pBuf, int len, int* actuallyLen, bool b /*= true*/)
@@ -304,6 +313,12 @@ namespace tc
 	{
 		u_long mode = nonblock ? 1 : 0;
 		ioctlsocket(socket, FIONBIO, &mode);
+	}
+
+	bool SocketTool::GetSocketOpt(SOCKET socket, char* optval, int* optlen, bool b /*= true*/)
+	{
+		int result = getsockopt(socket, SOL_SOCKET, SO_SNDBUF, optval, optlen);
+		return result == 1;
 	}
 
 	string SocketTool::GetPeerIpAndPort(SOCKET socket, int* port)

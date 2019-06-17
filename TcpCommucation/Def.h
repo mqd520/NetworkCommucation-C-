@@ -73,5 +73,17 @@ namespace tc
 		SOCKET socket;			// 正在处理的socket
 		ESocketSingalType type;	// 信号类型: ESocketType
 	}ProcessingSocketData;
+
+	// socket信息数据
+	typedef struct tagSocketInfoData
+	{
+		SOCKET socket;		// 用于读写的socket
+		ESocketType type;	// socket type
+		string peerIp;		// 对端ip
+		int peerPort;		// 对端端口
+		string localIP;		// 关联的本地ip
+		int localPort;		// 关联的本地端口
+		int socketId;		// socket id, 关联一个socket
+	}SocketInfoData;
 }
 

@@ -17,8 +17,14 @@ namespace tc
 		~SocketDataMgr();
 
 	private:
-		vector<SelectSocketData> vecSocketData;	// socket数据集合
-		CThreadLock lock1;	// 线程锁, 针对: vecSocketData
+		vector<SocketInfoData> vecSocketData;	// socket数据集合
+		CThreadLock lock1;						// 线程锁, 针对: vecSocketData
+
+	private:
+		//************************************
+		// Method:    创建一个socket id
+		//************************************
+		int CreateSocketId();
 
 	public:
 		//************************************
@@ -43,12 +49,17 @@ namespace tc
 		// Method:    获取指定类型的socket数据集合
 		// Parameter: ESocketType type:	socket类型
 		//************************************
-		vector<SOCKET> GetSocket(ESocketType type);
+		vector<SOCKET> GetSocketData(ESocketType type);
 
 		//************************************
 		// Method:    获取所有socket数据
 		//************************************
-		vector<SelectSocketData> GetSocket();
+		vector<SocketInfoData> GetSocketData();
+
+		//************************************
+		// Method:    获取socket data
+		//************************************
+		SocketInfoData GetSocketData(SOCKET socket);
 
 		//************************************
 		// Method:    获取指定socket的类型

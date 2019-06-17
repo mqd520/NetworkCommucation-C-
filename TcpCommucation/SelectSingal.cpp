@@ -141,11 +141,6 @@ namespace tc
 
 		while (quSockets.size() > 0)
 		{
-			if (TcpCommu::IsExited())	// 指示应用程序需要退出
-			{
-				break;
-			}
-
 			SocketSingalData data = quSockets.front();
 			assert(!quSockets.empty());
 			quSockets.pop();
@@ -158,6 +153,11 @@ namespace tc
 				}
 				else if (data.sockettype == ESocketType::SendRecvData)	// 指示socket用于收发数据
 				{
+					char ch[50] = { 0 };
+					sprintf_s(ch, "there is a readable singal for socket: %d", data.socket);
+					OutputDebugStringA(ch);
+					OutputDebugStringA("\n");
+
 					RecvPeerData(data.socket);
 				}
 			}

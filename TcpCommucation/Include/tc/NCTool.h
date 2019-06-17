@@ -33,7 +33,11 @@ namespace tc
 		//************************************
 		static void ReverseBuf(BYTE* pBuf, int len);
 
-
+		//************************************
+		// Method:    创建一个随机数
+		// Parameter: max: 最大值, 0: 无最大值
+		//************************************
+		static int CreateRand(int max = 0);
 
 	private:
 

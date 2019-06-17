@@ -35,7 +35,7 @@ namespace tc
 
 	void CServerTcpConnection::OnConnDisconnect()
 	{
-		__super::OnConnDisconnect();
+		__super::OnConnDisconnect(EDisconnReason::Peer);
 	}
 
 	void CServerTcpConnection::OnSendDataCompleted(SendPeerDataResult* pResult)

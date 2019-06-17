@@ -77,7 +77,7 @@ namespace tc
 
 		//************************************
 		// Method:    关闭tcp连接
-		// Parameter: b:	是否产生连接断开事件, 默认: false
+		// Parameter: b:	是否生成连接断开事件, 默认: false
 		//************************************
 		void Close(bool b = false);
 
@@ -93,8 +93,10 @@ namespace tc
 
 		//************************************
 		// Method:    连接断开事件处理
+		// Parameter: reason:	连接断开哦原因
+		// Parameter: b:	是否生成连接断开事件, 默认: true
 		//************************************
-		virtual void OnConnDisconnect();
+		virtual void OnConnDisconnect(EDisconnReason reason, bool b = true);
 
 		//************************************
 		// Method:    网络错误事件处理

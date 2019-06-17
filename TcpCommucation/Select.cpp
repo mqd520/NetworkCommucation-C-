@@ -18,14 +18,9 @@ namespace tc
 
 	}
 
-	void Select::QuerySingal(vector<SelectSocketData>& vec)
+	void Select::QuerySingal(vector<SocketInfoData>& vec)
 	{
-		//Sleep(1 * 1000);	// 调试时使用,无意义,可注释掉
-
-		if (TcpCommu::IsExited())	// 指示需要退出了
-		{
-			return;	// 立刻返回
-		}
+		Sleep(1 * 1000);	// 调试时使用,无意义,可注释掉
 
 		CalcSocketGroup(vec);	// 对socket进行分组
 
@@ -47,7 +42,7 @@ namespace tc
 					FD_SET(vecGroupSocket[i][j].socket, &fsExcept);
 				}
 
-				timeval t = { 0, 0 };
+				timeval t = { 0, 10 };
 				SocketTool::Select(0, &fsRead, NULL, &fsExcept, &t);
 
 				// 检查socket的"异常"信号
@@ -71,14 +66,14 @@ namespace tc
 		}
 	}
 
-	void Select::CalcSocketGroup(vector<SelectSocketData>& vec)
+	void Select::CalcSocketGroup(vector<SocketInfoData>& vec)
 	{
 		vecGroupSocket.clear();
 		int nSocketCount = (int)vec.size();	// socket总数
 		int nGroupCount = nSocketCount / FD_SETSIZE + (nSocketCount % FD_SETSIZE == 0 ? 0 : 1);	// 分组数
 		for (int i = 0; i < nGroupCount; i++)
 		{
-			vector<SelectSocketData> vec1;
+			vector<SocketInfoData> vec1;
 			vecGroupSocket.push_back(vec1);
 		}
 
@@ -90,32 +85,7 @@ namespace tc
 		}
 	}
 
-	bool Select::IsProcessingSingal(SOCKET socket, ESocketSingalType type)
-	{
-		lock2.Lock();
-
-		bool b = false;	// 指示当前socket信号是否正在被处理
-		for (int i = 0; i < (int)vecProcessingSocketData.size(); i++)
-		{
-			if (vecProcessingSocketData[i].socket == socket && vecProcessingSocketData[i].type == type)
-			{
-				b = true;
-				break;
-			}
-		}
-
-		if (!b)
-		{
-			// 标记当前socket信号正在被处理
-			vecProcessingSocketData.push_back({ socket, type });
-		}
-
-		lock2.Unlock();
-
-		return b;
-	}
-
-	void Select::processSocketExcept(SelectSocketData socketData, fd_set& fs)
+	void Select::processSocketExcept(SocketInfoData socketData, fd_set& fs)
 	{
 		int result = FD_ISSET(socketData.socket, &fs);
 		if (result > 0)
@@ -125,18 +95,18 @@ namespace tc
 		}
 	}
 
-	void Select::processSocketRead(SelectSocketData socketData, fd_set& fs)
+	void Select::processSocketRead(SocketInfoData socketData, fd_set& fs)
 	{
 		int result = FD_ISSET(socketData.socket, &fs);
 		if (result > 0)
 		{
+			char ch[50] = { 0 };
+			sprintf_s(ch, "process socket readable singal: %d", socketData.socket);
+			OutputDebugStringA(ch);
+			OutputDebugStringA("\n");
+
 			SocketSingalData data = { socketData.socket, ESocketSingalType::Read, socketData.type };
 			TcpCommu::GetSelectSingal()->PushSocketSingal(data);
 		}
-	}
-
-	void Select::Exit()
-	{
-
 	}
 }

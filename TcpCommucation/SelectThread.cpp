@@ -27,7 +27,7 @@ namespace tc
 
 	void SelectThread::OnThreadExecute()
 	{
-		vector<SelectSocketData> vec = TcpCommu::GetSocketDataMgr()->GetSocket();
+		vector<SocketInfoData> vec = TcpCommu::GetSocketDataMgr()->GetSocketData();
 		if (vec.empty())
 		{
 			SetSleepTime();

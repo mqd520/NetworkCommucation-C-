@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "SocketDataMgr.h"
+#include "Include/tc/NCTool.h"
+#include "Include/tc/SocketTool.h"
 
 namespace tc
 {
@@ -13,12 +15,17 @@ namespace tc
 
 	}
 
+	int SocketDataMgr::CreateSocketId()
+	{
+		return NCTool::CreateRand();
+	}
+
 	void SocketDataMgr::Add(SOCKET socket, ESocketType type)
 	{
 		lock1.Lock();
 
 		bool b = false;
-		for (vector<SelectSocketData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
 		{
 			if (it->socket == socket && it->type == type)
 			{
@@ -29,7 +36,11 @@ namespace tc
 
 		if (!b)
 		{
-			vecSocketData.push_back({ socket, type });
+			int socketId = CreateSocketId();
+			int peerPort = 0;
+			string peerIp = SocketTool::GetPeerIpAndPort(socket, &peerPort);
+
+			vecSocketData.push_back({ socket, type, peerIp, peerPort, "", 0, socketId });
 		}
 
 		lock1.Unlock();
@@ -39,7 +50,7 @@ namespace tc
 	{
 		lock1.Lock();
 
-		for (vector<SelectSocketData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
 		{
 			if (it->socket == socket)
 			{
@@ -60,12 +71,12 @@ namespace tc
 		lock1.Unlock();
 	}
 
-	vector<SOCKET> SocketDataMgr::GetSocket(ESocketType type)
+	vector<SOCKET> SocketDataMgr::GetSocketData(ESocketType type)
 	{
 		lock1.Lock();
 
 		vector<SOCKET> vec;
-		for (vector<SelectSocketData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
 		{
 			if (it->type == type)
 			{
@@ -78,12 +89,12 @@ namespace tc
 		return vec;
 	}
 
-	vector<SelectSocketData> SocketDataMgr::GetSocket()
+	vector<SocketInfoData> SocketDataMgr::GetSocketData()
 	{
 		lock1.Lock();
 
-		vector<SelectSocketData> vec;
-		for (vector<SelectSocketData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		vector<SocketInfoData> vec;
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
 		{
 			vec.push_back(*it);
 		}
@@ -93,12 +104,31 @@ namespace tc
 		return vec;
 	}
 
+	SocketInfoData SocketDataMgr::GetSocketData(SOCKET socket)
+	{
+		lock1.Lock();
+
+		SocketInfoData data = { 0 };
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		{
+			if (it->socket == socket)
+			{
+				data = *it;
+				break;
+			}
+		}
+
+		lock1.Unlock();
+
+		return data;
+	}
+
 	ESocketType SocketDataMgr::GetSocketType(SOCKET socket)
 	{
 		lock1.Lock();
 
 		ESocketType type = ESocketType::Accept;
-		for (vector<SelectSocketData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
 		{
 			if (it->socket == socket)
 			{

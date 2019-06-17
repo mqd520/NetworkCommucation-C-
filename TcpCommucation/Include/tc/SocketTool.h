@@ -95,6 +95,7 @@ namespace tc
 
 		//************************************
 		// Method:    接收数据
+		// Return:	  连接是否正常
 		// Parameter: socket: socket
 		// Parameter: pBuf: 接收数据缓冲区指针
 		// Parameter: len: 接收数据缓冲区长度
@@ -138,6 +139,11 @@ namespace tc
 		// Method:    设置socket非阻塞
 		//************************************
 		static void SetNonBlock(SOCKET socket, bool nonblock = true);
+
+		//************************************
+		// Method:    获取socket状态
+		//************************************
+		static bool GetSocketOpt(SOCKET socket, char* optval, int* optlen, bool b = true);
 
 		//************************************
 		// Method:    获取对端socket的ip和端口

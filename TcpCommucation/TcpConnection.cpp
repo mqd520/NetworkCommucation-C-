@@ -54,7 +54,7 @@ namespace tc
 	{
 		if (!success)
 		{
-			OnConnDisconnect();
+			OnConnDisconnect(EDisconnReason::Peer);
 		}
 	}
 
@@ -108,6 +108,7 @@ namespace tc
 	{
 		BYTE* pRecvBuf = new BYTE[TC_TCPRECVBUFFERSIZE];
 		int len = 0;
+
 		bool b = SocketTool::Recv(m_sendrecvSocket, pRecvBuf, TC_TCPRECVBUFFERSIZE, &len);
 		if (b)	// 接收数据成功
 		{
@@ -118,42 +119,30 @@ namespace tc
 		{
 			delete pRecvBuf;
 
-			OnConnDisconnect();	// 连接断开了
+			OnConnDisconnect(EDisconnReason::Peer);
 		}
 	}
 
-	void CTcpConnection::OnConnDisconnect()
-	{
-		TcpCommu::GetSocketDataMgr()->Remove(m_sendrecvSocket);
-		SocketTool::ShutDown(m_sendrecvSocket, false);
-		SocketTool::CloseSocket(m_sendrecvSocket, false);
-
-		TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
-
-		TcpCommu::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
-	}
-
-	void CTcpConnection::OnNetError()
-	{
-		TcpCommu::GetSocketDataMgr()->Remove(m_sendrecvSocket);
-
-		SocketTool::ShutDown(m_sendrecvSocket, false);
-		SocketTool::CloseSocket(m_sendrecvSocket, false);
-
-		TcpCommu::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
-	}
-
-	void CTcpConnection::Close(bool b /*= false*/)
+	void CTcpConnection::OnConnDisconnect(EDisconnReason reason, bool b /*= true*/)
 	{
 		if (b)
 		{
 			TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(m_pTcpSrv, m_sendrecvSocket));
 		}
 		TcpCommu::GetSocketDataMgr()->Remove(m_sendrecvSocket);
-
 		SocketTool::ShutDown(m_sendrecvSocket, false);
 		SocketTool::CloseSocket(m_sendrecvSocket, false);
-		
+
 		TcpCommu::GetTcpConnectionMgr()->RemoveBySendRecvSocket(m_sendrecvSocket);
+	}
+
+	void CTcpConnection::OnNetError()
+	{
+		OnConnDisconnect(EDisconnReason::Error);
+	}
+
+	void CTcpConnection::Close(bool b /*= false*/)
+	{
+		OnConnDisconnect(EDisconnReason::Local, b);
 	}
 }

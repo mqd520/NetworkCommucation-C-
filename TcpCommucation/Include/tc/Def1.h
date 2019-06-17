@@ -31,6 +31,16 @@ namespace tc
 		None	// 无
 	};
 
+	// 连接断开原因
+	enum class EDisconnReason
+	{
+		Peer,			// 对方关闭
+		Local,			// 本地关闭
+		Error,			// 发生socket错误
+		
+		Other			// 其它原因
+	};
+
 	class TcpEvt;
 	// tcp事件回调函数指针
 	// pEvent	tcp事件对象
