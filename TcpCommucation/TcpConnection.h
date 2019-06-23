@@ -93,7 +93,7 @@ namespace tc
 
 		//************************************
 		// Method:    连接断开事件处理
-		// Parameter: reason:	连接断开哦原因
+		// Parameter: reason:	连接断开原因
 		// Parameter: b:	是否生成连接断开事件, 默认: true
 		//************************************
 		virtual void OnConnDisconnect(EDisconnReason reason, bool b = true);

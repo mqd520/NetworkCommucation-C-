@@ -27,13 +27,13 @@ namespace tc
 
 	void RecvThread::OnThreadExecute()
 	{
-		if (TcpCommu::GetSelectSingal()->IsEmpty())
+		if (TcpCommu::GetRecvHandler()->IsEmpty())
 		{
 			SetSleepTime();
 		}
 		else
 		{
-			TcpCommu::GetSelectSingal()->ProcessSocketSingal();
+			TcpCommu::GetRecvHandler()->ProcessSocketEvt();
 		}
 	}
 }

@@ -66,6 +66,11 @@ namespace tc
 	{
 		lock1.Lock();
 
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		{
+			SocketTool::ShutDown(it->socket, false);
+			SocketTool::CloseSocket(it->socket, false);
+		}
 		vecSocketData.clear();
 
 		lock1.Unlock();

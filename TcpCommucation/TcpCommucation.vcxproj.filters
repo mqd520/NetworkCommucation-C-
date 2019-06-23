@@ -64,6 +64,9 @@
     <Filter Include="04 Socket Api">
       <UniqueIdentifier>{1e438d53-0a93-4d9f-b78b-08c6ad56bcff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06 Tcp通信管理\03 Socket事件">
+      <UniqueIdentifier>{d7c915fc-b9e1-4beb-ad3a-e2e1fbf74a7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryTool.h">
@@ -228,17 +231,26 @@
     <ClInclude Include="SocketDataMgr.h">
       <Filter>06 Tcp通信管理\00 Socket数据管理</Filter>
     </ClInclude>
-    <ClInclude Include="SelectSingal.h">
-      <Filter>06 Tcp通信管理\02 select处理</Filter>
-    </ClInclude>
-    <ClInclude Include="SelectSingalThread.h">
-      <Filter>06 Tcp通信管理\01 线程处理</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>99 其它</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99 其它</Filter>
+    </ClInclude>
+    <ClInclude Include="RecvNewConnSocEvt.h">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketEvt.h">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClInclude>
+    <ClInclude Include="RecvDataHandler.h">
+      <Filter>06 Tcp通信管理</Filter>
+    </ClInclude>
+    <ClInclude Include="RecvPeerDataSocEvt.h">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnDisconnSocEvt.h">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -399,14 +411,23 @@
     <ClCompile Include="SocketDataMgr.cpp">
       <Filter>06 Tcp通信管理\00 Socket数据管理</Filter>
     </ClCompile>
-    <ClCompile Include="SelectSingal.cpp">
-      <Filter>06 Tcp通信管理\02 select处理</Filter>
-    </ClCompile>
-    <ClCompile Include="SelectSingalThread.cpp">
-      <Filter>06 Tcp通信管理\01 线程处理</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99 其它</Filter>
+    </ClCompile>
+    <ClCompile Include="RecvNewConnSocEvt.cpp">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketEvt.cpp">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClCompile>
+    <ClCompile Include="RecvDataHandler.cpp">
+      <Filter>06 Tcp通信管理</Filter>
+    </ClCompile>
+    <ClCompile Include="RecvPeerDataSocEvt.cpp">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnDisconnSocEvt.cpp">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

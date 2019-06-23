@@ -9,13 +9,14 @@ namespace tc
 	// tcp事件管理类
 	class TcpEvtMgr
 	{
-	private:
-		queue<TcpEvt*> queueEvent;	// tcp事件队列
-
 	public:
 		TcpEvtMgr();
 		~TcpEvtMgr();
 
+	private:
+		queue<TcpEvt*> queueEvent;	// tcp事件队列
+
+	public:
 		//************************************
 		// Method:    tcp事件队列是否为空
 		//************************************
@@ -26,6 +27,11 @@ namespace tc
 		// Parameter: tcp服务事件
 		//************************************
 		void PushTcpEvent(TcpEvt* pEvent);
+
+		//************************************
+		// Method:    清除tcp事件队列
+		//************************************
+		void Clear();
 
 		//************************************
 		// Method:    处理tcp事件

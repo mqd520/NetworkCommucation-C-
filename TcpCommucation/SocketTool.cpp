@@ -178,6 +178,7 @@ namespace tc
 	{
 		bool connected = false;
 		int ret = ::recv(socket, (char*)pBuf, len, 0);
+		int nError = WSAGetLastError();
 		int n = errno;
 
 		if (actuallyLen != NULL)
@@ -197,15 +198,13 @@ namespace tc
 				{
 					char ch[100] = { 0 };
 					sprintf_s(ch, "recv fail, socket: %d", socket);
-					ProcessErrorInfo("recv", WSAGetLastError(), ch, b);
+					ProcessErrorInfo("recv", nError, ch, b);
 				}
 			}
-			else
+
+			if (nError == WSAEWOULDBLOCK || nError == WSAEINPROGRESS || n == EINTR)
 			{
-				if (n == EINTR)
-				{
-					connected = true;
-				}
+				connected = true;
 			}
 		}
 
@@ -272,6 +271,7 @@ namespace tc
 				ProcessErrorInfo("select", WSAGetLastError(), "select fail", b);
 			}
 		}
+
 		return ret;
 	}
 

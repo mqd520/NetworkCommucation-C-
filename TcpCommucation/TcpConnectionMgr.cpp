@@ -12,10 +12,47 @@ namespace tc
 
 	TcpConnectionMgr::~TcpConnectionMgr()
 	{
-		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it != m_vecTcpConnection.end();)
+		Clear();
+	}
+
+	void TcpConnectionMgr::PushTcpConn(CTcpConnection* conn)
+	{
+		vecTcpConn.push_back(conn);
+	}
+
+	CTcpConnection* TcpConnectionMgr::GetBySendRecvSocket(SOCKET sendrecv)
+	{
+		for (int i = 0; i < (int)vecTcpConn.size(); i++)
+		{
+			if (vecTcpConn[i]->GetSendRecvSocket() == sendrecv)
+			{
+				return vecTcpConn[i];
+			}
+		}
+
+		return NULL;
+	}
+
+	void TcpConnectionMgr::RemoveBySendRecvSocket(SOCKET socket)
+	{
+		for (vector<CTcpConnection*>::iterator it = vecTcpConn.begin(); it != vecTcpConn.end(); it++)
 		{
 			CTcpConnection* pConn = *it;
-			it = m_vecTcpConnection.erase(it);
+			if (pConn->GetSendRecvSocket() == socket)
+			{
+				vecTcpConn.erase(it);
+				delete pConn;
+				break;
+			}
+		}
+	}
+
+	void TcpConnectionMgr::Clear()
+	{
+		for (vector<CTcpConnection*>::iterator it = vecTcpConn.begin(); it != vecTcpConn.end();)
+		{
+			CTcpConnection* pConn = *it;
+			it = vecTcpConn.erase(it);
 			if (pConn)
 			{
 				delete pConn;
@@ -23,39 +60,8 @@ namespace tc
 		}
 	}
 
-	void TcpConnectionMgr::PushTcpConn(CTcpConnection* conn)
-	{
-		m_vecTcpConnection.push_back(conn);
-	}
-
-	CTcpConnection* TcpConnectionMgr::GetBySendRecvSocket(SOCKET sendrecv)
-	{
-		for (int i = 0; i < (int)m_vecTcpConnection.size(); i++)
-		{
-			if (m_vecTcpConnection[i]->GetSendRecvSocket() == sendrecv)
-			{
-				return m_vecTcpConnection[i];
-			}
-		}
-		return NULL;
-	}
-
-	void TcpConnectionMgr::RemoveBySendRecvSocket(SOCKET socket)
-	{
-		for (vector<CTcpConnection*>::iterator it = m_vecTcpConnection.begin(); it != m_vecTcpConnection.end(); it++)
-		{
-			CTcpConnection* pConn = *it;
-			if (pConn->GetSendRecvSocket() == socket)
-			{
-				m_vecTcpConnection.erase(it);
-				delete pConn;
-				break;
-			}
-		}
-	}
-
 	int TcpConnectionMgr::Count()
 	{
-		return (int)m_vecTcpConnection.size();
+		return (int)vecTcpConn.size();
 	}
 }

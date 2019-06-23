@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Select.h"
-#include "TcpConnectionMgr.h"
-#include "Thread.h"
+#include "Include/tc/SocketTool.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "Def.h"
-#include "Common.h"
+#include "RecvNewConnSocEvt.h"
+#include "RecvPeerDataSocEvt.h"
+#include "ConnDisconnSocEvt.h"
 
 namespace tc
 {
@@ -20,7 +20,7 @@ namespace tc
 
 	void Select::QuerySingal(vector<SocketInfoData>& vec)
 	{
-		Sleep(1 * 1000);	// 调试时使用,无意义,可注释掉
+		//Sleep(1 * 1000);	// 调试时使用,无意义,可注释掉
 
 		CalcSocketGroup(vec);	// 对socket进行分组
 
@@ -43,23 +43,22 @@ namespace tc
 				}
 
 				timeval t = { 0, 10 };
-				SocketTool::Select(0, &fsRead, NULL, &fsExcept, &t);
+				int ret = SocketTool::Select(0, &fsRead, NULL, &fsExcept, &t);
 
-				// 检查socket的"异常"信号
-				if (fsExcept.fd_count > 0)
+				if (ret > 0)
 				{
+					bool b1 = fsExcept.fd_count > 0;	// 是否有异常信号
+					bool b2 = fsRead.fd_count > 0;		// 是否有可读信号
 					for (int k = 0; k < (int)vecGroupSocket[i].size(); k++)
 					{
-						processSocketExcept(vecGroupSocket[i][k], fsExcept);
-					}
-				}
-
-				// 检查socket的"可读"信号
-				if (fsRead.fd_count > 0)
-				{
-					for (int k = 0; k < (int)vecGroupSocket[i].size(); k++)
-					{
-						processSocketRead(vecGroupSocket[i][k], fsRead);
+						if (b1)
+						{
+							OnSocketExcept(vecGroupSocket[i][k], fsExcept);
+						}
+						if (b2)
+						{
+							OnSocketRead(vecGroupSocket[i][k], fsRead);
+						}
 					}
 				}
 			}
@@ -85,17 +84,16 @@ namespace tc
 		}
 	}
 
-	void Select::processSocketExcept(SocketInfoData socketData, fd_set& fs)
+	void Select::OnSocketExcept(SocketInfoData& socketData, fd_set& fs)
 	{
 		int result = FD_ISSET(socketData.socket, &fs);
 		if (result > 0)
 		{
-			SocketSingalData data = { socketData.socket, ESocketSingalType::Except, socketData.type };
-			TcpCommu::GetSelectSingal()->PushSocketSingal(data);
+
 		}
 	}
 
-	void Select::processSocketRead(SocketInfoData socketData, fd_set& fs)
+	void Select::OnSocketRead(SocketInfoData& socketData, fd_set& fs)
 	{
 		int result = FD_ISSET(socketData.socket, &fs);
 		if (result > 0)
@@ -105,8 +103,61 @@ namespace tc
 			OutputDebugStringA(ch);
 			OutputDebugStringA("\n");
 
-			SocketSingalData data = { socketData.socket, ESocketSingalType::Read, socketData.type };
-			TcpCommu::GetSelectSingal()->PushSocketSingal(data);
+			if (socketData.type == ESocketType::Accept)
+			{
+				OnRecvNewConn(socketData);
+			}
+			else if (socketData.type == ESocketType::SendRecvData)
+			{
+				OnRecvData(socketData);
+			}
+		}
+	}
+
+	void Select::OnRecvNewConn(SocketInfoData& socketData)
+	{
+		vector<SOCKET> clients;
+
+		while (true)
+		{
+			SOCKET client = SocketTool::Accept(socketData.socket, socketData.localIP, socketData.localPort, false);
+			if (client != INVALID_SOCKET)
+			{
+				clients.push_back(client);
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (!clients.empty())
+		{
+			RecvNewConnSocEvt* pEvt = new RecvNewConnSocEvt(socketData.socket, clients);
+			TcpCommu::GetRecvHandler()->PushSocketEvt(pEvt);
+		}
+	}
+
+	void Select::OnRecvData(SocketInfoData& socketData)
+	{
+		BYTE* pRecvBuf = new BYTE[TC_TCPRECVBUFFERSIZE];
+		int len = 0;
+
+		bool b = SocketTool::Recv(socketData.socket, pRecvBuf, TC_TCPRECVBUFFERSIZE, &len);
+		if (len > 0)	// 接收数据成功
+		{
+			RecvPeerDataSocEvt* pEvt = new RecvPeerDataSocEvt(socketData.socket, pRecvBuf, len);
+			TcpCommu::GetRecvHandler()->PushSocketEvt(pEvt);
+		}
+		else   // 接收数据失败
+		{
+			delete pRecvBuf;
+
+			if (!b)	// 指示连接已断开, 应该关闭socket
+			{
+				ConnDisconnSocEvt* pEvt = new ConnDisconnSocEvt(socketData.socket);
+				TcpCommu::GetRecvHandler()->PushSocketEvt(pEvt);
+			}
 		}
 	}
 }

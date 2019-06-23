@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "Def.h"
-#include "Include/tc/SocketTool.h"
 #include "ThreadLock.h"
 
 using namespace std;
@@ -26,18 +25,22 @@ namespace tc
 		void CalcSocketGroup(vector<SocketInfoData>& vec);
 
 		//************************************
-		// Method:    处理socket异常
+		// Method:    socket发生异常
 		// Parameter: socket类型数据
 		// Parameter: fs
 		//************************************
-		void processSocketExcept(SocketInfoData socketData, fd_set& fs);
+		void OnSocketExcept(SocketInfoData& socketData, fd_set& fs);
 
 		//************************************
 		// Method:    处理socket可读
 		// Parameter: socket类型数据
 		// Parameter: fs
 		//************************************
-		void processSocketRead(SocketInfoData socketData, fd_set& fs);
+		void OnSocketRead(SocketInfoData& socketData, fd_set& fs);
+
+		void OnRecvNewConn(SocketInfoData& socketData);
+
+		void OnRecvData(SocketInfoData& socketData);
 
 	public:
 		//************************************

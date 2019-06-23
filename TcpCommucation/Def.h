@@ -35,6 +35,16 @@ namespace tc
 		Except	// 异常
 	};
 
+	// socket事件类型
+	enum class ESocketEvtType : int
+	{
+		RecvNewConn,		// 收到新连接
+		RecvPeerData,		// 收到对端数据
+		ConnDisconnect,		// 连接被断开
+		
+		None				// 无
+	};
+
 	// 网络地址
 	typedef struct tagNetAddress
 	{
@@ -77,7 +87,7 @@ namespace tc
 	// socket信息数据
 	typedef struct tagSocketInfoData
 	{
-		SOCKET socket;		// 用于读写的socket
+		SOCKET socket;		// 关联的socket
 		ESocketType type;	// socket type
 		string peerIp;		// 对端ip
 		int peerPort;		// 对端端口

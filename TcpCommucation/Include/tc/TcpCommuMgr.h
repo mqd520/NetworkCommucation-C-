@@ -2,18 +2,17 @@
 #include "../../SelectThread.h"
 #include "../../RecvThread.h"
 #include "../../SendThread.h"
-#include "../../SelectSingalThread.h"
 #include "../../TcpEvtThread.h"
 #include "../../LogThread.h"
 
 #include "../../Select.h"
-#include "../../SelectSingal.h"
 
 #include "../../TcpConnectionMgr.h"
 #include "../../TcpServiceMgr.h"
 #include "../../TcpEvtMgr.h"
 #include "../../LogMgr.h"
 #include "../../SocketDataMgr.h"
+#include "../../RecvDataHandler.h"
 
 namespace tc
 {
@@ -26,17 +25,17 @@ namespace tc
 		static SelectThread selectThread;			// select线程对象
 		static RecvThread recvThread;				// 收数据线程对象
 		static SendThread sendThread;				// 发数据线程对象
-		static SelectSingalThread selectSingalThread;// select信号处理线程对象
 		static TcpEvtThread tcpEvtThread;			// tcp事件线程
 
 		static Select select;						// select对象
-		static SelectSingal selectSingal;			// select信号处理对象
+		static RecvDataHandler recvHandler;			// 收数据对象
 		
 		static SocketDataMgr socketDataMgr;			// socket数据管理对象
 		static TcpConnectionMgr tcpConnMgr;			// tcp连接管理对象
 		static TcpServiceMgr tcpServiceMgr;			// tcp服务管理对象
 		static TcpEvtMgr tcpEvtMgr;					// tcp事件管理对象
 		static LogMgr logMgr;						// 日志管理对象
+
 
 	private:
 		TcpCommu();
@@ -80,11 +79,6 @@ namespace tc
 		static SendThread* GetSendThread();
 
 		//************************************
-		// Method:    获取select信号处理线程对象
-		//************************************
-		static SelectSingalThread* GetSelectSingalThread();
-
-		//************************************
 		// Method:    获取tcp事件线程对象
 		//************************************
 		static TcpEvtThread* GetTcpEvtThread();
@@ -93,11 +87,6 @@ namespace tc
 		// Method:    获取select对象
 		//************************************
 		static Select* GetSelect();
-
-		//************************************
-		// Method:    获取select信号处理对象
-		//************************************
-		static SelectSingal* GetSelectSingal();
 
 		//************************************
 		// Method:    获取TcpConnectionMgr对象
@@ -123,5 +112,10 @@ namespace tc
 		// Method:    获取socket数据管理对象
 		//************************************
 		static SocketDataMgr* GetSocketDataMgr();
+
+		//************************************
+		// Method:    获取收数据处理对象
+		//************************************
+		static RecvDataHandler* GetRecvHandler();
 	};
 }

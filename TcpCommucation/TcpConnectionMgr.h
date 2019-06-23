@@ -1,9 +1,8 @@
 #pragma once
 #include <vector>
-#include "TcpConnection.h"
-#include "Thread.h"
-#include "Def.h"
 #include <queue>
+#include "Def.h"
+#include "TcpConnection.h"
 #include "ThreadLock.h"
 
 using namespace std;
@@ -13,15 +12,18 @@ namespace tc
 	// tcp连接管理类
 	class TcpConnectionMgr
 	{
-	private:
-		vector<CTcpConnection*> m_vecTcpConnection;//tcp连接集合
-		CThreadLock m_lock;
-
 	public:
 		TcpConnectionMgr();
 		~TcpConnectionMgr();
 
-		//增加一个tcp连接
+	private:
+		vector<CTcpConnection*> vecTcpConn;//tcp连接集合
+		CThreadLock m_lock;
+
+	public:
+		//************************************
+		// Method:    增加一个tcp连接
+		//************************************
 		void PushTcpConn(CTcpConnection* conn);
 
 		//************************************
@@ -36,6 +38,11 @@ namespace tc
 		// Return:	  tcp连接对象
 		//************************************
 		CTcpConnection* GetBySendRecvSocket(SOCKET sendrecv);
+
+		//************************************
+		// Method:    清除所有连接对象
+		//************************************
+		void Clear();
 
 		//************************************
 		// Method:    获取连接总数

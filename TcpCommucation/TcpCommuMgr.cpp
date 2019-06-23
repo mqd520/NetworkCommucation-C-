@@ -7,40 +7,42 @@ namespace tc
 	volatile bool TcpCommu::m_bExited = false;
 
 	SelectThread TcpCommu::selectThread;
-	SelectSingalThread TcpCommu::selectSingalThread;
 	RecvThread TcpCommu::recvThread;
 	SendThread TcpCommu::sendThread;
 	TcpEvtThread TcpCommu::tcpEvtThread;
 
 	Select TcpCommu::select;
-	SelectSingal TcpCommu::selectSingal;
+	RecvDataHandler TcpCommu::recvHandler;
 
 	SocketDataMgr TcpCommu::socketDataMgr;
 	TcpConnectionMgr TcpCommu::tcpConnMgr;
 	TcpServiceMgr TcpCommu::tcpServiceMgr;
 	TcpEvtMgr TcpCommu::tcpEvtMgr;
 	LogMgr TcpCommu::logMgr;
-	
+
 
 	void TcpCommu::Init()
 	{
 		SocketTool::Init();
 
 		GetSelectThread()->Run();		// 启动select线程
-		GetSelectSingalThread()->Run(); // 启动select信号处理线程
 		GetRecvThread()->Run();			// 启动收数据线程
 		GetSendThread()->Run();			// 启动发数据线程
-		GetTcpEvtThread()->Run();		// 启动tcp事件线程(业务线程)
+		GetTcpEvtThread()->Run();		// 启动事件线程
 	}
 
 	void TcpCommu::Exit()
 	{
 		m_bExited = true;
 
+		recvHandler.Clear();
+		tcpEvtMgr.Clear();
+		tcpConnMgr.Clear();
+		socketDataMgr.Clear();
+
 		GetSelectThread()->Exit();
 		GetRecvThread()->Exit();
 		GetSendThread()->Exit();
-		GetSelectSingalThread()->Exit();
 		GetTcpEvtThread()->Exit();
 
 		Sleep(1 * 1000);
@@ -64,11 +66,6 @@ namespace tc
 	SendThread* TcpCommu::GetSendThread()
 	{
 		return &sendThread;
-	}
-
-	SelectSingalThread* TcpCommu::GetSelectSingalThread()
-	{
-		return &selectSingalThread;
 	}
 
 	TcpEvtThread* TcpCommu::GetTcpEvtThread()
@@ -106,8 +103,8 @@ namespace tc
 		return &socketDataMgr;
 	}
 
-	SelectSingal* TcpCommu::GetSelectSingal()
+	RecvDataHandler* TcpCommu::GetRecvHandler()
 	{
-		return &selectSingal;
+		return &recvHandler;
 	}
 }
