@@ -41,6 +41,8 @@ namespace tc
 		RecvNewConn,		// 收到新连接
 		RecvPeerData,		// 收到对端数据
 		ConnDisconnect,		// 连接被断开
+		SendPeerData,		// 发送对端数据
+		ConnectCpl,			// 连接服务端完成
 		
 		None				// 无
 	};

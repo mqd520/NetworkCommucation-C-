@@ -14,6 +14,7 @@ namespace tc
 	private:
 		bool bIsConnecting;		// 是否正在进行连接
 		bool bIsConnected;		// 是否已连接上
+		bool bIsReconnect;		// 是否需要自动重新连接
 
 	private:
 		//************************************
@@ -29,9 +30,9 @@ namespace tc
 		void SetConnectInfo(string ip, int port);
 
 		//************************************
-		// Method:    重连
+		// Method:    连接服务端
 		//************************************
-		void Reconnect();
+		void ConnectServer();
 
 	protected:
 		//************************************
@@ -47,13 +48,16 @@ namespace tc
 		void Connect();
 
 		//************************************
+		// Method:    关闭连接
+		// Parameter: b:	是否产生连接关闭事件
+		//************************************
+		void Close(bool b = true);
+
+		//************************************
 		// Method:    向对端发送数据
-		// Returns:   是否成功
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
-		// Parameter: 是否异步,默认异步发送
-		// Parameter: 实际发送字节长度
 		//************************************
-		bool Send(BYTE* pBuf, int len, bool asyncs = true, int* actualLen = NULL);
+		void Send(BYTE* pBuf, int len);
 	};
 }

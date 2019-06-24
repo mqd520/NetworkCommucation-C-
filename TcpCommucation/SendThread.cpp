@@ -27,6 +27,13 @@ namespace tc
 
 	void SendThread::OnThreadExecute()
 	{
-		SetSleepTime();
+		if (TcpCommu::GetSendHandler()->IsEmpty())
+		{
+			SetSleepTime();
+		}
+		else
+		{
+			TcpCommu::GetSendHandler()->ProcessSocketEvt();
+		}
 	}
 }

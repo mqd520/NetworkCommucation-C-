@@ -62,11 +62,6 @@ namespace tc
 		return bListening;
 	}
 
-	void TcpServer::OnRecvTcpEvent(TcpEvt* pEvent)
-	{
-		__super::OnRecvTcpEvent(pEvent);
-	}
-
 	void TcpServer::AddAllowIP(string ip)
 	{
 		bool exist = false;
@@ -122,9 +117,13 @@ namespace tc
 		return result;
 	}
 
-	bool TcpServer::Send(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
+	void TcpServer::Send(int clientId, BYTE* pBuf, int len)
 	{
-		return __super::SendData(socket, pBuf, len, asyncs, actualLen);
+		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
+		if (data.socket > 0)
+		{
+			__super::SendData(data.socket, pBuf, len);
+		}
 	}
 
 	void TcpServer::CloseClient(int clientId, bool b /*= false*/)

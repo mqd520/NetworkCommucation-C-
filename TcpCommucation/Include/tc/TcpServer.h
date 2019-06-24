@@ -28,12 +28,6 @@ namespace tc
 		//************************************
 		bool IsAllow(string ip);
 
-		//************************************
-		// Method:    收到tcp事件处理
-		// Parameter: tcp事件
-		//************************************
-		void OnRecvTcpEvent(TcpEvt* pEvent);
-
 	public:
 		//************************************
 		// Method:    设置监听信息
@@ -47,13 +41,10 @@ namespace tc
 
 		//************************************
 		// Method:    向对端发送数据
-		// Parameter: socket
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
-		// Parameter: 是否异步,默认异步发送
-		// Parameter: 实际发送字节长度
 		//************************************
-		bool Send(SOCKET socket, BYTE* pBuf, int len, bool asyncs = true, int* actualLen = NULL);
+		void Send(int clientId, BYTE* pBuf, int len);
 
 		//************************************
 		// Method:    关闭指定客户端

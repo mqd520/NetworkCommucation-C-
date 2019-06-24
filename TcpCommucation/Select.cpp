@@ -5,6 +5,7 @@
 #include "RecvNewConnSocEvt.h"
 #include "RecvPeerDataSocEvt.h"
 #include "ConnDisconnSocEvt.h"
+#include "ConnectCplSocEvt.h"
 
 namespace tc
 {
@@ -89,7 +90,10 @@ namespace tc
 		int result = FD_ISSET(socketData.socket, &fs);
 		if (result > 0)
 		{
-
+			if (socketData.type == ESocketType::Connect)
+			{
+				OnConnectFail(socketData);
+			}
 		}
 	}
 
@@ -111,6 +115,10 @@ namespace tc
 			else if (socketData.type == ESocketType::SendRecvData)
 			{
 				OnRecvData(socketData);
+			}
+			else if (socketData.type == ESocketType::Connect)
+			{
+				OnConnectSuccess(socketData);
 			}
 		}
 	}
@@ -160,5 +168,19 @@ namespace tc
 				TcpCommu::GetRecvHandler()->PushSocketEvt(pEvt);
 			}
 		}
+	}
+
+	void Select::OnConnectSuccess(SocketInfoData& socketData)
+	{
+		TcpCommu::GetSocketDataMgr()->Remove(socketData.socket, ESocketType::Connect);
+		ConnectCplSocEvt* pEvt = new ConnectCplSocEvt(socketData.socket, true);
+		TcpCommu::GetRecvHandler()->PushSocketEvt(pEvt);
+	}
+
+	void Select::OnConnectFail(SocketInfoData& socketData)
+	{
+		TcpCommu::GetSocketDataMgr()->Remove(socketData.socket, ESocketType::Connect);
+		ConnectCplSocEvt* pEvt = new ConnectCplSocEvt(socketData.socket, false);
+		TcpCommu::GetRecvHandler()->PushSocketEvt(pEvt);
 	}
 }

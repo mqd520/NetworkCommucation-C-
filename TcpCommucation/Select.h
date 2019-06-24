@@ -38,9 +38,25 @@ namespace tc
 		//************************************
 		void OnSocketRead(SocketInfoData& socketData, fd_set& fs);
 
+		//************************************
+		// Method:    收到新连接事件处理
+		//************************************
 		void OnRecvNewConn(SocketInfoData& socketData);
 
+		//************************************
+		// Method:    收到对端数据事件处理
+		//************************************
 		void OnRecvData(SocketInfoData& socketData);
+
+		//************************************
+		// Method:    连接服务端成功事件处理
+		//************************************
+		void OnConnectSuccess(SocketInfoData& socketData);
+
+		//************************************
+		// Method:    连接服务端失败事件处理
+		//************************************
+		void OnConnectFail(SocketInfoData& socketData);
 
 	public:
 		//************************************

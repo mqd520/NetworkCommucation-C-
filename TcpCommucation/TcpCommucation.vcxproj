@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConnDisconnSocEvt.h" />
+    <ClInclude Include="ConnectCplSocEvt.h" />
     <ClInclude Include="RecvDataHandler.h" />
     <ClInclude Include="RecvNewConnSocEvt.h" />
     <ClInclude Include="RecvPeerDataSocEvt.h" />
@@ -118,7 +119,9 @@
     <ClInclude Include="Select.h" />
     <ClInclude Include="SelectThread.h" />
     <ClInclude Include="SendDataHandler.h" />
+    <ClInclude Include="SendPeerDataSocEvt.h" />
     <ClInclude Include="SendThread.h" />
+    <ClInclude Include="SocketDataHandler.h" />
     <ClInclude Include="SocketDataMgr.h" />
     <ClInclude Include="SocketEvt.h" />
     <ClInclude Include="stdafx.h" />
@@ -147,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConnDisconnSocEvt.cpp" />
+    <ClCompile Include="ConnectCplSocEvt.cpp" />
     <ClCompile Include="LogMgr.cpp" />
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="GB2312Str.cpp" />
@@ -171,8 +175,11 @@
     <ClCompile Include="SafeLock.cpp" />
     <ClCompile Include="Select.cpp" />
     <ClCompile Include="SelectThread.cpp" />
+    <ClCompile Include="SendDataHandler.cpp" />
     <ClCompile Include="SendDataResultEvt.cpp" />
+    <ClCompile Include="SendPeerDataSocEvt.cpp" />
     <ClCompile Include="SendThread.cpp" />
+    <ClCompile Include="SocketDataHandler.cpp" />
     <ClCompile Include="SocketDataMgr.cpp" />
     <ClCompile Include="SocketEvt.cpp" />
     <ClCompile Include="SocketTool.cpp" />

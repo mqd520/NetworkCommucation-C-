@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "TcpClient.h"
+#include "Include/tc/Def1.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "Include/tc/ConnectSrvResultEvt.h"
-#include "MemoryTool.h"
+#include "LogMgr.h"
 
 namespace tc
 {
@@ -21,54 +21,71 @@ namespace tc
 
 	void TcpClient::Init()
 	{
-		//		if (socket == INVALID_SOCKET)
-		//		{
-		//			socket = m_socketAPI.CreateTcpSocket();
-		//			SOCKADDR_IN addr;
-		//			addr.sin_family = AF_INET;
-		//			addr.sin_port = htons(nSelfPort);
-		//#ifdef _UNICODE
-		//			string str = UTF8ToMultiByte(strSelfIP);
-		//			addr.sin_addr.S_un.S_addr = inet_addr(str.c_str());
-		//#else
-		//			addr.sin_addr.S_un.S_addr = inet_addr(strSelfIP);
-		//#endif // _UNICODE
-		//			m_socketAPI.SetNonBlock(socket);
-		//
-		//			CTcpCommuMgr::GetSelect()->AddSocket(socket, ESelectSocketType::Connect);
-		//		}
+
 	}
 
-	void TcpClient::Reconnect()
+	void TcpClient::ConnectServer()
 	{
-		//没有正在进行连接,没有连接上服务端的时候才能进行连接
 		if (!bIsConnecting && !bIsConnected)
 		{
 			bIsConnecting = true;
-			//m_socketAPI.Connect1(socket, strSelfIP, nSelfPort);
+			this->socket = SocketTool::CreateTcpSocket();
+			if (this->socket != INVALID_SOCKET)
+			{
+				bool b1 = SocketTool::Bind(this->socket, this->strIP, this->nPort);
+				if (b1)
+				{
+					SocketTool::SetNonBlock(this->socket);
+					TcpCommu::GetSocketDataMgr()->Add(this->socket, ESocketType::Connect);
+					TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connecting to %s:%d", this->strIP, this->nPort);
+					SocketTool::Connect(this->socket, this->strIP, this->nPort, false);
+				}
+			}
 		}
 	}
 
 	void TcpClient::Connect()
 	{
-		Init();
-		Reconnect();
+		Close(false);
+		ConnectServer();
 	}
 
-	bool TcpClient::Send(BYTE* pBuf, int len, bool asyncs/* = true*/, int* actualLen/* = NULL*/)
+	void TcpClient::Close(bool b /*= true*/)
 	{
-		return __super::SendData(socket, pBuf, len, asyncs, actualLen);
+		if (this->socket != INVALID_SOCKET)
+		{
+			if (bIsConnected)
+			{
+				TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(this->socket);
+				if (pConn)
+				{
+					pConn->Close(b);
+				}
+			}
+			else
+			{
+				TcpCommu::GetSocketDataMgr()->Remove(this->socket);
+			}
+		}
+
+		bIsConnecting = false;
+		bIsConnected = false;
+	}
+
+	void TcpClient::Send(BYTE* pBuf, int len)
+	{
+		return __super::SendData(socket, pBuf, len);
 	}
 
 	void TcpClient::OnRecvTcpEvent(TcpEvt* pEvent)
 	{
-		__super::OnRecvTcpEvent(pEvent);
+		//__super::OnRecvTcpEvent(pEvent);
 
-		if (pEvent->GetEvtType() == ETcpEvt::ConnectSrvResult)
-		{
-			bIsConnecting = false;	//连接已完成
-			ConnectSrvResultEvt* pConnCmpEvt = (ConnectSrvResultEvt*)pEvent;
-			bIsConnected = pConnCmpEvt->GetConnectResult();
-		}
+		//if (pEvent->GetEvtType() == ETcpEvt::ConnectSrvResult)
+		//{
+		//	bIsConnecting = false;	//连接已完成
+		//	ConnectSrvResultEvt* pConnCmpEvt = (ConnectSrvResultEvt*)pEvent;
+		//	bIsConnected = pConnCmpEvt->GetConnectResult();
+		//}
 	}
 }

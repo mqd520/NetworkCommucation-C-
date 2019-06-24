@@ -61,6 +61,22 @@ namespace tc
 		lock1.Unlock();
 	}
 
+	void SocketDataMgr::Remove(SOCKET socket, ESocketType type)
+	{
+		lock1.Lock();
+
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		{
+			if (it->socket == socket && it->type == type)
+			{
+				vecSocketData.erase(it);
+				break;
+			}
+		}
+
+		lock1.Unlock();
+	}
+
 	void SocketDataMgr::Clear()
 	{
 		lock1.Lock();

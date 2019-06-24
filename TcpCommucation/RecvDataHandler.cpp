@@ -3,6 +3,7 @@
 #include "RecvNewConnSocEvt.h"
 #include "ConnDisconnSocEvt.h"
 #include "RecvPeerDataSocEvt.h"
+#include "ConnectCplSocEvt.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvNewConnEvt.h"
 
@@ -15,51 +16,27 @@ namespace tc
 
 	RecvDataHandler::~RecvDataHandler()
 	{
-		Clear();
+
 	}
 
-	void RecvDataHandler::PushSocketEvt(SocketEvt* pEvt)
+	void RecvDataHandler::OnSocketEvtProcess(SocketEvt* pEvt)
 	{
-		quSocketEvts.push(pEvt);
-	}
-
-	bool RecvDataHandler::IsEmpty()
-	{
-		return quSocketEvts.empty();
-	}
-
-	void RecvDataHandler::Clear()
-	{
-		while (!quSocketEvts.empty())
+		ESocketEvtType type = pEvt->GetEvtType();
+		if (type == ESocketEvtType::RecvNewConn)
 		{
-			SocketEvt* pEvt = quSocketEvts.front();
-			quSocketEvts.pop();
-			delete pEvt;
+			OnRecvNewConn(pEvt);
 		}
-	}
-
-	void RecvDataHandler::ProcessSocketEvt()
-	{
-		while (!quSocketEvts.empty())
+		else if (type == ESocketEvtType::ConnDisconnect)
 		{
-			SocketEvt* pEvt = quSocketEvts.front();
-			quSocketEvts.pop();
-
-			ESocketEvtType type = pEvt->GetEvtType();
-			if (type == ESocketEvtType::RecvNewConn)	// 收到新连接
-			{
-				OnRecvNewConn(pEvt);
-			}
-			else if (type == ESocketEvtType::RecvPeerData)	// 收到对端数据
-			{
-				OnRecvPeerData(pEvt);
-			}
-			else if (type == ESocketEvtType::ConnDisconnect) // 连接断开
-			{
-				OnConnDisconnect(pEvt);
-			}
-
-			delete pEvt;
+			OnConnDisconnect(pEvt);
+		}
+		else if (type == ESocketEvtType::RecvPeerData)
+		{
+			OnRecvPeerData(pEvt);
+		}
+		else if (type == ESocketEvtType::ConnectCpl)
+		{
+			 
 		}
 	}
 
@@ -106,5 +83,11 @@ namespace tc
 		{
 			pConn->OnConnDisconnect(EDisconnReason::Peer);
 		}
+	}
+
+	void RecvDataHandler::OnConnectCpl(SocketEvt* pEvt)
+	{
+		ConnectCplSocEvt* pEvt1 = static_cast<ConnectCplSocEvt*>(pEvt);
+		TcpCommu::GetTcpConnectionMgr()->CreateTcpConnection(pEvt1->GetSocket(), NULL);
 	}
 }

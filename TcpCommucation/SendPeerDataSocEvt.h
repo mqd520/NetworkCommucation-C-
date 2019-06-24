@@ -7,7 +7,7 @@ namespace tc
 	class SendPeerDataSocEvt : public SocketEvt
 	{
 	public:
-		SendPeerDataSocEvt(SOCKET send, BYTE* pBuf, int len);
+		SendPeerDataSocEvt(SOCKET send, BYTE* buf, int len);
 		~SendPeerDataSocEvt();
 
 	private:

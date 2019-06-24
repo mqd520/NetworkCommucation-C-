@@ -1,12 +1,11 @@
 #include "stdafx.h"
 #include "TcpConnection.h"
-#include "MemoryTool.h"
-#include "Common.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvDataEvt.h"
 #include "Include/tc/ConnDisconnectEvt.h"
-#include "Include/tc/SendDataResultEvt.h"
 #include "Include/tc/SocketTool.h"
+#include "SendPeerDataSocEvt.h"
+#include "LogMgr.h"
 
 namespace tc
 {
@@ -33,15 +32,9 @@ namespace tc
 		return pTcpSrv;
 	}
 
-	void TcpConnection::SendData(BYTE* pBuf, int len, int* actualLen)
+	void TcpConnection::SendData(BYTE* pBuf, int len)
 	{
-		int len1 = 0;//实际发送长度
-		bool result = SocketTool::Send(sendrecvSocket, pBuf, len, &len1);
-
-		if (actualLen != NULL)
-		{
-			*actualLen = len1;
-		}
+		TcpCommu::GetSendHandler()->PushSocketEvt(new SendPeerDataSocEvt(sendrecvSocket, pBuf, len));
 	}
 
 	void TcpConnection::OnRecvPeerData(BYTE* pBuf, int len)
@@ -51,6 +44,8 @@ namespace tc
 
 	void TcpConnection::OnConnDisconnect(EDisconnReason reason, bool b /*= true*/)
 	{
+		TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Warn, "connection disconnect: ");
+
 		if (b)
 		{
 			TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(pTcpSrv, sendrecvSocket));

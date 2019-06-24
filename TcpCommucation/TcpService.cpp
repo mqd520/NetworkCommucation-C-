@@ -13,7 +13,7 @@ namespace tc
 		pParam1(NULL),
 		pParam2(NULL)
 	{
-		
+
 	}
 
 	TcpService::~TcpService()
@@ -43,9 +43,13 @@ namespace tc
 		TcpService::pParam2 = pParam2;
 	}
 
-	bool TcpService::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
+	void TcpService::SendData(SOCKET socket, BYTE* pBuf, int len)
 	{
-		return false;
+		TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+		if (pConn)
+		{
+			pConn->SendData(pBuf, len);
+		}
 	}
 
 	void TcpService::OnRecvTcpEvent(TcpEvt* pEvent)

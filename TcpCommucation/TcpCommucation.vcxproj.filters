@@ -25,23 +25,8 @@
     <Filter Include="06 Tcp通信管理">
       <UniqueIdentifier>{971cee1d-991d-45d3-a7c3-6b64ac59e86d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="06 Tcp通信管理\04 Tcp连接">
-      <UniqueIdentifier>{f6490646-483b-4fd3-bb32-12879705b7f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06 Tcp通信管理\05 Tcp服务">
-      <UniqueIdentifier>{5fb097eb-90ed-44ce-a91c-ed3dddcb115d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06 Tcp通信管理\06 Tcp客户端">
-      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06 Tcp通信管理\07 Tcp服务端">
-      <UniqueIdentifier>{bc7a4d26-2d09-44af-bd90-fdab95bddefe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="06 Tcp通信管理\01 线程处理">
       <UniqueIdentifier>{f396dfe6-e594-4801-bfe7-cd750aed8ca3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06 Tcp通信管理\03 Tcp事件">
-      <UniqueIdentifier>{ea75656b-4c43-4df2-851b-ebad2d01f7b8}</UniqueIdentifier>
     </Filter>
     <Filter Include="08 通信协议管理">
       <UniqueIdentifier>{e91db0c6-7780-42f1-b0c8-4d5e2b01204c}</UniqueIdentifier>
@@ -69,6 +54,21 @@
     </Filter>
     <Filter Include="06 Tcp通信管理\04 收发数据处理">
       <UniqueIdentifier>{1e8bc839-b619-40ad-9cd1-b5ad91c83e40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 Tcp通信管理\05 Tcp连接">
+      <UniqueIdentifier>{f6490646-483b-4fd3-bb32-12879705b7f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 Tcp通信管理\06 Tcp服务">
+      <UniqueIdentifier>{5fb097eb-90ed-44ce-a91c-ed3dddcb115d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 Tcp通信管理\07 Tcp客户端">
+      <UniqueIdentifier>{b6d57f77-0fef-486a-b392-39a58c22a023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 Tcp通信管理\08 Tcp服务端">
+      <UniqueIdentifier>{bc7a4d26-2d09-44af-bd90-fdab95bddefe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 Tcp通信管理\09 Tcp事件">
+      <UniqueIdentifier>{ea75656b-4c43-4df2-851b-ebad2d01f7b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -124,22 +124,22 @@
       <Filter>00 公共</Filter>
     </ClInclude>
     <ClInclude Include="TcpConnection.h">
-      <Filter>06 Tcp通信管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp通信管理\05 Tcp连接</Filter>
     </ClInclude>
     <ClInclude Include="TcpConnectionMgr.h">
-      <Filter>06 Tcp通信管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp通信管理\05 Tcp连接</Filter>
     </ClInclude>
     <ClInclude Include="TcpService.h">
-      <Filter>06 Tcp通信管理\05 Tcp服务</Filter>
+      <Filter>06 Tcp通信管理\06 Tcp服务</Filter>
     </ClInclude>
     <ClInclude Include="TcpServiceMgr.h">
-      <Filter>06 Tcp通信管理\05 Tcp服务</Filter>
+      <Filter>06 Tcp通信管理\06 Tcp服务</Filter>
     </ClInclude>
     <ClInclude Include="ThreadEntry.h">
       <Filter>03 线程</Filter>
     </ClInclude>
     <ClInclude Include="TcpClient.h">
-      <Filter>06 Tcp通信管理\06 Tcp客户端</Filter>
+      <Filter>06 Tcp通信管理\07 Tcp客户端</Filter>
     </ClInclude>
     <ClInclude Include="RecvThread.h">
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
@@ -157,7 +157,7 @@
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClInclude>
     <ClInclude Include="TcpEvtMgr.h">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="TimerAppMgr.h">
       <Filter>05 定时器管理</Filter>
@@ -196,25 +196,25 @@
       <Filter>00 公共</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\TcpServer.h">
-      <Filter>06 Tcp通信管理\07 Tcp服务端</Filter>
+      <Filter>06 Tcp通信管理\08 Tcp服务端</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\ConnDisconnectEvt.h">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\RecvDataEvt.h">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\RecvNewConnEvt.h">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\SendDataResultEvt.h">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\TcpEvt.h">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\ConnectSrvResultEvt.h">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\SocketTool.h">
       <Filter>04 Socket Api</Filter>
@@ -252,13 +252,22 @@
     <ClInclude Include="SendDataHandler.h">
       <Filter>06 Tcp通信管理\04 收发数据处理</Filter>
     </ClInclude>
+    <ClInclude Include="SendPeerDataSocEvt.h">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketDataHandler.h">
+      <Filter>06 Tcp通信管理\04 收发数据处理</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectCplSocEvt.h">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoryTool.cpp">
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="TcpClient.cpp">
-      <Filter>06 Tcp通信管理\06 Tcp客户端</Filter>
+      <Filter>06 Tcp通信管理\07 Tcp客户端</Filter>
     </ClCompile>
     <ClCompile Include="EncryptBuffer.cpp">
       <Filter>00 公共</Filter>
@@ -267,7 +276,7 @@
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="TcpServer.cpp">
-      <Filter>06 Tcp通信管理\07 Tcp服务端</Filter>
+      <Filter>06 Tcp通信管理\08 Tcp服务端</Filter>
     </ClCompile>
     <ClCompile Include="PacketBase.cpp">
       <Filter>08 通信协议管理</Filter>
@@ -309,16 +318,16 @@
       <Filter>00 公共</Filter>
     </ClCompile>
     <ClCompile Include="TcpConnection.cpp">
-      <Filter>06 Tcp通信管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp通信管理\05 Tcp连接</Filter>
     </ClCompile>
     <ClCompile Include="TcpConnectionMgr.cpp">
-      <Filter>06 Tcp通信管理\04 Tcp连接</Filter>
+      <Filter>06 Tcp通信管理\05 Tcp连接</Filter>
     </ClCompile>
     <ClCompile Include="TcpService.cpp">
-      <Filter>06 Tcp通信管理\05 Tcp服务</Filter>
+      <Filter>06 Tcp通信管理\06 Tcp服务</Filter>
     </ClCompile>
     <ClCompile Include="TcpServiceMgr.cpp">
-      <Filter>06 Tcp通信管理\05 Tcp服务</Filter>
+      <Filter>06 Tcp通信管理\06 Tcp服务</Filter>
     </ClCompile>
     <ClCompile Include="ThreadEntry.cpp">
       <Filter>03 线程</Filter>
@@ -339,13 +348,13 @@
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClCompile>
     <ClCompile Include="TcpEvt.cpp">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="TcpEvtMgr.cpp">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="SendDataResultEvt.cpp">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="TimerAppMgr.cpp">
       <Filter>05 定时器管理</Filter>
@@ -366,7 +375,7 @@
       <Filter>05 定时器管理\00 定时器处理</Filter>
     </ClCompile>
     <ClCompile Include="ConnectSrvResultEvt.cpp">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="NCTool.cpp">
       <Filter>00 公共</Filter>
@@ -387,13 +396,13 @@
       <Filter>07 流处理</Filter>
     </ClCompile>
     <ClCompile Include="RecvNewConnEvt.cpp">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="RecvDataEvt.cpp">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="ConnDisconnectEvt.cpp">
-      <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="SocketTool.cpp">
       <Filter>04 Socket Api</Filter>
@@ -422,6 +431,18 @@
     </ClCompile>
     <ClCompile Include="RecvDataHandler.cpp">
       <Filter>06 Tcp通信管理\04 收发数据处理</Filter>
+    </ClCompile>
+    <ClCompile Include="SendDataHandler.cpp">
+      <Filter>06 Tcp通信管理\04 收发数据处理</Filter>
+    </ClCompile>
+    <ClCompile Include="SendPeerDataSocEvt.cpp">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketDataHandler.cpp">
+      <Filter>06 Tcp通信管理\04 收发数据处理</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectCplSocEvt.cpp">
+      <Filter>06 Tcp通信管理\03 Socket事件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@
 #include "../../LogMgr.h"
 #include "../../SocketDataMgr.h"
 #include "../../RecvDataHandler.h"
+#include "../../SendDataHandler.h"
 
 namespace tc
 {
@@ -28,7 +29,8 @@ namespace tc
 		static TcpEvtThread tcpEvtThread;			// tcp事件线程
 
 		static Select select;						// select对象
-		static RecvDataHandler recvHandler;			// 收数据对象
+		static RecvDataHandler recvHandler;			// 收数据处理对象
+		static SendDataHandler sendHandler;			// 发数据处理对象
 		
 		static SocketDataMgr socketDataMgr;			// socket数据管理对象
 		static TcpConnectionMgr tcpConnMgr;			// tcp连接管理对象
@@ -117,5 +119,10 @@ namespace tc
 		// Method:    获取收数据处理对象
 		//************************************
 		static RecvDataHandler* GetRecvHandler();
+
+		//************************************
+		// Method:    获取发数据处理对象
+		//************************************
+		static SendDataHandler* GetSendHandler();
 	};
 }

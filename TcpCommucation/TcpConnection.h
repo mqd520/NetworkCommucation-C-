@@ -38,12 +38,10 @@ namespace tc
 
 		//************************************
 		// Method:    发送数据
-		// Returns:   是否成功
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
-		// Parameter: 实际发送字节长度
 		//************************************
-		void SendData(BYTE* pBuf, int len, int* actualLen = NULL);
+		void SendData(BYTE* pBuf, int len);
 
 		//************************************
 		// Method:    关闭tcp连接

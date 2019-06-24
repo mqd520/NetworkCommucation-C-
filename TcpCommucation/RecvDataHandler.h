@@ -1,20 +1,14 @@
 #pragma once
-#include <queue>
-#include "SocketEvt.h"
-
-using namespace std;
+#include "SocketDataHandler.h"
 
 namespace tc
 {
 	// 收数据处理器类
-	class RecvDataHandler
+	class RecvDataHandler : public SocketDataHandler
 	{
 	public:
 		RecvDataHandler();
 		~RecvDataHandler();
-
-	private:
-		queue<SocketEvt*> quSocketEvts;	// socket事件集合
 
 	private:
 		//************************************
@@ -32,25 +26,15 @@ namespace tc
 		//************************************
 		void OnConnDisconnect(SocketEvt* pEvt);
 
-	public:
 		//************************************
-		// Method:    添加一个socket事件
+		// Method:    连接服务端完成事件处理
 		//************************************
-		void PushSocketEvt(SocketEvt* pEvt);
+		void OnConnectCpl(SocketEvt* pEvt);
 
+	protected:
 		//************************************
-		// Method:    socket事件队列是否为空
+		// Method:    socket事件处理
 		//************************************
-		bool IsEmpty();
-
-		//************************************
-		// Method:    清除socket事件队列
-		//************************************
-		void Clear();
-
-		//************************************
-		// Method:    处理socket事件队列
-		//************************************
-		void ProcessSocketEvt();
+		virtual void OnSocketEvtProcess(SocketEvt* pEvt) override;
 	};
 }

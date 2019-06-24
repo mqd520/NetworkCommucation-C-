@@ -13,6 +13,7 @@ namespace tc
 
 	Select TcpCommu::select;
 	RecvDataHandler TcpCommu::recvHandler;
+	SendDataHandler TcpCommu::sendHandler;
 
 	SocketDataMgr TcpCommu::socketDataMgr;
 	TcpConnectionMgr TcpCommu::tcpConnMgr;
@@ -106,5 +107,10 @@ namespace tc
 	RecvDataHandler* TcpCommu::GetRecvHandler()
 	{
 		return &recvHandler;
+	}
+
+	SendDataHandler* TcpCommu::GetSendHandler()
+	{
+		return &sendHandler;
 	}
 }
