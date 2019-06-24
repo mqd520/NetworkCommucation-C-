@@ -1,15 +1,17 @@
 #include "stdafx.h"
 #include "Def.h"
 #include "Include/tc/TcpEvt.h"
+#include "Include/tc/TcpCommuMgr.h"
 
 namespace tc
 {
 	TcpEvt::TcpEvt(TcpService* pSrv, SOCKET sendrecv/* = NULL*/) :
 		pTcpSrv(pSrv),
 		socket(sendrecv),
-		evt(ETcpEvt::None)
+		evtType(ETcpEvt::None)
 	{
-
+		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(sendrecv);
+		socketId = data.socketId;
 	}
 
 	TcpEvt::~TcpEvt()
@@ -19,7 +21,7 @@ namespace tc
 
 	ETcpEvt TcpEvt::GetEvtType()
 	{
-		return evt;
+		return evtType;
 	}
 
 	TcpService* TcpEvt::GetTcpSrv()
@@ -27,8 +29,8 @@ namespace tc
 		return pTcpSrv;
 	}
 
-	SOCKET TcpEvt::GetSendRecvSocket()
+	int TcpEvt::GetSendRecvSocketId()
 	{
-		return socket;
+		return socketId;
 	}
 }

@@ -2,9 +2,9 @@
 #include "RecvDataHandler.h"
 #include "RecvNewConnSocEvt.h"
 #include "ConnDisconnSocEvt.h"
+#include "RecvPeerDataSocEvt.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvNewConnEvt.h"
-#include "TcpConnection.h"
 
 namespace tc
 {
@@ -72,6 +72,8 @@ namespace tc
 		{
 			for (vector<SOCKET>::iterator it = clients.begin(); it != clients.end(); it++)
 			{
+				TcpCommu::GetTcpConnectionMgr()->CreateTcpConnection(*it, pEvt1->GetServerSocket());
+
 				RecvNewConnEvt* pEvt2 = new RecvNewConnEvt(pSrv, *it);
 				TcpCommu::GetTcpEvtMgr()->PushTcpEvent(pEvt2);
 			}
@@ -88,13 +90,18 @@ namespace tc
 
 	void RecvDataHandler::OnRecvPeerData(SocketEvt* pEvt)
 	{
-
+		RecvPeerDataSocEvt* pEvt1 = static_cast<RecvPeerDataSocEvt*>(pEvt);
+		TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(pEvt1->GetSocket());
+		if (pConn)
+		{
+			pConn->OnRecvPeerData(pEvt1->GetBuf(), pEvt1->GetLen());
+		}
 	}
 
 	void RecvDataHandler::OnConnDisconnect(SocketEvt* pEvt)
 	{
 		ConnDisconnSocEvt* pEvt1 = static_cast<ConnDisconnSocEvt*>(pEvt);
-		CTcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(pEvt1->GetSocket());
+		TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(pEvt1->GetSocket());
 		if (pConn)
 		{
 			pConn->OnConnDisconnect(EDisconnReason::Peer);

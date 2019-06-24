@@ -12,6 +12,10 @@ namespace tc
 	// tcp服务基类
 	class TcpService
 	{
+	public:
+		TcpService(string ip = "", int port = 0);
+		virtual ~TcpService();
+
 	protected:
 		SOCKET socket;			// 关联的socket
 		string strIP;			// socket关联的服务端IP
@@ -45,9 +49,6 @@ namespace tc
 		void DispatchTcpEvt(TcpEvt* pEvent);
 
 	public:
-		TcpService(string ip = "", int port = 0);
-		~TcpService();
-
 		//************************************
 		// Method:    获取关联的socket
 		//************************************

@@ -9,7 +9,7 @@ namespace tc
 		TcpEvt(pSrv),
 		bSuccess(success)
 	{
-		evt = ETcpEvt::ConnectSrvResult;
+		evtType = ETcpEvt::ConnectSrvResult;
 	}
 
 	ConnectSrvResultEvt::~ConnectSrvResultEvt()

@@ -10,7 +10,8 @@ namespace tc
 		pBuf(pBuf),
 		nLen(len)
 	{
-		evt = ETcpEvt::RecvData;
+		evtType = ETcpEvt::RecvData;
+		strIp = SocketTool::GetPeerIpAndPort(recv, &nPort);
 	}
 
 	RecvDataEvt::~RecvDataEvt()
@@ -29,5 +30,15 @@ namespace tc
 	int RecvDataEvt::GetBufLen()
 	{
 		return nLen;
+	}
+
+	string RecvDataEvt::GetPeerIp()
+	{
+		return strIp;
+	}
+
+	int RecvDataEvt::GetPeerPort()
+	{
+		return nPort;
 	}
 }

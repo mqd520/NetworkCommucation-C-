@@ -132,9 +132,6 @@
     <ClInclude Include="TcpServiceMgr.h">
       <Filter>06 Tcp通信管理\05 Tcp服务</Filter>
     </ClInclude>
-    <ClInclude Include="ServerTcpConnection.h">
-      <Filter>06 Tcp通信管理\04 Tcp连接</Filter>
-    </ClInclude>
     <ClInclude Include="ThreadEntry.h">
       <Filter>03 线程</Filter>
     </ClInclude>
@@ -158,9 +155,6 @@
     </ClInclude>
     <ClInclude Include="TcpEvtMgr.h">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientTcpConnection.h">
-      <Filter>06 Tcp通信管理\04 Tcp连接</Filter>
     </ClInclude>
     <ClInclude Include="TimerAppMgr.h">
       <Filter>05 定时器管理</Filter>
@@ -320,9 +314,6 @@
     <ClCompile Include="TcpServiceMgr.cpp">
       <Filter>06 Tcp通信管理\05 Tcp服务</Filter>
     </ClCompile>
-    <ClCompile Include="ServerTcpConnection.cpp">
-      <Filter>06 Tcp通信管理\04 Tcp连接</Filter>
-    </ClCompile>
     <ClCompile Include="ThreadEntry.cpp">
       <Filter>03 线程</Filter>
     </ClCompile>
@@ -349,9 +340,6 @@
     </ClCompile>
     <ClCompile Include="SendDataResultEvt.cpp">
       <Filter>06 Tcp通信管理\03 Tcp事件</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientTcpConnection.cpp">
-      <Filter>06 Tcp通信管理\04 Tcp连接</Filter>
     </ClCompile>
     <ClCompile Include="TimerAppMgr.cpp">
       <Filter>05 定时器管理</Filter>

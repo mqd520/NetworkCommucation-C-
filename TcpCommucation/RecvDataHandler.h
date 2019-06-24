@@ -33,6 +33,9 @@ namespace tc
 		void OnConnDisconnect(SocketEvt* pEvt);
 
 	public:
+		//************************************
+		// Method:    添加一个socket事件
+		//************************************
 		void PushSocketEvt(SocketEvt* pEvt);
 
 		//************************************

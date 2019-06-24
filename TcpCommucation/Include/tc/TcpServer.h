@@ -12,6 +12,10 @@ namespace tc
 	// tcp服务端类
 	class TcpServer : public TcpService
 	{
+	public:
+		TcpServer(string ip = "", int port = 0);
+		virtual ~TcpServer();
+
 	protected:
 		bool bListening;				// 是否正在监听
 		vector<string> vecAllowIP;		// 允许的客户端IP
@@ -31,9 +35,6 @@ namespace tc
 		void OnRecvTcpEvent(TcpEvt* pEvent);
 
 	public:
-		TcpServer(string ip = "", int port = 0);
-		~TcpServer();
-
 		//************************************
 		// Method:    设置监听信息
 		//************************************
@@ -46,7 +47,6 @@ namespace tc
 
 		//************************************
 		// Method:    向对端发送数据
-		// Returns:   是否成功
 		// Parameter: socket
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
@@ -57,10 +57,10 @@ namespace tc
 
 		//************************************
 		// Method:    关闭指定客户端
-		// Parameter: client:	客户端SOCKET
+		// Parameter: clientId:	客户端SOCKET
 		// Parameter: b:	是否产生连接断开事件, 默认: false
 		//************************************
-		void CloseClient(SOCKET client, bool b = false);
+		void CloseClient(int clientId, bool b = false);
 
 		//************************************
 		// Method:    增加一个允许IP

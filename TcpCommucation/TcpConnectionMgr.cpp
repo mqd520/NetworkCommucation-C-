@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TcpConnectionMgr.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "Common.h"
+#include "TcpConnection.h"
 
 namespace tc
 {
@@ -15,12 +15,12 @@ namespace tc
 		Clear();
 	}
 
-	void TcpConnectionMgr::PushTcpConn(CTcpConnection* conn)
+	void TcpConnectionMgr::PushTcpConn(TcpConnection* conn)
 	{
 		vecTcpConn.push_back(conn);
 	}
 
-	CTcpConnection* TcpConnectionMgr::GetBySendRecvSocket(SOCKET sendrecv)
+	TcpConnection* TcpConnectionMgr::GetBySendRecvSocket(SOCKET sendrecv)
 	{
 		for (int i = 0; i < (int)vecTcpConn.size(); i++)
 		{
@@ -35,9 +35,9 @@ namespace tc
 
 	void TcpConnectionMgr::RemoveBySendRecvSocket(SOCKET socket)
 	{
-		for (vector<CTcpConnection*>::iterator it = vecTcpConn.begin(); it != vecTcpConn.end(); it++)
+		for (vector<TcpConnection*>::iterator it = vecTcpConn.begin(); it != vecTcpConn.end(); it++)
 		{
-			CTcpConnection* pConn = *it;
+			TcpConnection* pConn = *it;
 			if (pConn->GetSendRecvSocket() == socket)
 			{
 				vecTcpConn.erase(it);
@@ -49,14 +49,33 @@ namespace tc
 
 	void TcpConnectionMgr::Clear()
 	{
-		for (vector<CTcpConnection*>::iterator it = vecTcpConn.begin(); it != vecTcpConn.end();)
+		for (vector<TcpConnection*>::iterator it = vecTcpConn.begin(); it != vecTcpConn.end();)
 		{
-			CTcpConnection* pConn = *it;
+			TcpConnection* pConn = *it;
 			it = vecTcpConn.erase(it);
 			if (pConn)
 			{
 				delete pConn;
 			}
+		}
+	}
+
+	void TcpConnectionMgr::CreateTcpConnection(SOCKET sendrecv, SOCKET accept /*= NULL*/)
+	{
+		TcpService* pSrv = NULL;
+		if (accept != NULL)
+		{
+			pSrv = TcpCommu::GetTcpServiceMgr()->GetTcpSrvBySocket(accept);
+		}
+		else
+		{
+			pSrv = TcpCommu::GetTcpServiceMgr()->GetTcpSrvBySocket(sendrecv);
+		}
+
+		if (pSrv)
+		{
+			TcpConnection* pConn = new TcpConnection(pSrv, sendrecv);
+			vecTcpConn.push_back(pConn);
 		}
 	}
 

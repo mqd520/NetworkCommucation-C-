@@ -20,11 +20,11 @@ namespace tc
 
 	void Select::QuerySingal(vector<SocketInfoData>& vec)
 	{
-		//Sleep(1 * 1000);	// 调试时使用,无意义,可注释掉
+		//Sleep(1 * 1000);	// 调试时使用, 无意义, 可注释掉
 
 		CalcSocketGroup(vec);	// 对socket进行分组
 
-		if (vecGroupSocket.size() > 0)
+		if ((int)vecGroupSocket.size() > 0)
 		{
 			fd_set fsRead = { 0 };
 			fd_set fsExcept = { 0 };
@@ -98,10 +98,11 @@ namespace tc
 		int result = FD_ISSET(socketData.socket, &fs);
 		if (result > 0)
 		{
-			char ch[50] = { 0 };
-			sprintf_s(ch, "process socket readable singal: %d", socketData.socket);
-			OutputDebugStringA(ch);
-			OutputDebugStringA("\n");
+			// 调试时使用, 无意义
+			//char ch[50] = { 0 };
+			//sprintf_s(ch, "process socket readable singal: %d", socketData.socket);
+			//OutputDebugStringA(ch);
+			//OutputDebugStringA("\n");
 
 			if (socketData.type == ESocketType::Accept)
 			{

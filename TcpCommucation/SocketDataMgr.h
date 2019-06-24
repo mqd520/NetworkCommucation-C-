@@ -24,7 +24,7 @@ namespace tc
 		//************************************
 		// Method:    创建一个socket id
 		//************************************
-		int CreateSocketId();
+		int CreateSocketId(SOCKET socket);
 
 	public:
 		//************************************
@@ -60,6 +60,11 @@ namespace tc
 		// Method:    获取socket data
 		//************************************
 		SocketInfoData GetSocketData(SOCKET socket);
+
+		//************************************
+		// Method:    获取socket data
+		//************************************
+		SocketInfoData GetSocketData(int socketId);
 
 		//************************************
 		// Method:    获取指定socket的类型

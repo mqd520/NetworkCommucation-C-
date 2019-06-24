@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "TcpService.h"
-#include "Common.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "ServerTcpConnection.h"
 #include "Include/tc/RecvNewConnEvt.h"
 
 namespace tc
@@ -47,22 +45,6 @@ namespace tc
 
 	bool TcpService::SendData(SOCKET socket, BYTE* pBuf, int len, bool asyncs, int* actualLen)
 	{
-		// 获取指定socket的tcp连接对象
-		CTcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
-
-		if (pConn)
-		{
-			if (asyncs)	// 异步发送
-			{
-				pConn->SetAsyncSendData(pBuf, len, actualLen);
-				return true;
-			}
-			else //同步发送
-			{
-				pConn->SendData(pBuf, len, actualLen);
-			}
-		}
-
 		return false;
 	}
 

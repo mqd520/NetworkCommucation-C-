@@ -43,13 +43,18 @@ void NCTool::ReverseBuf(BYTE* pBuf, int len)
 	}
 }
 
-int NCTool::CreateRand(int max /*= 0*/)
+int NCTool::CreateRand(unsigned int min /*= 0*/, unsigned int max /*= 0*/)
 {
+	int result = 0;
 	srand((int)time(NULL));
-	int n = rand();
-	if (max > 0)
+	if (max > 0 && max > min)
 	{
-		n = n % max;
+		int mod = max - min + 1;
+		result = rand() % mod + min;
 	}
-	return n;
+	else
+	{
+		result = rand() + min;
+	}
+	return result;
 }

@@ -9,7 +9,7 @@ namespace tc
 	{
 	public:
 		TcpClient(string ip = "", int port = 0);
-		~TcpClient();
+		virtual ~TcpClient();
 
 	private:
 		bool bIsConnecting;		// 是否正在进行连接

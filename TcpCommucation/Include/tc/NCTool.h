@@ -35,9 +35,10 @@ namespace tc
 
 		//************************************
 		// Method:    创建一个随机数
-		// Parameter: max: 最大值, 0: 无最大值
+		// Parameter: min: 最小值
+		// Parameter: max: 最大值
 		//************************************
-		static int CreateRand(int max = 0);
+		static int CreateRand(unsigned int min = 0, unsigned int max = 0);
 
 	private:
 

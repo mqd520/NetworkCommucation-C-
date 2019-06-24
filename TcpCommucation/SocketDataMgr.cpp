@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SocketDataMgr.h"
-#include "Include/tc/NCTool.h"
 #include "Include/tc/SocketTool.h"
 
 namespace tc
@@ -15,9 +14,9 @@ namespace tc
 
 	}
 
-	int SocketDataMgr::CreateSocketId()
+	int SocketDataMgr::CreateSocketId(SOCKET socket)
 	{
-		return NCTool::CreateRand();
+		return ((int)(socket << 16)) | socket;
 	}
 
 	void SocketDataMgr::Add(SOCKET socket, ESocketType type)
@@ -36,7 +35,7 @@ namespace tc
 
 		if (!b)
 		{
-			int socketId = CreateSocketId();
+			int socketId = CreateSocketId(socket);
 			int peerPort = 0;
 			string peerIp = SocketTool::GetPeerIpAndPort(socket, &peerPort);
 
@@ -117,6 +116,25 @@ namespace tc
 		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
 		{
 			if (it->socket == socket)
+			{
+				data = *it;
+				break;
+			}
+		}
+
+		lock1.Unlock();
+
+		return data;
+	}
+
+	SocketInfoData SocketDataMgr::GetSocketData(int socketId)
+	{
+		lock1.Lock();
+
+		SocketInfoData data = { 0 };
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		{
+			if (it->socketId == socketId)
 			{
 				data = *it;
 				break;

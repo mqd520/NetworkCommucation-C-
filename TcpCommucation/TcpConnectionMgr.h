@@ -17,14 +17,14 @@ namespace tc
 		~TcpConnectionMgr();
 
 	private:
-		vector<CTcpConnection*> vecTcpConn;//tcp连接集合
+		vector<TcpConnection*> vecTcpConn;		// tcp连接集合
 		CThreadLock m_lock;
 
 	public:
 		//************************************
 		// Method:    增加一个tcp连接
 		//************************************
-		void PushTcpConn(CTcpConnection* conn);
+		void PushTcpConn(TcpConnection* conn);
 
 		//************************************
 		// Method:    移除指定收发数据的socket关联的tcp连接对象
@@ -37,12 +37,17 @@ namespace tc
 		// Parameter: 收(发)数据的socket
 		// Return:	  tcp连接对象
 		//************************************
-		CTcpConnection* GetBySendRecvSocket(SOCKET sendrecv);
+		TcpConnection* GetBySendRecvSocket(SOCKET sendrecv);
 
 		//************************************
 		// Method:    清除所有连接对象
 		//************************************
 		void Clear();
+
+		//************************************
+		// Method:    创建一个tcp连接对象
+		//************************************
+		void CreateTcpConnection(SOCKET socket, SOCKET accept = NULL);
 
 		//************************************
 		// Method:    获取连接总数

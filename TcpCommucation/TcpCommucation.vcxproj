@@ -82,7 +82,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClientTcpConnection.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConnDisconnSocEvt.h" />
     <ClInclude Include="RecvDataHandler.h" />
@@ -119,7 +118,6 @@
     <ClInclude Include="Select.h" />
     <ClInclude Include="SelectThread.h" />
     <ClInclude Include="SendThread.h" />
-    <ClInclude Include="ServerTcpConnection.h" />
     <ClInclude Include="SocketDataMgr.h" />
     <ClInclude Include="SocketEvt.h" />
     <ClInclude Include="stdafx.h" />
@@ -150,7 +148,6 @@
     <ClCompile Include="ConnDisconnSocEvt.cpp" />
     <ClCompile Include="LogMgr.cpp" />
     <ClCompile Include="MemoryStream.cpp" />
-    <ClCompile Include="ClientTcpConnection.cpp" />
     <ClCompile Include="GB2312Str.cpp" />
     <ClCompile Include="NetworkStreamRead.cpp" />
     <ClCompile Include="Common.cpp" />
@@ -175,7 +172,6 @@
     <ClCompile Include="SelectThread.cpp" />
     <ClCompile Include="SendDataResultEvt.cpp" />
     <ClCompile Include="SendThread.cpp" />
-    <ClCompile Include="ServerTcpConnection.cpp" />
     <ClCompile Include="SocketDataMgr.cpp" />
     <ClCompile Include="SocketEvt.cpp" />
     <ClCompile Include="SocketTool.cpp" />

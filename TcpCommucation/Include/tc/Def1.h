@@ -46,13 +46,13 @@ namespace tc
 	// pEvent	tcp事件对象
 	// pParam1	附加参数1
 	// pParam2	附加参数2
-	typedef void(*LPTcpEventCallback)(TcpEvt* pEvt, void* pParam1, void* pParam2);
+	using LPTcpEventCallback = void(*)(TcpEvt* pEvt, void* pParam1, void* pParam2);
 
 	// 日志回调函数指针
 	// type		日志类型: ETcpLogType
 	// log		日志内容
 	// pParam1	附加参数1
 	// pParam1	附加参数2
-	typedef void(*LPTcpLogCallback)(ETcpLogType type, string log, void* pParam1, void* pParam2);
+	using LPTcpLogCallback = void(*)(ETcpLogType type, string log, void* pParam1, void* pParam2);
 }
 

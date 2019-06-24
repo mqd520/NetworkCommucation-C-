@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "Include/tc/Def1.h"
 #include "Include/tc/TcpServer.h"
-#include "Common.h"
 #include "TcpConnectionMgr.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvNewConnEvt.h"
-#include "ServerTcpConnection.h"
 
 namespace tc
 {
@@ -129,9 +127,10 @@ namespace tc
 		return __super::SendData(socket, pBuf, len, asyncs, actualLen);
 	}
 
-	void TcpServer::CloseClient(SOCKET client, bool b /*= false*/)
+	void TcpServer::CloseClient(int clientId, bool b /*= false*/)
 	{
-		CTcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(client);
+		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
+		TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(data.socket);
 		if (pConn)
 		{
 			pConn->Close(b);
