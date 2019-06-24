@@ -138,9 +138,6 @@
     <ClInclude Include="ThreadEntry.h">
       <Filter>03 线程</Filter>
     </ClInclude>
-    <ClInclude Include="TcpClient.h">
-      <Filter>06 Tcp通信管理\07 Tcp客户端</Filter>
-    </ClInclude>
     <ClInclude Include="RecvThread.h">
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClInclude>
@@ -260,6 +257,9 @@
     </ClInclude>
     <ClInclude Include="ConnectCplSocEvt.h">
       <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\TcpClient.h">
+      <Filter>06 Tcp通信管理\07 Tcp客户端</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

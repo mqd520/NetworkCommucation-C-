@@ -1,6 +1,6 @@
 #pragma once
-#include "Include/tc/SocketTool.h"
-#include "TcpService.h"
+#include "SocketTool.h"
+#include "../../TcpService.h"
 
 namespace tc
 {
@@ -21,13 +21,6 @@ namespace tc
 		// Method:    初始化
 		//************************************
 		void Init();
-
-		//************************************
-		// Method:    设置连接信息
-		// Parameter: ip:	服务端IP
-		// Parameter: port:	服务端端口
-		//************************************
-		void SetConnectInfo(string ip, int port);
 
 		//************************************
 		// Method:    连接服务端
@@ -52,6 +45,13 @@ namespace tc
 		// Parameter: b:	是否产生连接关闭事件
 		//************************************
 		void Close(bool b = true);
+
+		//************************************
+		// Method:    设置连接信息
+		// Parameter: ip:	服务端IP
+		// Parameter: port:	服务端端口
+		//************************************
+		void SetConnectInfo(string ip, int port);
 
 		//************************************
 		// Method:    向对端发送数据

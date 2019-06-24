@@ -3,17 +3,17 @@
 #include "../../RecvThread.h"
 #include "../../SendThread.h"
 #include "../../TcpEvtThread.h"
-#include "../../LogThread.h"
 
 #include "../../Select.h"
+#include "../../RecvDataHandler.h"
+#include "../../SendDataHandler.h"
 
 #include "../../TcpConnectionMgr.h"
 #include "../../TcpServiceMgr.h"
 #include "../../TcpEvtMgr.h"
 #include "../../LogMgr.h"
 #include "../../SocketDataMgr.h"
-#include "../../RecvDataHandler.h"
-#include "../../SendDataHandler.h"
+
 
 namespace tc
 {

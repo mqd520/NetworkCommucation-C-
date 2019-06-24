@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "TcpClient.h"
+#include "Include/tc/TcpClient.h"
 #include "Include/tc/Def1.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "LogMgr.h"
@@ -70,6 +70,12 @@ namespace tc
 
 		bIsConnecting = false;
 		bIsConnected = false;
+	}
+
+	void TcpClient::SetConnectInfo(string ip, int port)
+	{
+		this->strIP = ip;
+		this->nPort = port;
 	}
 
 	void TcpClient::Send(BYTE* pBuf, int len)
