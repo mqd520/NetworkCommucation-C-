@@ -213,7 +213,10 @@ namespace tc
 
 	bool SocketTool::Send(SOCKET socket, BYTE* pBuf, int len, int* actuallyLen, bool b /*= true*/)
 	{
+		bool connected = false;
 		int ret = ::send(socket, (const char*)pBuf, len, 0);
+		int nError = WSAGetLastError();
+		int n = errno;
 
 		if (actuallyLen != NULL)
 		{
@@ -222,7 +225,7 @@ namespace tc
 
 		if (ret > 0)
 		{
-			return true;
+			connected = true;
 		}
 		else
 		{
@@ -236,8 +239,13 @@ namespace tc
 				}
 			}
 
-			return false;
+			if (nError == WSAEWOULDBLOCK || nError == WSAEINPROGRESS || n == EINTR)
+			{
+				connected = true;
+			}
 		}
+
+		return connected;
 	}
 
 	bool SocketTool::Connect(SOCKET socket, string ip, int port, bool b /*= true*/)
