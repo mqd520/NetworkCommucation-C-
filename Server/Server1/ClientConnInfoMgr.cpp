@@ -11,14 +11,14 @@ ClientConnInfoMgr::~ClientConnInfoMgr()
 
 }
 
-int ClientConnInfoMgr::Add(string ip, int port, int socket)
+int ClientConnInfoMgr::Add(string ip, int port, int clientId)
 {
 	int index = -1;
 
 	bool b = false;
 	for (vector<ClientConnInfo>::iterator it = vecClients.begin(); it != vecClients.end(); it++)
 	{
-		if (it->socket == socket)
+		if (it->clientId == clientId)
 		{
 			b = true;
 			break;
@@ -27,7 +27,7 @@ int ClientConnInfoMgr::Add(string ip, int port, int socket)
 
 	if (!b)
 	{
-		ClientConnInfo info = { ip, port, socket };
+		ClientConnInfo info = { ip, port, clientId };
 		vecClients.push_back(info);
 		index = vecClients.size() - 1;
 	}
@@ -35,11 +35,11 @@ int ClientConnInfoMgr::Add(string ip, int port, int socket)
 	return index;
 }
 
-void ClientConnInfoMgr::Remove(int socket)
+void ClientConnInfoMgr::Remove(int clientId)
 {
 	for (vector<ClientConnInfo>::iterator it = vecClients.begin(); it != vecClients.end(); it++)
 	{
-		if (it->socket == socket)
+		if (it->clientId == clientId)
 		{
 			vecClients.erase(it);
 			break;
@@ -108,13 +108,13 @@ ClientConnInfo ClientConnInfoMgr::GetInfo(string ip, int port)
 	return info;
 }
 
-ClientConnInfo ClientConnInfoMgr::GetInfoByNetId(int socket)
+ClientConnInfo ClientConnInfoMgr::GetInfoByClientId(int clientId)
 {
 	ClientConnInfo info = { "", 0, 0 };
 
 	for (vector<ClientConnInfo>::iterator it = vecClients.begin(); it != vecClients.end(); it++)
 	{
-		if (it->socket == socket)
+		if (it->clientId == clientId)
 		{
 			info = *it;
 			break;

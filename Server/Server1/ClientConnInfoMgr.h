@@ -17,9 +17,9 @@ private:
 	vector<ClientConnInfo> vecClients;	// 客户端连接信息集合
 
 public:
-	int Add(string ip, int port, int socket);
+	int Add(string ip, int port, int clientId);
 
-	void Remove(int socket);
+	void Remove(int clientId);
 
 	void Remove(string ip, int port);
 
@@ -31,7 +31,7 @@ public:
 
 	ClientConnInfo GetInfo(string ip, int port);
 
-	ClientConnInfo GetInfoByNetId(int socket);
+	ClientConnInfo GetInfoByClientId(int clientId);
 
 	vector<ClientConnInfo> GetAll();
 };

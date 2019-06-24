@@ -10,6 +10,7 @@
 #include "ExceptionHandler.h"
 
 #include "tc/TcpCommuMgr.h"
+#include "tc/NCTool.h"
 using namespace tc;
 
 
@@ -67,6 +68,7 @@ BOOL CServer1App::InitInstance()
 	ExceptionHandler::RegExceptionCallback(OnException);
 
 	srv1.Init();
+
 
 	// 创建 shell 管理器，以防对话框包含
 	// 任何 shell 树视图控件或 shell 列表视图控件。

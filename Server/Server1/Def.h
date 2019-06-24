@@ -5,7 +5,7 @@
 using namespace std;
 
 // 日志类型
-enum ELogType
+enum class ELogType : int
 {
 	Info,	// 信息
 	Debug,	// 调试
@@ -20,6 +20,6 @@ typedef struct tagClientConnInfo
 {
 	string ip;			// ip
 	int port;			// 端口
-	int socket;			// 
+	int clientId;		// client id
 }ClientConnInfo;
 

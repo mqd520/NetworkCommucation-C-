@@ -33,6 +33,10 @@ protected:
 protected:
 	afx_msg LRESULT OnRecvNewClient(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnClientDisconnect(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnLog(WPARAM wParam, LPARAM lParam);
+
+protected:
+	void ShowLog(CString log);
 
 protected:
 	// ¶Ë¿Ú
@@ -44,4 +48,7 @@ protected:
 	CListCtrl m_lcClients;
 public:
 	afx_msg void OnBnClickedButton2();
+protected:
+	// ÈÕÖ¾
+	CEdit m_edLog;
 };

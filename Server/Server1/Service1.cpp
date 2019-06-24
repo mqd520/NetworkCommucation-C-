@@ -6,6 +6,7 @@
 #include "tc/TcpEvt.h"
 #include "tc/RecvNewConnEvt.h"
 #include "tc/ConnDisconnectEvt.h"
+#include "tc/RecvDataEvt.h"
 
 using namespace tc;
 
@@ -21,33 +22,52 @@ void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
 	{
 		RecvNewConnEvt* pEvt1 = (RecvNewConnEvt*)pEvt;
 
-		char ch[50] = { 0 };
-		sprintf_s(ch, "recv new conn %s:%d", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
-
+		char ch[100] = { 0 };
+		sprintf_s(ch, "recv new conn %s:%d, socketId: %d", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort(), pEvt1->GetSendRecvSocketId());
 		//OutputDebugStringA(ch);
 		//OutputDebugStringA("\n");
 
 		theApp.GetLogSrv()->Add(ch);
 
 		ClientConnInfoMgr* mgr = theApp.GetSrv1()->GetClientConnInfoMgr();
-		int id = mgr->Add(pEvt1->GetClientIP(), pEvt1->GetClientPort(), pEvt1->GetSendRecvSocket());
-		::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_RECVNEWCLIENT, id, NULL);
+		int id = mgr->Add(pEvt1->GetClientIP(), pEvt1->GetClientPort(), pEvt1->GetSendRecvSocketId());
+		PostMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_RECVNEWCLIENT, id, NULL);
+		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_LOGINFO, (WPARAM)ch, NULL);
 	}
 	else if (pEvt->GetEvtType() == ETcpEvt::RecvData)
 	{
-		SOCKET socket = pEvt->GetSendRecvSocket();
+		RecvDataEvt* pEvt1 = static_cast<RecvDataEvt*>(pEvt);
+
+		string strBuf = "";
+		BYTE* pBuf1 = pEvt1->GetRecvBuf();
+		for (int i = 0; i < pEvt1->GetBufLen(); i++)
+		{
+			char ch[10] = { 0 };
+			sprintf_s(ch, "%02X", pBuf1[i]);
+			strBuf = strBuf + ch + " ";
+		}
+		char ch[2048] = { 0 };
+		sprintf_s(ch, "recv data from %s:%d, len: %d, buf: %s", pEvt1->GetPeerIp().c_str(), pEvt1->GetPeerPort(), pEvt1->GetBufLen(), strBuf.c_str());
+		//OutputDebugStringA(ch);
+		//OutputDebugStringA("\n");
+
+		theApp.GetLogSrv()->Add(ch);
+
+		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_LOGINFO, (WPARAM)ch, NULL);
 	}
 	else if (pEvt->GetEvtType() == ETcpEvt::ConnDisconnect)
 	{
 		ConnDisconnectEvt* pEvt1 = static_cast<ConnDisconnectEvt*>(pEvt);
+
 		char ch[100] = { 0 };
-		sprintf_s(ch, "connection disconn %s:%d, socket: %d", pEvt1->GetPeerIp().c_str(), pEvt1->GetPeerPort(), pEvt1->GetSendRecvSocket());
-		OutputDebugStringA(ch);
-		OutputDebugStringA("\n");
+		sprintf_s(ch, "connection disconn %s:%d, socketId: %d", pEvt1->GetPeerIp().c_str(), pEvt1->GetPeerPort(), pEvt1->GetSendRecvSocketId());
+		//OutputDebugStringA(ch);
+		//OutputDebugStringA("\n");
 
 		ClientConnInfoMgr* mgr = theApp.GetSrv1()->GetClientConnInfoMgr();
-		mgr->Remove(pEvt->GetSendRecvSocket());
-		::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_CLIENTDISCONN, NULL, NULL);
+		mgr->Remove(pEvt->GetSendRecvSocketId());
+		PostMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_CLIENTDISCONN, NULL, NULL);
+		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_LOGINFO, (WPARAM)ch, NULL);
 	}
 }
 
