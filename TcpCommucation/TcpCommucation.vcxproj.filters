@@ -67,6 +67,9 @@
     <Filter Include="06 Tcp通信管理\03 Socket事件">
       <UniqueIdentifier>{d7c915fc-b9e1-4beb-ad3a-e2e1fbf74a7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06 Tcp通信管理\04 收发数据处理">
+      <UniqueIdentifier>{1e8bc839-b619-40ad-9cd1-b5ad91c83e40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryTool.h">
@@ -237,14 +240,17 @@
     <ClInclude Include="SocketEvt.h">
       <Filter>06 Tcp通信管理\03 Socket事件</Filter>
     </ClInclude>
-    <ClInclude Include="RecvDataHandler.h">
-      <Filter>06 Tcp通信管理</Filter>
-    </ClInclude>
     <ClInclude Include="RecvPeerDataSocEvt.h">
       <Filter>06 Tcp通信管理\03 Socket事件</Filter>
     </ClInclude>
     <ClInclude Include="ConnDisconnSocEvt.h">
       <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClInclude>
+    <ClInclude Include="RecvDataHandler.h">
+      <Filter>06 Tcp通信管理\04 收发数据处理</Filter>
+    </ClInclude>
+    <ClInclude Include="SendDataHandler.h">
+      <Filter>06 Tcp通信管理\04 收发数据处理</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -408,14 +414,14 @@
     <ClCompile Include="SocketEvt.cpp">
       <Filter>06 Tcp通信管理\03 Socket事件</Filter>
     </ClCompile>
-    <ClCompile Include="RecvDataHandler.cpp">
-      <Filter>06 Tcp通信管理</Filter>
-    </ClCompile>
     <ClCompile Include="RecvPeerDataSocEvt.cpp">
       <Filter>06 Tcp通信管理\03 Socket事件</Filter>
     </ClCompile>
     <ClCompile Include="ConnDisconnSocEvt.cpp">
       <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClCompile>
+    <ClCompile Include="RecvDataHandler.cpp">
+      <Filter>06 Tcp通信管理\04 收发数据处理</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

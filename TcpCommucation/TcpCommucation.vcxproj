@@ -117,6 +117,7 @@
     <ClInclude Include="SafeLock.h" />
     <ClInclude Include="Select.h" />
     <ClInclude Include="SelectThread.h" />
+    <ClInclude Include="SendDataHandler.h" />
     <ClInclude Include="SendThread.h" />
     <ClInclude Include="SocketDataMgr.h" />
     <ClInclude Include="SocketEvt.h" />
