@@ -11,7 +11,7 @@ namespace tc
 		nLen(len),
 		nActualLen(actualLen)
 	{
-		evtType = ETcpEvt::SendDataResult;
+		evtType = ETcpEvtType::SendDataResult;
 	}
 
 	SendDataResultEvt::~SendDataResultEvt()

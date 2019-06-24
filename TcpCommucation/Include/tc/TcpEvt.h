@@ -12,7 +12,7 @@ namespace tc
 	protected:
 		TcpService* pTcpSrv;	// tcp服务对象
 		SOCKET socket;			// 关联的用于发送(接收)数据的socket
-		ETcpEvt evtType;		// 事件类型
+		ETcpEvtType evtType;		// 事件类型
 		int socketId;			// socket id
 
 	public:
@@ -27,7 +27,7 @@ namespace tc
 		//************************************
 		// Method:    获取事件类型
 		//************************************
-		ETcpEvt GetEvtType();
+		ETcpEvtType GetEvtType();
 
 		//************************************
 		// Method:    获取tcp服务对象

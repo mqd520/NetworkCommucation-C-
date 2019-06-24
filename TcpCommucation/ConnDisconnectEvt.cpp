@@ -10,7 +10,7 @@ namespace tc
 	ConnDisconnectEvt::ConnDisconnectEvt(TcpService* pSrv, SOCKET sendrecv/* = NULL*/)
 		:TcpEvt(pSrv, sendrecv)
 	{
-		evtType = ETcpEvt::ConnDisconnect;
+		evtType = ETcpEvtType::ConnDisconnect;
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(sendrecv);
 		strIP = data.peerIp;
 		nPort = data.peerPort;

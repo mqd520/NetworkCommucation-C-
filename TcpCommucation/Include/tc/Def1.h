@@ -7,7 +7,7 @@ using namespace std;
 namespace tc
 {
 	// tcp事件类型
-	enum class ETcpEvt : int
+	enum class ETcpEvtType : int
 	{
 		RecvNewConn,		// 收到新连接
 		RecvData,			// 收到对端数据

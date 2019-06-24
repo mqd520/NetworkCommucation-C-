@@ -10,7 +10,7 @@ namespace tc
 	RecvNewConnEvt::RecvNewConnEvt(TcpService* pSrv, SOCKET client) :
 		TcpEvt(pSrv, client)
 	{
-		evtType = ETcpEvt::RecvNewConn;
+		evtType = ETcpEvtType::RecvNewConn;
 		strClientIP = SocketTool::GetPeerIpAndPort(client, &nClientPort);
 	}
 

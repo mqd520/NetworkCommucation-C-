@@ -8,7 +8,7 @@ namespace tc
 	TcpEvt::TcpEvt(TcpService* pSrv, SOCKET sendrecv/* = NULL*/) :
 		pTcpSrv(pSrv),
 		socket(sendrecv),
-		evtType(ETcpEvt::None)
+		evtType(ETcpEvtType::None)
 	{
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(sendrecv);
 		socketId = data.socketId;
@@ -19,7 +19,7 @@ namespace tc
 
 	}
 
-	ETcpEvt TcpEvt::GetEvtType()
+	ETcpEvtType TcpEvt::GetEvtType()
 	{
 		return evtType;
 	}
