@@ -21,7 +21,7 @@ namespace tc
 
 	void Select::QuerySingal(vector<SocketInfoData>& vec)
 	{
-		//Sleep(1 * 1000);	// 调试时使用, 无意义, 可注释掉
+		Sleep(3 * 1000);	// 调试时使用, 无意义, 可注释掉
 
 		CalcSocketGroup(vec);	// 对socket进行分组
 

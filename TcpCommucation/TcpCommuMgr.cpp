@@ -22,9 +22,12 @@ namespace tc
 	LogMgr TcpCommu::logMgr;
 
 
+	void OnSocketToolError(string err, void* lpParam);
+
 	void TcpCommu::Init()
 	{
 		SocketTool::Init();
+		SocketTool::RegErrorCallback(OnSocketToolError, NULL);
 
 		GetSelectThread()->Run();		// 启动select线程
 		GetRecvThread()->Run();			// 启动收数据线程
@@ -112,5 +115,10 @@ namespace tc
 	SendDataHandler* TcpCommu::GetSendHandler()
 	{
 		return &sendHandler;
+	}
+
+	void OnSocketToolError(string err, void* lpParam)
+	{
+		TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Err, "%s", err.c_str());
 	}
 }
