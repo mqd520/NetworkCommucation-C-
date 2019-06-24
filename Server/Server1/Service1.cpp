@@ -54,6 +54,19 @@ void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
 		theApp.GetLogSrv()->Add(ch);
 
 		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_LOGINFO, (WPARAM)ch, NULL);
+
+		string response = "";
+		response += "HTTP/1.1 200 OK\r\n";
+		response += "Content-Type: text/html\r\n";
+		response += "Server: Microsoft-IIS/7.5\r\n";
+		response += "X-Powered-By: ASP.NET\r\n";
+		response += "Date: Mon, 24 Jun 2019 15:27:59 GMT\r\n";
+		response += "Content-Length: 2\r\n";
+		response += "\r\n";
+
+		response += "OK";
+
+		theApp.GetSrv1()->GetMainTcpSrv()->Send(pEvt1->GetSendRecvSocketId(), (BYTE*)response.c_str(), response.size());
 	}
 	else if (pEvt->GetEvtType() == ETcpEvt::ConnDisconnect)
 	{
