@@ -11,7 +11,8 @@ namespace tc
 		nPort(port),
 		lpCallback(NULL),
 		pParam1(NULL),
-		pParam2(NULL)
+		pParam2(NULL),
+		tcpSrvType(ETcpSrvType::None)
 	{
 
 	}
@@ -19,6 +20,11 @@ namespace tc
 	TcpService::~TcpService()
 	{
 
+	}
+
+	ETcpSrvType TcpService::GetTcpSrvType()
+	{
+		return tcpSrvType;
 	}
 
 	SOCKET TcpService::GetSocket()

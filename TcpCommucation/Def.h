@@ -43,8 +43,17 @@ namespace tc
 		ConnDisconnect,		// 连接被断开
 		SendPeerData,		// 发送对端数据
 		ConnectCpl,			// 连接服务端完成
-		
+
 		None				// 无
+	};
+
+	// tcp srv 类型
+	enum class ETcpSrvType : int
+	{
+		Server,		// 服务端
+		Client,		// 客户端
+
+		None		// 无
 	};
 
 	// 网络地址

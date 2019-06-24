@@ -5,11 +5,11 @@
 
 namespace tc
 {
-	ConnectSrvResultEvt::ConnectSrvResultEvt(TcpService* pSrv, bool success) :
-		TcpEvt(pSrv),
+	ConnectSrvResultEvt::ConnectSrvResultEvt(TcpService* pSrv, SOCKET socket, bool success) :
+		TcpEvt(pSrv, socket),
 		bSuccess(success)
 	{
-		evtType = ETcpEvtType::ConnectSrvResult;
+		this->evtType = ETcpEvtType::ConnectSrvResult;
 	}
 
 	ConnectSrvResultEvt::~ConnectSrvResultEvt()

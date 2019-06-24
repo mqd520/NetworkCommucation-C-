@@ -9,12 +9,6 @@ namespace tc
 	// tcp服务事件基类
 	class TcpEvt
 	{
-	protected:
-		TcpService* pTcpSrv;	// tcp服务对象
-		SOCKET socket;			// 关联的用于发送(接收)数据的socket
-		ETcpEvtType evtType;		// 事件类型
-		int socketId;			// socket id
-
 	public:
 		//************************************
 		// Method:    构造函数
@@ -24,6 +18,15 @@ namespace tc
 		TcpEvt(TcpService* pSrv, SOCKET sendrecv = NULL);
 		virtual ~TcpEvt();
 
+	protected:
+		TcpService* pTcpSrv;	// tcp服务对象
+		SOCKET socket;			// 关联的用于发送(接收)数据的socket
+		ETcpEvtType evtType;	// 事件类型
+		int socketId;			// socket id
+		string strPeerIp;		// peer ip
+		int nPeerPort;			// peer port
+
+	public:
 		//************************************
 		// Method:    获取事件类型
 		//************************************
@@ -38,5 +41,15 @@ namespace tc
 		// Method:    获取用于发送(接收)数据的socket id
 		//************************************
 		virtual int GetSendRecvSocketId();
+
+		//************************************
+		// Method:    获取对端ip
+		//************************************
+		virtual string GetPeerIp();
+
+		//************************************
+		// Method:    获取对端port
+		//************************************
+		virtual int GetPeerPort();
 	};
 }

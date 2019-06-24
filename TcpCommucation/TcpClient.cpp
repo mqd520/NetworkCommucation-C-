@@ -2,6 +2,8 @@
 #include "Include/tc/TcpClient.h"
 #include "Include/tc/Def1.h"
 #include "Include/tc/TcpCommuMgr.h"
+#include "Include/tc/TcpEvt.h"
+#include "Include/tc/ConnectSrvResultEvt.h"
 #include "LogMgr.h"
 
 namespace tc
@@ -11,7 +13,7 @@ namespace tc
 		bIsConnecting(false),
 		bIsConnected(false)
 	{
-
+		this->tcpSrvType = ETcpSrvType::Client;
 	}
 
 	TcpClient::~TcpClient()
@@ -83,15 +85,24 @@ namespace tc
 		return __super::SendData(socket, pBuf, len);
 	}
 
-	void TcpClient::OnRecvTcpEvent(TcpEvt* pEvent)
+	void TcpClient::OnRecvTcpEvent(TcpEvt* pEvt)
 	{
-		//__super::OnRecvTcpEvent(pEvent);
+		if (pEvt->GetEvtType() == ETcpEvtType::ConnectSrvResult)
+		{
+			bIsConnecting = false;
+			ConnectSrvResultEvt* pEvt1 = (ConnectSrvResultEvt*)pEvt;
+			bIsConnected = pEvt1->GetConnectResult();
 
-		//if (pEvent->GetEvtType() == ETcpEvt::ConnectSrvResult)
-		//{
-		//	bIsConnecting = false;	//连接已完成
-		//	ConnectSrvResultEvt* pConnCmpEvt = (ConnectSrvResultEvt*)pEvent;
-		//	bIsConnected = pConnCmpEvt->GetConnectResult();
-		//}
+			if (bIsConnected)
+			{
+				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connect to %s:%d success", this->strIP, this->nPort);
+			}
+			else
+			{
+				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Err, "connect to %s:%d fail", this->strIP, this->nPort);
+			}
+		}
+
+		__super::OnRecvTcpEvent(pEvt);
 	}
 }

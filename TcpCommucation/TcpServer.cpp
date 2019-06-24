@@ -11,7 +11,7 @@ namespace tc
 		TcpService(ip, port),
 		bListening(false)
 	{
-
+		this->tcpSrvType = ETcpSrvType::Server;
 	}
 
 	TcpServer::~TcpServer()

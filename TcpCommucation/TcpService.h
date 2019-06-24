@@ -23,6 +23,7 @@ namespace tc
 		LPTcpEventCallback lpCallback;	// tcp事件回调函数指针
 		void* pParam1;					// 事件附加参数1
 		void* pParam2;					// 事件附加参数2
+		ETcpSrvType tcpSrvType;			// tcp srv type
 
 	protected:
 		friend class TcpEvtMgr;
@@ -46,6 +47,11 @@ namespace tc
 		void DispatchTcpEvt(TcpEvt* pEvent);
 
 	public:
+		//************************************
+		// Method:    获取tcp srv type
+		//************************************
+		ETcpSrvType GetTcpSrvType();
+
 		//************************************
 		// Method:    获取关联的socket
 		//************************************

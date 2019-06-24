@@ -12,6 +12,11 @@ namespace tc
 	{
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(sendrecv);
 		socketId = data.socketId;
+		if (pSrv->GetTcpSrvType() == ETcpSrvType::Client)
+		{
+			strPeerIp = pSrv->GetIP();
+			nPeerPort = pSrv->GetPort();
+		}
 	}
 
 	TcpEvt::~TcpEvt()
@@ -32,5 +37,15 @@ namespace tc
 	int TcpEvt::GetSendRecvSocketId()
 	{
 		return socketId;
+	}
+
+	string TcpEvt::GetPeerIp()
+	{
+		return strPeerIp;
+	}
+
+	int TcpEvt::GetPeerPort()
+	{
+		return nPeerPort;
 	}
 }
