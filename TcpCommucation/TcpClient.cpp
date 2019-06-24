@@ -10,6 +10,7 @@ namespace tc
 {
 	TcpClient::TcpClient(string ip /*= ""*/, int port /*= 0*/) :
 		TcpService(ip, port),
+		bInited(false),
 		bIsConnecting(false),
 		bIsConnected(false)
 	{
@@ -23,7 +24,11 @@ namespace tc
 
 	void TcpClient::Init()
 	{
-
+		if (!bInited)
+		{
+			bInited = true;
+			TcpCommu::GetTcpServiceMgr()->PushTcpService(this);
+		}
 	}
 
 	void TcpClient::ConnectServer()
@@ -34,20 +39,17 @@ namespace tc
 			this->socket = SocketTool::CreateTcpSocket();
 			if (this->socket != INVALID_SOCKET)
 			{
-				bool b1 = SocketTool::Bind(this->socket, this->strIP, this->nPort);
-				if (b1)
-				{
-					SocketTool::SetNonBlock(this->socket);
-					TcpCommu::GetSocketDataMgr()->Add(this->socket, ESocketType::Connect);
-					TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connecting to %s:%d", this->strIP, this->nPort);
-					SocketTool::Connect(this->socket, this->strIP, this->nPort, false);
-				}
+				SocketTool::SetNonBlock(this->socket);
+				TcpCommu::GetSocketDataMgr()->Add(this->socket, ESocketType::Connect);
+				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connecting to %s:%d", this->strIP.c_str(), this->nPort);
+				SocketTool::Connect(this->socket, this->strIP, this->nPort, false);
 			}
 		}
 	}
 
 	void TcpClient::Connect()
 	{
+		Init();
 		Close(false);
 		ConnectServer();
 	}
@@ -95,11 +97,11 @@ namespace tc
 
 			if (bIsConnected)
 			{
-				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connect to %s:%d success", this->strIP, this->nPort);
+				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connect to %s:%d success", this->strIP.c_str(), this->nPort);
 			}
 			else
 			{
-				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Err, "connect to %s:%d fail", this->strIP, this->nPort);
+				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Err, "connect to %s:%d fail", this->strIP.c_str(), this->nPort);
 			}
 		}
 

@@ -6,6 +6,7 @@
 #include "ConnectCplSocEvt.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvNewConnEvt.h"
+#include "Include/tc/ConnectSrvResultEvt.h"
 
 namespace tc
 {
@@ -36,7 +37,7 @@ namespace tc
 		}
 		else if (type == ESocketEvtType::ConnectCpl)
 		{
-			 
+			OnConnectCpl(pEvt);
 		}
 	}
 
@@ -88,6 +89,16 @@ namespace tc
 	void RecvDataHandler::OnConnectCpl(SocketEvt* pEvt)
 	{
 		ConnectCplSocEvt* pEvt1 = static_cast<ConnectCplSocEvt*>(pEvt);
-		TcpCommu::GetTcpConnectionMgr()->CreateTcpConnection(pEvt1->GetSocket(), NULL);
+		if (pEvt1->GetResult())
+		{
+			TcpCommu::GetTcpConnectionMgr()->CreateTcpConnection(pEvt1->GetSocket(), NULL);
+		}
+
+		TcpService* pTcpSrv = TcpCommu::GetTcpServiceMgr()->GetTcpSrvBySocket(pEvt1->GetSocket());
+		if (pTcpSrv)
+		{
+			ConnectSrvResultEvt* pEvt2 = new ConnectSrvResultEvt(pTcpSrv, pEvt1->GetSocket(), pEvt1->GetResult());
+			TcpCommu::GetTcpEvtMgr()->PushTcpEvent(pEvt2);
+		}
 	}
 }

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SocketDataMgr.h"
 #include "Include/tc/SocketTool.h"
+#include "TcpService.h"
+#include "Include/tc/TcpCommuMgr.h"
 
 namespace tc
 {
@@ -37,7 +39,24 @@ namespace tc
 		{
 			int socketId = CreateSocketId(socket);
 			int peerPort = 0;
-			string peerIp = SocketTool::GetPeerIpAndPort(socket, &peerPort);
+			string peerIp = "";
+
+			if (type == ESocketType::SendRecvData)
+			{
+				TcpService* pTcpSrv = TcpCommu::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+				if (pTcpSrv)
+				{
+					if (pTcpSrv->GetTcpSrvType() == ETcpSrvType::Client)
+					{
+						peerIp = pTcpSrv->GetIP();
+						peerPort = pTcpSrv->GetPort();
+					}
+					else if (pTcpSrv->GetTcpSrvType() == ETcpSrvType::Server)
+					{
+						peerIp = SocketTool::GetPeerIpAndPort(socket, &peerPort);
+					}
+				}
+			}
 
 			vecSocketData.push_back({ socket, type, peerIp, peerPort, "", 0, socketId });
 		}
@@ -45,36 +64,46 @@ namespace tc
 		lock1.Unlock();
 	}
 
-	void SocketDataMgr::Remove(SOCKET socket)
+	SocketInfoData SocketDataMgr::Remove(SOCKET socket)
 	{
+		SocketInfoData data = { 0 };
+
 		lock1.Lock();
 
 		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
 		{
 			if (it->socket == socket)
 			{
+				data = *it;
 				vecSocketData.erase(it);
 				break;
 			}
 		}
 
 		lock1.Unlock();
+
+		return data;
 	}
 
-	void SocketDataMgr::Remove(SOCKET socket, ESocketType type)
+	SocketInfoData SocketDataMgr::Remove(SOCKET socket, ESocketType type)
 	{
+		SocketInfoData data = { 0 };
+
 		lock1.Lock();
 
 		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
 		{
 			if (it->socket == socket && it->type == type)
 			{
+				data = *it;
 				vecSocketData.erase(it);
 				break;
 			}
 		}
 
 		lock1.Unlock();
+
+		return data;
 	}
 
 	void SocketDataMgr::Clear()

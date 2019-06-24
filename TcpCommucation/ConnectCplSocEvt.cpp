@@ -7,7 +7,7 @@ namespace tc
 		socket(socket),
 		success(success)
 	{
-
+		this->evtType = ESocketEvtType::ConnectCpl;
 	}
 
 	ConnectCplSocEvt::~ConnectCplSocEvt()

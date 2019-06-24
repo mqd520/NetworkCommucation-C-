@@ -21,13 +21,14 @@ namespace tc
 
 	void Select::QuerySingal(vector<SocketInfoData>& vec)
 	{
-		Sleep(3 * 1000);	// 调试时使用, 无意义, 可注释掉
+		//Sleep(3 * 1000);	// 调试时使用, 无意义, 可注释掉
 
 		CalcSocketGroup(vec);	// 对socket进行分组
 
 		if ((int)vecGroupSocket.size() > 0)
 		{
 			fd_set fsRead = { 0 };
+			fd_set fsWrite = { 0 };
 			fd_set fsExcept = { 0 };
 
 			// 遍历分组集合
@@ -41,15 +42,20 @@ namespace tc
 				{
 					FD_SET(vecGroupSocket[i][j].socket, &fsRead);
 					FD_SET(vecGroupSocket[i][j].socket, &fsExcept);
+					if (vecGroupSocket[i][j].type == ESocketType::Connect)
+					{
+						FD_SET(vecGroupSocket[i][j].socket, &fsWrite);
+					}
 				}
 
 				timeval t = { 0, 10 };
-				int ret = SocketTool::Select(0, &fsRead, NULL, &fsExcept, &t);
+				int ret = SocketTool::Select(0, &fsRead, &fsWrite, &fsExcept, &t);
 
 				if (ret > 0)
 				{
 					bool b1 = fsExcept.fd_count > 0;	// 是否有异常信号
 					bool b2 = fsRead.fd_count > 0;		// 是否有可读信号
+					bool b3 = fsWrite.fd_count > 0;		// 是否有可写信号
 					for (int k = 0; k < (int)vecGroupSocket[i].size(); k++)
 					{
 						if (b1)
@@ -59,6 +65,10 @@ namespace tc
 						if (b2)
 						{
 							OnSocketRead(vecGroupSocket[i][k], fsRead);
+						}
+						if (b3)
+						{
+							OnSocketWrite(vecGroupSocket[i][k], fsWrite);
 						}
 					}
 				}
@@ -116,7 +126,15 @@ namespace tc
 			{
 				OnRecvData(socketData);
 			}
-			else if (socketData.type == ESocketType::Connect)
+		}
+	}
+
+	void Select::OnSocketWrite(SocketInfoData& socketData, fd_set& fs)
+	{
+		int result = FD_ISSET(socketData.socket, &fs);
+		if (result > 0)
+		{
+			if (socketData.type == ESocketType::Connect)
 			{
 				OnConnectSuccess(socketData);
 			}
@@ -151,7 +169,6 @@ namespace tc
 	{
 		BYTE* pRecvBuf = new BYTE[TC_TCPRECVBUFFERSIZE];
 		int len = 0;
-
 		bool b = SocketTool::Recv(socketData.socket, pRecvBuf, TC_TCPRECVBUFFERSIZE, &len);
 		if (len > 0)	// 接收数据成功
 		{

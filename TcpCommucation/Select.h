@@ -39,6 +39,13 @@ namespace tc
 		void OnSocketRead(SocketInfoData& socketData, fd_set& fs);
 
 		//************************************
+		// Method:    处理socket可写
+		// Parameter: socket类型数据
+		// Parameter: fs
+		//************************************
+		void OnSocketWrite(SocketInfoData& socketData, fd_set& fs);
+
+		//************************************
 		// Method:    收到新连接事件处理
 		//************************************
 		void OnRecvNewConn(SocketInfoData& socketData);

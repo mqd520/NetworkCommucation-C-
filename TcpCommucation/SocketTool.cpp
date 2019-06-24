@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Include/tc/SocketTool.h"
+#include "Include/tc/TcpCommuMgr.h"
 
 #define	_WINSOCK_DEPRECATED_NO_WARNINGS
 

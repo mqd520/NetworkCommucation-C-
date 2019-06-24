@@ -38,14 +38,14 @@ namespace tc
 		// Method:    移除一个socket
 		// Parameter: SOCKET socket:	socket
 		//************************************
-		void Remove(SOCKET socket);
+		SocketInfoData Remove(SOCKET socket);
 
 		//************************************
 		// Method:    移除一个socket
 		// Parameter: SOCKET socket:	socket
 		// Parameter: ESocketType type:	socket type
 		//************************************
-		void Remove(SOCKET socket, ESocketType type);
+		SocketInfoData Remove(SOCKET socket, ESocketType type);
 
 		//************************************
 		// Method:    清除所有socket

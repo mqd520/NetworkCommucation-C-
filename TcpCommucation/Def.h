@@ -5,9 +5,7 @@
 using namespace std;
 
 #define	TC_MAXCLIENTCOUNT			65535	//最大tcp连接数
-#define TC_TCPRECVBUFFERSIZE		1024	//tcp接收缓冲区默认大小
-#define TC_TCPSENDBUFFERSIZE		1024	//tcp异步发送缓冲区默认大小
-#define TC_MAXIPSTRELN				20		//ip字符串最大长度
+#define TC_TCPRECVBUFFERSIZE		4096	//tcp接收缓冲区默认大小
 
 namespace tc
 {

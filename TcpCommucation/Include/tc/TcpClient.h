@@ -12,6 +12,7 @@ namespace tc
 		virtual ~TcpClient();
 
 	private:
+		bool bInited;			// 是否已初始化
 		bool bIsConnecting;		// 是否正在进行连接
 		bool bIsConnected;		// 是否已连接上
 		bool bIsReconnect;		// 是否需要自动重新连接
