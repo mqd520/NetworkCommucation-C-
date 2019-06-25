@@ -25,9 +25,6 @@
     <ClInclude Include="Service1.h">
       <Filter>02 服务</Filter>
     </ClInclude>
-    <ClInclude Include="LogSrv.h">
-      <Filter>02 服务</Filter>
-    </ClInclude>
     <ClInclude Include="ExceptionHandler.h">
       <Filter>02 服务</Filter>
     </ClInclude>
@@ -50,12 +47,15 @@
     <ClInclude Include="Msg.h">
       <Filter>00 Def</Filter>
     </ClInclude>
+    <ClInclude Include="LogSrv.h">
+      <Filter>01 Log</Filter>
+    </ClInclude>
+    <ClInclude Include="LogThread.h">
+      <Filter>01 Log</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Service1.cpp">
-      <Filter>02 服务</Filter>
-    </ClCompile>
-    <ClCompile Include="LogSrv.cpp">
       <Filter>02 服务</Filter>
     </ClCompile>
     <ClCompile Include="ExceptionHandler.cpp">
@@ -68,6 +68,12 @@
       <Filter>100 System</Filter>
     </ClCompile>
     <ClCompile Include="Client1.cpp" />
+    <ClCompile Include="LogSrv.cpp">
+      <Filter>01 Log</Filter>
+    </ClCompile>
+    <ClCompile Include="LogThread.cpp">
+      <Filter>01 Log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client1.rc">

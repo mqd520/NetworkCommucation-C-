@@ -10,8 +10,6 @@
 
 #include "resource.h"		// 主符号
 #include "Service1.h"
-#include "LogSrv.h"
-
 
 // CClient1App: 
 // 有关此类的实现，请参阅 Client1.cpp
@@ -24,18 +22,12 @@ public:
 
 private:
 	Service1	srv1;		// srv1
-	LogSrv		logSrv;		// log srv
 
 public:
 	//************************************
 	// Method:    获取srv1
 	//************************************
 	Service1&	GetSrv1();
-
-	//************************************
-	// Method:    获取log srv
-	//************************************
-	LogSrv&		GetLogSrv();
 
 	// 重写
 public:

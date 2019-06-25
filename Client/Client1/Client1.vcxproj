@@ -111,6 +111,7 @@
     <ClInclude Include="Def.h" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="LogSrv.h" />
+    <ClInclude Include="LogThread.h" />
     <ClInclude Include="Msg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Service1.h" />
@@ -122,6 +123,7 @@
     <ClCompile Include="Client1Dlg.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
     <ClCompile Include="LogSrv.cpp" />
+    <ClCompile Include="LogThread.cpp" />
     <ClCompile Include="Service1.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -6,6 +6,7 @@
 #include "Client1.h"
 #include "Client1Dlg.h"
 #include "ExceptionHandler.h"
+#include "LogSrv.h"
 #include "Msg.h"
 
 #include "tc/TcpCommuMgr.h"
@@ -62,6 +63,8 @@ BOOL CClient1App::InitInstance()
 	ExceptionHandler::Init();
 	ExceptionHandler::RegExceptionCallback(OnException, &theApp);
 	ExceptionHandler::SetFileName("Client1.exe");
+
+	LogSrv::Init();
 
 	TcpCommu::GetLogMgr()->RegCallback(OnTcpCommLog, &theApp);
 	TcpCommu::Init();
@@ -121,6 +124,7 @@ int CClient1App::ExitInstance()
 	// TODO:  在此添加专用代码和/或调用基类
 	srv1.Exit();
 	TcpCommu::Exit();
+	LogSrv::Exit();
 
 	return CWinApp::ExitInstance();
 }
@@ -130,14 +134,9 @@ Service1&	CClient1App::GetSrv1()
 	return srv1;
 }
 
-LogSrv&		CClient1App::GetLogSrv()
-{
-	return logSrv;
-}
-
 void OnException(void* pParam1, void* pParam2)
 {
-	theApp.GetLogSrv().Add("a fatal error has occured, the program will be shut down, please contact the administrator");
+	LogSrv::GetInstance()->Add("a fatal error has occured, the program will be shut down, please contact the administrator", ELogType::Fatal);
 }
 
 //************************************
@@ -152,7 +151,28 @@ void OnTcpCommLog(ETcpLogType type, string log, void* pParam1, void* pParam2)
 	OutputDebugStringA(log.c_str());
 	OutputDebugStringA("\n");
 
-	theApp.GetLogSrv().Add(log);
+	ELogType type1 = ELogType::Other;
+	if (type == ETcpLogType::Info)
+	{
+		type1 = ELogType::Info;
+	}
+	else if (type == ETcpLogType::Warn)
+	{
+		type1 = ELogType::Warn;
+	}
+	else if (type == ETcpLogType::Debug)
+	{
+		type1 = ELogType::Debug;
+	}
+	else if (type == ETcpLogType::Error)
+	{
+		type1 = ELogType::Error;
+	}
+	else if (type == ETcpLogType::Fatal)
+	{
+		type1 = ELogType::Fatal;
+	}
+	LogSrv::GetInstance()->Add(log, type1);
 
 	if (theApp.m_pMainWnd)
 	{

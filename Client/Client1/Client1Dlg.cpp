@@ -146,7 +146,13 @@ LRESULT CClient1Dlg::OnLog(WPARAM wParam, LPARAM lParam)
 LRESULT CClient1Dlg::OnConnectResult(WPARAM wParam, LPARAM lParam)
 {
 	bool connected = wParam > 0 ? true : false;
-	if (!connected)
+	if (connected)
+	{
+		m_btnConnect.EnableWindow(FALSE);
+		m_edIp.EnableWindow(FALSE);
+		m_edPort.EnableWindow(FALSE);
+	}
+	else
 	{
 		m_btnConnect.EnableWindow(TRUE);
 		m_edIp.EnableWindow(TRUE);
