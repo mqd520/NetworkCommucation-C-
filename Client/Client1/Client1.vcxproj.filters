@@ -8,25 +8,28 @@
     <Filter Include="00 Def">
       <UniqueIdentifier>{fc506ec8-b41a-41c4-8b00-6d78fdf99186}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01 服务">
-      <UniqueIdentifier>{e7e96b2a-181d-4874-8c58-7618a9ea98a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99 Window">
       <UniqueIdentifier>{43bd472f-4944-4cc3-9771-5ae66b3f814e}</UniqueIdentifier>
     </Filter>
     <Filter Include="100 System">
       <UniqueIdentifier>{c8bd80de-1afe-44cf-bed3-914f609a09a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01 Log">
+      <UniqueIdentifier>{fe05fcbb-ccf2-44bd-b020-979c2a4e3d9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 服务">
+      <UniqueIdentifier>{e7e96b2a-181d-4874-8c58-7618a9ea98a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Service1.h">
-      <Filter>01 服务</Filter>
+      <Filter>02 服务</Filter>
     </ClInclude>
     <ClInclude Include="LogSrv.h">
-      <Filter>01 服务</Filter>
+      <Filter>02 服务</Filter>
     </ClInclude>
     <ClInclude Include="ExceptionHandler.h">
-      <Filter>01 服务</Filter>
+      <Filter>02 服务</Filter>
     </ClInclude>
     <ClInclude Include="Client1Dlg.h">
       <Filter>99 Window</Filter>
@@ -41,16 +44,22 @@
       <Filter>100 System</Filter>
     </ClInclude>
     <ClInclude Include="Client1.h" />
+    <ClInclude Include="Def.h">
+      <Filter>00 Def</Filter>
+    </ClInclude>
+    <ClInclude Include="Msg.h">
+      <Filter>00 Def</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Service1.cpp">
-      <Filter>01 服务</Filter>
+      <Filter>02 服务</Filter>
     </ClCompile>
     <ClCompile Include="LogSrv.cpp">
-      <Filter>01 服务</Filter>
+      <Filter>02 服务</Filter>
     </ClCompile>
     <ClCompile Include="ExceptionHandler.cpp">
-      <Filter>01 服务</Filter>
+      <Filter>02 服务</Filter>
     </ClCompile>
     <ClCompile Include="Client1Dlg.cpp">
       <Filter>99 Window</Filter>

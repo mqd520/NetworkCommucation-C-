@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "Client1.h"
 #include "Client1Dlg.h"
+#include "ExceptionHandler.h"
+#include "Msg.h"
 
 #include "tc/TcpCommuMgr.h"
 using namespace tc;
@@ -57,6 +59,12 @@ BOOL CClient1App::InitInstance()
 
 	CWinApp::InitInstance();
 
+	ExceptionHandler::Init();
+	ExceptionHandler::RegExceptionCallback(OnException, &theApp);
+	ExceptionHandler::SetFileName("Client1.exe");
+
+	TcpCommu::GetLogMgr()->RegCallback(OnTcpCommLog, &theApp);
+	TcpCommu::Init();
 	srv1.Init();
 
 
@@ -112,6 +120,7 @@ int CClient1App::ExitInstance()
 {
 	// TODO:  在此添加专用代码和/或调用基类
 	srv1.Exit();
+	TcpCommu::Exit();
 
 	return CWinApp::ExitInstance();
 }
@@ -144,4 +153,9 @@ void OnTcpCommLog(ETcpLogType type, string log, void* pParam1, void* pParam2)
 	OutputDebugStringA("\n");
 
 	theApp.GetLogSrv().Add(log);
+
+	if (theApp.m_pMainWnd)
+	{
+		SendMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_LOGINFO, (WPARAM)log.c_str(), NULL);
+	}
 }

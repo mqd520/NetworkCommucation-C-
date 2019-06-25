@@ -21,6 +21,10 @@ protected:
 
 protected:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg LRESULT OnLog(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnConnectResult(WPARAM wParam, LPARAM lParam);
+
+	void	ShowLog(CString log);
 
 	// 实现
 protected:
@@ -40,4 +44,7 @@ protected:
 public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
+protected:
+	// 日志
+	CEdit m_edLog;
 };

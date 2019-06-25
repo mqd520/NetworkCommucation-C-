@@ -108,8 +108,10 @@
   <ItemGroup>
     <ClInclude Include="Client1.h" />
     <ClInclude Include="Client1Dlg.h" />
+    <ClInclude Include="Def.h" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="LogSrv.h" />
+    <ClInclude Include="Msg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Service1.h" />
     <ClInclude Include="stdafx.h" />

@@ -6,6 +6,7 @@
 #include "Client1.h"
 #include "Client1Dlg.h"
 #include "afxdialogex.h"
+#include "Msg.h"
 
 #include "tc/SocketTool.h"
 #include "tc/UTF16Str.h"
@@ -35,11 +36,14 @@ void CClient1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT2, m_edPort);
 	DDX_Control(pDX, IDC_BUTTON1, m_btnConnect);
 	DDX_Control(pDX, IDC_BUTTON2, m_btnClose);
+	DDX_Control(pDX, IDC_EDIT3, m_edLog);
 }
 
 BEGIN_MESSAGE_MAP(CClient1Dlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_MESSAGE(WM_USER_LOGINFO, &CClient1Dlg::OnLog)
+	ON_MESSAGE(WM_USER_CONNECTRESULT, &CClient1Dlg::OnConnectResult)
 	ON_BN_CLICKED(IDC_BUTTON1, &CClient1Dlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CClient1Dlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
@@ -61,6 +65,7 @@ BOOL CClient1Dlg::OnInitDialog()
 	wstring strIp1 = UTF16Str::FromGB2312(strIp);
 	m_edIp.SetWindowText(strIp1.c_str());
 	m_edPort.SetWindowText(_T("8085"));
+
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -114,11 +119,49 @@ BOOL CClient1Dlg::PreTranslateMessage(MSG* pMsg)
 	return __super::PreTranslateMessage(pMsg);
 }
 
+void CClient1Dlg::ShowLog(CString log)
+{
+	time_t t = time(NULL);
+	tm t1;
+	localtime_s(&t1, &t);
+
+	CString originLog;
+	m_edLog.GetWindowText(originLog);
+	CString newLog;
+	newLog.Format(_T("[%d-%02d-%02d %02d:%02d:%02d] %s \r\n%s"), t1.tm_year + 1900, t1.tm_mon, t1.tm_mday, t1.tm_hour, t1.tm_min, t1.tm_sec, log.GetString(), originLog.GetString());
+	m_edLog.SetWindowText(newLog);
+}
+
+LRESULT CClient1Dlg::OnLog(WPARAM wParam, LPARAM lParam)
+{
+	char* str = (char*)wParam;
+	wstring str1 = UTF16Str::FromGB2312(str);
+	CString log;
+	log.Format(_T("%s"), str1.c_str());
+	ShowLog(log);
+
+	return 0;
+}
+
+LRESULT CClient1Dlg::OnConnectResult(WPARAM wParam, LPARAM lParam)
+{
+	bool connected = wParam > 0 ? true : false;
+	if (!connected)
+	{
+		m_btnConnect.EnableWindow(TRUE);
+		m_edIp.EnableWindow(TRUE);
+		m_edPort.EnableWindow(TRUE);
+	}
+
+	return 0;
+}
 
 void CClient1Dlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
 	m_btnConnect.EnableWindow(FALSE);
+	m_edIp.EnableWindow(FALSE);
+	m_edPort.EnableWindow(FALSE);
 
 	CString str;
 	m_edPort.GetWindowText(str);
@@ -138,4 +181,10 @@ void CClient1Dlg::OnBnClickedButton1()
 void CClient1Dlg::OnBnClickedButton2()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	m_btnConnect.EnableWindow(TRUE);
+	m_edIp.EnableWindow(TRUE);
+	m_edPort.EnableWindow(TRUE);
+
+	theApp.GetSrv1().GetMainTcpClient().Close();
+	ShowLog(_T("user close the connection"));
 }
