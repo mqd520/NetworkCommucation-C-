@@ -103,3 +103,12 @@ BOOL CTool1App::InitInstance()
 	return FALSE;
 }
 
+
+
+int CTool1App::ExitInstance()
+{
+	// TODO:  在此添加专用代码和/或调用基类
+	TimerMoudleMgr::Exit();
+
+	return CWinApp::ExitInstance();
+}
