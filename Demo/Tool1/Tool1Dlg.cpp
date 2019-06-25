@@ -6,7 +6,6 @@
 #include "Tool1.h"
 #include "Tool1Dlg.h"
 #include "afxdialogex.h"
-#include "TimerAppMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -15,7 +14,7 @@
 
 // CTool1Dlg 对话框
 
-void OnTimer1(CTimer* pTimeout, int count);
+void OnTimer1(Timer* pTimer, int count, void* pParam1, void* pParam2);
 
 CTool1Dlg::CTool1Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CTool1Dlg::IDD, pParent)
@@ -47,7 +46,11 @@ BOOL CTool1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
-	CTimerAppMgr::Init();
+	timer1.SetCallback(OnTimer1, this);
+	timer1.SetTimeout(1 * 1000);
+
+	timer2.SetCallback(OnTimer1, this);
+	timer2.SetTimeout(3 * 1000);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -93,29 +96,11 @@ HCURSOR CTool1Dlg::OnQueryDragIcon()
 void CTool1Dlg::OnBnClickedOk()
 {
 	// TODO:  在此添加控件通知处理程序代码
-
-	if (m_pTimer1 == NULL)
-	{
-		m_pTimer1 = new CTimer(1 * 1000, OnTimer1);
-	}
-
-	if (!m_pTimer1->IsRun())
-	{
-		m_pTimer1->Run();
-	}
-
-	if (m_pTimer2 == NULL)
-	{
-		m_pTimer2 = new CTimer(3 * 1000, OnTimer1);
-	}
-
-	if (!m_pTimer2->IsRun())
-	{
-		m_pTimer2->Run();
-	}
+	timer1.Run();
+	timer2.Run();
 }
 
-void OnTimer1(CTimer* pTimeout, int count)
+void OnTimer1(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 {
 	SYSTEMTIME time;
 	GetSystemTime(&time);

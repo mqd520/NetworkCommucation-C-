@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include "Timer.h"
-
+#include "tc/Timer.h"
 using namespace tc;
 
 
@@ -34,8 +33,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	CTimer* m_pTimer1;
-	CTimer* m_pTimer2;
+	Timer timer1;
+	Timer timer2;
 
 public:
 	afx_msg void OnBnClickedOk();

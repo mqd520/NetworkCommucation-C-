@@ -6,6 +6,9 @@
 #include "Tool1.h"
 #include "Tool1Dlg.h"
 
+#include "tc/TimerMoudleMgr.h"
+using namespace tc;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -50,6 +53,8 @@ BOOL CTool1App::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	CWinApp::InitInstance();
+
+	TimerMoudleMgr::Init();
 
 
 	// 创建 shell 管理器，以防对话框包含
