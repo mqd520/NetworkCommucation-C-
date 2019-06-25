@@ -5,8 +5,6 @@
 
 namespace tc
 {
-	volatile bool TcpCommu::m_bExited = false;
-
 	SelectThread TcpCommu::selectThread;
 	RecvThread TcpCommu::recvThread;
 	SendThread TcpCommu::sendThread;
@@ -40,12 +38,14 @@ namespace tc
 
 	void TcpCommu::Exit()
 	{
-		m_bExited = true;
-
+		socketDataMgr.Clear();
 		recvHandler.Clear();
+		sendHandler.Clear();
 		tcpEvtMgr.Clear();
 		tcpConnMgr.Clear();
-		socketDataMgr.Clear();
+		tcpServiceMgr.Clear();
+
+		TimerMoudleMgr::Exit();
 
 		GetSelectThread()->Exit();
 		GetRecvThread()->Exit();
@@ -53,11 +53,6 @@ namespace tc
 		GetTcpEvtThread()->Exit();
 
 		Sleep(1 * 1000);
-	}
-
-	bool TcpCommu::IsExited()
-	{
-		return m_bExited;
 	}
 
 	SelectThread* TcpCommu::GetSelectThread()

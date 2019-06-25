@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "ThreadLock.h"
 #include "Include/tc/Timer.h"
 
 using namespace std;
@@ -15,6 +16,7 @@ namespace tc
 
 	private:
 		vector<Timer*> vecTimer;	// 定时器集合
+		CThreadLock lock1;			// 线程锁, 针对 vecTimer
 
 	public:
 		//************************************

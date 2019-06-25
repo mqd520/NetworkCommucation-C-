@@ -21,8 +21,9 @@ namespace tc
 	class TcpCommu
 	{
 	private:
-		static volatile bool m_bExited;				// 是否需要退出了
+		TcpCommu();
 
+	private:
 		static SelectThread selectThread;			// select线程对象
 		static RecvThread recvThread;				// 收数据线程对象
 		static SendThread sendThread;				// 发数据线程对象
@@ -37,10 +38,6 @@ namespace tc
 		static TcpServiceMgr tcpServiceMgr;			// tcp服务管理对象
 		static TcpEvtMgr tcpEvtMgr;					// tcp事件管理对象
 		static LogMgr logMgr;						// 日志管理对象
-
-
-	private:
-		TcpCommu();
 
 	public:
 		~TcpCommu();

@@ -16,23 +16,25 @@ namespace tc
 
 	void TimeMgr::Add(int millsecond)
 	{
-		lock1.Lock();
 		queueTime.push(millsecond);
-		lock1.Unlock();
+	}
+
+	void TimeMgr::Clear()
+	{
+		while (!queueTime.empty())
+		{
+			queueTime.pop();
+		}
 	}
 
 	void TimeMgr::ProcessTime()
 	{
-		lock1.Lock();
-
-		while (queueTime.size() > 0)
+		while ((int)queueTime.size() > 0)
 		{
 			int millsecond = queueTime.front();
 			queueTime.pop();
 
 			TimerMoudleMgr::GetTimerMgr()->OnTimer(millsecond);
 		}
-
-		lock1.Unlock();
 	}
 }

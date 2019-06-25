@@ -20,7 +20,7 @@ namespace tc
 
 	Timer::~Timer()
 	{
-		TimerMoudleMgr::GetTimerMgr()->Remove(this);
+
 	}
 
 	void Timer::Init()

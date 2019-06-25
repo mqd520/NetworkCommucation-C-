@@ -10,21 +10,38 @@ namespace tc
 
 	TcpServiceMgr::~TcpServiceMgr()
 	{
-		
+
+	}
+
+	void TcpServiceMgr::Remove(TcpService* pTcpSrv)
+	{
+		for (vector<TcpService*>::iterator it = vecTcpSrv.begin(); it != vecTcpSrv.end(); it++)
+		{
+			if (*it == pTcpSrv)
+			{
+				vecTcpSrv.erase(it);
+				break;
+			}
+		}
+	}
+
+	void TcpServiceMgr::Clear()
+	{
+		vecTcpSrv.clear();
 	}
 
 	void TcpServiceMgr::PushTcpService(TcpService* srv)
 	{
-		vecTcpService.push_back(srv);
+		vecTcpSrv.push_back(srv);
 	}
 
 	TcpService* TcpServiceMgr::GetTcpSrvBySocket(SOCKET socket)
 	{
-		for (int i = 0; i < (int)vecTcpService.size(); i++)
+		for (vector<TcpService*>::iterator it = vecTcpSrv.begin(); it != vecTcpSrv.end(); it++)
 		{
-			if (vecTcpService[i]->GetSocket() == socket)
+			if ((*it)->GetSocket() == socket)
 			{
-				return vecTcpService[i];
+				return *it;
 			}
 		}
 		return NULL;

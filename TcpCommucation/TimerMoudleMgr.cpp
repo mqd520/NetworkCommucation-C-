@@ -26,15 +26,18 @@ namespace tc
 		if (!bInited)
 		{
 			bInited = true;
-			timeThread2.Run();
 			timeThread1.Run();
+			timeThread2.Run();
 		}
 	}
 
 	void TimerMoudleMgr::Exit()
 	{
-		timeThread2.Exit();
+		timerMgr.Clear();
+		timerMgr.Clear();
+
 		timeThread1.Exit();
+		timeThread2.Exit();
 	}
 
 	int TimerMoudleMgr::GetTimeUnit()

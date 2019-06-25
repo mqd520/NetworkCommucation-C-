@@ -4,6 +4,7 @@
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/TcpEvt.h"
 #include "Include/tc/ConnectSrvResultEvt.h"
+#include "Include/tc/TimerMoudleMgr.h"
 #include "LogMgr.h"
 
 namespace tc
@@ -26,6 +27,11 @@ namespace tc
 	TcpClient::~TcpClient()
 	{
 
+	}
+
+	void TcpClient::Exit()
+	{
+		TimerMoudleMgr::GetTimerMgr()->Remove(&t);
 	}
 
 	void TcpClient::Init()
@@ -58,6 +64,7 @@ namespace tc
 		bIsReconnect = b;
 		nTimeSpan = time;
 		t.SetTimeout(nTimeSpan);
+		t.Stop();
 	}
 
 	void TcpClient::Connect()
@@ -71,10 +78,7 @@ namespace tc
 
 	void TcpClient::Close(bool b /*= true*/)
 	{
-		if (bIsReconnect)
-		{
-			t.Stop();
-		}
+		//t.Stop();
 
 		if (this->socket != INVALID_SOCKET)
 		{
@@ -109,7 +113,8 @@ namespace tc
 
 	void TcpClient::OnRecvTcpEvent(TcpEvt* pEvt)
 	{
-		if (pEvt->GetEvtType() == ETcpEvtType::ConnectSrvResult)
+		ETcpEvtType type = pEvt->GetEvtType();
+		if (type == ETcpEvtType::ConnectSrvResult)
 		{
 			bIsConnecting = false;
 			ConnectSrvResultEvt* pEvt1 = (ConnectSrvResultEvt*)pEvt;
@@ -118,10 +123,7 @@ namespace tc
 			if (bIsConnected)
 			{
 				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connect to %s:%d success", this->strIP.c_str(), this->nPort);
-				if (bIsReconnect)
-				{
-					t.Stop();
-				}
+				t.Stop();
 			}
 			else
 			{
@@ -130,6 +132,15 @@ namespace tc
 				{
 					t.Run();
 				}
+			}
+		}
+		else if (type == ETcpEvtType::ConnDisconnect)
+		{
+			bIsConnecting = false;
+			bIsConnected = false;
+			if (bIsReconnect)
+			{
+				t.Run();
 			}
 		}
 

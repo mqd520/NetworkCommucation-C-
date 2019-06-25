@@ -45,6 +45,8 @@ namespace tc
 		void OnRecvTcpEvent(TcpEvt* pEvent);
 
 	public:
+		void Exit();
+
 		//************************************
 		// Method:    设置自动重新信息
 		// Parameter: 是否自动重连
