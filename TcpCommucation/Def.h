@@ -4,8 +4,9 @@
 
 using namespace std;
 
-#define	TC_MAXCLIENTCOUNT			65535	//最大tcp连接数
-#define TC_TCPRECVBUFFERSIZE		4096	//tcp接收缓冲区默认大小
+#define	TC_MAXCLIENTCOUNT			65535	// 最大tcp连接数
+#define TC_TCPRECVBUFFERSIZE		4096	// tcp接收缓冲区默认大小
+#define TC_RECONNECTTIME			3000	// 自动重连间隔时间
 
 namespace tc
 {

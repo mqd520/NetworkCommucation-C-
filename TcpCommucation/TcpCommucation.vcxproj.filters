@@ -156,22 +156,7 @@
     <ClInclude Include="TcpEvtMgr.h">
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
-    <ClInclude Include="TimerAppMgr.h">
-      <Filter>05 定时器管理</Filter>
-    </ClInclude>
     <ClInclude Include="TimerMgr.h">
-      <Filter>05 定时器管理\00 定时器处理</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessTimeoutThread.h">
-      <Filter>05 定时器管理\01 线程处理</Filter>
-    </ClInclude>
-    <ClInclude Include="BuildTimeoutThread.h">
-      <Filter>05 定时器管理\01 线程处理</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeoutMgr.h">
-      <Filter>05 定时器管理\00 定时器处理</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
       <Filter>05 定时器管理\00 定时器处理</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\MemoryStream.h">
@@ -260,6 +245,21 @@
     </ClInclude>
     <ClInclude Include="Include\tc\TcpClient.h">
       <Filter>06 Tcp通信管理\07 Tcp客户端</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\Timer.h">
+      <Filter>05 定时器管理\00 定时器处理</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeMgr.h">
+      <Filter>05 定时器管理\00 定时器处理</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeThread1.h">
+      <Filter>05 定时器管理\01 线程处理</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeThread2.h">
+      <Filter>05 定时器管理\01 线程处理</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\TimerMoudleMgr.h">
+      <Filter>05 定时器管理</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -356,22 +356,10 @@
     <ClCompile Include="SendDataResultEvt.cpp">
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
-    <ClCompile Include="TimerAppMgr.cpp">
-      <Filter>05 定时器管理</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>05 定时器管理\00 定时器处理</Filter>
     </ClCompile>
     <ClCompile Include="TimerMgr.cpp">
-      <Filter>05 定时器管理\00 定时器处理</Filter>
-    </ClCompile>
-    <ClCompile Include="ProcessTimeoutThread.cpp">
-      <Filter>05 定时器管理\01 线程处理</Filter>
-    </ClCompile>
-    <ClCompile Include="BuildTimeoutThread.cpp">
-      <Filter>05 定时器管理\01 线程处理</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeoutMgr.cpp">
       <Filter>05 定时器管理\00 定时器处理</Filter>
     </ClCompile>
     <ClCompile Include="ConnectSrvResultEvt.cpp">
@@ -443,6 +431,18 @@
     </ClCompile>
     <ClCompile Include="ConnectCplSocEvt.cpp">
       <Filter>06 Tcp通信管理\03 Socket事件</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerMoudleMgr.cpp">
+      <Filter>05 定时器管理</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeMgr.cpp">
+      <Filter>05 定时器管理\00 定时器处理</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeThread1.cpp">
+      <Filter>05 定时器管理\01 线程处理</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeThread2.cpp">
+      <Filter>05 定时器管理\01 线程处理</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

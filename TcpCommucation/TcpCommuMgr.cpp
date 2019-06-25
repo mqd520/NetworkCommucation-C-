@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/SocketTool.h"
+#include "Include/tc/TimerMoudleMgr.h"
 
 namespace tc
 {
@@ -28,6 +29,8 @@ namespace tc
 	{
 		SocketTool::Init();
 		SocketTool::RegErrorCallback(OnSocketToolError, NULL);
+
+		TimerMoudleMgr::Init();
 
 		GetSelectThread()->Run();		// 启动select线程
 		GetRecvThread()->Run();			// 启动收数据线程

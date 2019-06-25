@@ -6,26 +6,26 @@ using namespace std;
 
 namespace tc
 {
-	//超时事件管理
-	class CTimeoutMgr
+	// 时间管理
+	class TimeMgr
 	{
+	public:
+		TimeMgr();
+		~TimeMgr();
+
 	private:
-		queue<int> m_quTimeout;//超时队列
-		CThreadLock m_lock1;//线程锁,针对m_vecTimeout变量
+		queue<int> queueTime;	// 时间队列
+		CThreadLock lock1;		// 线程锁, 针对queueTime变量
 
 	public:
-		CTimeoutMgr();
-		~CTimeoutMgr();
-
 		//************************************
-		// Method:    添加一个超时数据
-		// Parameter: 超时时间
+		// Method:    添加一个时间数据
 		//************************************
 		void Add(int millsecond);
 
 		//************************************
-		// Method:    处理超时数据
+		// Method:    处理时间数据
 		//************************************
-		void ProcessTimeout();
+		void ProcessTime();
 	};
 }

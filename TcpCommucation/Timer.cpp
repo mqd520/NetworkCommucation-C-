@@ -1,63 +1,101 @@
 #include "stdafx.h"
-#include "Timer.h"
-#include "TimerAppMgr.h"
+#include "Include/tc/Timer.h"
+#include "Include/tc/TimerMoudleMgr.h"
 
 namespace tc
 {
-	CTimer::CTimer(int millsecond, LPTimeoutCallback lpfn, int count/* = 0*/)
-		:m_nTimeout(millsecond),
-		m_lpfn(lpfn),
-		m_nCount(count),
-		m_bRunning(false),
-		m_nTimeouted(0),
-		m_nCounted(0)
-	{
-		CTimerAppMgr::GetTimerMgr()->Add(this);
-	}
-
-	CTimer::~CTimer()
+	Timer::Timer(int timeout /*= 1000*/, LPTimeoutCallback lpfn /*= NULL*/, int count /*= 0*/) :
+		nTimeout(timeout),
+		lpfn(lpfn),
+		nCount(0),
+		bRunning(false),
+		nTimeouted(0),
+		nCounted(0),
+		pParam1(NULL),
+		pParam2(NULL),
+		bInited(false)
 	{
 
 	}
 
-	void CTimer::Run(bool clear)
+	Timer::~Timer()
 	{
-		m_bRunning = true;
-		if (clear)
+		TimerMoudleMgr::GetTimerMgr()->Remove(this);
+	}
+
+	void Timer::Init()
+	{
+		if (!bInited)
 		{
-			m_nTimeouted = 0;
+			bInited = true;
+			TimerMoudleMgr::GetTimerMgr()->Add(this);
 		}
 	}
 
-	void CTimer::Pause()
+	void Timer::SetTimeout(int millsecond)
 	{
-		m_bRunning = false;
+		nTimeout = millsecond;
 	}
 
-	bool CTimer::IsRun()
+	void Timer::SetCallback(LPTimeoutCallback lpfn, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
-		return m_bRunning;
+		this->lpfn = lpfn;
+		this->pParam1 = pParam1;
+		this->pParam2 = pParam2;
 	}
 
-	void CTimer::OnTimeout(int millsecond)
+	void Timer::Run()
 	{
-		if (m_bRunning && (m_nCount == 0 || m_nCounted < m_nCount))
+		Init();
+		bRunning = true;
+	}
+
+	void Timer::Stop()
+	{
+		bRunning = false;
+		nTimeouted = 0;
+		nCounted = 0;
+	}
+
+	void Timer::Pause()
+	{
+		bRunning = false;
+	}
+
+	void Timer::Resume()
+	{
+		bRunning = true;
+	}
+
+	void Timer::Reset()
+	{
+		nTimeouted = 0;
+	}
+
+	bool Timer::IsRun()
+	{
+		return bRunning;
+	}
+
+	void Timer::OnTimer(int millsecond)
+	{
+		if (bRunning && (nCount == 0 || nCounted < nCount))
 		{
-			m_nTimeouted += millsecond;
+			nTimeouted += millsecond;
 
-			m_nTimeouted = m_nTimeouted > m_nTimeout ? m_nTimeout : m_nTimeouted;
+			nTimeouted = nTimeouted > nTimeout ? nTimeout : nTimeouted;
 
-			if (m_nTimeouted == m_nTimeout)
+			if (nTimeouted == nTimeout)
 			{
-				m_nCounted++;
-				m_nTimeouted = 0;
-				m_lpfn(this, m_nCounted);
+				nCounted++;
+				nTimeouted = 0;
+				lpfn(this, nCounted, this->pParam1, this->pParam2);
 			}
 		}
 	}
 
-	int CTimer::Count()
+	int Timer::Count()
 	{
-		return m_nCounted;
+		return nCounted;
 	}
 }

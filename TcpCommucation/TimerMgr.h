@@ -1,26 +1,38 @@
 #pragma once
-#include "Timer.h"
 #include <vector>
+#include "Include/tc/Timer.h"
 
 using namespace std;
 
 namespace tc
 {
 	//定时器管理
-	class CTimerMgr
+	class TimerMgr
 	{
+	public:
+		TimerMgr();
+		~TimerMgr();
+
 	private:
-		vector<CTimer*> m_vecTimeout;
+		vector<Timer*> vecTimer;	// 定时器集合
 
 	public:
-		CTimerMgr();
-		~CTimerMgr();
-
 		//************************************
 		// Method:    添加一个定时器
 		// Parameter: 定时器
 		//************************************
-		void Add(CTimer* pTimeout);
+		void Add(Timer* pTimer);
+
+		//************************************
+		// Method:    移除一个定时器
+		// Parameter: 定时器
+		//************************************
+		void Remove(Timer* pTimer);
+
+		//************************************
+		// Method:    清除所有定时器
+		//************************************
+		void Clear();
 
 		//************************************
 		// Method:    获取定时器数目
@@ -28,9 +40,9 @@ namespace tc
 		int Count();
 
 		//************************************
-		// Method:    超时事件处理
+		// Method:    时间事件处理
 		// Parameter: 超时时间
 		//************************************
-		void OnTimeout(int millsecond);
+		void OnTimer(int millsecond);
 	};
 }

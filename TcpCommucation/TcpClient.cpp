@@ -8,13 +8,19 @@
 
 namespace tc
 {
+	void OnTimer1(Timer* pTimer, int count, void* pParam1, void* pParam2);	// timer»Øµ÷º¯Êý
+
 	TcpClient::TcpClient(string ip /*= ""*/, int port /*= 0*/) :
 		TcpService(ip, port),
 		bInited(false),
 		bIsConnecting(false),
-		bIsConnected(false)
+		bIsConnected(false),
+		bIsReconnect(true),
+		nTimeSpan(TC_RECONNECTTIME)
 	{
 		this->tcpSrvType = ETcpSrvType::Client;
+		t.SetTimeout(nTimeSpan);
+		t.SetCallback(OnTimer1, this);
 	}
 
 	TcpClient::~TcpClient()
@@ -47,15 +53,29 @@ namespace tc
 		}
 	}
 
+	void TcpClient::SetAutoReconnect(bool b /*= true*/, int time /*= TC_RECONNECTTIME*/)
+	{
+		bIsReconnect = b;
+		nTimeSpan = time;
+		t.SetTimeout(nTimeSpan);
+	}
+
 	void TcpClient::Connect()
 	{
 		Init();
-		Close(false);
-		ConnectServer();
+		if (!bIsConnecting && !bIsConnected)
+		{
+			ConnectServer();
+		}
 	}
 
 	void TcpClient::Close(bool b /*= true*/)
 	{
+		if (bIsReconnect)
+		{
+			t.Stop();
+		}
+
 		if (this->socket != INVALID_SOCKET)
 		{
 			if (bIsConnected)
@@ -98,13 +118,43 @@ namespace tc
 			if (bIsConnected)
 			{
 				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connect to %s:%d success", this->strIP.c_str(), this->nPort);
+				if (bIsReconnect)
+				{
+					t.Stop();
+				}
 			}
 			else
 			{
 				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Err, "connect to %s:%d fail", this->strIP.c_str(), this->nPort);
+				if (bIsReconnect)
+				{
+					t.Run();
+				}
 			}
 		}
 
 		__super::OnRecvTcpEvent(pEvt);
+	}
+
+	void TcpClient::OnTimer(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
+	{
+		ConnectServer();
+	}
+
+
+
+
+	void OnTimer1(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
+	{
+		TimerCallback::OnTimer(pTimer, count, pParam1, pParam2);
+	}
+
+	void TimerCallback::OnTimer(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
+	{
+		if (pParam1)
+		{
+			TcpClient* p = static_cast<TcpClient*>(pParam1);
+			p->OnTimer(pTimer, count, pParam1, pParam2);
+		}
 	}
 }

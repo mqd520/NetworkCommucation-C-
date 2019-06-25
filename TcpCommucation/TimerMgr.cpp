@@ -3,31 +3,48 @@
 
 namespace tc
 {
-	CTimerMgr::CTimerMgr()
+	TimerMgr::TimerMgr()
 	{
 
 	}
 
-	CTimerMgr::~CTimerMgr()
+	TimerMgr::~TimerMgr()
 	{
 
 	}
 
-	void CTimerMgr::Add(CTimer* pTimeout)
+	void TimerMgr::Add(Timer* pTimer)
 	{
-		m_vecTimeout.push_back(pTimeout);
+		vecTimer.push_back(pTimer);
 	}
 
-	int CTimerMgr::Count()
+	void TimerMgr::Remove(Timer* pTimer)
 	{
-		return m_vecTimeout.size();
-	}
-
-	void CTimerMgr::OnTimeout(int millsecond)
-	{
-		for (int i = 0; i < (int)m_vecTimeout.size(); i++)
+		for (vector<Timer*>::iterator it = vecTimer.begin(); it != vecTimer.end(); it++)
 		{
-			m_vecTimeout[i]->OnTimeout(millsecond);
+			if (*it == pTimer)
+			{
+				vecTimer.erase(it);
+				break;
+			}
+		}
+	}
+
+	void TimerMgr::Clear()
+	{
+		vecTimer.clear();
+	}
+
+	int TimerMgr::Count()
+	{
+		return (int)vecTimer.size();
+	}
+
+	void TimerMgr::OnTimer(int millsecond)
+	{
+		for (vector<Timer*>::iterator it = vecTimer.begin(); it != vecTimer.end(); it++)
+		{
+			(*it)->OnTimer(millsecond);
 		}
 	}
 }

@@ -86,6 +86,8 @@
     <ClInclude Include="ConnDisconnSocEvt.h" />
     <ClInclude Include="ConnectCplSocEvt.h" />
     <ClInclude Include="Include\tc\TcpClient.h" />
+    <ClInclude Include="Include\tc\Timer.h" />
+    <ClInclude Include="Include\tc\TimerMoudleMgr.h" />
     <ClInclude Include="RecvDataHandler.h" />
     <ClInclude Include="RecvNewConnSocEvt.h" />
     <ClInclude Include="RecvPeerDataSocEvt.h" />
@@ -141,12 +143,10 @@
     <ClInclude Include="ThreadMutex.h" />
     <ClInclude Include="ThreadMutexHelper.h" />
     <ClInclude Include="ThreadSemaphore.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="TimeoutMgr.h" />
-    <ClInclude Include="ProcessTimeoutThread.h" />
+    <ClInclude Include="TimeMgr.h" />
+    <ClInclude Include="TimeThread2.h" />
     <ClInclude Include="TimerMgr.h" />
-    <ClInclude Include="TimerAppMgr.h" />
-    <ClInclude Include="BuildTimeoutThread.h" />
+    <ClInclude Include="TimeThread1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConnDisconnSocEvt.cpp" />
@@ -207,11 +207,11 @@
     <ClCompile Include="ThreadMutexHelper.cpp" />
     <ClCompile Include="ThreadSemaphore.cpp" />
     <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="TimeoutMgr.cpp" />
-    <ClCompile Include="ProcessTimeoutThread.cpp" />
+    <ClCompile Include="TimeMgr.cpp" />
+    <ClCompile Include="TimeThread2.cpp" />
     <ClCompile Include="TimerMgr.cpp" />
-    <ClCompile Include="TimerAppMgr.cpp" />
-    <ClCompile Include="BuildTimeoutThread.cpp" />
+    <ClCompile Include="TimerMoudleMgr.cpp" />
+    <ClCompile Include="TimeThread1.cpp" />
     <ClCompile Include="UTF16Str.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
