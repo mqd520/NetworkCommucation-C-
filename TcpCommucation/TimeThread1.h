@@ -1,5 +1,5 @@
 #pragma once
-#include "ThreadEntry.h"
+#include "Include/tc/ThreadEntry.h"
 
 namespace tc
 {

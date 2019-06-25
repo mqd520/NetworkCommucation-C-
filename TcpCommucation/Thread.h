@@ -1,7 +1,7 @@
 #pragma once
 #include "ThreadEvent.h"
 #include <process.h>
-#include "ThreadEntry.h"
+#include "Include/tc/ThreadEntry.h"
 
 namespace tc
 {

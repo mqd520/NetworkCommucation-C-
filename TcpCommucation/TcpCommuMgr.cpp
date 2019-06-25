@@ -117,6 +117,6 @@ namespace tc
 
 	void OnSocketToolError(string err, void* lpParam)
 	{
-		TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Err, "%s", err.c_str());
+		TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Error, "%s", err.c_str());
 	}
 }

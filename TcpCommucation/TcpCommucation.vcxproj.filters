@@ -135,9 +135,6 @@
     <ClInclude Include="TcpServiceMgr.h">
       <Filter>06 Tcp通信管理\06 Tcp服务</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadEntry.h">
-      <Filter>03 线程</Filter>
-    </ClInclude>
     <ClInclude Include="RecvThread.h">
       <Filter>06 Tcp通信管理\01 线程处理</Filter>
     </ClInclude>
@@ -260,6 +257,9 @@
     </ClInclude>
     <ClInclude Include="Include\tc\TimerMoudleMgr.h">
       <Filter>05 定时器管理</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\ThreadEntry.h">
+      <Filter>03 线程</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

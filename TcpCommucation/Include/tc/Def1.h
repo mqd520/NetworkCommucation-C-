@@ -25,7 +25,7 @@ namespace tc
 		Info,	// 消息
 		Warn,	// 警告
 		Debug,	// 调试
-		Err,	// 错误
+		Error,	// 错误
 		Fatal,	// 严重错误
 
 		None	// 无

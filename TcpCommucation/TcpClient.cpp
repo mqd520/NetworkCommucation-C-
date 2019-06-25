@@ -127,7 +127,7 @@ namespace tc
 			}
 			else
 			{
-				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Err, "connect to %s:%d fail", this->strIP.c_str(), this->nPort);
+				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Error, "connect to %s:%d fail", this->strIP.c_str(), this->nPort);
 				if (bIsReconnect)
 				{
 					t.Run();

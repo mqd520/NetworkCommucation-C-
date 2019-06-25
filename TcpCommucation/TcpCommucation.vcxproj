@@ -86,6 +86,7 @@
     <ClInclude Include="ConnDisconnSocEvt.h" />
     <ClInclude Include="ConnectCplSocEvt.h" />
     <ClInclude Include="Include\tc\TcpClient.h" />
+    <ClInclude Include="Include\tc\ThreadEntry.h" />
     <ClInclude Include="Include\tc\Timer.h" />
     <ClInclude Include="Include\tc\TimerMoudleMgr.h" />
     <ClInclude Include="RecvDataHandler.h" />
@@ -136,7 +137,6 @@
     <ClInclude Include="TcpService.h" />
     <ClInclude Include="TcpServiceMgr.h" />
     <ClInclude Include="Thread.h" />
-    <ClInclude Include="ThreadEntry.h" />
     <ClInclude Include="ThreadEvent.h" />
     <ClInclude Include="ThreadLock.h" />
     <ClInclude Include="ThreadMgr.h" />

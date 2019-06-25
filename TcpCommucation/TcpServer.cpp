@@ -56,7 +56,7 @@ namespace tc
 		}
 		else
 		{
-			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Err, "listen fail: %s:%d", strIP.c_str(), nPort);
+			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Error, "listen fail: %s:%d", strIP.c_str(), nPort);
 		}
 
 		return bListening;
