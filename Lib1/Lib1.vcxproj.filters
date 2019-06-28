@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="02 服务">
+      <UniqueIdentifier>{66a666b1-bd69-4bda-ac44-3ca6640c7ee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99 其它">
+      <UniqueIdentifier>{01151f2c-4a80-4df7-b07d-8a4f5a3216f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00 包">
+      <UniqueIdentifier>{f58339ea-3f00-4727-9828-a7bb31466681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01 加解密">
+      <UniqueIdentifier>{e6bbe7bf-9608-42c0-9e17-de4d3250bee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 Common">
+      <UniqueIdentifier>{93b052aa-2230-4114-a70b-8267251fb9a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 包事件">
+      <UniqueIdentifier>{167d60f1-700a-4a9e-ab2b-98f939c31155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 服务\01 客户端">
+      <UniqueIdentifier>{fda80d25-da61-4a44-adb0-df4176c09740}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 服务\02 服务端">
+      <UniqueIdentifier>{d13ecfd9-2a3a-4827-ae59-7e29c58bf5a4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>99 其它</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>99 其它</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Lib1\Packet.h">
+      <Filter>00 包</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Lib1\PacketCmd.h">
+      <Filter>00 包</Filter>
+    </ClInclude>
+    <ClInclude Include="LibSrv1.h">
+      <Filter>02 服务</Filter>
+    </ClInclude>
+    <ClInclude Include="Def.h" />
+    <ClInclude Include="EncryptHelper.h">
+      <Filter>01 加解密</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketTool.h">
+      <Filter>00 包</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketHead.h">
+      <Filter>00 包</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Lib1\Def1.h" />
+    <ClInclude Include="Include\Lib1\Lib1Tool.h">
+      <Filter>03 Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Lib1\PacketEvt.h">
+      <Filter>04 包事件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Lib1\LibClient.h">
+      <Filter>02 服务\01 客户端</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Lib1\LibServer.h">
+      <Filter>02 服务\02 服务端</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketServerClient.h">
+      <Filter>02 服务\02 服务端</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketServerClientMgr.h">
+      <Filter>02 服务\02 服务端</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>99 其它</Filter>
+    </ClCompile>
+    <ClCompile Include="Packet.cpp">
+      <Filter>00 包</Filter>
+    </ClCompile>
+    <ClCompile Include="LibSrv1.cpp">
+      <Filter>02 服务</Filter>
+    </ClCompile>
+    <ClCompile Include="EncryptHelper.cpp">
+      <Filter>01 加解密</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketTool.cpp">
+      <Filter>00 包</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketHead.cpp">
+      <Filter>00 包</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib1Tool.cpp">
+      <Filter>03 Common</Filter>
+    </ClCompile>
+    <ClCompile Include="LibClient.cpp">
+      <Filter>02 服务\01 客户端</Filter>
+    </ClCompile>
+    <ClCompile Include="LibServer.cpp">
+      <Filter>02 服务\02 服务端</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketServerClient.cpp">
+      <Filter>02 服务\02 服务端</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketServerClientMgr.cpp">
+      <Filter>02 服务\02 服务端</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>99 其它</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
