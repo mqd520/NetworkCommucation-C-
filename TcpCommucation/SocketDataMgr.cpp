@@ -43,19 +43,21 @@ namespace tc
 
 			if (type == ESocketType::SendRecvData)
 			{
-				TcpService* pTcpSrv = TcpCommu::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
-				if (pTcpSrv)
-				{
-					if (pTcpSrv->GetTcpSrvType() == ETcpSrvType::Client)
-					{
-						peerIp = pTcpSrv->GetIP();
-						peerPort = pTcpSrv->GetPort();
-					}
-					else if (pTcpSrv->GetTcpSrvType() == ETcpSrvType::Server)
-					{
-						peerIp = SocketTool::GetPeerIpAndPort(socket, &peerPort);
-					}
-				}
+				//TcpService* pTcpSrv = TcpCommu::GetTcpServiceMgr()->GetTcpSrvBySocket(socket);
+				//if (pTcpSrv)
+				//{
+				//	if (pTcpSrv->GetTcpSrvType() == ETcpSrvType::Client)
+				//	{
+				//		peerIp = pTcpSrv->GetIP();
+				//		peerPort = pTcpSrv->GetPort();
+				//	}
+				//	else if (pTcpSrv->GetTcpSrvType() == ETcpSrvType::Server)
+				//	{
+				//		peerIp = SocketTool::GetPeerIpAndPort(socket, &peerPort);
+				//	}
+				//}
+
+				peerIp = SocketTool::GetPeerIpAndPort(socket, &peerPort);
 			}
 
 			vecSocketData.push_back({ socket, type, peerIp, peerPort, "", 0, socketId });

@@ -78,7 +78,7 @@ namespace tc
 
 	void TcpClient::Close(bool b /*= true*/)
 	{
-		//t.Stop();
+		t.Stop();
 
 		if (this->socket != INVALID_SOCKET)
 		{

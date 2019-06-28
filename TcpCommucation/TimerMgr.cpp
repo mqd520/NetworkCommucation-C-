@@ -45,6 +45,10 @@ namespace tc
 		for (vector<Timer*>::iterator it = vecTimer.begin(); it != vecTimer.end(); it++)
 		{
 			(*it)->OnTimer(millsecond);
+			if (vecTimer.empty())
+			{
+				break;
+			}
 		}
 	}
 }

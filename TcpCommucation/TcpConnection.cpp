@@ -45,7 +45,7 @@ namespace tc
 	void TcpConnection::OnConnDisconnect(EDisconnReason reason, bool b /*= true*/)
 	{
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->Remove(sendrecvSocket);
-		TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Warn, "connection disconnect: %s:%d", data.peerIp.c_str(), data.peerPort);
+		TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Warn, "connection disconnect: %s:%d, reason: %d", data.peerIp.c_str(), data.peerPort, (int)reason);
 
 		if (b)
 		{

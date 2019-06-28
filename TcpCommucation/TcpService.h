@@ -31,20 +31,20 @@ namespace tc
 		// Method:    收到tcp事件处理
 		// Parameter: pEvent: tcp事件
 		//************************************
-		virtual void OnRecvTcpEvent(TcpEvt* pEvent);
+		virtual void OnRecvTcpEvent(TcpEvt* pEvt);
 
 		//************************************
 		// Method:    向对端发送数据
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
 		//************************************
-		void SendData(SOCKET socket, BYTE* pBuf, int len);
+		virtual void SendData(SOCKET socket, BYTE* pBuf, int len);
 
 		//************************************
 		// Method:    通知调用者tcp事件
 		// Parameter: tcp事件
 		//************************************
-		void DispatchTcpEvt(TcpEvt* pEvent);
+		virtual void DispatchTcpEvt(TcpEvt* pEvt);
 
 	public:
 		//************************************
@@ -68,11 +68,16 @@ namespace tc
 		int GetPort();
 
 		//************************************
+		// Method:    退出
+		//************************************
+		virtual void Exit();
+
+		//************************************
 		// Method:    注册tcp事件回调函数
 		// Parameter: lpCallback:	回调函数
 		// Parameter: pParam1:		附加参数1
 		// Parameter: pParam1:		附加参数2
 		//************************************
-		void RegTcpEventCallback(LPTcpEventCallback lpCallback, void* pParam1 = NULL, void* pParam2 = NULL);
+		virtual void RegTcpEventCallback(LPTcpEventCallback lpCallback, void* pParam1 = NULL, void* pParam2 = NULL);
 	};
 }

@@ -85,6 +85,8 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConnDisconnSocEvt.h" />
     <ClInclude Include="ConnectCplSocEvt.h" />
+    <ClInclude Include="Include\tc\PacketBase.h" />
+    <ClInclude Include="Include\tc\PacketHeadBase.h" />
     <ClInclude Include="Include\tc\TcpClient.h" />
     <ClInclude Include="Include\tc\ThreadEntry.h" />
     <ClInclude Include="Include\tc\Timer.h" />
@@ -115,8 +117,6 @@
     <ClInclude Include="MemoryTool.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="OtherTool.h" />
-    <ClInclude Include="PacketBase.h" />
-    <ClInclude Include="PacketHeadBase.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="RecvThread.h" />
     <ClInclude Include="SafeLock.h" />

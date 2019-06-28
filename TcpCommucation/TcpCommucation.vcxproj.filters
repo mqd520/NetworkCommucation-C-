@@ -28,14 +28,8 @@
     <Filter Include="06 Tcp通信管理\01 线程处理">
       <UniqueIdentifier>{f396dfe6-e594-4801-bfe7-cd750aed8ca3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="08 通信协议管理">
-      <UniqueIdentifier>{e91db0c6-7780-42f1-b0c8-4d5e2b01204c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07 流处理">
       <UniqueIdentifier>{eb870d64-278d-46a7-9a59-c5b609da3673}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="09 日志处理">
-      <UniqueIdentifier>{fe933227-69a7-43ff-9744-11782c089464}</UniqueIdentifier>
     </Filter>
     <Filter Include="06 Tcp通信管理\00 Socket数据管理">
       <UniqueIdentifier>{956bc1cb-c891-4bcb-9b39-868e0d143606}</UniqueIdentifier>
@@ -70,6 +64,12 @@
     <Filter Include="06 Tcp通信管理\09 Tcp事件">
       <UniqueIdentifier>{ea75656b-4c43-4df2-851b-ebad2d01f7b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="08 包处理">
+      <UniqueIdentifier>{e91db0c6-7780-42f1-b0c8-4d5e2b01204c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="10 日志处理">
+      <UniqueIdentifier>{fe933227-69a7-43ff-9744-11782c089464}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryTool.h">
@@ -80,12 +80,6 @@
     </ClInclude>
     <ClInclude Include="OtherTool.h">
       <Filter>00 公共</Filter>
-    </ClInclude>
-    <ClInclude Include="PacketBase.h">
-      <Filter>08 通信协议管理</Filter>
-    </ClInclude>
-    <ClInclude Include="PacketHeadBase.h">
-      <Filter>08 通信协议管理</Filter>
     </ClInclude>
     <ClInclude Include="Node.h">
       <Filter>01 链表</Filter>
@@ -199,7 +193,7 @@
       <Filter>04 Socket Api</Filter>
     </ClInclude>
     <ClInclude Include="LogMgr.h">
-      <Filter>09 日志处理</Filter>
+      <Filter>10 日志处理</Filter>
     </ClInclude>
     <ClInclude Include="Def.h" />
     <ClInclude Include="Include\tc\Def1.h" />
@@ -261,6 +255,12 @@
     <ClInclude Include="Include\tc\ThreadEntry.h">
       <Filter>03 线程</Filter>
     </ClInclude>
+    <ClInclude Include="Include\tc\PacketBase.h">
+      <Filter>08 包处理</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\PacketHeadBase.h">
+      <Filter>08 包处理</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoryTool.cpp">
@@ -279,10 +279,10 @@
       <Filter>06 Tcp通信管理\08 Tcp服务端</Filter>
     </ClCompile>
     <ClCompile Include="PacketBase.cpp">
-      <Filter>08 通信协议管理</Filter>
+      <Filter>08 包处理</Filter>
     </ClCompile>
     <ClCompile Include="PacketHeadBase.cpp">
-      <Filter>08 通信协议管理</Filter>
+      <Filter>08 包处理</Filter>
     </ClCompile>
     <ClCompile Include="Node.cpp">
       <Filter>01 链表</Filter>
@@ -396,7 +396,7 @@
       <Filter>04 Socket Api</Filter>
     </ClCompile>
     <ClCompile Include="LogMgr.cpp">
-      <Filter>09 日志处理</Filter>
+      <Filter>10 日志处理</Filter>
     </ClCompile>
     <ClCompile Include="TcpCommuMgr.cpp" />
     <ClCompile Include="SocketDataMgr.cpp">

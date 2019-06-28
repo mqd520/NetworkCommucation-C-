@@ -14,7 +14,7 @@ namespace tc
 		TcpClient(string ip = "", int port = 0);
 		virtual ~TcpClient();
 
-	private:
+	protected:
 		bool bInited;			// 是否已初始化
 		bool bIsConnecting;		// 是否正在进行连接
 		bool bIsConnected;		// 是否已连接上
@@ -45,7 +45,10 @@ namespace tc
 		void OnRecvTcpEvent(TcpEvt* pEvent);
 
 	public:
-		void Exit();
+		//************************************
+		// Method:    退出
+		//************************************
+		virtual void Exit() override;
 
 		//************************************
 		// Method:    设置自动重新信息
@@ -63,7 +66,7 @@ namespace tc
 		// Method:    关闭连接
 		// Parameter: b:	是否产生连接关闭事件
 		//************************************
-		void Close(bool b = true);
+		virtual void Close(bool b = true);
 
 		//************************************
 		// Method:    设置连接信息
@@ -77,7 +80,7 @@ namespace tc
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
 		//************************************
-		void Send(BYTE* pBuf, int len);
+		virtual void Send(BYTE* pBuf, int len);
 	};
 
 	class TimerCallback

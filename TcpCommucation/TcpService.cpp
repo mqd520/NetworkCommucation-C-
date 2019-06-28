@@ -58,16 +58,29 @@ namespace tc
 		}
 	}
 
-	void TcpService::OnRecvTcpEvent(TcpEvt* pEvent)
+	void TcpService::OnRecvTcpEvent(TcpEvt* pEvt)
 	{
-		DispatchTcpEvt(pEvent);
+		DispatchTcpEvt(pEvt);
 	}
 
-	void TcpService::DispatchTcpEvt(TcpEvt* pEvent)
+	void TcpService::DispatchTcpEvt(TcpEvt* pEvt)
 	{
 		if (lpCallback)
 		{
-			lpCallback(pEvent, pParam1, pParam2);	// 通知事件注册方
+			__try
+			{
+				lpCallback(pEvt, pParam1, pParam2);
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+				int n = 0;
+				n++;
+			}
 		}
+	}
+
+	void TcpService::Exit()
+	{
+
 	}
 }

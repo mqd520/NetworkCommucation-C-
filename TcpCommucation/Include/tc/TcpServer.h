@@ -28,6 +28,12 @@ namespace tc
 		//************************************
 		bool IsAllow(string ip);
 
+		//************************************
+		// Method:    收到tcp事件处理
+		// Parameter: pEvt: tcp事件
+		//************************************
+		virtual void OnRecvTcpEvent(TcpEvt* pEvt) override;
+
 	public:
 		//************************************
 		// Method:    设置监听信息
@@ -44,14 +50,19 @@ namespace tc
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
 		//************************************
-		void Send(int clientId, BYTE* pBuf, int len);
+		virtual void Send(int clientId, BYTE* pBuf, int len);
 
 		//************************************
 		// Method:    关闭指定客户端
 		// Parameter: clientId:	客户端SOCKET
-		// Parameter: b:	是否产生连接断开事件, 默认: false
+		// Parameter: b:	是否产生连接断开事件, 默认: true
 		//************************************
-		void CloseClient(int clientId, bool b = false);
+		virtual void CloseClient(int clientId, bool b = true);
+
+		//************************************
+		// Method:    退出
+		//************************************
+		virtual void Exit() override;
 
 		//************************************
 		// Method:    增加一个允许IP

@@ -1,9 +1,12 @@
 #include "stdafx.h"
-#include "PacketHeadBase.h"
+#include "Include/tc/PacketHeadBase.h"
 
 namespace tc
 {
-	PacketHeadBase::PacketHeadBase()
+	PacketHeadBase::PacketHeadBase(int cmd, int len) :
+		nCmd(cmd),
+		nLen(len),
+		nHeadLen(0)
 	{
 
 	}
@@ -15,22 +18,22 @@ namespace tc
 
 	int PacketHeadBase::GetHeadLen()
 	{
-		return 0;
+		return nHeadLen;
 	}
 
 	int PacketHeadBase::GetPacketLen()
 	{
-		return 0;
+		return nLen;
 	}
 
 	int PacketHeadBase::GetTotalLen()
 	{
-		return GetHeadLen() + GetPacketLen();
+		return nTotalLen;
 	}
 
 	int PacketHeadBase::GetCmd()
 	{
-		return 0;
+		return nCmd;
 	}
 
 	bool PacketHeadBase::IsValid()
@@ -38,13 +41,25 @@ namespace tc
 		return false;
 	}
 
-	BYTE* PacketHeadBase::Read(int cmd, int len)
+	void PacketHeadBase::Read(CNetworkStreamRead& ns)
 	{
-		return NULL;
+
 	}
 
-	void PacketHeadBase::Write(BYTE* buf, int len)
+	void PacketHeadBase::Read1(BYTE* pBuf, int len, bool bigEndian /*= true*/)
+	{
+		CNetworkStreamRead ns(pBuf, len, bigEndian ? EByteOrder::big : EByteOrder::litte);
+		this->Read(ns);
+	}
+
+	void PacketHeadBase::Write(CNetworkStreamWrite& ns)
 	{
 
+	}
+
+	void PacketHeadBase::Write1(BYTE* pBuf, int len, bool bigEndian /*= true*/)
+	{
+		CNetworkStreamWrite ns(pBuf, len, bigEndian ? EByteOrder::big : EByteOrder::litte);
+		this->Write(ns);
 	}
 }

@@ -1,9 +1,10 @@
 #include "stdafx.h"
-#include "PacketBase.h"
+#include "Include/tc/PacketBase.h"
 
 namespace tc
 {
-	PacketBase::PacketBase()
+	PacketBase::PacketBase(int cmd) :
+		pckCmd(cmd)
 	{
 
 	}
@@ -13,23 +14,35 @@ namespace tc
 
 	}
 
-	int PacketBase::GetCmd()
+	int PacketBase::GetLen()
 	{
 		return 0;
 	}
 
-	BYTE* PacketBase::Read(int* len)
+	int PacketBase::GetCmd()
 	{
-		return NULL;
+		return pckCmd;
 	}
 
-	void PacketBase::Write(BYTE* buf, int len)
+	void PacketBase::Read(CNetworkStreamRead& ns)
 	{
 
 	}
 
-	void PacketBase::Release()
+	void PacketBase::Read1(BYTE* pBuf, int len, bool bigEndian /*= true*/)
+	{
+		CNetworkStreamRead ns(pBuf, len, bigEndian ? EByteOrder::big : EByteOrder::litte);
+		this->Read(ns);
+	}
+
+	void PacketBase::Write(CNetworkStreamWrite& ns)
 	{
 
+	}
+
+	void PacketBase::Write1(BYTE* pBuf, int len, bool bigEndian /*= true*/)
+	{
+		CNetworkStreamWrite ns(pBuf, len, bigEndian ? EByteOrder::big : EByteOrder::litte);
+		this->Write(ns);
 	}
 }

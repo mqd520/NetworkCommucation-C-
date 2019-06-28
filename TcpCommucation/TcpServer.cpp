@@ -38,7 +38,7 @@ namespace tc
 				bool b1 = SocketTool::Bind(socket, strIP.c_str(), nPort);
 				if (b1)
 				{
-					SocketTool::SetNonBlock(socket);	// ÉèÖÃ·Ç×èÈû
+					SocketTool::SetNonBlock(socket);
 					bool b2 = SocketTool::Listen(socket, strIP, nPort);
 					if (b2)
 					{
@@ -60,6 +60,23 @@ namespace tc
 		}
 
 		return bListening;
+	}
+
+	void TcpServer::OnRecvTcpEvent(TcpEvt* pEvt)
+	{
+		ETcpEvtType type = pEvt->GetEvtType();
+		if (type == ETcpEvtType::RecvNewConn)
+		{
+			RecvNewConnEvt* pEvt1 = static_cast<RecvNewConnEvt*>(pEvt);
+			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "recv new connection: %s:%d", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
+		}
+
+		__super::OnRecvTcpEvent(pEvt);
+	}
+
+	void TcpServer::Exit()
+	{
+
 	}
 
 	void TcpServer::AddAllowIP(string ip)
@@ -126,7 +143,7 @@ namespace tc
 		}
 	}
 
-	void TcpServer::CloseClient(int clientId, bool b /*= false*/)
+	void TcpServer::CloseClient(int clientId, bool b /*= true*/)
 	{
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
 		TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(data.socket);
