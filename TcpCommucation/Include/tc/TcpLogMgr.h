@@ -1,5 +1,6 @@
 #pragma once
 #include "TcpLog.h"
+#include "Def.h"
 #include <string>
 #include <functional>
 

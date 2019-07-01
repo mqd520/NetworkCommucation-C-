@@ -1,6 +1,5 @@
 #pragma once
 #include "Def.h"
-#include "Def1.h"
 #include "Thread.h"
 #include "SocketAPI.h"
 #include "TcpEvt.h"
