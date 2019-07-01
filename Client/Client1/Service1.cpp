@@ -6,22 +6,16 @@
 #include "tc/TcpEvt.h"
 #include "tc/ConnectSrvResultEvt.h"
 
-void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2);
-
 
 Service1::Service1()
 {
 
 }
 
-Service1::~Service1()
-{
-
-}
-
 void Service1::Init()
 {
-	mainTcpClient.RegTcpEventCallback(OnTcpEvt, &theApp);
+	Fun2 fun = std::bind(&Service1::OnTcpEvt, this, _1, _2, _3);
+	mainTcpClient.RegTcpEventCallback(fun, NULL, NULL);
 }
 
 void Service1::Exit()
@@ -29,18 +23,12 @@ void Service1::Exit()
 	mainTcpClient.Exit();
 }
 
-TcpClient&	Service1::GetMainTcpClient()
+TcpClient& Service1::GetMainTcpClient()
 {
 	return mainTcpClient;
 }
 
-//************************************
-// Method:    tcp事件回调函数
-// Parameter: tcp事件对象
-// Parameter: 附加参数1
-// Parameter: 附加参数2
-//************************************
-void OnTcpEvt(TcpEvt* pEvt, void* pParam1, void* pParam2)
+void Service1::OnTcpEvt(TcpEvt* pEvt, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 {
 	ETcpEvtType type = pEvt->GetEvtType();
 	if (type == ETcpEvtType::ConnectSrvResult)

@@ -14,9 +14,6 @@
     <Filter Include="100 System">
       <UniqueIdentifier>{c8bd80de-1afe-44cf-bed3-914f609a09a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01 Log">
-      <UniqueIdentifier>{fe05fcbb-ccf2-44bd-b020-979c2a4e3d9c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02 服务">
       <UniqueIdentifier>{e7e96b2a-181d-4874-8c58-7618a9ea98a8}</UniqueIdentifier>
     </Filter>
@@ -47,12 +44,6 @@
     <ClInclude Include="Msg.h">
       <Filter>00 Def</Filter>
     </ClInclude>
-    <ClInclude Include="LogSrv.h">
-      <Filter>01 Log</Filter>
-    </ClInclude>
-    <ClInclude Include="LogThread.h">
-      <Filter>01 Log</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Service1.cpp">
@@ -68,12 +59,6 @@
       <Filter>100 System</Filter>
     </ClCompile>
     <ClCompile Include="Client1.cpp" />
-    <ClCompile Include="LogSrv.cpp">
-      <Filter>01 Log</Filter>
-    </ClCompile>
-    <ClCompile Include="LogThread.cpp">
-      <Filter>01 Log</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client1.rc">

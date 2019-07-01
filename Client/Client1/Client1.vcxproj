@@ -56,13 +56,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../TcpCommucation/Include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../TcpCommucation/Include/;../../Lib/log/Include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../TcpCommucation/bin/Debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>TcpCommucation_d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../TcpCommucation/bin/Debug/;../../Lib/log/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>TcpCommucation_d.lib;Log_d.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -110,8 +110,6 @@
     <ClInclude Include="Client1Dlg.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="ExceptionHandler.h" />
-    <ClInclude Include="LogSrv.h" />
-    <ClInclude Include="LogThread.h" />
     <ClInclude Include="Msg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Service1.h" />
@@ -122,8 +120,6 @@
     <ClCompile Include="Client1.cpp" />
     <ClCompile Include="Client1Dlg.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
-    <ClCompile Include="LogSrv.cpp" />
-    <ClCompile Include="LogThread.cpp" />
     <ClCompile Include="Service1.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

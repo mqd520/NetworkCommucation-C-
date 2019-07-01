@@ -6,10 +6,13 @@
 #include "Client1.h"
 #include "Client1Dlg.h"
 #include "ExceptionHandler.h"
-#include "LogSrv.h"
 #include "Msg.h"
 
+#include "log/LogSrv.h"
+using namespace llog;
+
 #include "tc/TcpCommuMgr.h"
+#include "tc/TcpLogMgr.h"
 using namespace tc;
 
 #ifdef _DEBUG
@@ -60,13 +63,14 @@ BOOL CClient1App::InitInstance()
 
 	CWinApp::InitInstance();
 
+	LogSrv::Init("Client.exe.Log");
+
 	ExceptionHandler::Init();
 	ExceptionHandler::RegExceptionCallback(OnException, &theApp);
 	ExceptionHandler::SetFileName("Client1.exe");
 
-	LogSrv::Init();
-
-	TcpCommu::GetLogMgr()->RegCallback(OnTcpCommLog, &theApp);
+	Fun1 fun = std::bind(OnTcpCommLog, _1, _2, _3, _4);
+	TcpLogMgr::SetCallbackFn(fun, NULL, NULL);
 	TcpCommu::Init();
 	srv1.Init();
 
@@ -122,21 +126,22 @@ BOOL CClient1App::InitInstance()
 int CClient1App::ExitInstance()
 {
 	// TODO:  在此添加专用代码和/或调用基类
+	LogSrv::Exit();
 	srv1.Exit();
 	TcpCommu::Exit();
-	LogSrv::Exit();
 
 	return CWinApp::ExitInstance();
 }
 
-Service1&	CClient1App::GetSrv1()
+Service1& CClient1App::GetSrv1()
 {
 	return srv1;
 }
 
 void OnException(void* pParam1, void* pParam2)
 {
-	LogSrv::GetInstance()->Add("a fatal error has occured, the program will be shut down, please contact the administrator", ELogType::Fatal);
+	LogSrv::Exit();
+	TcpCommu::Exit();
 }
 
 //************************************
@@ -148,31 +153,28 @@ void OnException(void* pParam1, void* pParam2)
 //************************************
 void OnTcpCommLog(ETcpLogType type, string log, void* pParam1, void* pParam2)
 {
-	OutputDebugStringA(log.c_str());
-	OutputDebugStringA("\n");
+	//OutputDebugStringA(log.c_str());
+	//OutputDebugStringA("\n");
 
-	ELogType type1 = ELogType::Other;
-	if (type == ETcpLogType::Info)
+	ELogSrvType type1 = ELogSrvType::Info;
+	if (type == ETcpLogType::Warn)
 	{
-		type1 = ELogType::Info;
-	}
-	else if (type == ETcpLogType::Warn)
-	{
-		type1 = ELogType::Warn;
+		type1 = ELogSrvType::Warn;
 	}
 	else if (type == ETcpLogType::Debug)
 	{
-		type1 = ELogType::Debug;
+		type1 = ELogSrvType::Debug;
 	}
 	else if (type == ETcpLogType::Error)
 	{
-		type1 = ELogType::Error;
+		type1 = ELogSrvType::Error;
 	}
 	else if (type == ETcpLogType::Fatal)
 	{
-		type1 = ELogType::Fatal;
+		type1 = ELogSrvType::Fatal;
 	}
-	LogSrv::GetInstance()->Add(log, type1);
+
+	LogSrv::WriteLine(type1, false, log);
 
 	if (theApp.m_pMainWnd)
 	{
