@@ -9,7 +9,7 @@
 
 namespace tc
 {
-	// tcp服务基类
+	// tcp基础服务类
 	class TcpService
 	{
 	public:
@@ -17,13 +17,13 @@ namespace tc
 		virtual ~TcpService();
 
 	protected:
-		SOCKET socket;			// 关联的socket
-		string strIP;			// socket关联的服务端IP
-		int nPort;				// socket关联的服务端端口
-		LPTcpEventCallback lpCallback;	// tcp事件回调函数指针
-		void* pParam1;					// 事件附加参数1
-		void* pParam2;					// 事件附加参数2
-		ETcpSrvType tcpSrvType;			// tcp srv type
+		SOCKET socket;				// 关联的socket
+		string strIP;				// socket关联的服务端IP
+		int nPort;					// socket关联的服务端端口
+		Fun2 fun;					// tcp事件回调函数指针
+		void* pParam1;				// 事件附加参数1
+		void* pParam2;				// 事件附加参数2
+		ETcpSrvType tcpSrvType;		// tcp srv type
 
 	protected:
 		friend class TcpEvtMgr;
@@ -78,6 +78,6 @@ namespace tc
 		// Parameter: pParam1:		附加参数1
 		// Parameter: pParam1:		附加参数2
 		//************************************
-		virtual void RegTcpEventCallback(LPTcpEventCallback lpCallback, void* pParam1 = NULL, void* pParam2 = NULL);
+		virtual void RegTcpEventCallback(Fun2 fun, void* pParam1 = NULL, void* pParam2 = NULL);
 	};
 }

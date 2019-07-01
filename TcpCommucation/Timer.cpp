@@ -4,9 +4,8 @@
 
 namespace tc
 {
-	Timer::Timer(int timeout /*= 1000*/, LPTimeoutCallback lpfn /*= NULL*/, int count /*= 0*/) :
+	Timer::Timer(int timeout /*= 1000*/, int count /*= 0*/) :
 		nTimeout(timeout),
-		lpfn(lpfn),
 		nCount(0),
 		bRunning(false),
 		nTimeouted(0),
@@ -37,9 +36,9 @@ namespace tc
 		nTimeout = millsecond;
 	}
 
-	void Timer::SetCallback(LPTimeoutCallback lpfn, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
+	void Timer::SetCallback(Fun3 fun, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
-		this->lpfn = lpfn;
+		this->fun = fun;
 		this->pParam1 = pParam1;
 		this->pParam2 = pParam2;
 	}
@@ -89,7 +88,11 @@ namespace tc
 			{
 				nCounted++;
 				nTimeouted = 0;
-				lpfn(this, nCounted, this->pParam1, this->pParam2);
+
+				if (!fun._Empty())
+				{
+					fun(this, nCounted, pParam1, pParam2);
+				}
 			}
 		}
 	}

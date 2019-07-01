@@ -120,7 +120,7 @@ namespace tc
 	bool SocketTool::Bind(SOCKET socket, string ip, int port, bool b /*= true*/)
 	{
 		SOCKADDR_IN addr = GetSocketAddr(ip, port);
-		int result = bind(socket, (SOCKADDR*)&addr, sizeof(addr));
+		int result = ::bind(socket, (SOCKADDR*)&addr, sizeof(addr));
 		if (result == 0)
 		{
 			return true;
@@ -140,7 +140,7 @@ namespace tc
 
 	bool SocketTool::Listen(SOCKET socket, string ip, int port, int backlog /*= SOMAXCONN*/, bool b /*= true*/)
 	{
-		int ret = listen(socket, backlog);
+		int ret = ::listen(socket, backlog);
 		if (ret == 0)
 		{
 			return true;
@@ -321,12 +321,12 @@ namespace tc
 	void SocketTool::SetNonBlock(SOCKET socket, bool nonblock /*= true*/)
 	{
 		u_long mode = nonblock ? 1 : 0;
-		ioctlsocket(socket, FIONBIO, &mode);
+		::ioctlsocket(socket, FIONBIO, &mode);
 	}
 
 	bool SocketTool::GetSocketOpt(SOCKET socket, char* optval, int* optlen, bool b /*= true*/)
 	{
-		int result = getsockopt(socket, SOL_SOCKET, SO_SNDBUF, optval, optlen);
+		int result = ::getsockopt(socket, SOL_SOCKET, SO_SNDBUF, optval, optlen);
 		return result == 1;
 	}
 

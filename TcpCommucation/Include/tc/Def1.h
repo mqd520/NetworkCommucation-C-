@@ -1,8 +1,8 @@
 #pragma once
-
 #include <string>
-
+#include <functional>
 using namespace std;
+using namespace std::placeholders;
 
 namespace tc
 {
@@ -22,11 +22,12 @@ namespace tc
 	// 日志类型
 	enum class ETcpLogType : int
 	{
-		Info,	// 消息
-		Warn,	// 警告
-		Debug,	// 调试
-		Error,	// 错误
-		Fatal,	// 严重错误
+		Info,		// 消息
+		Warn,		// 警告
+		Debug,		// 调试
+		Error,		// 错误
+		Fatal,		// 严重错误
+		Exception,	// 系统异常
 
 		None	// 无
 	};
@@ -37,7 +38,7 @@ namespace tc
 		Peer,			// 对方关闭
 		Local,			// 本地关闭
 		Error,			// 发生socket错误
-		
+
 		Other			// 其它原因
 	};
 
@@ -63,5 +64,9 @@ namespace tc
 		int cmd;		// 包命令
 		int clientId;	// client id(适用于服务端)
 	}PacketData;
+
+
+	// tcp事件回调函数指针
+	typedef std::function<void(TcpEvt*, void*, void*)> Fun2;
 }
 

@@ -1,24 +1,27 @@
 #pragma once
+#include <functional>
+using namespace std;
+using namespace std::placeholders;
 
 namespace tc
 {
 	class Timer;
-
-	typedef void(*LPTimeoutCallback)(Timer* pTimeout, int count, void* pParam1, void* pParam2);
-
 	class TimerMgr;
+
+	// 定时器回调函数指针
+	typedef std::function<void(Timer*, int, void*, void*)> Fun3;
 
 	// 定时器
 	class Timer
 	{
 	public:
-		Timer(int timeout = 1000, LPTimeoutCallback lpfn = NULL, int count = 0);
+		Timer(int timeout = 1000, int count = 0);
 		~Timer();
 
 	private:
 		int nTimeout;			// 间隔时长(毫秒)
 		int nCount;				// 运行次数,0:无限运行
-		LPTimeoutCallback lpfn;	// 回调函数
+		Fun3 fun;				// 定时器回调函数指针
 		void* pParam1;			// 回调函数附加参数1
 		void* pParam2;			// 回调函数附加参数2
 		bool bRunning;			// 是否正在运行
@@ -41,7 +44,7 @@ namespace tc
 		//************************************
 		// Method:    设置回调函数
 		//************************************
-		void SetCallback(LPTimeoutCallback lpfn, void* pParam1 = NULL, void* pParam2 = NULL);
+		void SetCallback(Fun3 fun, void* pParam1 = NULL, void* pParam2 = NULL);
 
 		//************************************
 		// Method:    开始运行定时器

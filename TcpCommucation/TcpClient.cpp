@@ -20,8 +20,10 @@ namespace tc
 		nTimeSpan(TC_RECONNECTTIME)
 	{
 		this->tcpSrvType = ETcpSrvType::Client;
+
 		t.SetTimeout(nTimeSpan);
-		t.SetCallback(OnTimer1, this);
+		Fun3 fun = std::bind(&TcpClient::OnTimer, this, _1, _2, _3, _4);
+		t.SetCallback(fun, NULL, NULL);
 	}
 
 	TcpClient::~TcpClient()
@@ -150,22 +152,5 @@ namespace tc
 	void TcpClient::OnTimer(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
 		ConnectServer();
-	}
-
-
-
-
-	void OnTimer1(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
-	{
-		TimerCallback::OnTimer(pTimer, count, pParam1, pParam2);
-	}
-
-	void TimerCallback::OnTimer(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
-	{
-		if (pParam1)
-		{
-			TcpClient* p = static_cast<TcpClient*>(pParam1);
-			p->OnTimer(pTimer, count, pParam1, pParam2);
-		}
 	}
 }

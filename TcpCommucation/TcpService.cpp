@@ -2,6 +2,7 @@
 #include "Include/tc/TcpService.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvNewConnEvt.h"
+#include "Include/tc/TcpLog.h"
 
 namespace tc
 {
@@ -9,7 +10,6 @@ namespace tc
 		socket(INVALID_SOCKET),
 		strIP(ip),
 		nPort(port),
-		lpCallback(NULL),
 		pParam1(NULL),
 		pParam2(NULL),
 		tcpSrvType(ETcpSrvType::None)
@@ -42,11 +42,11 @@ namespace tc
 		return nPort;
 	}
 
-	void TcpService::RegTcpEventCallback(LPTcpEventCallback lpCallback, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
+	void TcpService::RegTcpEventCallback(Fun2 fun, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
-		TcpService::lpCallback = lpCallback;
-		TcpService::pParam1 = pParam1;
-		TcpService::pParam2 = pParam2;
+		this->fun = fun;
+		this->pParam1 = pParam1;
+		this->pParam2 = pParam2;
 	}
 
 	void TcpService::SendData(SOCKET socket, BYTE* pBuf, int len)
@@ -65,16 +65,16 @@ namespace tc
 
 	void TcpService::DispatchTcpEvt(TcpEvt* pEvt)
 	{
-		if (lpCallback)
+		if (!fun._Empty())
 		{
 			__try
 			{
-				lpCallback(pEvt, pParam1, pParam2);
+				fun(pEvt, pParam1, pParam2);
 			}
 			__except (EXCEPTION_EXECUTE_HANDLER)
 			{
-				int n = 0;
-				n++;
+				//TcpLog::WriteLine(ETcpLogType::Exception, "TcpEvt: %d, client: %s:%d",
+				//	pEvt->GetEvtType(), pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 			}
 		}
 	}

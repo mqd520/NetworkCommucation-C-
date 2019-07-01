@@ -23,8 +23,13 @@ namespace tc
 		Timer t;				// 定时器
 
 	private:
-		friend class TimerCallback;
-
+		//************************************
+		// Method:    定时器事件处理
+		// Parameter: 定时器对象
+		// Parameter: 次数
+		// Parameter: void * pParam1
+		// Parameter: void * pParam2
+		//************************************
 		void OnTimer(Timer* pTimer, int count, void* pParam1 = NULL, void* pParam2 = NULL);
 
 		//************************************
@@ -81,11 +86,5 @@ namespace tc
 		// Parameter: 缓冲区字节长度
 		//************************************
 		virtual void Send(BYTE* pBuf, int len);
-	};
-
-	class TimerCallback
-	{
-	public:
-		static void OnTimer(Timer* pTimer, int count, void* pParam1 = NULL, void* pParam2 = NULL);
 	};
 }
