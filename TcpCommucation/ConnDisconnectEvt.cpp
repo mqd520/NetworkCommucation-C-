@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/ConnDisconnectEvt.h"
-#include "Def.h"
+#include "Include/tc/Def.h"
 #include "Include/tc/Def1.h"
-#include "SocketDataMgr.h"
+#include "Include/tc/SocketDataMgr.h"
 
 namespace tc
 {

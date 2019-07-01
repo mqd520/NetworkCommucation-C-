@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ConnDisconnSocEvt.h"
+#include "Include/tc/ConnDisconnSocEvt.h"
 
 namespace tc
 {

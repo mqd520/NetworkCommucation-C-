@@ -11,7 +11,7 @@ namespace tc
 		//************************************
 		// Method:    构造函数
 		// Parameter: cmd:	包命令
-		// Parameter: len:	包长度
+		// Parameter: len:	包体长度
 		//************************************
 		PacketHeadBase(int cmd, int len);
 		virtual~PacketHeadBase();

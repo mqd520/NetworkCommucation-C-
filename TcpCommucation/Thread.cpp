@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Thread.h"
+#include "Include/tc/Thread.h"
 
 namespace tc
 {

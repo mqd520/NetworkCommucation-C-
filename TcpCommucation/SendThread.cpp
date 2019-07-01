@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Include/tc/Def1.h"
-#include "SendThread.h"
+#include "Include/tc/SendThread.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "Common.h"
+#include "Include/tc/TcpLog.h"
 
 namespace tc
 {
@@ -21,7 +21,7 @@ namespace tc
 		if (!m_bRun)
 		{
 			__super::Run();
-			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Debug, "send thread run.");
+			TcpLog::WriteLine(ETcpLogType::Debug, "send thread run.");
 		}
 	}
 

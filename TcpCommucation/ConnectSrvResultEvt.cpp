@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Include/tc/ConnectSrvResultEvt.h"
-#include "Def.h"
+#include "Include/tc/Def.h"
 #include "Include/tc/Def1.h"
 
 namespace tc

@@ -1,18 +1,17 @@
 #pragma once
-#include "../../SelectThread.h"
-#include "../../RecvThread.h"
-#include "../../SendThread.h"
-#include "../../TcpEvtThread.h"
+#include "SelectThread.h"
+#include "RecvThread.h"
+#include "SendThread.h"
+#include "TcpEvtThread.h"
 
-#include "../../Select.h"
-#include "../../RecvDataHandler.h"
-#include "../../SendDataHandler.h"
+#include "Select.h"
+#include "RecvDataHandler.h"
+#include "SendDataHandler.h"
 
-#include "../../TcpConnectionMgr.h"
-#include "../../TcpServiceMgr.h"
-#include "../../TcpEvtMgr.h"
-#include "../../LogMgr.h"
-#include "../../SocketDataMgr.h"
+#include "TcpConnectionMgr.h"
+#include "TcpServiceMgr.h"
+#include "TcpEvtMgr.h"
+#include "SocketDataMgr.h"
 
 
 namespace tc
@@ -37,7 +36,6 @@ namespace tc
 		static TcpConnectionMgr tcpConnMgr;			// tcp连接管理对象
 		static TcpServiceMgr tcpServiceMgr;			// tcp服务管理对象
 		static TcpEvtMgr tcpEvtMgr;					// tcp事件管理对象
-		static LogMgr logMgr;						// 日志管理对象
 
 	public:
 		~TcpCommu();
@@ -101,11 +99,6 @@ namespace tc
 		// Method:    获取tcp事件管理对象
 		//************************************
 		static TcpEvtMgr* GetTcpEvtMgr();
-
-		//************************************
-		// Method:    获取日志管理对象
-		//************************************
-		static LogMgr* GetLogMgr();
 
 		//************************************
 		// Method:    获取socket数据管理对象

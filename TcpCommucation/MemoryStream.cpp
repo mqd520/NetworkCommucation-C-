@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Include/tc/MemoryStream.h"
-#include "MemoryTool.h"
 
 using namespace tc;
 

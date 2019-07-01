@@ -1,10 +1,10 @@
 #pragma once
-#include "Include/tc/ThreadEntry.h"
+#include "ThreadEntry.h"
 
 namespace tc
 {
-	//select线程
-	class SelectThread : public CThreadEntry
+	//tcp事件线程
+	class TcpEvtThread : public CThreadEntry
 	{
 	protected:
 		//************************************
@@ -13,8 +13,8 @@ namespace tc
 		void OnThreadExecute();
 
 	public:
-		SelectThread();
-		~SelectThread();
+		TcpEvtThread();
+		~TcpEvtThread();
 
 		//************************************
 		// Method:    开始运行线程

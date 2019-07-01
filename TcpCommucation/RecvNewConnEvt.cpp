@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Def.h"
+#include "Include/tc/Def.h"
 #include "Include/tc/Def1.h"
 #include "Include/tc/RecvNewConnEvt.h"
 #include "Include/tc/TcpCommuMgr.h"

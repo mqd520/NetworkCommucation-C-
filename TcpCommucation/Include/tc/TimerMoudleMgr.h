@@ -1,8 +1,8 @@
 #pragma once
-#include "../../TimeThread1.h"
-#include "../../TimeThread2.h"
-#include "../../TimeMgr.h"
-#include "../../TimerMgr.h"
+#include "TimeThread1.h"
+#include "TimeThread2.h"
+#include "TimeMgr.h"
+#include "TimerMgr.h"
 
 namespace tc
 {

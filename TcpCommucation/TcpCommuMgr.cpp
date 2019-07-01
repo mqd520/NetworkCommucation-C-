@@ -1,7 +1,19 @@
 #include "stdafx.h"
 #include "Include/tc/TcpCommuMgr.h"
+#include "Include/tc/SelectThread.h"
+#include "Include/tc/RecvThread.h"
+#include "Include/tc/SendThread.h"
+#include "Include/tc/TcpEvtThread.h"
+#include "Include/tc/Select.h"
+#include "Include/tc/RecvDataHandler.h"
+#include "Include/tc/SendDataHandler.h"
+#include "Include/tc/TcpConnectionMgr.h"
+#include "Include/tc/TcpServiceMgr.h"
+#include "Include/tc/TcpEvtMgr.h"
+#include "Include/tc/SocketDataMgr.h"
 #include "Include/tc/SocketTool.h"
 #include "Include/tc/TimerMoudleMgr.h"
+#include "Include/tc/TcpLog.h"
 
 namespace tc
 {
@@ -18,7 +30,6 @@ namespace tc
 	TcpConnectionMgr TcpCommu::tcpConnMgr;
 	TcpServiceMgr TcpCommu::tcpServiceMgr;
 	TcpEvtMgr TcpCommu::tcpEvtMgr;
-	LogMgr TcpCommu::logMgr;
 
 
 	void OnSocketToolError(string err, void* lpParam);
@@ -95,11 +106,6 @@ namespace tc
 		return &tcpEvtMgr;
 	}
 
-	LogMgr* TcpCommu::GetLogMgr()
-	{
-		return &logMgr;
-	}
-
 	SocketDataMgr* TcpCommu::GetSocketDataMgr()
 	{
 		return &socketDataMgr;
@@ -117,6 +123,6 @@ namespace tc
 
 	void OnSocketToolError(string err, void* lpParam)
 	{
-		TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Error, "%s", err.c_str());
+		TcpLog::WriteLine(ETcpLogType::Error, "%s", err.c_str());
 	}
 }

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ThreadLock.h"
+#include "Include/tc/ThreadLock.h"
 
 namespace tc
 {

@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "Include/tc/Def1.h"
 #include "Include/tc/TcpServer.h"
-#include "TcpConnectionMgr.h"
+#include "Include/tc/TcpConnectionMgr.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvNewConnEvt.h"
+#include "Include/tc/TcpLog.h"
 
 namespace tc
 {
@@ -52,11 +53,11 @@ namespace tc
 
 		if (bListening)
 		{
-			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "listen success: %s:%d", strIP.c_str(), nPort);
+			TcpLog::WriteLine(ETcpLogType::Info, "listen success: %s:%d", strIP.c_str(), nPort);
 		}
 		else
 		{
-			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Error, "listen fail: %s:%d", strIP.c_str(), nPort);
+			TcpLog::WriteLine(ETcpLogType::Error, "listen fail: %s:%d", strIP.c_str(), nPort);
 		}
 
 		return bListening;
@@ -68,7 +69,7 @@ namespace tc
 		if (type == ETcpEvtType::RecvNewConn)
 		{
 			RecvNewConnEvt* pEvt1 = static_cast<RecvNewConnEvt*>(pEvt);
-			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "recv new connection: %s:%d", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
+			TcpLog::WriteLine(ETcpLogType::Info, "recv new connection: %s:%d", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
 		}
 
 		__super::OnRecvTcpEvent(pEvt);

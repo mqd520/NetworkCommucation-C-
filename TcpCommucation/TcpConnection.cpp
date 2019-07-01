@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "TcpConnection.h"
+#include "Include/tc/TcpConnection.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvDataEvt.h"
 #include "Include/tc/ConnDisconnectEvt.h"
 #include "Include/tc/SocketTool.h"
-#include "SendPeerDataSocEvt.h"
-#include "LogMgr.h"
+#include "Include/tc/SendPeerDataSocEvt.h"
+#include "Include/tc/TcpLog.h"
 
 namespace tc
 {
@@ -45,7 +45,7 @@ namespace tc
 	void TcpConnection::OnConnDisconnect(EDisconnReason reason, bool b /*= true*/)
 	{
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->Remove(sendrecvSocket);
-		TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Warn, "connection disconnect: %s:%d, reason: %d", data.peerIp.c_str(), data.peerPort, (int)reason);
+		TcpLog::WriteLine(ETcpLogType::Warn, "connection disconnect: %s:%d, reason: %d", data.peerIp.c_str(), data.peerPort, (int)reason);
 
 		if (b)
 		{

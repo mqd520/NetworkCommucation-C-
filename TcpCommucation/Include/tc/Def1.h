@@ -54,5 +54,14 @@ namespace tc
 	// pParam1	附加参数1
 	// pParam1	附加参数2
 	using LPTcpLogCallback = void(*)(ETcpLogType type, string log, void* pParam1, void* pParam2);
+
+	// 包数据
+	typedef struct tagPacketData
+	{
+		BYTE* pBuf;		// 包体缓冲区
+		int nLen;		// 包体缓冲区长度
+		int cmd;		// 包命令
+		int clientId;	// client id(适用于服务端)
+	}PacketData;
 }
 

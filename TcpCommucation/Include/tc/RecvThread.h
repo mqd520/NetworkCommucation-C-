@@ -1,10 +1,10 @@
 #pragma once
-#include "Include/tc/ThreadEntry.h"
+#include "ThreadEntry.h"
 
 namespace tc
 {
-	//tcp事件线程
-	class TcpEvtThread : public CThreadEntry
+	//接收数据线程
+	class RecvThread : public CThreadEntry
 	{
 	protected:
 		//************************************
@@ -13,8 +13,8 @@ namespace tc
 		void OnThreadExecute();
 
 	public:
-		TcpEvtThread();
-		~TcpEvtThread();
+		RecvThread();
+		~RecvThread();
 
 		//************************************
 		// Method:    开始运行线程

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ThreadMutexHelper.h"
+#include "Include/tc/ThreadMutexHelper.h"
 
 namespace tc
 {

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Include/tc/Def1.h"
-#include "TcpEvtThread.h"
+#include "Include/tc/TcpEvtThread.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "Common.h"
-#include "TcpEvtMgr.h"
+#include "Include/tc/TcpEvtMgr.h"
+#include "Include/tc/TcpLog.h"
 
 namespace tc
 {
@@ -22,7 +22,7 @@ namespace tc
 		if (!m_bRun)
 		{
 			__super::Run();
-			TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Debug, "tcp evt thread run.");
+			TcpLog::WriteLine(ETcpLogType::Debug, "tcp evt thread run.");
 		}
 	}
 

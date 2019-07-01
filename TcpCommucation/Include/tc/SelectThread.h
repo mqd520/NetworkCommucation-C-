@@ -1,10 +1,10 @@
 #pragma once
-#include "Include/tc/ThreadEntry.h"
+#include "ThreadEntry.h"
 
 namespace tc
 {
-	//发送数据线程
-	class SendThread : public CThreadEntry
+	//select线程
+	class SelectThread : public CThreadEntry
 	{
 	protected:
 		//************************************
@@ -13,8 +13,8 @@ namespace tc
 		void OnThreadExecute();
 
 	public:
-		SendThread();
-		~SendThread();
+		SelectThread();
+		~SelectThread();
 
 		//************************************
 		// Method:    开始运行线程

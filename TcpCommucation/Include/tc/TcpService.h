@@ -1,11 +1,11 @@
 #pragma once
 #include "Def.h"
-#include "Include/tc/Def1.h"
+#include "Def1.h"
 #include "Thread.h"
 #include "SocketAPI.h"
-#include "Include/tc/TcpEvt.h"
+#include "TcpEvt.h"
 #include "TcpConnection.h"
-#include "Include/tc/SocketTool.h"
+#include "SocketTool.h"
 
 namespace tc
 {

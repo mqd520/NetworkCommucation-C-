@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SafeLock.h"
+#include "Include/tc/SafeLock.h"
 
 namespace tc
 {

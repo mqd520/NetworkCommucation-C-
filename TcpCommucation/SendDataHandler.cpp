@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "SendDataHandler.h"
+#include "Include/tc/SendDataHandler.h"
 #include "Include/tc/SocketTool.h"
-#include "SendPeerDataSocEvt.h"
-#include "TcpConnection.h"
+#include "Include/tc/SendPeerDataSocEvt.h"
+#include "Include/tc/TcpConnection.h"
 #include "Include/tc/TcpCommuMgr.h"
 
 namespace tc

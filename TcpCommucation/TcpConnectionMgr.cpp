@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "TcpConnectionMgr.h"
+#include "Include/tc/TcpConnectionMgr.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "TcpConnection.h"
+#include "Include/tc/TcpConnection.h"
 
 namespace tc
 {

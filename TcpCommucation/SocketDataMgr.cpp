@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "SocketDataMgr.h"
+#include "Include/tc/SocketDataMgr.h"
 #include "Include/tc/SocketTool.h"
-#include "TcpService.h"
+#include "Include/tc/TcpService.h"
 #include "Include/tc/TcpCommuMgr.h"
 
 namespace tc

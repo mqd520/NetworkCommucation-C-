@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "TimeThread1.h"
+#include "Include/tc/TimeThread1.h"
 #include "Include/tc/TimerMoudleMgr.h"
 
 namespace tc

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Include/tc/ThreadEntry.h"
-#include "Thread.h"
+#include "Include/tc/Thread.h"
 
 namespace tc
 {

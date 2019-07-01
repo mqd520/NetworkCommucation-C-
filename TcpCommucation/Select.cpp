@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "Select.h"
+#include "Include/tc/Select.h"
 #include "Include/tc/SocketTool.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "RecvNewConnSocEvt.h"
-#include "RecvPeerDataSocEvt.h"
-#include "ConnDisconnSocEvt.h"
-#include "ConnectCplSocEvt.h"
+#include "Include/tc/RecvNewConnSocEvt.h"
+#include "Include/tc/RecvPeerDataSocEvt.h"
+#include "Include/tc/ConnDisconnSocEvt.h"
+#include "Include/tc/ConnectCplSocEvt.h"
 
 namespace tc
 {

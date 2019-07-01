@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "TcpEvtMgr.h"
-#include "TcpService.h"
+#include "Include/tc/TcpEvtMgr.h"
+#include "Include/tc/TcpService.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include <assert.h>
 

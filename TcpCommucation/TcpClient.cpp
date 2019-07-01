@@ -5,7 +5,7 @@
 #include "Include/tc/TcpEvt.h"
 #include "Include/tc/ConnectSrvResultEvt.h"
 #include "Include/tc/TimerMoudleMgr.h"
-#include "LogMgr.h"
+#include "Include/tc/TcpLog.h"
 
 namespace tc
 {
@@ -53,7 +53,7 @@ namespace tc
 			{
 				SocketTool::SetNonBlock(this->socket);
 				TcpCommu::GetSocketDataMgr()->Add(this->socket, ESocketType::Connect);
-				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connecting to %s:%d", this->strIP.c_str(), this->nPort);
+				TcpLog::WriteLine(ETcpLogType::Info, "connecting to %s:%d", this->strIP.c_str(), this->nPort);
 				SocketTool::Connect(this->socket, this->strIP, this->nPort, false);
 			}
 		}
@@ -122,12 +122,12 @@ namespace tc
 
 			if (bIsConnected)
 			{
-				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Info, "connect to %s:%d success", this->strIP.c_str(), this->nPort);
+				TcpLog::WriteLine(ETcpLogType::Info, "connect to %s:%d success", this->strIP.c_str(), this->nPort);
 				t.Stop();
 			}
 			else
 			{
-				TcpCommu::GetLogMgr()->AddLog(ETcpLogType::Error, "connect to %s:%d fail", this->strIP.c_str(), this->nPort);
+				TcpLog::WriteLine(ETcpLogType::Error, "connect to %s:%d fail", this->strIP.c_str(), this->nPort);
 				if (bIsReconnect)
 				{
 					t.Run();
