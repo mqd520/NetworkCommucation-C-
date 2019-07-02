@@ -47,7 +47,7 @@ namespace tc
 			TcpService* pSrv = pEvent->GetTcpSrv();
 			if (pSrv)
 			{
-				pSrv->OnRecvTcpEvent(pEvent);
+				pSrv->OnTcpEvt(pEvent);
 			}
 
 			delete pEvent;

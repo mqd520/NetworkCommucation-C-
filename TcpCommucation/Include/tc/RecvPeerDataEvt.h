@@ -3,8 +3,8 @@
 
 namespace tc
 {
-	// 收到数据事件
-	class RecvDataEvt : public TcpEvt
+	// 收到对端数据事件
+	class RecvPeerDataEvt : public TcpEvt
 	{
 	public:
 		//************************************
@@ -12,8 +12,8 @@ namespace tc
 		// Parameter: 关联的tcp服务对象
 		// Parameter: 关联的用于接收数据的socket
 		//************************************
-		RecvDataEvt(TcpService* pSrv, SOCKET recv, BYTE* pBuf, int len);
-		~RecvDataEvt();
+		RecvPeerDataEvt(TcpService* pSrv, SOCKET recv, BYTE* pBuf, int len);
+		~RecvPeerDataEvt();
 
 	private:
 		BYTE* pBuf;		// 收到的数据缓冲区指针

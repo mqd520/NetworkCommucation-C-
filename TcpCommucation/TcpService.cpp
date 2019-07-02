@@ -58,8 +58,26 @@ namespace tc
 		}
 	}
 
-	void TcpService::OnRecvTcpEvent(TcpEvt* pEvt)
+	void TcpService::OnTcpEvt(TcpEvt* pEvt)
 	{
+		ETcpEvtType type = ETcpEvtType::None;
+		if (type == ETcpEvtType::RecvNewConn)
+		{
+			OnRecvNewConnection((RecvNewConnEvt*)pEvt);
+		}
+		else if (type == ETcpEvtType::ConnDisconnect)
+		{
+			OnConnDisconnect((ConnDisconnectEvt*)pEvt);
+		}
+		else if (type == ETcpEvtType::RecvPeerData)
+		{
+			OnRecvPeerData((RecvPeerDataEvt*)pEvt);
+		}
+		else if (type == ETcpEvtType::ConnectSrvCpl)
+		{
+			OnRecvPeerData((RecvPeerDataEvt*)pEvt);
+		}
+
 		DispatchTcpEvt(pEvt);
 	}
 

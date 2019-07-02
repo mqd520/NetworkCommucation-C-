@@ -60,11 +60,9 @@ namespace tc
 	enum class ETcpEvtType : int
 	{
 		RecvNewConn,		// 收到新连接
-		RecvData,			// 收到对端数据
+		RecvPeerData,		// 收到对端数据
 		ConnDisconnect,		// 连接断开
-		SendDataResult,		// 发送数据结果
-		RecvConnResult,		// 接收客户端连接的结果
-		ConnectSrvResult,	// 连接服务端的结果
+		ConnectSrvCpl,		// 连接服务端完成
 
 		None				// 无
 	};
@@ -91,15 +89,6 @@ namespace tc
 
 		Other			// 其它原因
 	};
-
-	// 包数据
-	typedef struct tagPacketData
-	{
-		BYTE* pBuf;		// 包体缓冲区
-		int nLen;		// 包体缓冲区长度
-		int cmd;		// 包命令
-		int clientId;	// client id(适用于服务端)
-	}PacketData;
 
 	class TcpEvt;
 	// tcp事件回调函数指针
@@ -155,5 +144,14 @@ namespace tc
 		int localPort;		// 关联的本地端口
 		int socketId;		// socket id, 关联一个socket
 	}SocketInfoData;
+
+	// 包数据
+	typedef struct tagPacketData
+	{
+		BYTE* pBuf;		// 包体缓冲区
+		int nLen;		// 包体缓冲区长度
+		int cmd;		// 包命令
+		int clientId;	// client id(适用于服务端)
+	}PacketData;
 }
 

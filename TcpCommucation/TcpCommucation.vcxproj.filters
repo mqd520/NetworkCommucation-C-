@@ -99,19 +99,10 @@
     <ClInclude Include="Include\tc\ConnDisconnectEvt.h">
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\tc\RecvDataEvt.h">
-      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\tc\RecvNewConnEvt.h">
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\tc\SendDataResultEvt.h">
-      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\tc\TcpEvt.h">
-      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\tc\ConnectSrvResultEvt.h">
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\SocketTool.h">
@@ -225,6 +216,15 @@
     <ClInclude Include="Include\tc\TcpLogMgr.h">
       <Filter>10 日志处理</Filter>
     </ClInclude>
+    <ClInclude Include="Include\tc\PacketClient.h">
+      <Filter>09 基于包的通信</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\ConnectSrvCplEvt.h">
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\RecvPeerDataEvt.h">
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TcpClient.cpp">
@@ -305,17 +305,11 @@
     <ClCompile Include="TcpEvtMgr.cpp">
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
-    <ClCompile Include="SendDataResultEvt.cpp">
-      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>05 定时器管理\00 定时器处理</Filter>
     </ClCompile>
     <ClCompile Include="TimerMgr.cpp">
       <Filter>05 定时器管理\00 定时器处理</Filter>
-    </ClCompile>
-    <ClCompile Include="ConnectSrvResultEvt.cpp">
-      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="NCTool.cpp">
       <Filter>00 公共</Filter>
@@ -336,9 +330,6 @@
       <Filter>07 流处理</Filter>
     </ClCompile>
     <ClCompile Include="RecvNewConnEvt.cpp">
-      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
-    </ClCompile>
-    <ClCompile Include="RecvDataEvt.cpp">
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
     <ClCompile Include="ConnDisconnectEvt.cpp">
@@ -401,6 +392,15 @@
     </ClCompile>
     <ClCompile Include="TcpLogMgr.cpp">
       <Filter>10 日志处理</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketClient.cpp">
+      <Filter>09 基于包的通信</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectSrvCplEvt.cpp">
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
+    </ClCompile>
+    <ClCompile Include="RecvPeerDataEvt.cpp">
+      <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

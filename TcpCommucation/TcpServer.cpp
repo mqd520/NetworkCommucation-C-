@@ -63,7 +63,7 @@ namespace tc
 		return bListening;
 	}
 
-	void TcpServer::OnRecvTcpEvent(TcpEvt* pEvt)
+	void TcpServer::OnTcpEvt(TcpEvt* pEvt)
 	{
 		ETcpEvtType type = pEvt->GetEvtType();
 		if (type == ETcpEvtType::RecvNewConn)
@@ -72,7 +72,7 @@ namespace tc
 			TcpLog::WriteLine(ETcpLogType::Info, "recv new connection: %s:%d", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
 		}
 
-		__super::OnRecvTcpEvent(pEvt);
+		__super::OnTcpEvt(pEvt);
 	}
 
 	void TcpServer::Exit()

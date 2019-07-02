@@ -1,16 +1,19 @@
 #pragma once
-#include "Include/tc/TcpService.h"
-#include "Include/tc/MemoryStream.h"
+#include "PacketHeadBase.h"
+#include "MemoryStream.h"
+#include "TcpEvt.h"
 
 namespace tc
 {
 	// 基于包的通信服务
-	class PacketCommuSrv : public TcpService
+	class PacketCommuSrv
 	{
 	public:
-		PacketCommuSrv(string ip = "", int port = 0);
+		PacketCommuSrv(const int nHeadLen, PacketHeadBase header);
 
 	protected:
+		const int nHeadLen;			// 包头长度
+		PacketHeadBase header;
 		MemoryStream ms;			// 内存流对象
 
 	protected:
@@ -18,7 +21,7 @@ namespace tc
 		// Method:    收到tcp事件处理
 		// Parameter: tcp事件
 		//************************************
-		virtual void OnRecvTcpEvent(TcpEvt* pEvt) override;
+		virtual void OnRecvTcpEvent(TcpEvt* pEvt);
 
 		//************************************
 		// Method:    连接服务端完成事件处理
@@ -56,5 +59,26 @@ namespace tc
 		// Method:    解析包缓冲区
 		//************************************
 		virtual void ParsePacketBuf(vector<PacketData>& vec);
+
+		//************************************
+		// Method:    处理原始包缓冲区
+		// Returns:   是否处理成功
+		// Parameter: header:	包头
+		// Parameter: pBuf:		缓冲区
+		// Parameter: len:		缓冲区长度
+		//************************************
+		virtual bool ProcessOriginPckBuf(PacketHeadBase& header, BYTE* pBuf, int len);
+
+		//************************************
+		// Method:    预处理处理包
+		// Parameter: data:	包数据
+		//************************************
+		virtual void PreProcessPck(PacketData& data);
+
+		//************************************
+		// Method:    处理包事件处理程序
+		// Parameter: data:	包数据
+		//************************************
+		virtual void OnProcessPck(PacketData& data);
 	};
 }

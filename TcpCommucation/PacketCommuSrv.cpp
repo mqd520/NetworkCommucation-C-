@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "Include/tc/PacketCommuSrv.h"
-#include "Include/tc/Def1.h"
+#include "Include/tc/Def.h"
 #include "Include/tc/NetworkStreamRead.h"
+#include "Include/tc/TcpLog.h"
 
 namespace tc
 {
-	PacketCommuSrv::PacketCommuSrv(string ip /*= ""*/, int port /*= 0*/) :
-		TcpService(ip, port)
+	PacketCommuSrv::PacketCommuSrv(const int nHeadLen, PacketHeadBase header) :
+		nHeadLen(nHeadLen),
+		header(header)
 	{
 
 	}
@@ -18,11 +20,11 @@ namespace tc
 		{
 			OnConnDiconnect(pEvt);
 		}
-		else if (type == ETcpEvtType::ConnectSrvResult)
+		else if (type == ETcpEvtType::ConnectSrvCpl)
 		{
 			OnConnectCpl(pEvt);
 		}
-		else if (type == ETcpEvtType::RecvData)
+		else if (type == ETcpEvtType::RecvPeerData)
 		{
 			OnRecvPeerData(pEvt);
 		}
@@ -69,47 +71,61 @@ namespace tc
 
 	void PacketCommuSrv::ParsePacketBuf(vector<PacketData>& vec)
 	{
-		//while (ms.AvaliableReadLen() > Lib1_PacketHeadLen)
-		//{
-		//	BYTE buf[Lib1_PacketHeadLen] = { 0 };
-		//	ms.Copy(buf, Lib1_PacketHeadLen);
-		//	CNetworkStreamRead ns(buf, Lib1_PacketHeadLen, EByteOrder::litte);
-		//	PacketHead header;
-		//	header.Read(ns);
-		//	if (header.IsValid())
-		//	{
-		//		int cmd = header.GetCmd();
-		//		int len = header.GetPacketLen();
-		//		int totalLen = header.GetTotalLen();
-		//		if (totalLen <= ms.AvaliableReadLen())
-		//		{
-		//			BYTE buf2[Lib1_PacketHeadLen] = { 0 };
-		//			ms.Read(buf2, Lib1_PacketHeadLen);
+		while (ms.AvaliableReadLen() > nHeadLen)
+		{
+			BYTE buf[7] = { 0 };
+			ms.Copy(buf, nHeadLen);
+			CNetworkStreamRead ns(buf, nHeadLen, EByteOrder::litte);
+			PacketHeadBase header1 = header;
+			header.Read(ns);
+			if (header.IsValid())
+			{
+				int cmd = header.GetCmd();
+				int len = header.GetPacketLen();
+				int totalLen = header.GetTotalLen();
+				if (totalLen <= ms.AvaliableReadLen())
+				{
+					BYTE buf2[7] = { 0 };
+					ms.Read(buf2, nHeadLen);
 
-		//			BYTE* pBuf = new BYTE[len];
-		//			ms.Read(pBuf, len);
+					BYTE* pBuf = new BYTE[len];
+					ms.Read(pBuf, len);
 
-		//			bool b1 = EncryptHelper::Decrypt((char*)pBuf, len, header.GetCode());
-		//			if (b1)
-		//			{
-		//				PacketData data = { pBuf, len, header.GetCmd() };
-		//				vec.push_back(data);
-		//			}
-		//			else
-		//			{
-		//				LibSrv1::WriteLog(ETcpLogType::Warn, "parse pck error, decryption incorrect, addr: %s:%d, cmd: %d, len: ",
-		//					GetIp1().c_str(), GetPort1(), cmd, len);
+					bool b2 = ProcessOriginPckBuf(header1, pBuf, len);
+					if (b2)
+					{
+						PacketData data = { pBuf, len, header.GetCmd() };
+						vec.push_back(data);
+					}
+					else
+					{
+						TcpLog::WriteLine(ETcpLogType::Warn, "parse pck error: pck incorrect, addr: %s:%d, cmd: %d, len: ",
+							"", 12345, cmd, len);
+					}
+				}
+			}
+			else
+			{
+				ms.Clear();
 
+				TcpLog::WriteLine(ETcpLogType::Warn, "parse pck error: header incorrect, addr: %s:%d, cmd: %d, len: ",
+					"", 12345, header.GetCmd(), header.GetTotalLen());
+			}
+		}
+	}
 
-		//			}
-		//		}
-		//	}
-		//	else
-		//	{
-		//		ms.Clear();
-		//		LibSrv1::WriteLog(ETcpLogType::Warn, "parse pck error, header incorrect, addr: %s:%d, cmd: %d, len: ",
-		//			GetIp1().c_str(), GetPort1(), header.GetCmd(), header.GetPacketLen());
-		//	}
-		//}
+	bool PacketCommuSrv::ProcessOriginPckBuf(PacketHeadBase& header, BYTE* pBuf, int len)
+	{
+		throw new exception;
+	}
+
+	void PacketCommuSrv::PreProcessPck(PacketData& data)
+	{
+		OnProcessPck(data);
+	}
+
+	void PacketCommuSrv::OnProcessPck(PacketData& data)
+	{
+
 	}
 }

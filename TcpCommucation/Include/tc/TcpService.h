@@ -3,8 +3,10 @@
 #include "Thread.h"
 #include "SocketAPI.h"
 #include "TcpEvt.h"
-#include "TcpConnection.h"
-#include "SocketTool.h"
+#include "RecvNewConnEvt.h"
+#include "ConnDisconnectEvt.h"
+#include "RecvPeerDataEvt.h"
+#include "ConnectSrvCplEvt.h"
 
 namespace tc
 {
@@ -26,11 +28,36 @@ namespace tc
 
 	protected:
 		friend class TcpEvtMgr;
+
 		//************************************
-		// Method:    收到tcp事件处理
-		// Parameter: pEvent: tcp事件
+		// Method:    tcp事件处理
+		// Parameter: pEvt: tcp事件
 		//************************************
-		virtual void OnRecvTcpEvent(TcpEvt* pEvt);
+		virtual void OnTcpEvt(TcpEvt* pEvt);
+
+		//************************************
+		// Method:    收到新连接事件处理
+		// Parameter: pEvt: tcp事件
+		//************************************
+		virtual void OnRecvNewConnection(RecvNewConnEvt* pEvt);
+
+		//************************************
+		// Method:    连接断开事件处理
+		// Parameter: pEvt: tcp事件
+		//************************************
+		virtual void OnConnDisconnect(ConnDisconnectEvt* pEvt);
+
+		//************************************
+		// Method:    收到对端数据事件处理
+		// Parameter: pEvt: tcp事件
+		//************************************
+		virtual void OnRecvPeerData(RecvPeerDataEvt* pEvt);
+
+		//************************************
+		// Method:    连接服务端完成事件处理
+		// Parameter: pEvt: tcp事件
+		//************************************
+		virtual void OnConnectSrvCpl(ConnectSrvCplEvt* pEvt);
 
 		//************************************
 		// Method:    向对端发送数据

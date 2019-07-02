@@ -47,7 +47,7 @@ namespace tc
 		// Method:    收到tcp事件处理
 		// Parameter: tcp事件
 		//************************************
-		void OnRecvTcpEvent(TcpEvt* pEvent);
+		void OnTcpEvt(TcpEvt* pEvent);
 
 	public:
 		//************************************

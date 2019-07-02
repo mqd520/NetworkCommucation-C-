@@ -3,8 +3,8 @@
 
 namespace tc
 {
-	// 连接服务端结果事件
-	class ConnectSrvResultEvt : public TcpEvt
+	// 连接服务端完成事件
+	class ConnectSrvCplEvt : public TcpEvt
 	{
 	public:
 		//************************************
@@ -13,8 +13,8 @@ namespace tc
 		// Parameter: socket
 		// Parameter: 连接是否成功
 		//************************************
-		ConnectSrvResultEvt(TcpService* pSrv, SOCKET socket, bool success);
-		~ConnectSrvResultEvt();
+		ConnectSrvCplEvt(TcpService* pSrv, SOCKET socket, bool success);
+		~ConnectSrvCplEvt();
 
 	private:
 		bool	bSuccess;		// 连接是否成功

@@ -3,7 +3,7 @@
 
 namespace tc
 {
-	// tcp连接断开事件
+	// 连接断开事件
 	class ConnDisconnectEvt : public TcpEvt
 	{
 	public:

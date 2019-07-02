@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Include/tc/TcpConnection.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "Include/tc/RecvDataEvt.h"
+#include "Include/tc/RecvPeerDataEvt.h"
 #include "Include/tc/ConnDisconnectEvt.h"
 #include "Include/tc/SocketTool.h"
 #include "Include/tc/SendPeerDataSocEvt.h"
@@ -39,7 +39,7 @@ namespace tc
 
 	void TcpConnection::OnRecvPeerData(BYTE* pBuf, int len)
 	{
-		TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new RecvDataEvt(pTcpSrv, sendrecvSocket, pBuf, len));
+		TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new RecvPeerDataEvt(pTcpSrv, sendrecvSocket, pBuf, len));
 	}
 
 	void TcpConnection::OnConnDisconnect(EDisconnReason reason, bool b /*= true*/)

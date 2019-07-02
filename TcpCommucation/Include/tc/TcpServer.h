@@ -32,7 +32,7 @@ namespace tc
 		// Method:    收到tcp事件处理
 		// Parameter: pEvt: tcp事件
 		//************************************
-		virtual void OnRecvTcpEvent(TcpEvt* pEvt) override;
+		virtual void OnTcpEvt(TcpEvt* pEvt) override;
 
 	public:
 		//************************************

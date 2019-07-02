@@ -6,7 +6,7 @@
 #include "Include/tc/ConnectCplSocEvt.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvNewConnEvt.h"
-#include "Include/tc/ConnectSrvResultEvt.h"
+#include "Include/tc/ConnectSrvCplEvt.h"
 
 namespace tc
 {
@@ -97,7 +97,7 @@ namespace tc
 		TcpService* pTcpSrv = TcpCommu::GetTcpServiceMgr()->GetTcpSrvBySocket(pEvt1->GetSocket());
 		if (pTcpSrv)
 		{
-			ConnectSrvResultEvt* pEvt2 = new ConnectSrvResultEvt(pTcpSrv, pEvt1->GetSocket(), pEvt1->GetResult());
+			ConnectSrvCplEvt* pEvt2 = new ConnectSrvCplEvt(pTcpSrv, pEvt1->GetSocket(), pEvt1->GetResult());
 			TcpCommu::GetTcpEvtMgr()->PushTcpEvent(pEvt2);
 		}
 	}

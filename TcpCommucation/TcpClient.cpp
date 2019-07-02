@@ -3,7 +3,7 @@
 #include "Include/tc/Def1.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/TcpEvt.h"
-#include "Include/tc/ConnectSrvResultEvt.h"
+#include "Include/tc/ConnectSrvCplEvt.h"
 #include "Include/tc/TimerMoudleMgr.h"
 #include "Include/tc/TcpLog.h"
 
@@ -113,13 +113,13 @@ namespace tc
 		return __super::SendData(socket, pBuf, len);
 	}
 
-	void TcpClient::OnRecvTcpEvent(TcpEvt* pEvt)
+	void TcpClient::OnTcpEvt(TcpEvt* pEvt)
 	{
 		ETcpEvtType type = pEvt->GetEvtType();
-		if (type == ETcpEvtType::ConnectSrvResult)
+		if (type == ETcpEvtType::ConnectSrvCpl)
 		{
 			bIsConnecting = false;
-			ConnectSrvResultEvt* pEvt1 = (ConnectSrvResultEvt*)pEvt;
+			ConnectSrvCplEvt* pEvt1 = (ConnectSrvCplEvt*)pEvt;
 			bIsConnected = pEvt1->GetConnectResult();
 
 			if (bIsConnected)
@@ -146,7 +146,7 @@ namespace tc
 			}
 		}
 
-		__super::OnRecvTcpEvent(pEvt);
+		__super::OnTcpEvt(pEvt);
 	}
 
 	void TcpClient::OnTimer(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)

@@ -85,6 +85,7 @@
     <ClInclude Include="Include\tc\ConnDisconnSocEvt.h" />
     <ClInclude Include="Include\tc\ConnectCplSocEvt.h" />
     <ClInclude Include="Include\tc\Def.h" />
+    <ClInclude Include="Include\tc\PacketClient.h" />
     <ClInclude Include="Include\tc\TcpLog.h" />
     <ClInclude Include="Include\tc\PacketBase.h" />
     <ClInclude Include="Include\tc\PacketCommuSrv.h" />
@@ -115,16 +116,15 @@
     <ClInclude Include="Include\tc\TimerMgr.h" />
     <ClInclude Include="Include\tc\TimerMoudleMgr.h" />
     <ClInclude Include="Include\tc\ConnDisconnectEvt.h" />
-    <ClInclude Include="Include\tc\ConnectSrvResultEvt.h" />
+    <ClInclude Include="Include\tc\ConnectSrvCplEvt.h" />
     <ClInclude Include="Include\tc\Def1.h" />
     <ClInclude Include="Include\tc\GB2312Str.h" />
     <ClInclude Include="Include\tc\MemoryStream.h" />
     <ClInclude Include="Include\tc\NCTool.h" />
     <ClInclude Include="Include\tc\NetworkStreamRead.h" />
     <ClInclude Include="Include\tc\NetworkStreamWrite.h" />
-    <ClInclude Include="Include\tc\RecvDataEvt.h" />
+    <ClInclude Include="Include\tc\RecvPeerDataEvt.h" />
     <ClInclude Include="Include\tc\RecvNewConnEvt.h" />
-    <ClInclude Include="Include\tc\SendDataResultEvt.h" />
     <ClInclude Include="Include\tc\SocketTool.h" />
     <ClInclude Include="Include\tc\TcpCommuMgr.h" />
     <ClInclude Include="Include\tc\TcpEvt.h" />
@@ -138,6 +138,8 @@
   <ItemGroup>
     <ClCompile Include="ConnDisconnSocEvt.cpp" />
     <ClCompile Include="ConnectCplSocEvt.cpp" />
+    <ClCompile Include="PacketClient.cpp" />
+    <ClCompile Include="RecvPeerDataEvt.cpp" />
     <ClCompile Include="TcpLog.cpp" />
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="GB2312Str.cpp" />
@@ -146,7 +148,7 @@
     <ClCompile Include="RecvDataHandler.cpp" />
     <ClCompile Include="RecvNewConnSocEvt.cpp" />
     <ClCompile Include="RecvPeerDataSocEvt.cpp" />
-    <ClCompile Include="ConnectSrvResultEvt.cpp" />
+    <ClCompile Include="ConnectSrvCplEvt.cpp" />
     <ClCompile Include="LinkList.cpp" />
     <ClCompile Include="NCTool.cpp" />
     <ClCompile Include="NetworkStreamWrite.cpp" />
@@ -154,13 +156,11 @@
     <ClCompile Include="PacketBase.cpp" />
     <ClCompile Include="PacketHeadBase.cpp" />
     <ClCompile Include="RecvNewConnEvt.cpp" />
-    <ClCompile Include="RecvDataEvt.cpp" />
     <ClCompile Include="RecvThread.cpp" />
     <ClCompile Include="SafeLock.cpp" />
     <ClCompile Include="Select.cpp" />
     <ClCompile Include="SelectThread.cpp" />
     <ClCompile Include="SendDataHandler.cpp" />
-    <ClCompile Include="SendDataResultEvt.cpp" />
     <ClCompile Include="SendPeerDataSocEvt.cpp" />
     <ClCompile Include="SendThread.cpp" />
     <ClCompile Include="SocketDataHandler.cpp" />
