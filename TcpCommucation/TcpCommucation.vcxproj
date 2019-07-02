@@ -117,7 +117,6 @@
     <ClInclude Include="Include\tc\TimerMoudleMgr.h" />
     <ClInclude Include="Include\tc\ConnDisconnectEvt.h" />
     <ClInclude Include="Include\tc\ConnectSrvCplEvt.h" />
-    <ClInclude Include="Include\tc\Def1.h" />
     <ClInclude Include="Include\tc\GB2312Str.h" />
     <ClInclude Include="Include\tc\MemoryStream.h" />
     <ClInclude Include="Include\tc\NCTool.h" />

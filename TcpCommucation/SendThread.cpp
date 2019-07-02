@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "Include/tc/Def1.h"
 #include "Include/tc/SendThread.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/TcpLog.h"

@@ -44,13 +44,11 @@ namespace tc
 
 	void TcpConnection::OnConnDisconnect(EDisconnReason reason, bool b /*= true*/)
 	{
-		SocketInfoData data = TcpCommu::GetSocketDataMgr()->Remove(sendrecvSocket);
-		TcpLog::WriteLine(ETcpLogType::Warn, "connection disconnect: %s:%d, reason: %d", data.peerIp.c_str(), data.peerPort, (int)reason);
-
 		if (b)
 		{
-			TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(pTcpSrv, sendrecvSocket));
+			TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(pTcpSrv, sendrecvSocket, reason));
 		}
+		SocketInfoData data = TcpCommu::GetSocketDataMgr()->Remove(sendrecvSocket);
 		SocketTool::ShutDown(sendrecvSocket, false);
 		SocketTool::CloseSocket(sendrecvSocket, false);
 

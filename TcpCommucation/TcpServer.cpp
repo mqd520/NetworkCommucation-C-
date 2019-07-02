@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "Include/tc/Def1.h"
 #include "Include/tc/TcpServer.h"
 #include "Include/tc/TcpConnectionMgr.h"
 #include "Include/tc/TcpCommuMgr.h"
@@ -9,10 +8,10 @@
 namespace tc
 {
 	TcpServer::TcpServer(string ip /*= ""*/, int port /*= 0*/) :
-		TcpService(ip, port),
+		TcpService(ip, port, ETcpSrvType::Server),
 		bListening(false)
 	{
-		this->tcpSrvType = ETcpSrvType::Server;
+
 	}
 
 	TcpServer::~TcpServer()
@@ -63,21 +62,22 @@ namespace tc
 		return bListening;
 	}
 
-	void TcpServer::OnTcpEvt(TcpEvt* pEvt)
+	void TcpServer::Send(int clientId, BYTE* pBuf, int len)
 	{
-		ETcpEvtType type = pEvt->GetEvtType();
-		if (type == ETcpEvtType::RecvNewConn)
+		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
+		if (data.socket > 0)
 		{
-			RecvNewConnEvt* pEvt1 = static_cast<RecvNewConnEvt*>(pEvt);
-			TcpLog::WriteLine(ETcpLogType::Info, "recv new connection: %s:%d", pEvt1->GetClientIP().c_str(), pEvt1->GetClientPort());
+			__super::SendData(data.socket, pBuf, len);
 		}
-
-		__super::OnTcpEvt(pEvt);
 	}
 
-	void TcpServer::Exit()
+	void TcpServer::CloseClient(int clientId, bool b /*= true*/)
 	{
-
+		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
+		if (data.socket > 0)
+		{
+			__super::CloseConnection(data.socket, b);
+		}
 	}
 
 	void TcpServer::AddAllowIP(string ip)
@@ -133,24 +133,5 @@ namespace tc
 			}
 		}
 		return result;
-	}
-
-	void TcpServer::Send(int clientId, BYTE* pBuf, int len)
-	{
-		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
-		if (data.socket > 0)
-		{
-			__super::SendData(data.socket, pBuf, len);
-		}
-	}
-
-	void TcpServer::CloseClient(int clientId, bool b /*= true*/)
-	{
-		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
-		TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(data.socket);
-		if (pConn)
-		{
-			pConn->Close(b);
-		}
 	}
 }

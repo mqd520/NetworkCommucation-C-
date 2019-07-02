@@ -1,8 +1,6 @@
 #pragma once
-#include "SocketTool.h"
-#include "TcpConnectionMgr.h"
-#include "Def.h"
 #include "TcpService.h"
+#include "Def.h"
 #include <vector>
 
 using namespace std;
@@ -28,22 +26,16 @@ namespace tc
 		//************************************
 		bool IsAllow(string ip);
 
-		//************************************
-		// Method:    收到tcp事件处理
-		// Parameter: pEvt: tcp事件
-		//************************************
-		virtual void OnTcpEvt(TcpEvt* pEvt) override;
-
 	public:
 		//************************************
 		// Method:    设置监听信息
 		//************************************
-		void SetListenInfo(string ip, int port);
+		virtual void SetListenInfo(string ip, int port);
 
 		//************************************
 		// Method:    开始监听
 		//************************************
-		bool Listen();
+		virtual bool Listen();
 
 		//************************************
 		// Method:    向对端发送数据
@@ -58,11 +50,6 @@ namespace tc
 		// Parameter: b:	是否产生连接断开事件, 默认: true
 		//************************************
 		virtual void CloseClient(int clientId, bool b = true);
-
-		//************************************
-		// Method:    退出
-		//************************************
-		virtual void Exit() override;
 
 		//************************************
 		// Method:    增加一个允许IP

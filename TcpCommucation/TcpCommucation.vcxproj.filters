@@ -108,7 +108,6 @@
     <ClInclude Include="Include\tc\SocketTool.h">
       <Filter>04 Socket Api</Filter>
     </ClInclude>
-    <ClInclude Include="Include\tc\Def1.h" />
     <ClInclude Include="Include\tc\TcpCommuMgr.h" />
     <ClInclude Include="stdafx.h">
       <Filter>99 其它</Filter>

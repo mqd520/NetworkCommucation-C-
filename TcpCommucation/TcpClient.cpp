@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Include/tc/TcpClient.h"
-#include "Include/tc/Def1.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/TcpEvt.h"
 #include "Include/tc/ConnectSrvCplEvt.h"
@@ -9,18 +8,14 @@
 
 namespace tc
 {
-	void OnTimer1(Timer* pTimer, int count, void* pParam1, void* pParam2);	// timer»Øµ÷º¯Êý
-
 	TcpClient::TcpClient(string ip /*= ""*/, int port /*= 0*/) :
-		TcpService(ip, port),
+		TcpService(ip, port, ETcpSrvType::Client),
 		bInited(false),
 		bIsConnecting(false),
 		bIsConnected(false),
 		bIsReconnect(true),
 		nTimeSpan(TC_RECONNECTTIME)
 	{
-		this->tcpSrvType = ETcpSrvType::Client;
-
 		t.SetTimeout(nTimeSpan);
 		Fun3 fun = std::bind(&TcpClient::OnTimer, this, _1, _2, _3, _4);
 		t.SetCallback(fun, NULL, NULL);
@@ -28,12 +23,13 @@ namespace tc
 
 	TcpClient::~TcpClient()
 	{
-
+	
 	}
 
 	void TcpClient::Exit()
 	{
 		TimerMoudleMgr::GetTimerMgr()->Remove(&t);
+		__super::Exit();
 	}
 
 	void TcpClient::Init()
@@ -61,6 +57,43 @@ namespace tc
 		}
 	}
 
+	void TcpClient::OnConnectSrvCpl(ConnectSrvCplEvt* pEvt)
+	{
+		bIsConnecting = false;
+		bIsConnected = pEvt->GetConnectResult();
+
+		if (bIsConnected)
+		{
+			t.Stop();
+		}
+		else
+		{
+			if (bIsReconnect)
+			{
+				t.Run();
+			}
+		}
+
+		__super::OnConnectSrvCpl(pEvt);
+	}
+
+	void TcpClient::OnConnDisconnect(ConnDisconnectEvt* pEvt)
+	{
+		bIsConnecting = false;
+		bIsConnected = false;
+		if (bIsReconnect)
+		{
+			t.Run();
+		}
+
+		__super::OnConnDisconnect(pEvt);
+	}
+
+	void TcpClient::OnTimer(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
+	{
+		ConnectServer();
+	}
+
 	void TcpClient::SetAutoReconnect(bool b /*= true*/, int time /*= TC_RECONNECTTIME*/)
 	{
 		bIsReconnect = b;
@@ -82,20 +115,9 @@ namespace tc
 	{
 		t.Stop();
 
-		if (this->socket != INVALID_SOCKET)
+		if (bIsConnected)
 		{
-			if (bIsConnected)
-			{
-				TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(this->socket);
-				if (pConn)
-				{
-					pConn->Close(b);
-				}
-			}
-			else
-			{
-				TcpCommu::GetSocketDataMgr()->Remove(this->socket);
-			}
+			__super::CloseConnection(socket, b);
 		}
 
 		bIsConnecting = false;
@@ -110,47 +132,9 @@ namespace tc
 
 	void TcpClient::Send(BYTE* pBuf, int len)
 	{
-		return __super::SendData(socket, pBuf, len);
-	}
-
-	void TcpClient::OnTcpEvt(TcpEvt* pEvt)
-	{
-		ETcpEvtType type = pEvt->GetEvtType();
-		if (type == ETcpEvtType::ConnectSrvCpl)
+		if (bIsConnected)
 		{
-			bIsConnecting = false;
-			ConnectSrvCplEvt* pEvt1 = (ConnectSrvCplEvt*)pEvt;
-			bIsConnected = pEvt1->GetConnectResult();
-
-			if (bIsConnected)
-			{
-				TcpLog::WriteLine(ETcpLogType::Info, "connect to %s:%d success", this->strIP.c_str(), this->nPort);
-				t.Stop();
-			}
-			else
-			{
-				TcpLog::WriteLine(ETcpLogType::Error, "connect to %s:%d fail", this->strIP.c_str(), this->nPort);
-				if (bIsReconnect)
-				{
-					t.Run();
-				}
-			}
+			__super::SendData(socket, pBuf, len);
 		}
-		else if (type == ETcpEvtType::ConnDisconnect)
-		{
-			bIsConnecting = false;
-			bIsConnected = false;
-			if (bIsReconnect)
-			{
-				t.Run();
-			}
-		}
-
-		__super::OnTcpEvt(pEvt);
-	}
-
-	void TcpClient::OnTimer(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
-	{
-		ConnectServer();
 	}
 }

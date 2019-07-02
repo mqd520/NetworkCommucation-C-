@@ -17,11 +17,11 @@ namespace tc
 			strPeerIp = pSrv->GetIP();
 			nPeerPort = pSrv->GetPort();
 		}
-	}
-
-	TcpEvt::~TcpEvt()
-	{
-
+		else
+		{
+			strPeerIp = data.peerIp;
+			nPeerPort = data.peerPort;
+		}
 	}
 
 	ETcpEvtType TcpEvt::GetEvtType()
@@ -37,6 +37,11 @@ namespace tc
 	int TcpEvt::GetSendRecvSocketId()
 	{
 		return socketId;
+	}
+
+	SOCKET TcpEvt::GetSendRecvSocket()
+	{
+		return socket;
 	}
 
 	string TcpEvt::GetPeerIp()

@@ -16,7 +16,6 @@ namespace tc
 		// Parameter: 关联的用于发送(接收)数据的socket
 		//************************************
 		TcpEvt(TcpService* pSrv, SOCKET sendrecv = NULL);
-		virtual ~TcpEvt();
 
 	protected:
 		TcpService* pTcpSrv;	// tcp服务对象
@@ -30,17 +29,22 @@ namespace tc
 		//************************************
 		// Method:    获取事件类型
 		//************************************
-		ETcpEvtType GetEvtType();
+		virtual ETcpEvtType GetEvtType();
 
 		//************************************
 		// Method:    获取tcp服务对象
 		//************************************
-		TcpService* GetTcpSrv();
+		virtual TcpService* GetTcpSrv();
 
 		//************************************
 		// Method:    获取用于发送(接收)数据的socket id
 		//************************************
 		virtual int GetSendRecvSocketId();
+
+		//************************************
+		// Method:    获取socket
+		//************************************
+		virtual SOCKET GetSendRecvSocket();
 
 		//************************************
 		// Method:    获取对端ip

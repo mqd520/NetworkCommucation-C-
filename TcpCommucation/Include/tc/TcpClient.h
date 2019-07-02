@@ -44,10 +44,16 @@ namespace tc
 
 	protected:
 		//************************************
-		// Method:    收到tcp事件处理
-		// Parameter: tcp事件
+		// Method:    连接服务端完成事件处理
+		// Parameter: pEvt: tcp事件
 		//************************************
-		void OnTcpEvt(TcpEvt* pEvent);
+		virtual void OnConnectSrvCpl(ConnectSrvCplEvt* pEvt) override;
+
+		//************************************
+		// Method:    连接断开事件处理
+		// Parameter: pEvt: tcp事件
+		//************************************
+		virtual void OnConnDisconnect(ConnDisconnectEvt* pEvt) override;
 
 	public:
 		//************************************
@@ -60,12 +66,12 @@ namespace tc
 		// Parameter: 是否自动重连
 		// Parameter: 间隔时间(ms)
 		//************************************
-		void SetAutoReconnect(bool b = true, int time = TC_RECONNECTTIME);
+		virtual void SetAutoReconnect(bool b = true, int time = TC_RECONNECTTIME);
 
 		//************************************
 		// Method:    连接服务端
 		//************************************
-		void Connect();
+		virtual void Connect();
 
 		//************************************
 		// Method:    关闭连接
@@ -78,7 +84,7 @@ namespace tc
 		// Parameter: ip:	服务端IP
 		// Parameter: port:	服务端端口
 		//************************************
-		void SetConnectInfo(string ip, int port);
+		virtual void SetConnectInfo(string ip, int port);
 
 		//************************************
 		// Method:    向对端发送数据

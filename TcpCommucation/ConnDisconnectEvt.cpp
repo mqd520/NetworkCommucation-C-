@@ -6,32 +6,25 @@
 
 namespace tc
 {
-	ConnDisconnectEvt::ConnDisconnectEvt(TcpService* pSrv, SOCKET sendrecv/* = NULL*/)
-		:TcpEvt(pSrv, sendrecv)
+	ConnDisconnectEvt::ConnDisconnectEvt(TcpService* pSrv, SOCKET sendrecv, EDisconnReason reason)
+		:TcpEvt(pSrv, sendrecv),
+		reason(reason)
 	{
 		evtType = ETcpEvtType::ConnDisconnect;
-		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(sendrecv);
-		strIP = data.peerIp;
-		nPort = data.peerPort;
 	}
 
-	ConnDisconnectEvt::~ConnDisconnectEvt()
+	EDisconnReason ConnDisconnectEvt::GetReason()
 	{
-
+		return reason;
 	}
 
-	int ConnDisconnectEvt::GetReason()
-	{
-		return 0;
-	}
+	//string ConnDisconnectEvt::GetPeerIp()
+	//{
+	//	return strIP;
+	//}
 
-	string ConnDisconnectEvt::GetPeerIp()
-	{
-		return strIP;
-	}
-
-	int ConnDisconnectEvt::GetPeerPort()
-	{
-		return nPort;
-	}
+	//int ConnDisconnectEvt::GetPeerPort()
+	//{
+	//	return nPort;
+	//}
 }

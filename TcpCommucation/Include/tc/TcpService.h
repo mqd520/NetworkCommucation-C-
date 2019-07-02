@@ -14,8 +14,7 @@ namespace tc
 	class TcpService
 	{
 	public:
-		TcpService(string ip = "", int port = 0);
-		virtual ~TcpService();
+		TcpService(string ip = "", int port = 0, ETcpSrvType type = ETcpSrvType::None);
 
 	protected:
 		SOCKET socket;				// 关联的socket
@@ -60,6 +59,12 @@ namespace tc
 		virtual void OnConnectSrvCpl(ConnectSrvCplEvt* pEvt);
 
 		//************************************
+		// Method:    派发tcp事件
+		// Parameter: tcp事件
+		//************************************
+		virtual void DispatchTcpEvt(TcpEvt* pEvt);
+
+		//************************************
 		// Method:    向对端发送数据
 		// Parameter: 缓冲区指针
 		// Parameter: 缓冲区字节长度
@@ -67,31 +72,32 @@ namespace tc
 		virtual void SendData(SOCKET socket, BYTE* pBuf, int len);
 
 		//************************************
-		// Method:    通知调用者tcp事件
-		// Parameter: tcp事件
+		// Method:    关闭tcp连接
+		// Parameter: socket
+		// Parameter: 是否产生连接关闭事件
 		//************************************
-		virtual void DispatchTcpEvt(TcpEvt* pEvt);
+		virtual void CloseConnection(SOCKET socket, bool b = true);
 
 	public:
 		//************************************
 		// Method:    获取tcp srv type
 		//************************************
-		ETcpSrvType GetTcpSrvType();
+		virtual ETcpSrvType GetTcpSrvType();
 
 		//************************************
 		// Method:    获取关联的socket
 		//************************************
-		SOCKET GetSocket();
+		virtual SOCKET GetSocket();
 
 		//************************************
 		// Method:    获取关联的服务端IP
 		//************************************
-		string GetIP();
+		virtual string GetIP();
 
 		//************************************
 		// Method:    获取关联的服务端端口
 		//************************************
-		int GetPort();
+		virtual int GetPort();
 
 		//************************************
 		// Method:    退出

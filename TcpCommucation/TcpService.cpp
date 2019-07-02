@@ -6,20 +6,92 @@
 
 namespace tc
 {
-	TcpService::TcpService(string ip /*= ""*/, int port /*= 0*/) :
+	TcpService::TcpService(string ip /*= ""*/, int port /*= 0*/, ETcpSrvType type /*= ETcpSrvType::None*/) :
 		socket(INVALID_SOCKET),
 		strIP(ip),
 		nPort(port),
 		pParam1(NULL),
 		pParam2(NULL),
-		tcpSrvType(ETcpSrvType::None)
+		tcpSrvType(type)
 	{
 
 	}
 
-	TcpService::~TcpService()
+	void TcpService::OnTcpEvt(TcpEvt* pEvt)
 	{
+		ETcpEvtType type = pEvt->GetEvtType();
 
+		if (type == ETcpEvtType::RecvNewConn)
+		{
+			OnRecvNewConnection((RecvNewConnEvt*)pEvt);
+		}
+		else if (type == ETcpEvtType::ConnDisconnect)
+		{
+			OnConnDisconnect((ConnDisconnectEvt*)pEvt);
+		}
+		else if (type == ETcpEvtType::RecvPeerData)
+		{
+			OnRecvPeerData((RecvPeerDataEvt*)pEvt);
+		}
+		else if (type == ETcpEvtType::ConnectSrvCpl)
+		{
+			OnConnectSrvCpl((ConnectSrvCplEvt*)pEvt);
+		}
+
+		DispatchTcpEvt(pEvt);
+	}
+
+	void TcpService::OnRecvNewConnection(RecvNewConnEvt* pEvt)
+	{
+		TcpLog::WriteLine(ETcpLogType::Info, "recv new connection: %s:%d",
+			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
+	}
+
+	void TcpService::OnConnDisconnect(ConnDisconnectEvt* pEvt)
+	{
+		TcpLog::WriteLine(ETcpLogType::Error, "lose connection from %s:%d",
+			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
+	}
+
+	void TcpService::OnRecvPeerData(RecvPeerDataEvt* pEvt)
+	{
+		TcpLog::WriteLine(ETcpLogType::Debug, "recv data from %s:%d, len: %d",
+			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort(), pEvt->GetBufLen());
+	}
+
+	void TcpService::OnConnectSrvCpl(ConnectSrvCplEvt* pEvt)
+	{
+		bool b = pEvt->GetConnectResult();
+		TcpLog::WriteLine(b ? ETcpLogType::Info : ETcpLogType::Error, "connect to %s:%d %s",
+			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort(), b ? "success" : "fail");
+	}
+
+	void TcpService::DispatchTcpEvt(TcpEvt* pEvt)
+	{
+		if (!fun._Empty())
+		{
+			__try
+			{
+				fun(pEvt, pParam1, pParam2);
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+				//TcpLog::WriteLine(ETcpLogType::Exception, "TcpEvt: %d, client: %s:%d",
+				//	pEvt->GetEvtType(), pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
+			}
+		}
+	}
+
+	void TcpService::CloseConnection(SOCKET socket, bool b /*= true*/)
+	{
+		if (this->socket != INVALID_SOCKET)
+		{
+			TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(this->socket);
+			if (pConn)
+			{
+				pConn->Close(b);
+			}
+		}
 	}
 
 	ETcpSrvType TcpService::GetTcpSrvType()
@@ -51,49 +123,17 @@ namespace tc
 
 	void TcpService::SendData(SOCKET socket, BYTE* pBuf, int len)
 	{
-		TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
-		if (pConn)
+		if (socket != INVALID_SOCKET)
 		{
-			pConn->SendData(pBuf, len);
-		}
-	}
-
-	void TcpService::OnTcpEvt(TcpEvt* pEvt)
-	{
-		ETcpEvtType type = ETcpEvtType::None;
-		if (type == ETcpEvtType::RecvNewConn)
-		{
-			OnRecvNewConnection((RecvNewConnEvt*)pEvt);
-		}
-		else if (type == ETcpEvtType::ConnDisconnect)
-		{
-			OnConnDisconnect((ConnDisconnectEvt*)pEvt);
-		}
-		else if (type == ETcpEvtType::RecvPeerData)
-		{
-			OnRecvPeerData((RecvPeerDataEvt*)pEvt);
-		}
-		else if (type == ETcpEvtType::ConnectSrvCpl)
-		{
-			OnRecvPeerData((RecvPeerDataEvt*)pEvt);
-		}
-
-		DispatchTcpEvt(pEvt);
-	}
-
-	void TcpService::DispatchTcpEvt(TcpEvt* pEvt)
-	{
-		if (!fun._Empty())
-		{
-			__try
+			TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
+			if (pConn)
 			{
-				fun(pEvt, pParam1, pParam2);
+				pConn->SendData(pBuf, len);
 			}
-			__except (EXCEPTION_EXECUTE_HANDLER)
-			{
-				//TcpLog::WriteLine(ETcpLogType::Exception, "TcpEvt: %d, client: %s:%d",
-				//	pEvt->GetEvtType(), pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
-			}
+		}
+		else
+		{
+			TcpLog::WriteLine(ETcpLogType::Warn, "send data error, socket invalid: %d", socket);
 		}
 	}
 
