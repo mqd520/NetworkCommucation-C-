@@ -174,7 +174,7 @@ void OnTcpCommLog(ETcpLogType type, string log, void* pParam1, void* pParam2)
 		type1 = ELogSrvType::Fatal;
 	}
 
-	LogSrv::WriteLine(type1, false, log);
+	LogSrv::WriteLine(type1, log);
 
 	if (theApp.m_pMainWnd)
 	{

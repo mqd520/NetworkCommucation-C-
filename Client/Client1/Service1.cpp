@@ -4,7 +4,7 @@
 #include "Msg.h"
 
 #include "tc/TcpEvt.h"
-#include "tc/ConnectSrvResultEvt.h"
+#include "tc/ConnectSrvCplEvt.h"
 
 
 Service1::Service1()
@@ -31,10 +31,9 @@ TcpClient& Service1::GetMainTcpClient()
 void Service1::OnTcpEvt(TcpEvt* pEvt, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 {
 	ETcpEvtType type = pEvt->GetEvtType();
-	if (type == ETcpEvtType::ConnectSrvResult)
+	if (type == ETcpEvtType::ConnectSrvCpl)
 	{
-		ConnectSrvResultEvt* pEvt1 = static_cast<ConnectSrvResultEvt*>(pEvt);
-
+		ConnectSrvCplEvt* pEvt1 = static_cast<ConnectSrvCplEvt*>(pEvt);
 		PostMessage(theApp.m_pMainWnd->m_hWnd, WM_USER_CONNECTRESULT, (WPARAM)pEvt1->GetConnectResult(), (LPARAM)pEvt1->GetTcpSrv());
 	}
 	else if (type == ETcpEvtType::ConnDisconnect)
