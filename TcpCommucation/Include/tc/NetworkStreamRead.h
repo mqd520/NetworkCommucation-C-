@@ -10,7 +10,7 @@ namespace tc
 	/************************************************************************/
 	/* 网络流(只读)类
 	/************************************************************************/
-	class CNetworkStreamRead
+	class NetworkStreamRead
 	{
 	public:
 		//************************************
@@ -18,8 +18,8 @@ namespace tc
 		// Parameter: int len:			缓冲区长度
 		// Parameter: EByteOrder bo:	网络流所使用的字节序 	
 		//************************************
-		CNetworkStreamRead(BYTE* pBuf, int len, EByteOrder bo = EByteOrder::big);
-		~CNetworkStreamRead();
+		NetworkStreamRead(BYTE* pBuf, int len, EByteOrder bo = EByteOrder::big);
+		~NetworkStreamRead();
 
 	private:
 		EByteOrder nsByteOrder;		// 当前网络流使用的字节序
@@ -44,6 +44,12 @@ namespace tc
 		UINT32 ReadStrPrefix(int len);
 
 	public:
+		//************************************
+		// Method:    设置字节序
+		// Parameter: 字节序
+		//************************************
+		void SetByteOrder(EByteOrder bo);
+
 		//************************************
 		// Method:    返回缓冲区长度
 		//************************************

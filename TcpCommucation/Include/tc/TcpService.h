@@ -15,6 +15,7 @@ namespace tc
 	{
 	public:
 		TcpService(string ip = "", int port = 0, ETcpSrvType type = ETcpSrvType::None);
+		~TcpService();
 
 	protected:
 		SOCKET socket;				// ¹ØÁªµÄsocket

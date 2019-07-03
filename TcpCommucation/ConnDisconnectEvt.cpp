@@ -18,13 +18,4 @@ namespace tc
 		return reason;
 	}
 
-	//string ConnDisconnectEvt::GetPeerIp()
-	//{
-	//	return strIP;
-	//}
-
-	//int ConnDisconnectEvt::GetPeerPort()
-	//{
-	//	return nPort;
-	//}
 }

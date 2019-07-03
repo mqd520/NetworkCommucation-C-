@@ -5,7 +5,7 @@
 
 using namespace tc;
 
-CNetworkStreamWrite::CNetworkStreamWrite(BYTE* pBuf, int len, EByteOrder bo /*= EByteOrder::big*/) :
+NetworkStreamWrite::NetworkStreamWrite(BYTE* pBuf, int len, EByteOrder bo /*= EByteOrder::big*/) :
 pBuff(pBuf),
 nBuffLen(len),
 nsByteOrder(bo),
@@ -14,12 +14,12 @@ nWriteIndex(0)
 
 }
 
-CNetworkStreamWrite::~CNetworkStreamWrite()
+NetworkStreamWrite::~NetworkStreamWrite()
 {
 
 }
 
-bool CNetworkStreamWrite::WriteData(void* pData, int len)
+bool NetworkStreamWrite::WriteData(void* pData, int len)
 {
 	bool result = false;
 
@@ -39,7 +39,7 @@ bool CNetworkStreamWrite::WriteData(void* pData, int len)
 	return result;
 }
 
-void CNetworkStreamWrite::WriteStrPrefix(int prefix, int len)
+void NetworkStreamWrite::WriteStrPrefix(int prefix, int len)
 {
 	switch (prefix)
 	{
@@ -55,27 +55,27 @@ void CNetworkStreamWrite::WriteStrPrefix(int prefix, int len)
 	}
 }
 
-int CNetworkStreamWrite::GetLen()
+int NetworkStreamWrite::GetLen()
 {
 	return nBuffLen;
 }
 
-BYTE* CNetworkStreamWrite::GetBuf()
+BYTE* NetworkStreamWrite::GetBuf()
 {
 	return pBuff;
 }
 
-int CNetworkStreamWrite::AvaliableWrite()
+int NetworkStreamWrite::AvaliableWrite()
 {
 	return nBuffLen - nWriteIndex;
 }
 
-int CNetworkStreamWrite::WritedCount()
+int NetworkStreamWrite::WritedCount()
 {
 	return nWriteIndex;
 }
 
-bool CNetworkStreamWrite::WriteBuf(BYTE* pBuf, int len)
+bool NetworkStreamWrite::WriteBuf(BYTE* pBuf, int len)
 {
 	bool result = false;
 
@@ -89,62 +89,62 @@ bool CNetworkStreamWrite::WriteBuf(BYTE* pBuf, int len)
 	return result;
 }
 
-bool CNetworkStreamWrite::WriteByte(BYTE val)
+bool NetworkStreamWrite::WriteByte(BYTE val)
 {
 	return WriteData(&val, sizeof(BYTE));
 }
 
-bool CNetworkStreamWrite::WriteShort(short val)
+bool NetworkStreamWrite::WriteShort(short val)
 {
 	return WriteData(&val, sizeof(short));
 }
 
-bool CNetworkStreamWrite::WriteUShort(USHORT val)
+bool NetworkStreamWrite::WriteUShort(USHORT val)
 {
 	return WriteData(&val, sizeof(USHORT));
 }
 
-bool CNetworkStreamWrite::WriteInt16(INT16 val)
+bool NetworkStreamWrite::WriteInt16(INT16 val)
 {
 	return WriteData(&val, sizeof(INT16));
 }
 
-bool CNetworkStreamWrite::WriteUInt16(UINT16 val)
+bool NetworkStreamWrite::WriteUInt16(UINT16 val)
 {
 	return WriteData(&val, sizeof(UINT16));
 }
 
-bool CNetworkStreamWrite::WriteInt32(INT32 val)
+bool NetworkStreamWrite::WriteInt32(INT32 val)
 {
 	return WriteData(&val, sizeof(INT32));
 }
 
-bool CNetworkStreamWrite::WriteUInt32(UINT32 val)
+bool NetworkStreamWrite::WriteUInt32(UINT32 val)
 {
 	return WriteData(&val, sizeof(UINT32));
 }
 
-bool CNetworkStreamWrite::WriteInt64(INT64 val)
+bool NetworkStreamWrite::WriteInt64(INT64 val)
 {
 	return WriteData(&val, sizeof(INT64));
 }
 
-bool CNetworkStreamWrite::WriteUInt64(UINT64 val)
+bool NetworkStreamWrite::WriteUInt64(UINT64 val)
 {
 	return WriteData(&val, sizeof(UINT64));
 }
 
-bool CNetworkStreamWrite::WriteFloat(float val)
+bool NetworkStreamWrite::WriteFloat(float val)
 {
 	return WriteData(&val, sizeof(float));
 }
 
-bool CNetworkStreamWrite::WriteDouble(double val)
+bool NetworkStreamWrite::WriteDouble(double val)
 {
 	return WriteData(&val, sizeof(double));
 }
 
-bool CNetworkStreamWrite::WriteGB2312Str(string str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
+bool NetworkStreamWrite::WriteGB2312Str(string str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
 {
 	bool result = false;
 
@@ -165,7 +165,7 @@ bool CNetworkStreamWrite::WriteGB2312Str(string str, int prefix /*= 4*/, bool ha
 	return result;
 }
 
-bool CNetworkStreamWrite::WriteUTF16Str(wstring str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
+bool NetworkStreamWrite::WriteUTF16Str(wstring str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
 {
 	bool result = false;
 
@@ -186,7 +186,7 @@ bool CNetworkStreamWrite::WriteUTF16Str(wstring str, int prefix /*= 4*/, bool ha
 	return result;
 }
 
-bool CNetworkStreamWrite::WriteUTF8Str(string str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
+bool NetworkStreamWrite::WriteUTF8Str(string str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
 {
 	bool result = false;
 

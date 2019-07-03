@@ -66,7 +66,7 @@ namespace tc
 		// Parameter: 是否自动重连
 		// Parameter: 间隔时间(ms)
 		//************************************
-		virtual void SetAutoReconnect(bool b = true, int time = TC_RECONNECTTIME);
+		virtual void SetAutoReconnect(bool b = true, int time = TC_ReconnectTime);
 
 		//************************************
 		// Method:    连接服务端

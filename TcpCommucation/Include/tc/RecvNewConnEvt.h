@@ -10,21 +10,11 @@ namespace tc
 	class RecvNewConnEvt : public TcpEvt
 	{
 	public:
+		//************************************
+		// Method:    构造函数
+		// Parameter: tcp服务
+		// Parameter: 客户端socket
+		//************************************
 		RecvNewConnEvt(TcpService* pSrv, SOCKET client);
-
-	private:
-		//string strClientIP;	// 客户端IP
-		//int nClientPort;	// 客户端端口
-
-	public:
-		////************************************
-		//// Method:    获取客户端IP
-		////************************************
-		//string GetClientIP();
-
-		////************************************
-		//// Method:    获取客户端端口
-		////************************************
-		//int GetClientPort();
 	};
 }

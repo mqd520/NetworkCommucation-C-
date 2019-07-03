@@ -57,14 +57,14 @@ namespace tc
 		int AvaliableWriteLen();
 
 		//************************************
-		// Method:    从流中读取一段缓冲区
+		// Method:    从流中复制一段缓冲区
 		// Parameter: BYTE buf[]:	缓冲区		
 		// Parameter: int len:		缓冲区长度
 		//************************************
 		bool Copy(BYTE buf[], int len);
 
 		//************************************
-		// Method:    从流中复制一段缓冲区
+		// Method:    从流中读取一段缓冲区
 		// Parameter: BYTE buf[]:	缓冲区		
 		// Parameter: int len:		缓冲区长度
 		//************************************

@@ -11,10 +11,10 @@ namespace tc
 		this->evtType = ETcpEvtType::ConnectSrvCpl;
 	}
 
-	//ConnectSrvCplEvt::~ConnectSrvCplEvt()
-	//{
+	ConnectSrvCplEvt::~ConnectSrvCplEvt()
+	{
 
-	//}
+	}
 
 	bool ConnectSrvCplEvt::GetConnectResult()
 	{

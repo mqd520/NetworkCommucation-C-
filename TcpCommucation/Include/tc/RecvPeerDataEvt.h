@@ -10,7 +10,9 @@ namespace tc
 		//************************************
 		// Method:    构造函数
 		// Parameter: 关联的tcp服务对象
-		// Parameter: 关联的用于接收数据的socket
+		// Parameter: 对端socket
+		// Parameter: BYTE * pBuf:	缓冲区
+		// Parameter: int len:		缓冲区长度
 		//************************************
 		RecvPeerDataEvt(TcpService* pSrv, SOCKET recv, BYTE* pBuf, int len);
 		~RecvPeerDataEvt();
@@ -18,8 +20,6 @@ namespace tc
 	private:
 		BYTE* pBuf;		// 收到的数据缓冲区指针
 		int nLen;		// 数据缓冲区长度
-		//string strIp;	// 对端ip
-		//int nPort;		// 对端端口
 
 	public:
 		//************************************
@@ -31,15 +31,5 @@ namespace tc
 		// Method:    获取接收缓冲区长度
 		//************************************
 		int GetBufLen();
-
-		////************************************
-		//// Method:    获取对端ip
-		////************************************
-		//string GetPeerIp();
-
-		////************************************
-		//// Method:    获取对端端口
-		////************************************
-		//int GetPeerPort();
 	};
 }

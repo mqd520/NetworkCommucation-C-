@@ -14,7 +14,7 @@ namespace tc
 		bIsConnecting(false),
 		bIsConnected(false),
 		bIsReconnect(true),
-		nTimeSpan(TC_RECONNECTTIME)
+		nTimeSpan(TC_ReconnectTime)
 	{
 		t.SetTimeout(nTimeSpan);
 		Fun3 fun = std::bind(&TcpClient::OnTimer, this, _1, _2, _3, _4);

@@ -5,9 +5,15 @@
 using namespace std;
 using namespace std::placeholders;
 
-#define	TC_MAXCLIENTCOUNT			65535	// 最大tcp连接数
-#define TC_TCPRECVBUFFERSIZE		4096	// tcp接收缓冲区默认大小
-#define TC_RECONNECTTIME			3000	// 自动重连间隔时间
+#define		TC_ReconnectTime					(3000)					// 自动重连间隔时间
+#define		TC_MaxSendBufLen					(4096)					// 默认最大发送缓冲区长度
+#define		TC_MaxRecvBufLen					(4096)					// 默认最大接收缓冲区长度
+#define		TC_MaxPacketHeadLen					(256)					// 最大包头字节长度
+#define		TC_MaxPacketLen						(4096)					// 最大包体字节长度
+#define		TC_KeepAlive_Timespan				(2 * 1000)				// 默认心跳包发送间隔时间
+#define		TC_KeepAlive_Timeout				(3 * 1000)				// 默认心跳包超时时间
+#define		TC_KeepAlive_MaxMissCount			(3)						// 默认允许丢失心跳包最大次数
+
 
 namespace tc
 {
@@ -145,13 +151,13 @@ namespace tc
 		int socketId;		// socket id, 关联一个socket
 	}SocketInfoData;
 
+	class Packet;
 	// 包数据
 	typedef struct tagPacketData
 	{
-		BYTE* pBuf;		// 包体缓冲区
-		int nLen;		// 包体缓冲区长度
-		int cmd;		// 包命令
-		int clientId;	// client id(适用于服务端)
+		Packet* pPck;		// 包数据
+		int cmd;			// 包命令
+		int clientId;		// socket id
 	}PacketData;
 }
 

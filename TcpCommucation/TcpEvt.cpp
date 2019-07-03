@@ -24,6 +24,11 @@ namespace tc
 		}
 	}
 
+	TcpEvt::~TcpEvt()
+	{
+
+	}
+
 	ETcpEvtType TcpEvt::GetEvtType()
 	{
 		return evtType;

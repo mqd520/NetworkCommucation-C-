@@ -5,7 +5,7 @@
 
 using namespace tc;
 
-CNetworkStreamRead::CNetworkStreamRead(BYTE* pBuf, int len, EByteOrder bo /* = EByteOrder::big */) :
+NetworkStreamRead::NetworkStreamRead(BYTE* pBuf, int len, EByteOrder bo /* = EByteOrder::big */) :
 pBuff(pBuf),
 nBuffLen(len),
 nsByteOrder(bo),
@@ -14,12 +14,12 @@ nReadIndex(0)
 
 }
 
-CNetworkStreamRead::~CNetworkStreamRead()
+NetworkStreamRead::~NetworkStreamRead()
 {
 
 }
 
-bool CNetworkStreamRead::ReadData(void* pData, int len)
+bool NetworkStreamRead::ReadData(void* pData, int len)
 {
 	bool result = false;
 	if (len <= AvaliableRead())
@@ -37,7 +37,7 @@ bool CNetworkStreamRead::ReadData(void* pData, int len)
 	return result;
 }
 
-UINT32 CNetworkStreamRead::ReadStrPrefix(int len)
+UINT32 NetworkStreamRead::ReadStrPrefix(int len)
 {
 	UINT32 len1 = 0;	// ×Ö·û´®×Ö½Ú³¤¶È
 
@@ -57,27 +57,32 @@ UINT32 CNetworkStreamRead::ReadStrPrefix(int len)
 	return len1;
 }
 
-int CNetworkStreamRead::GetLen()
+void NetworkStreamRead::SetByteOrder(EByteOrder bo)
+{
+	nsByteOrder = bo;
+}
+
+int NetworkStreamRead::GetLen()
 {
 	return nBuffLen;
 }
 
-BYTE* CNetworkStreamRead::GetBuf()
+BYTE* NetworkStreamRead::GetBuf()
 {
 	return pBuff;
 }
 
-int CNetworkStreamRead::AvaliableRead()
+int NetworkStreamRead::AvaliableRead()
 {
 	return nBuffLen - nReadIndex;
 }
 
-int CNetworkStreamRead::ReadedCount()
+int NetworkStreamRead::ReadedCount()
 {
 	return nReadIndex;
 }
 
-int CNetworkStreamRead::ReadBuf(BYTE* buf, int len)
+int NetworkStreamRead::ReadBuf(BYTE* buf, int len)
 {
 	if (len <= AvaliableRead())
 	{
@@ -90,84 +95,84 @@ int CNetworkStreamRead::ReadBuf(BYTE* buf, int len)
 	return false;
 }
 
-BYTE CNetworkStreamRead::ReadByte()
+BYTE NetworkStreamRead::ReadByte()
 {
 	BYTE b = 0;
 	ReadData(&b, sizeof(BYTE));
 	return b;
 }
 
-SHORT CNetworkStreamRead::ReadShort()
+SHORT NetworkStreamRead::ReadShort()
 {
 	short s = 0;
 	ReadData(&s, sizeof(short));
 	return s;
 }
 
-USHORT CNetworkStreamRead::ReadUShort()
+USHORT NetworkStreamRead::ReadUShort()
 {
 	USHORT us = 0;
 	ReadData(&us, sizeof(USHORT));
 	return us;
 }
 
-INT16 CNetworkStreamRead::ReadInt16()
+INT16 NetworkStreamRead::ReadInt16()
 {
 	INT16 i = 0;
 	ReadData(&i, sizeof(INT16));
 	return i;
 }
 
-UINT16 CNetworkStreamRead::ReadUInt16()
+UINT16 NetworkStreamRead::ReadUInt16()
 {
 	UINT16 i = 0;
 	ReadData(&i, sizeof(UINT16));
 	return i;
 }
 
-INT32 CNetworkStreamRead::ReadInt32()
+INT32 NetworkStreamRead::ReadInt32()
 {
 	INT32 i = 0;
 	ReadData(&i, sizeof(INT32));
 	return i;
 }
 
-UINT32 CNetworkStreamRead::ReadUInt32()
+UINT32 NetworkStreamRead::ReadUInt32()
 {
 	UINT32 ui = 0;
 	ReadData(&ui, sizeof(UINT32));
 	return ui;
 }
 
-INT64 CNetworkStreamRead::ReadInt64()
+INT64 NetworkStreamRead::ReadInt64()
 {
 	INT64 i = 0;
 	ReadData(&i, sizeof(INT64));
 	return i;
 }
 
-UINT64 CNetworkStreamRead::ReadUInt64()
+UINT64 NetworkStreamRead::ReadUInt64()
 {
 	UINT64 ui = 0;
 	ReadData(&ui, sizeof(UINT64));
 	return ui;
 }
 
-float CNetworkStreamRead::ReadFloat()
+float NetworkStreamRead::ReadFloat()
 {
 	float f = 0;
 	ReadData(&f, sizeof(float));
 	return f;
 }
 
-double CNetworkStreamRead::ReadDouble()
+double NetworkStreamRead::ReadDouble()
 {
 	double d = 0;
 	ReadData(&d, sizeof(double));
 	return d;
 }
 
-string CNetworkStreamRead::ReadGB2312Str(int len)
+string NetworkStreamRead::ReadGB2312Str(int len)
 {
 	string result = "";
 
@@ -180,7 +185,7 @@ string CNetworkStreamRead::ReadGB2312Str(int len)
 	return result;
 }
 
-string CNetworkStreamRead::ReadGB2312Str1(int prefixLen /*= 4*/)
+string NetworkStreamRead::ReadGB2312Str1(int prefixLen /*= 4*/)
 {
 	string result = "";
 
@@ -193,7 +198,7 @@ string CNetworkStreamRead::ReadGB2312Str1(int prefixLen /*= 4*/)
 	return result;
 }
 
-wstring CNetworkStreamRead::ReadUTF16Str(int len)
+wstring NetworkStreamRead::ReadUTF16Str(int len)
 {
 	wstring result = L"";
 
@@ -206,7 +211,7 @@ wstring CNetworkStreamRead::ReadUTF16Str(int len)
 	return result;
 }
 
-wstring CNetworkStreamRead::ReadUTF16Str1(int prefixLen /*= 4*/)
+wstring NetworkStreamRead::ReadUTF16Str1(int prefixLen /*= 4*/)
 {
 	wstring result = L"";
 
@@ -219,7 +224,7 @@ wstring CNetworkStreamRead::ReadUTF16Str1(int prefixLen /*= 4*/)
 	return result;
 }
 
-string CNetworkStreamRead::ReadUTF8Str(int len)
+string NetworkStreamRead::ReadUTF8Str(int len)
 {
 	string str = "";
 
@@ -232,7 +237,7 @@ string CNetworkStreamRead::ReadUTF8Str(int len)
 	return str;
 }
 
-string CNetworkStreamRead::ReadUTF8Str1(int prefixLen /*= 4*/)
+string NetworkStreamRead::ReadUTF8Str1(int prefixLen /*= 4*/)
 {
 	string result = "";
 

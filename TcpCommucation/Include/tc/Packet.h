@@ -5,11 +5,10 @@
 namespace tc
 {
 	// 包体基类
-	class PacketBase
+	class Packet
 	{
 	public:
-		PacketBase(int cmd);
-		virtual ~PacketBase();
+		Packet(int cmd);
 
 	protected:
 		int pckCmd;		// 包命令
@@ -29,7 +28,7 @@ namespace tc
 		// Method:    从流中读取数据到包中
 		// Parameter: ns:	只读网络流对象
 		//************************************
-		virtual void Read(CNetworkStreamRead& ns);
+		virtual void Read(NetworkStreamRead& ns);
 
 		//************************************
 		// Method:    从流中读取数据到包中
@@ -43,7 +42,7 @@ namespace tc
 		// Method:    向流中写入数据
 		// Parameter: ns:	只写网络流对象
 		//************************************
-		virtual void Write(CNetworkStreamWrite& ns);
+		virtual void Write(NetworkStreamWrite& ns);
 
 		//************************************
 		// Method:    向流中写入数据

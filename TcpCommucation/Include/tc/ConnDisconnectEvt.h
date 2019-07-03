@@ -7,6 +7,12 @@ namespace tc
 	class ConnDisconnectEvt : public TcpEvt
 	{
 	public:
+		//************************************
+		// Method:    构造函数
+		// Parameter: tcp service
+		// Parameter: SOCKET sendrecv
+		// Parameter: 连接断开原因
+		//************************************
 		ConnDisconnectEvt(TcpService* pSrv, SOCKET sendrecv, EDisconnReason reason);
 
 	private:

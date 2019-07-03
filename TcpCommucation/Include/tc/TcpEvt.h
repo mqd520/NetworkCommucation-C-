@@ -16,6 +16,7 @@ namespace tc
 		// Parameter: 关联的用于发送(接收)数据的socket
 		//************************************
 		TcpEvt(TcpService* pSrv, SOCKET sendrecv = NULL);
+		virtual ~TcpEvt();
 
 	protected:
 		TcpService* pTcpSrv;	// tcp服务对象

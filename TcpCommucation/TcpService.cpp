@@ -17,10 +17,16 @@ namespace tc
 
 	}
 
+	TcpService::~TcpService()
+	{
+
+	}
+
 	void TcpService::OnTcpEvt(TcpEvt* pEvt)
 	{
-		ETcpEvtType type = pEvt->GetEvtType();
+		DispatchTcpEvt(pEvt);
 
+		ETcpEvtType type = pEvt->GetEvtType();
 		if (type == ETcpEvtType::RecvNewConn)
 		{
 			OnRecvNewConnection((RecvNewConnEvt*)pEvt);
@@ -37,13 +43,11 @@ namespace tc
 		{
 			OnConnectSrvCpl((ConnectSrvCplEvt*)pEvt);
 		}
-
-		DispatchTcpEvt(pEvt);
 	}
 
 	void TcpService::OnRecvNewConnection(RecvNewConnEvt* pEvt)
 	{
-		TcpLog::WriteLine(ETcpLogType::Info, "recv new connection: %s:%d",
+		TcpLog::WriteLine(ETcpLogType::Debug, "recv new connection: %s:%d",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 	}
 

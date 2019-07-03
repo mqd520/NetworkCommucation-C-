@@ -10,7 +10,6 @@ namespace tc
 		nLen(len)
 	{
 		evtType = ETcpEvtType::RecvPeerData;
-		//strIp = SocketTool::GetPeerIpAndPort(recv, &nPort);
 	}
 
 	RecvPeerDataEvt::~RecvPeerDataEvt()
@@ -30,14 +29,4 @@ namespace tc
 	{
 		return nLen;
 	}
-
-	//string RecvPeerDataEvt::GetPeerIp()
-	//{
-	//	return strIp;
-	//}
-
-	//int RecvPeerDataEvt::GetPeerPort()
-	//{
-	//	return nPort;
-	//}
 }

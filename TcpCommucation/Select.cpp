@@ -167,9 +167,9 @@ namespace tc
 
 	void Select::OnRecvData(SocketInfoData& socketData)
 	{
-		BYTE* pRecvBuf = new BYTE[TC_TCPRECVBUFFERSIZE];
+		BYTE* pRecvBuf = new BYTE[TC_MaxRecvBufLen];
 		int len = 0;
-		bool b = SocketTool::Recv(socketData.socket, pRecvBuf, TC_TCPRECVBUFFERSIZE, &len);
+		bool b = SocketTool::Recv(socketData.socket, pRecvBuf, TC_MaxRecvBufLen, &len);
 		if (len > 0)	// 接收数据成功
 		{
 			RecvPeerDataSocEvt* pEvt = new RecvPeerDataSocEvt(socketData.socket, pRecvBuf, len);

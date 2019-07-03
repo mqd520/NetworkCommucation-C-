@@ -85,11 +85,13 @@
     <ClInclude Include="Include\tc\ConnDisconnSocEvt.h" />
     <ClInclude Include="Include\tc\ConnectCplSocEvt.h" />
     <ClInclude Include="Include\tc\Def.h" />
+    <ClInclude Include="Include\tc\KeepAliveSrv.h" />
+    <ClInclude Include="Include\tc\KeepAliveClient.h" />
     <ClInclude Include="Include\tc\PacketClient.h" />
     <ClInclude Include="Include\tc\TcpLog.h" />
-    <ClInclude Include="Include\tc\PacketBase.h" />
-    <ClInclude Include="Include\tc\PacketCommuSrv.h" />
-    <ClInclude Include="Include\tc\PacketHeadBase.h" />
+    <ClInclude Include="Include\tc\Packet.h" />
+    <ClInclude Include="Include\tc\PacketSrv.h" />
+    <ClInclude Include="Include\tc\PacketHead.h" />
     <ClInclude Include="Include\tc\RecvDataHandler.h" />
     <ClInclude Include="Include\tc\RecvNewConnSocEvt.h" />
     <ClInclude Include="Include\tc\RecvPeerDataSocEvt.h" />
@@ -137,13 +139,15 @@
   <ItemGroup>
     <ClCompile Include="ConnDisconnSocEvt.cpp" />
     <ClCompile Include="ConnectCplSocEvt.cpp" />
+    <ClCompile Include="KeepAliveClient.cpp" />
+    <ClCompile Include="KeepAliveSrv.cpp" />
     <ClCompile Include="PacketClient.cpp" />
     <ClCompile Include="RecvPeerDataEvt.cpp" />
     <ClCompile Include="TcpLog.cpp" />
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="GB2312Str.cpp" />
     <ClCompile Include="NetworkStreamRead.cpp" />
-    <ClCompile Include="PacketCommuSrv.cpp" />
+    <ClCompile Include="PacketSrv.cpp" />
     <ClCompile Include="RecvDataHandler.cpp" />
     <ClCompile Include="RecvNewConnSocEvt.cpp" />
     <ClCompile Include="RecvPeerDataSocEvt.cpp" />
@@ -152,8 +156,8 @@
     <ClCompile Include="NCTool.cpp" />
     <ClCompile Include="NetworkStreamWrite.cpp" />
     <ClCompile Include="Node.cpp" />
-    <ClCompile Include="PacketBase.cpp" />
-    <ClCompile Include="PacketHeadBase.cpp" />
+    <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="PacketHead.cpp" />
     <ClCompile Include="RecvNewConnEvt.cpp" />
     <ClCompile Include="RecvThread.cpp" />
     <ClCompile Include="SafeLock.cpp" />

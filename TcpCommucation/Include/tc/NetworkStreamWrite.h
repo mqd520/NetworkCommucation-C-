@@ -10,7 +10,7 @@ namespace tc
 	/************************************************************************/
 	/* 网络流(只写)类
 	/************************************************************************/
-	class CNetworkStreamWrite
+	class NetworkStreamWrite
 	{
 	public:
 		//************************************
@@ -18,8 +18,8 @@ namespace tc
 		// Parameter: int len:			缓冲区长度
 		// Parameter: EByteOrder bo:	网络流所使用的字节序 	
 		//************************************
-		CNetworkStreamWrite(BYTE* pBuf, int len, EByteOrder bo = EByteOrder::big);
-		~CNetworkStreamWrite();
+		NetworkStreamWrite(BYTE* pBuf, int len, EByteOrder bo = EByteOrder::big);
+		~NetworkStreamWrite();
 
 	private:
 		EByteOrder nsByteOrder;		// 当前网络流使用的字节序
@@ -146,7 +146,7 @@ namespace tc
 		// Parameter: int prefix:		字符串字节长度前缀所占字节, 范围: 1, 2, 4, 0: 不使用前缀
 		// Parameter: bool hasEndChar:	是否将结束符写入
 		//************************************
-		bool WriteGB2312Str(string str, int prefix = 4, bool hasEndChar = false);
+		bool WriteGB2312Str(string str, int prefix = 4, bool hasEndChar = true);
 
 		//************************************
 		// Method:    写入 UTF16 字符串
@@ -155,7 +155,7 @@ namespace tc
 		// Parameter: int prefix:		字符串字节长度前缀所占字节, 范围: 1, 2, 4, 0: 不使用前缀
 		// Parameter: bool hasEndChar:	是否将结束符写入
 		//************************************
-		bool WriteUTF16Str(wstring str, int prefix = 4, bool hasEndChar = false);
+		bool WriteUTF16Str(wstring str, int prefix = 4, bool hasEndChar = true);
 
 		//************************************
 		// Method:    写入 UTF8 字符串
@@ -164,6 +164,6 @@ namespace tc
 		// Parameter: int prefix:		字符串字节长度前缀所占字节, 范围: 1, 2, 4, 0: 不使用前缀
 		// Parameter: bool hasEndChar:	是否将结束符写入
 		//************************************
-		bool WriteUTF8Str(string str, int prefix = 4, bool hasEndChar = false);
+		bool WriteUTF8Str(string str, int prefix = 4, bool hasEndChar = true);
 	};
 }

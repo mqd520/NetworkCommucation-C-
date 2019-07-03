@@ -10,16 +10,5 @@ namespace tc
 		TcpEvt(pSrv, client)
 	{
 		evtType = ETcpEvtType::RecvNewConn;
-		//strClientIP = SocketTool::GetPeerIpAndPort(client, &nClientPort);
 	}
-
-	//string RecvNewConnEvt::GetClientIP()
-	//{
-	//	return strClientIP;
-	//}
-
-	//int RecvNewConnEvt::GetClientPort()
-	//{
-	//	return nClientPort;
-	//}
 }

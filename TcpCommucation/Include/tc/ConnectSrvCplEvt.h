@@ -14,7 +14,7 @@ namespace tc
 		// Parameter: 连接是否成功
 		//************************************
 		ConnectSrvCplEvt(TcpService* pSrv, SOCKET socket, bool success);
-		//~ConnectSrvCplEvt();
+		~ConnectSrvCplEvt();
 
 	private:
 		bool	bSuccess;		// 连接是否成功

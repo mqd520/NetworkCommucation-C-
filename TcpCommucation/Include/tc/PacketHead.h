@@ -5,7 +5,7 @@
 namespace tc
 {
 	// 包头基类定义
-	class PacketHeadBase
+	class PacketHead
 	{
 	public:
 		//************************************
@@ -13,8 +13,7 @@ namespace tc
 		// Parameter: cmd:	包命令
 		// Parameter: len:	包体长度
 		//************************************
-		PacketHeadBase(int cmd, int len);
-		virtual~PacketHeadBase();
+		PacketHead(int cmd, int len);
 
 	protected:
 		int nHeadLen;			// 包头长度
@@ -47,7 +46,7 @@ namespace tc
 		// Method:    从流中读取数据到包中
 		// Parameter: ns:	只读网络流对象
 		//************************************
-		virtual void Read(CNetworkStreamRead& ns);
+		virtual void Read(NetworkStreamRead& ns);
 
 		//************************************
 		// Method:    从流中读取数据到包中
@@ -61,7 +60,7 @@ namespace tc
 		// Method:    向流中写入数据
 		// Parameter: ns:	只写网络流对象
 		//************************************
-		virtual void Write(CNetworkStreamWrite& ns);
+		virtual void Write(NetworkStreamWrite& ns);
 
 		//************************************
 		// Method:    向流中写入数据
