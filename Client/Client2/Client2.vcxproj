@@ -48,6 +48,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>bin\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -56,13 +58,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../TcpCommucation/Include/;../../Lib1/Include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../TcpCommucation/Include/;../../Lib/log/Include/;../../PacketCommSrv/Include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../TcpCommucation/bin/Debug/;../../Lib1/bin/Debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>TcpCommucation_d.lib;Lib1_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../TcpCommucation/$(OutDir)/;../../Lib/log/;../../PacketCommSrv/$(OutDir)/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>TcpCommucation_d.lib;Log_d.lib;PacketCommSrv_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -84,12 +86,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../TcpCommucation/Include/;../../Lib/log/Include/;../../PacketCommSrv/Include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../TcpCommucation/$(OutDir)/;../../Lib/log/;../../PacketCommSrv/$(OutDir)/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>TcpCommucation.lib;Log.lib;PacketCommSrv.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -110,13 +115,10 @@
     <ClInclude Include="Client2Dlg.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="ExceptionHandler.h" />
-    <ClInclude Include="LogSrv.h" />
-    <ClInclude Include="LogThread.h" />
     <ClInclude Include="Msg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Service1.h" />
     <ClInclude Include="ServiceA.h" />
-    <ClInclude Include="ServiceB.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -124,11 +126,8 @@
     <ClCompile Include="Client2.cpp" />
     <ClCompile Include="Client2Dlg.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
-    <ClCompile Include="LogSrv.cpp" />
-    <ClCompile Include="LogThread.cpp" />
     <ClCompile Include="Service1.cpp" />
     <ClCompile Include="ServiceA.cpp" />
-    <ClCompile Include="ServiceB.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -146,4 +145,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="Client2.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -45,6 +45,7 @@ BEGIN_MESSAGE_MAP(CClient2Dlg, CDialogEx)
 	ON_MESSAGE(WM_USER_CONNECTRESULT, &CClient2Dlg::OnConnectResult)
 	ON_BN_CLICKED(IDC_BUTTON1, &CClient2Dlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CClient2Dlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CClient2Dlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -177,8 +178,8 @@ void CClient2Dlg::OnBnClickedButton1()
 	m_edIp.GetWindowText(str1);
 	string ip = GB2312Str::FromUTF16(str1.GetString());
 
-	theApp.GetSrv1().GetSrvB().SetListenInfo(ip, port);
-	theApp.GetSrv1().GetSrvB().Listen();
+	theApp.GetSrv1().GetSrvA().SetConnectInfo(ip, port);
+	theApp.GetSrv1().GetSrvA().Connect();
 }
 
 
@@ -189,6 +190,12 @@ void CClient2Dlg::OnBnClickedButton2()
 	m_edIp.EnableWindow(TRUE);
 	m_edPort.EnableWindow(TRUE);
 
-	theApp.GetSrv1().GetSrvA().Close();
-	ShowLog(_T("user close the connection"));
+	//theApp.GetSrv1().GetSrvA().Close();
+	//ShowLog(_T("user close the connection"));
+}
+
+void CClient2Dlg::OnBnClickedButton3()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	m_edLog.SetWindowText(_T(""));
 }

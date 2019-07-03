@@ -6,10 +6,13 @@
 #include "Client2.h"
 #include "Client2Dlg.h"
 #include "ExceptionHandler.h"
-#include "LogSrv.h"
 #include "Msg.h"
 
+#include "log/LogSrv.h"
+using namespace llog;
+
 #include "tc/TcpCommuMgr.h"
+#include "tc/TcpLogMgr.h"
 using namespace tc;
 
 #ifdef _DEBUG
@@ -61,13 +64,16 @@ BOOL CClient2App::InitInstance()
 
 	CWinApp::InitInstance();
 
+
+
+	LogSrv::Init("Client.exe.Log");
+
 	ExceptionHandler::Init();
 	ExceptionHandler::RegExceptionCallback(OnException, &theApp);
-	ExceptionHandler::SetFileName("Client1.exe");
+	ExceptionHandler::SetFileName("Client2.exe");
 
-	LogSrv::Init();
-
-	TcpCommu::GetLogMgr()->RegCallback(OnTcpCommLog, &theApp);
+	Fun1 fun = std::bind(OnTcpCommLog, _1, _2, _3, _4);
+	TcpLogMgr::SetCallbackFn(fun, NULL, NULL);
 	TcpCommu::Init();
 	srv1.Init();
 
@@ -120,7 +126,8 @@ BOOL CClient2App::InitInstance()
 
 void OnException(void* pParam1, void* pParam2)
 {
-	LogSrv::GetInstance()->Add("a fatal error has occured, the program will be shut down, please contact the administrator", ELogType::Fatal);
+	LogSrv::Exit();
+	TcpCommu::Exit();
 }
 
 //************************************

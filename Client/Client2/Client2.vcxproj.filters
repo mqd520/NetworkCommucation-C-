@@ -8,9 +8,6 @@
     <Filter Include="00 Def">
       <UniqueIdentifier>{144b6b99-ee1b-4a8f-bc2b-a5967b1417f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01 Log">
-      <UniqueIdentifier>{e37adfb0-4682-4b89-acad-7c7739ad7924}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02 服务">
       <UniqueIdentifier>{2d0e2743-68d8-4c11-9f70-6b5c9cc2148c}</UniqueIdentifier>
     </Filter>
@@ -44,12 +41,6 @@
     <ClInclude Include="ExceptionHandler.h">
       <Filter>02 服务</Filter>
     </ClInclude>
-    <ClInclude Include="LogSrv.h">
-      <Filter>01 Log</Filter>
-    </ClInclude>
-    <ClInclude Include="LogThread.h">
-      <Filter>01 Log</Filter>
-    </ClInclude>
     <ClInclude Include="Def.h">
       <Filter>00 Def</Filter>
     </ClInclude>
@@ -61,9 +52,6 @@
     </ClInclude>
     <ClInclude Include="ServiceA.h">
       <Filter>02 服务\00 A服务</Filter>
-    </ClInclude>
-    <ClInclude Include="ServiceB.h">
-      <Filter>02 服务\01 B服务</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,20 +65,11 @@
     <ClCompile Include="ExceptionHandler.cpp">
       <Filter>02 服务</Filter>
     </ClCompile>
-    <ClCompile Include="LogSrv.cpp">
-      <Filter>01 Log</Filter>
-    </ClCompile>
-    <ClCompile Include="LogThread.cpp">
-      <Filter>01 Log</Filter>
-    </ClCompile>
     <ClCompile Include="Service1.cpp">
       <Filter>02 服务</Filter>
     </ClCompile>
     <ClCompile Include="ServiceA.cpp">
       <Filter>02 服务\00 A服务</Filter>
-    </ClCompile>
-    <ClCompile Include="ServiceB.cpp">
-      <Filter>02 服务\01 B服务</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

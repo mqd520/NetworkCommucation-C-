@@ -1,8 +1,12 @@
 #pragma once
 #include "ServiceA.h"
-#include "ServiceB.h"
+//#include "ServiceB.h"
 
+//using namespace tc;
+
+#include "tc/Def.h"
 using namespace tc;
+
 
 // Service1
 class Service1
@@ -13,7 +17,7 @@ public:
 
 protected:
 	ServiceA srvA;		// serviceA
-	ServiceB srvB;		// serviceB
+	//ServiceB srvB;		// serviceB
 
 public:
 	//************************************
@@ -31,10 +35,10 @@ public:
 	//************************************
 	ServiceA& GetSrvA();
 
-	//************************************
-	// Method:    获取ServiceB
-	//************************************
-	ServiceB& GetSrvB();
+	////************************************
+	//// Method:    获取ServiceB
+	////************************************
+	//ServiceB& GetSrvB();
 
 	//************************************
 	// Method:    日志事件处理

@@ -47,4 +47,6 @@ public:
 protected:
 	// »’÷æ
 	CEdit m_edLog;
+public:
+	afx_msg void OnBnClickedButton3();
 };
