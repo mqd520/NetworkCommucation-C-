@@ -2,7 +2,7 @@
 #include "ServiceA.h"
 
 ServiceA::ServiceA(string ip /*= ""*/, int port /*= 0*/) :
-IGPacketSrvClient(EServerType::Plaza, EServerType::Center, ip, port, true)
+IGPacketSrvClient(ip, port, EServerType::Plaza, EServerType::Center, true)
 {
 
 }

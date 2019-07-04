@@ -28,7 +28,7 @@ void Service1::Init()
 
 void Service1::Exit()
 {
-	//srvA.Exit();
+	srvA.Exit();
 	//srvB.Exit();
 }
 
