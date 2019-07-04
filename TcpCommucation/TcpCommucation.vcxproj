@@ -85,6 +85,7 @@
     <ClInclude Include="Include\tc\ConnDisconnSocEvt.h" />
     <ClInclude Include="Include\tc\ConnectCplSocEvt.h" />
     <ClInclude Include="Include\tc\Def.h" />
+    <ClInclude Include="Include\tc\KeepAliveServer.h" />
     <ClInclude Include="Include\tc\KeepAliveSrv.h" />
     <ClInclude Include="Include\tc\KeepAliveClient.h" />
     <ClInclude Include="Include\tc\PacketClient.h" />
@@ -140,6 +141,7 @@
     <ClCompile Include="ConnDisconnSocEvt.cpp" />
     <ClCompile Include="ConnectCplSocEvt.cpp" />
     <ClCompile Include="KeepAliveClient.cpp" />
+    <ClCompile Include="keepAliveServer.cpp" />
     <ClCompile Include="KeepAliveSrv.cpp" />
     <ClCompile Include="PacketClient.cpp" />
     <ClCompile Include="RecvPeerDataEvt.cpp" />

@@ -8,6 +8,14 @@ namespace tc
 	class KeepAliveClient : public KeepAliveSrv
 	{
 	public:
+		//************************************
+		// Method:    构造函数
+		// Parameter: int nTimespan:	发送间隔时间
+		// Parameter: int nTimeout:		丢失心跳包超时时间
+		// Parameter: int nMaxCount:	允许丢失最大次数
+		// Parameter: void * pObj1
+		// Parameter: void * pObj2
+		//************************************
 		KeepAliveClient(
 			int nTimespan = TC_KeepAlive_Timespan, int nTimeout = TC_KeepAlive_Timeout,
 			int nMaxCount = TC_KeepAlive_MaxMissCount, void* pObj1 = NULL, void* pObj2 = NULL);
@@ -15,7 +23,7 @@ namespace tc
 
 	protected:
 		const int nTimespan;	// 发送间隔时间
-		Timer tTimespan;				// 发送心跳包定时器
+		Timer tTimespan;		// 发送心跳包定时器
 
 	protected:
 		//************************************
@@ -48,5 +56,10 @@ namespace tc
 		// Method:    关闭心跳包
 		//************************************
 		virtual void CloseKeepAlive() override;
+
+		//************************************
+		// Method:    退出
+		//************************************
+		virtual void Exit() override;
 	};
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include "TcpClient.h"
-#include "PacketSrv.h"
 
 namespace tc
 {

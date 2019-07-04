@@ -5,6 +5,7 @@
 using namespace std;
 using namespace std::placeholders;
 
+
 #define		TC_ReconnectTime					(3000)					// 自动重连间隔时间
 #define		TC_MaxSendBufLen					(4096)					// 默认最大发送缓冲区长度
 #define		TC_MaxRecvBufLen					(4096)					// 默认最大接收缓冲区长度
@@ -13,6 +14,7 @@ using namespace std::placeholders;
 #define		TC_KeepAlive_Timespan				(2 * 1000)				// 默认心跳包发送间隔时间
 #define		TC_KeepAlive_Timeout				(3 * 1000)				// 默认心跳包超时时间
 #define		TC_KeepAlive_MaxMissCount			(3)						// 默认允许丢失心跳包最大次数
+#define		TC_KeepAlive_RecvTimespan			(1 * 1000)				// 服务端接收客户端心跳包的间隔时间
 
 
 namespace tc

@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "Include/tc/KeepAliveClient.h"
+#include "Include/tc/TimerMoudleMgr.h"
 
 namespace tc
 {
 	KeepAliveClient::KeepAliveClient(
 		int nTimespan /*= TC_KeepAlive_Timespan*/,
 		int nTimeout /*= TC_KeepAlive_Timeout*/, int nMaxCount /*= TC_KeepAlive_MaxMissCount*/, void* pObj1 /*= NULL*/, void* pObj2 /*= NULL*/) :
-		KeepAliveSrv(nTimeout, nMaxCount, pObj1, pObj2),
+		KeepAliveSrv(0, nTimeout, nMaxCount, pObj1, pObj2),
 		nTimespan(nTimespan)
 	{
 		tTimespan.SetTimeout(nTimespan);
@@ -21,7 +22,7 @@ namespace tc
 
 	void KeepAliveClient::OnTimerClient(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
 	{
-		SendKeepAlive(0);
+		SendKeepAlive(nClientId);
 	}
 
 	void KeepAliveClient::OnKeepAlive()
@@ -45,7 +46,7 @@ namespace tc
 	{
 		__super::StartKeepAlive();
 
-		SendKeepAlive(0);
+		SendKeepAlive(nClientId);
 		tTimespan.Run();
 	}
 
@@ -54,5 +55,11 @@ namespace tc
 		__super::CloseKeepAlive();
 
 		tTimespan.Stop();
+	}
+
+	void KeepAliveClient::Exit()
+	{
+		__super::Exit();
+		TimerMoudleMgr::GetTimerMgr()->Remove(&tTimespan);
 	}
 }

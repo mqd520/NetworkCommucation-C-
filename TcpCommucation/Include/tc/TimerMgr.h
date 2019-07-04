@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "ThreadLock.h"
-#include "Include/tc/Timer.h"
+#include "Timer.h"
 
 using namespace std;
 

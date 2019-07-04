@@ -52,6 +52,18 @@ namespace tc
 		virtual void CloseClient(int clientId, bool b = true);
 
 		//************************************
+		// Method:    获取对端ip
+		// Parameter: client id
+		//************************************
+		virtual string GetPeerIp(int clientId);
+
+		//************************************
+		// Method:    获取对端ip
+		// Parameter: client id
+		//************************************
+		virtual int GetPeerPort(int clientId);
+
+		//************************************
 		// Method:    增加一个允许IP
 		// Parameter: ip
 		//************************************

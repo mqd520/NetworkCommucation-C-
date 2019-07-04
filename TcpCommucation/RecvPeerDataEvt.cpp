@@ -14,7 +14,7 @@ namespace tc
 
 	RecvPeerDataEvt::~RecvPeerDataEvt()
 	{
-		if (pBuf)
+		if (pBuf && nLen > 0)
 		{
 			delete pBuf;
 		}
@@ -28,5 +28,30 @@ namespace tc
 	int RecvPeerDataEvt::GetBufLen()
 	{
 		return nLen;
+	}
+
+	int RecvPeerDataEvt::Read(BYTE* buf, int len)
+	{
+		int len1 = len > nLen ? nLen : len;	// 实际读取长度
+		memcpy(buf, pBuf, len1);
+
+		int len2 = nLen - len1;		// 剩余长度
+		if (len2 > 0)
+		{
+			BYTE* pBufTmp = new BYTE[len2];
+			memcpy(pBufTmp, pBuf + len1, len2);
+
+			delete pBuf;
+			pBuf = pBufTmp;		// 指向剩余缓冲区
+			nLen = len2;
+		}
+		else
+		{
+			delete pBuf;
+			pBuf = NULL;
+			nLen = 0;
+		}
+
+		return len1;
 	}
 }

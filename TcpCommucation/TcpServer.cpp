@@ -80,6 +80,16 @@ namespace tc
 		}
 	}
 
+	string TcpServer::GetPeerIp(int clientId)
+	{
+		return TcpCommu::GetSocketDataMgr()->GetSocketData(clientId).peerIp;
+	}
+
+	int TcpServer::GetPeerPort(int clientId)
+	{
+		return TcpCommu::GetSocketDataMgr()->GetSocketData(clientId).peerPort;
+	}
+
 	void TcpServer::AddAllowIP(string ip)
 	{
 		bool exist = false;

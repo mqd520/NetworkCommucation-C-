@@ -85,6 +85,7 @@ namespace tc
 
 		for (vector<PacketData>::iterator it = vec.begin(); it != vec.end(); it++)
 		{
+			(*it).clientId = clientId;
 			PreProcessPck(*it);
 
 			delete it->pPck;
@@ -94,8 +95,6 @@ namespace tc
 	void PacketSrv::ParsePacket(vector<PacketData>& vec)
 	{
 		int headLen = GetPacketHeadLen();
-		int index = 0;
-
 		BYTE buf[TC_MaxPacketHeadLen] = { 0 };
 
 		while (ms.AvaliableReadLen() > headLen)
@@ -147,13 +146,11 @@ namespace tc
 			{
 				ms.Clear();
 
-				TcpLog::WriteLine(ETcpLogType::Warn, "parse pck error: header incorrect, addr: %s:%d, cmd: %d, len: ",
+				TcpLog::WriteLine(ETcpLogType::Warn, "parse pck error: header incorrect, addr: %s:%d, cmd: %d, len: %d",
 					"", 12345, pHead->GetCmd(), pHead->GetTotalLen());
 			}
 
 			delete pHead;
-
-			index++;
 		}
 	}
 
@@ -244,5 +241,10 @@ namespace tc
 	bool PacketSrv::IsBigByteOrder() const
 	{
 		return bBigByteOrder;
+	}
+
+	void PacketSrv::Exit()
+	{
+
 	}
 }

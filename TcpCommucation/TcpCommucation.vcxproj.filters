@@ -233,6 +233,9 @@
     <ClInclude Include="Include\tc\KeepAliveSrv.h">
       <Filter>10 心跳包服务</Filter>
     </ClInclude>
+    <ClInclude Include="Include\tc\KeepAliveServer.h">
+      <Filter>10 心跳包服务</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TcpClient.cpp">
@@ -414,6 +417,9 @@
       <Filter>10 心跳包服务</Filter>
     </ClCompile>
     <ClCompile Include="KeepAliveClient.cpp">
+      <Filter>10 心跳包服务</Filter>
+    </ClCompile>
+    <ClCompile Include="keepAliveServer.cpp">
       <Filter>10 心跳包服务</Filter>
     </ClCompile>
   </ItemGroup>

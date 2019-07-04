@@ -10,12 +10,13 @@ namespace tc
 	public:
 		//************************************
 		// Method:    构造函数
+		// Parameter: int clientId
 		// Parameter: nTimeout:		心跳包超时时间
 		// Parameter: nMaxCount:	允许丢失心跳包最大次数
 		// Parameter: pObj1:	TcpService对象
 		// Parameter: pObj2:	PacketSrv对象
 		//************************************
-		KeepAliveSrv(int nTimeout = TC_KeepAlive_Timeout, int nMaxCount = TC_KeepAlive_MaxMissCount, void* pObj1 = NULL, void* pObj2 = NULL);
+		KeepAliveSrv(int clientId = 0, int nTimeout = TC_KeepAlive_Timeout, int nMaxCount = TC_KeepAlive_MaxMissCount, void* pObj1 = NULL, void* pObj2 = NULL);
 		virtual ~KeepAliveSrv();
 
 	protected:
@@ -24,7 +25,10 @@ namespace tc
 		void* pObj1;			// TcpService对象
 		void* pObj2;			// PacketSrv对象
 		int nMissCount;			// 丢失次数
-		Timer tTimeout;				// 丢失心跳包定时器
+		Timer tTimeout;			// 丢失心跳包定时器
+		int nClientId;			// clientId
+		string strPeerIp;		// ip
+		int nPort;				// port
 
 	protected:
 		//************************************
@@ -35,9 +39,14 @@ namespace tc
 		virtual void AttachObj(void* pObj1, void* pObj2);
 
 		//************************************
-		// Method:    生成心跳包
+		// Method:    获取对端ip
 		//************************************
-		//virtual Packet* BuildKeepAlive();
+		string GetPeerIp();
+
+		//************************************
+		// Method:    获取对端port
+		//************************************
+		int GetPeerPort();
 
 		//************************************
 		// Method:    发送心跳包
@@ -56,7 +65,7 @@ namespace tc
 		// Parameter: void * pParam1
 		// Parameter: void * pParam2
 		//************************************
-		void OnTimer(Timer* pTimer, int count, void* pParam1 = NULL, void* pParam2 = NULL);
+		void OnTimerTimeout(Timer* pTimer, int count, void* pParam1 = NULL, void* pParam2 = NULL);
 
 		//************************************
 		// Method:    丢失心跳包事件处理
@@ -74,5 +83,10 @@ namespace tc
 		// Method:    关闭心跳包
 		//************************************
 		virtual void CloseKeepAlive();
+
+		//************************************
+		// Method:    退出
+		//************************************
+		virtual void Exit();
 	};
 }

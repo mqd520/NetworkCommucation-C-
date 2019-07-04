@@ -31,5 +31,12 @@ namespace tc
 		// Method:    获取接收缓冲区长度
 		//************************************
 		int GetBufLen();
+
+		//************************************
+		// Method:    读取缓冲区
+		// Parameter: BYTE * buf:	缓冲区
+		// Parameter: int len:		缓冲区长度
+		//************************************
+		int Read(BYTE* buf, int len);
 	};
 }

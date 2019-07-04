@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Include/tc/PacketClient.h"
-#include "Include/tc/PacketHead.h"
-#include "Include/tc/RecvPeerDataEvt.h"
 
 namespace tc
 {
