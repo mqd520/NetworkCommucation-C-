@@ -6,10 +6,9 @@
 
 namespace pck
 {
-	IGPacketSrv::IGPacketSrv(EServerType localType /*= EServerType::None*/, EServerType peerType /*= EServerType::None*/) :
+	IGPacketSrv::IGPacketSrv(EServerType localType /*= EServerType::None*/) :
 		PacketSrv(NULL, false),
-		localType(localType),
-		peerType(peerType)
+		localType(localType)
 	{
 
 	}
@@ -81,10 +80,5 @@ namespace pck
 	EServerType IGPacketSrv::GetLocalServerType()
 	{
 		return localType;
-	}
-
-	EServerType IGPacketSrv::GetPeerServerType()
-	{
-		return peerType;
 	}
 }

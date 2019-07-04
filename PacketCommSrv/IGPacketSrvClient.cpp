@@ -14,16 +14,18 @@
 namespace pck
 {
 	IGPacketSrvClient::IGPacketSrvClient(
-		EServerType localType /*= EServerType::None*/, EServerType peerType /*= EServerType::None*/,
 		string ip /*= ""*/, int port /*= 0*/,
-		bool bSendPwd /*= true*/) :
+		EServerType localType /*= EServerType::None*/,
+		EServerType peerType /*= EServerType::None*/, bool bSendPwd /*= true*/) :
 
 		PacketClient(ip, port),
-		IGPacketSrv(localType, peerType),
+		IGPacketSrv(localType),
 		KeepAliveClient(PCR_KeepAlive_Timespan, PCR_KeepAlive_Timeout, PCR_KeepAlive_MaxMissCount),
+		peerType(peerType),
 		bSendPwd(bSendPwd)
 	{
-		AttachTcpServiceObj(this);
+		IGPacketSrv::AttachTcpServiceObj(this);
+		KeepAliveClient::AttachObj(this, NULL);
 	}
 
 	IGPacketSrvClient::~IGPacketSrvClient()
@@ -121,12 +123,23 @@ namespace pck
 		if (b)
 		{
 			Close(true);
-			CloseKeepAlive();
 		}
 	}
 
 	void IGPacketSrvClient::SendPck(Packet& pck)
 	{
 		SendPacket(pck);
+	}
+
+	void IGPacketSrvClient::Exit()
+	{
+		PacketClient::Exit();
+		IGPacketSrv::Exit();
+		KeepAliveClient::Exit();
+	}
+
+	EServerType IGPacketSrvClient::GetPeerServerType()
+	{
+		return peerType;
 	}
 }

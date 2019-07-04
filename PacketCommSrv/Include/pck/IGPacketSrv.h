@@ -17,12 +17,11 @@ namespace pck
 		// Parameter: EServerType localType:	本地服务器类型
 		// Parameter: EServerType peerType:		对端服务器类型
 		//************************************
-		IGPacketSrv(EServerType localType = EServerType::None, EServerType peerType = EServerType::None);
+		IGPacketSrv(EServerType localType = EServerType::None);
 		virtual ~IGPacketSrv();
 
 	protected:
 		EServerType localType;		// 本地服务器类型
-		EServerType peerType;		// 对端服务器类型
 
 	protected:
 		//************************************
@@ -76,11 +75,5 @@ namespace pck
 		// Returns:   pck::EServerType
 		//************************************
 		virtual EServerType GetLocalServerType();
-
-		//************************************
-		// Method:    获取对端服务器类型
-		// Returns:   pck::EServerType
-		//************************************
-		virtual EServerType GetPeerServerType();
 	};
 }

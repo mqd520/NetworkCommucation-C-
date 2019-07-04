@@ -1,41 +1,35 @@
 #pragma once
 #include "Def.h"
 #include "IGPacketSrv.h"
+#include "SessionMgr.h"
 
-#include "tc/PacketClient.h"
-#include "tc/KeepAliveClient.h"
-using namespace tc;
+#include "tc/TcpServer.h"
 
 namespace pck
 {
-	// ig包通信服务
-	class IGPacketSrvClient : public PacketClient, public IGPacketSrv, public KeepAliveClient
+	// IGPacketSrvServer 
+	class IGPacketSrvServer : public TcpServer, public IGPacketSrv
 	{
 	public:
-		//************************************
-		// Method:    构造函数
-		// Parameter: EServerType localType:	本地服务器类型
-		// Parameter: EServerType peerType:		对端服务器类型
-		// Parameter: string ip:	ip
-		// Parameter: int port:		port
-		// Parameter: bool bSendPwd:	是否需要向服务端发送密码
-		//************************************
-		IGPacketSrvClient(
+		IGPacketSrvServer(
 			string ip = "", int port = 0,
 			EServerType localType = EServerType::None,
-			EServerType peerType = EServerType::None, bool bSendPwd = true);
-		virtual ~IGPacketSrvClient();
+			bool bRecvPwd = true);
+		virtual ~IGPacketSrvServer();
 
 	protected:
-		bool bSendPwd;				// 是否需要向服务端发送密码
-		EServerType peerType;		// 对端服务器类型
+		bool bRecvPwd;				// 是否需要接受客户端密码
+		int nCurClientId;			// 当前会话的客户端Id
+		SessionMgr sessionMgr;		// session mgr
 
 	protected:
+		friend class ServerSession;
+
 		//************************************
-		// Method:    连接服务端完成事件处理
+		// Method:    收到新连接事件处理
 		// Parameter: pEvt: tcp事件
 		//************************************
-		virtual void OnConnectSrvCpl(ConnectSrvCplEvt* pEvt) override;
+		virtual void OnRecvNewConnection(RecvNewConnEvt* pEvt) override;
 
 		//************************************
 		// Method:    收到对端数据事件处理
@@ -56,44 +50,43 @@ namespace pck
 		virtual void PreProcessPck(PacketData& data) override;
 
 		//************************************
-		// Method:    向服务端发送密码
+		// Method:    登录服务端请求事件处理
+		// Parameter: data:	包数据
 		//************************************
-		virtual void SendPwd();
+		virtual void OnLoginSrvRequest(PacketData& data);
 
 		//************************************
-		// Method:    发送登录服务端请求包
+		// Method:    发送登录服务端结果包
+		// Parameter: int clientId
 		//************************************
-		virtual void SendLoginSrvRequestPck();
+		virtual void SendLoginSrvResultPck(int clientId);
 
 		//************************************
-		// Method:    登录服务成功事件处理
+		// Method:    session关闭事件处理
+		// Parameter: int clientId
 		//************************************
-		virtual void OnLoginSrvSuccess();
-
+		virtual void OnSessionClose(int clientId);
+		
 		//************************************
 		// Method:    发送心跳包
 		//************************************
-		virtual void SendKeepAlive(int clientId = 0) override;
+		virtual void SendKeepAlive(int clientId = 0);
 
 		//************************************
 		// Method:    丢失心跳包事件处理
+		// Parameter: int clientId
 		// Parameter: count:	连续丢失次数
 		// Parameter: b:	是否已超过允许最大次数
 		//************************************
-		virtual void OnMissKeepAlive(int count, bool b = true) override;
+		virtual void OnMissKeepAlive(int clientId, int count, bool b = true);
 
 	public:
 		//************************************
 		// Method:    发包
-		// Parameter: Packet & pck
+		// Parameter: 包数据
+		// Parameter: 客户端id
 		//************************************
-		virtual void SendPck(Packet& pck);
-
-		//************************************
-		// Method:    获取对端服务器类型
-		// Returns:   pck::EServerType
-		//************************************
-		virtual EServerType GetPeerServerType();
+		virtual void SendPck(Packet& pck, int clientId);
 
 		//************************************
 		// Method:    退出

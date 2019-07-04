@@ -19,6 +19,9 @@
     <Filter Include="01 Packet Service">
       <UniqueIdentifier>{2862bb5a-c5ae-4dc4-82b1-eaed871d378c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04 Session">
+      <UniqueIdentifier>{4881c4ae-fc04-4773-adc5-3d1436b68e84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -61,6 +64,15 @@
     <ClInclude Include="Include\pck\CommonTool.h">
       <Filter>02 Common</Filter>
     </ClInclude>
+    <ClInclude Include="Include\pck\IGPacketSrvServer.h">
+      <Filter>01 Packet Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\pck\ServerSession.h">
+      <Filter>04 Session</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\pck\SessionMgr.h">
+      <Filter>04 Session</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -98,6 +110,15 @@
     </ClCompile>
     <ClCompile Include="pwd.hpp">
       <Filter>00 Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="IGPacketSrvServer.cpp">
+      <Filter>01 Packet Service</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSession.cpp">
+      <Filter>04 Session</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionMgr.cpp">
+      <Filter>04 Session</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
