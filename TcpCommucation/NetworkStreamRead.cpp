@@ -185,14 +185,25 @@ string NetworkStreamRead::ReadGB2312Str(int len)
 	return result;
 }
 
-string NetworkStreamRead::ReadGB2312Str1(int prefixLen /*= 4*/)
+string NetworkStreamRead::ReadGB2312Str1(int prefixLen /*= 4*/, bool hasEndChar /*= true*/, bool isPrefixContainEndChar /*= true*/)
 {
 	string result = "";
 
+	int originalIndex = nReadIndex;
+
 	int len = ReadStrPrefix(prefixLen);
+	if (hasEndChar && isPrefixContainEndChar == false)
+	{
+		len += 1;
+	}
+
 	if (len > 0)
 	{
 		result = ReadGB2312Str(len);
+	}
+	else
+	{
+		nReadIndex = originalIndex;
 	}
 
 	return result;
@@ -211,14 +222,25 @@ wstring NetworkStreamRead::ReadUTF16Str(int len)
 	return result;
 }
 
-wstring NetworkStreamRead::ReadUTF16Str1(int prefixLen /*= 4*/)
+wstring NetworkStreamRead::ReadUTF16Str1(int prefixLen /*= 4*/, bool hasEndChar /*= true*/, bool isPrefixContainEndChar /*= true*/)
 {
 	wstring result = L"";
 
+	int originalIndex = nReadIndex;
+
 	int len = ReadStrPrefix(prefixLen);
+	if (hasEndChar && isPrefixContainEndChar == false)
+	{
+		len += 2;
+	}
+
 	if (len > 0)
 	{
 		return ReadUTF16Str(len);
+	}
+	else
+	{
+		nReadIndex = originalIndex;
 	}
 
 	return result;
@@ -237,14 +259,25 @@ string NetworkStreamRead::ReadUTF8Str(int len)
 	return str;
 }
 
-string NetworkStreamRead::ReadUTF8Str1(int prefixLen /*= 4*/)
+string NetworkStreamRead::ReadUTF8Str1(int prefixLen /*= 4*/, bool hasEndChar /*= true*/, bool isPrefixContainEndChar /*= true*/)
 {
 	string result = "";
 
+	int originalIndex = nReadIndex;
+
 	int len = ReadStrPrefix(prefixLen);
+	if (hasEndChar && isPrefixContainEndChar == false)
+	{
+		len += 2;
+	}
+
 	if (len > 0)
 	{
 		result = ReadUTF8Str(len);
+	}
+	else
+	{
+		nReadIndex = originalIndex;
 	}
 
 	return result;

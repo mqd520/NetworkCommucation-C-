@@ -142,8 +142,10 @@ namespace tc
 		//************************************
 		// Method:    读取 GB2312 字符串
 		// Parameter: int prefixLen = 4:	说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
+		// Parameter: bool hasEndChar:	是否包含结束符
+		// Parameter: bool isPrefixContainEndChar:	前缀的值是否包含结束符
 		//************************************
-		string ReadGB2312Str1(int prefixLen = 4);
+		string ReadGB2312Str1(int prefixLen = 4, bool hasEndChar = true, bool isPrefixContainEndChar = true);
 
 		//************************************
 		// Method:    读取 UTF16 字符串
@@ -154,8 +156,10 @@ namespace tc
 		//************************************
 		// Method:    读取 UTF16 字符串
 		// Parameter: int prefixLen = 4:	说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
+		// Parameter: bool hasEndChar:	是否包含结束符
+		// Parameter: bool isPrefixContainEndChar:	前缀的值是否包含结束符
 		//************************************
-		wstring ReadUTF16Str1(int prefixLen = 4);
+		wstring ReadUTF16Str1(int prefixLen = 4, bool hasEndChar = true, bool isPrefixContainEndChar = true);
 
 		//************************************
 		// Method:    读取 UT8 字符串, 自动转换成 GB2312 字符串 
@@ -166,7 +170,9 @@ namespace tc
 		//************************************
 		// Method:    读取 UT8 字符串, 自动转换成 GB2312 字符串 
 		// Parameter: int prefixLen = 4:	说明字符串字节长度的前缀数据所占字节长度, 取值范围: 1-4
+		// Parameter: bool hasEndChar:	是否包含结束符
+		// Parameter: bool isPrefixContainEndChar:	前缀的值是否包含结束符
 		//************************************
-		string ReadUTF8Str1(int prefixLen = 4);
+		string ReadUTF8Str1(int prefixLen = 4, bool hasEndChar = true, bool isPrefixContainEndChar = true);
 	};
 }

@@ -144,64 +144,101 @@ bool NetworkStreamWrite::WriteDouble(double val)
 	return WriteData(&val, sizeof(double));
 }
 
-bool NetworkStreamWrite::WriteGB2312Str(string str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
+bool NetworkStreamWrite::WriteGB2312Str(string str, int prefix /*= 4*/, bool hasEndChar /*= true*/, bool isPrefixContainEndChar /*= true*/)
 {
 	bool result = false;
 
-	int len = GB2312Str::GetByteCount(str);	// 获取字符串字节长度(不含结束符)
-	int count = nWriteIndex;
-	WriteStrPrefix(prefix, len);			// 写入前缀
-	int len1 = hasEndChar == true ? len + 1 : len;
-	if (len1 <= AvaliableWrite())
+	int len1 = 0;		// 前缀的值
+	int len2 = 0;		// 字符串的字节长度, 不包含结束符的字节长度
+	int len3 = 0;		// 字符串的字节长度, 包含结束符的字节长度(如果允许写入结束符), 不包含前缀的字节长度
+
+	len2 = GB2312Str::GetByteCount(str);
+	len3 = hasEndChar ? len2 + 1 : len2;
+
+	if (hasEndChar && isPrefixContainEndChar)
 	{
+		len1 = len3;	// 允许写入结束符, 并且前缀需要包含结束符的字节长度
+	}
+	else
+	{
+		len1 = len2;	// 只表示字符串字节长度, 不包含结束符
+	}
+
+	if ((prefix + len3) <= AvaliableWrite())
+	{
+		WriteStrPrefix(prefix, len1);	// 写入前缀
+
 		GB2312Str::ToBuf(str, pBuff + nWriteIndex, hasEndChar);
-		nWriteIndex += len1;
-	}
-	else
-	{
-		nWriteIndex = count;
+		nWriteIndex += len3;
+
+		result = true;
 	}
 
 	return result;
 }
 
-bool NetworkStreamWrite::WriteUTF16Str(wstring str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
+bool NetworkStreamWrite::WriteUTF16Str(wstring str, int prefix /*= 4*/, bool hasEndChar /*= true*/, bool isPrefixContainEndChar /*= true*/)
 {
 	bool result = false;
 
-	int len = UTF16Str::GetByteCount(str);	// 获取字符串字节长度(不含结束符)
-	int count = nWriteIndex;
-	WriteStrPrefix(prefix, len);			// 写入前缀
-	int len1 = hasEndChar == true ? len + 2 : len;
-	if (len1 <= AvaliableWrite())
+	int len1 = 0;		// 前缀的值
+	int len2 = 0;		// 字符串的字节长度, 不包含结束符的字节长度
+	int len3 = 0;		// 字符串的字节长度, 包含结束符的字节长度(如果允许写入结束符), 不包含前缀的字节长度
+
+	len2 = UTF16Str::GetByteCount(str);
+	len3 = hasEndChar ? len2 + 2 : len2;
+
+	if (hasEndChar && isPrefixContainEndChar)
 	{
+		len1 = len3;	// 允许写入结束符, 并且前缀需要包含结束符的字节长度
+	}
+	else
+	{
+		len1 = len2;	// 只表示字符串字节长度, 不包含结束符
+	}
+
+	if ((prefix + len3) <= AvaliableWrite())
+	{
+		WriteStrPrefix(prefix, len1);	// 写入前缀
+
 		UTF16Str::ToBuf(str, pBuff + nWriteIndex, nsByteOrder, hasEndChar);
-		nWriteIndex += len1;
-	}
-	else
-	{
-		nWriteIndex = count;
+		nWriteIndex += len3;
+
+		result = true;
 	}
 
 	return result;
 }
 
-bool NetworkStreamWrite::WriteUTF8Str(string str, int prefix /*= 4*/, bool hasEndChar /*= false*/)
+bool NetworkStreamWrite::WriteUTF8Str(string str, int prefix /*= 4*/, bool hasEndChar /*= true*/, bool isPrefixContainEndChar /*= true*/)
 {
 	bool result = false;
 
-	BYTE buf1[1028] = { 0 };
-	int len = GB2312Str::ToUTF8Buf(str, buf1, hasEndChar);	// GB2312字符串转换成 UTF8 缓冲区
-	int count = nWriteIndex;
-	WriteStrPrefix(prefix, len);			// 写入前缀
-	if (len <= AvaliableWrite())
+	int len1 = 0;		// 前缀的值
+	int len2 = 0;		// 字符串的字节长度, 不包含结束符的字节长度
+	int len3 = 0;		// 字符串的字节长度, 包含结束符的字节长度(如果允许写入结束符), 不包含前缀的字节长度
+
+	BYTE buf1[1024] = { 0 };
+	len3 = GB2312Str::ToUTF8Buf(str, buf1, hasEndChar);
+	len2 = hasEndChar ? len3 - 1 : len3;
+
+	if (hasEndChar && isPrefixContainEndChar)
 	{
-		memcpy(pBuff + nWriteIndex, buf1, len);
-		nWriteIndex += len;
+		len1 = len3;	// 允许写入结束符, 并且前缀需要包含结束符的字节长度
 	}
 	else
 	{
-		nWriteIndex = count;
+		len1 = len2;	// 只表示字符串字节长度, 不包含结束符
+	}
+
+	if ((prefix + len3) <= AvaliableWrite())
+	{
+		WriteStrPrefix(prefix, len1);	// 写入前缀
+
+		memcpy(pBuff + nWriteIndex, buf1, len3);
+		nWriteIndex += len3;
+
+		result = true;
 	}
 
 	return result;

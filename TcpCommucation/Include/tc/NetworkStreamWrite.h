@@ -145,8 +145,9 @@ namespace tc
 		// Parameter: string str:		GB2312 字符串
 		// Parameter: int prefix:		字符串字节长度前缀所占字节, 范围: 1, 2, 4, 0: 不使用前缀
 		// Parameter: bool hasEndChar:	是否将结束符写入
+		// Parameter: bool isPrefixContainEndChar:	前缀的值是否包含结束符
 		//************************************
-		bool WriteGB2312Str(string str, int prefix = 4, bool hasEndChar = true);
+		bool WriteGB2312Str(string str, int prefix = 4, bool hasEndChar = true, bool isPrefixContainEndChar = true);
 
 		//************************************
 		// Method:    写入 UTF16 字符串
@@ -154,8 +155,9 @@ namespace tc
 		// Parameter: string str:		UTF16 字符串
 		// Parameter: int prefix:		字符串字节长度前缀所占字节, 范围: 1, 2, 4, 0: 不使用前缀
 		// Parameter: bool hasEndChar:	是否将结束符写入
+		// Parameter: bool isPrefixContainEndChar:	前缀的值是否包含结束符
 		//************************************
-		bool WriteUTF16Str(wstring str, int prefix = 4, bool hasEndChar = true);
+		bool WriteUTF16Str(wstring str, int prefix = 4, bool hasEndChar = true, bool isPrefixContainEndChar = true);
 
 		//************************************
 		// Method:    写入 UTF8 字符串
@@ -163,7 +165,8 @@ namespace tc
 		// Parameter: string str:		UTF8 字符串
 		// Parameter: int prefix:		字符串字节长度前缀所占字节, 范围: 1, 2, 4, 0: 不使用前缀
 		// Parameter: bool hasEndChar:	是否将结束符写入
+		// Parameter: bool isPrefixContainEndChar:	是否将结束符写入
 		//************************************
-		bool WriteUTF8Str(string str, int prefix = 4, bool hasEndChar = true);
+		bool WriteUTF8Str(string str, int prefix = 4, bool hasEndChar = true, bool isPrefixContainEndChar = true);
 	};
 }

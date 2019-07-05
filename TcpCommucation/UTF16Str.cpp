@@ -230,6 +230,8 @@ int UTF16Str::ToBuf(wstring str, BYTE* pBuf, EByteOrder bo /*= EByteOrder::big*/
 		{
 			pBuf[len] = 0;
 			pBuf[len + 1] = 0;
+
+			len += 2;
 		}
 	}
 
@@ -247,11 +249,6 @@ int UTF16Str::ToUTF8Buf(wstring str, BYTE* pBuf, bool hasEndChar /*= false*/)
 		int len = ToBuf(str, pBufUTF16, EByteOrder::litte, hasEndChar);
 		UTF16_2_UTF8(pBufUTF16, len, pBuf, &result, EByteOrder::litte);
 		delete pBufUTF16;
-	}
-	if (hasEndChar)
-	{
-		pBuf[result] = 0;
-		result++;
 	}
 
 	return result;
