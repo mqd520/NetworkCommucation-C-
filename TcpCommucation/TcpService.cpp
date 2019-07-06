@@ -12,14 +12,19 @@ namespace tc
 		nPort(port),
 		pParam1(NULL),
 		pParam2(NULL),
-		tcpSrvType(type)
+		tcpSrvType(type),
+		pSessionMgr(NULL)
 	{
-
+		pSessionMgr = new SessionMgr();
 	}
 
 	TcpService::~TcpService()
 	{
-
+		if (this->pSessionMgr)
+		{
+			delete this->pSessionMgr;
+			this->pSessionMgr = NULL;
+		}
 	}
 
 	void TcpService::OnTcpEvt(TcpEvt* pEvt)
@@ -47,12 +52,16 @@ namespace tc
 
 	void TcpService::OnRecvNewConnection(RecvNewConnEvt* pEvt)
 	{
+		pSessionMgr->Add(TcpSession(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId()));
+
 		TcpLog::WriteLine(ETcpLogType::Debug, "recv new connection: %s:%d",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 	}
 
 	void TcpService::OnConnDisconnect(ConnDisconnectEvt* pEvt)
 	{
+		pSessionMgr->Remove(pEvt->GetSendRecvSocketId());
+
 		TcpLog::WriteLine(ETcpLogType::Error, "lose connection from %s:%d",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 	}
@@ -66,6 +75,11 @@ namespace tc
 	void TcpService::OnConnectSrvCpl(ConnectSrvCplEvt* pEvt)
 	{
 		bool b = pEvt->GetConnectResult();
+		if (b)
+		{
+			pSessionMgr->Add(TcpSession(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId()));
+		}
+
 		TcpLog::WriteLine(b ? ETcpLogType::Info : ETcpLogType::Error, "connect to %s:%d %s",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort(), b ? "success" : "fail");
 	}
@@ -96,6 +110,16 @@ namespace tc
 				pConn->Close(b);
 			}
 		}
+	}
+
+	void TcpService::SetSessionMgr(SessionMgr* pSessionMgr)
+	{
+		if (this->pSessionMgr)
+		{
+			delete this->pSessionMgr;
+		}
+
+		this->pSessionMgr = pSessionMgr;
 	}
 
 	ETcpSrvType TcpService::GetTcpSrvType()
@@ -139,6 +163,11 @@ namespace tc
 		{
 			TcpLog::WriteLine(ETcpLogType::Warn, "send data error, socket invalid: %d", socket);
 		}
+	}
+
+	void TcpService::Init()
+	{
+
 	}
 
 	void TcpService::Exit()

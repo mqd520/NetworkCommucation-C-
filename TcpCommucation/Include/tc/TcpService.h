@@ -7,6 +7,7 @@
 #include "ConnDisconnectEvt.h"
 #include "RecvPeerDataEvt.h"
 #include "ConnectSrvCplEvt.h"
+#include "SessionMgr.h"
 
 namespace tc
 {
@@ -15,7 +16,7 @@ namespace tc
 	{
 	public:
 		TcpService(string ip = "", int port = 0, ETcpSrvType type = ETcpSrvType::None);
-		~TcpService();
+		virtual ~TcpService();
 
 	protected:
 		SOCKET socket;				// 关联的socket
@@ -25,6 +26,7 @@ namespace tc
 		void* pParam1;				// 事件附加参数1
 		void* pParam2;				// 事件附加参数2
 		ETcpSrvType tcpSrvType;		// tcp srv type
+		SessionMgr* pSessionMgr;	// session mgr
 
 	protected:
 		friend class TcpEvtMgr;
@@ -79,7 +81,23 @@ namespace tc
 		//************************************
 		virtual void CloseConnection(SOCKET socket, bool b = true);
 
+		//************************************
+		// Method:    set session mgr to this class
+		// Parameter: SessionMgr * pSessionMgr
+		//************************************
+		virtual void SetSessionMgr(SessionMgr* pSessionMgr);
+
 	public:
+		//************************************
+		// Method:    初始化
+		//************************************
+		virtual void Init();
+
+		//************************************
+		// Method:    退出
+		//************************************
+		virtual void Exit();
+
 		//************************************
 		// Method:    获取tcp srv type
 		//************************************
@@ -99,11 +117,6 @@ namespace tc
 		// Method:    获取关联的服务端端口
 		//************************************
 		virtual int GetPort();
-
-		//************************************
-		// Method:    退出
-		//************************************
-		virtual void Exit();
 
 		//************************************
 		// Method:    注册tcp事件回调函数

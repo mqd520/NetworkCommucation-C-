@@ -76,6 +76,7 @@ namespace tc
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
 		if (data.socket > 0)
 		{
+			pSessionMgr->Remove(clientId);
 			__super::CloseConnection(data.socket, b);
 		}
 	}
