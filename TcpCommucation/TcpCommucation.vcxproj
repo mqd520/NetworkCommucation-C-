@@ -88,7 +88,6 @@
     <ClInclude Include="Include\tc\KeepAliveServer.h" />
     <ClInclude Include="Include\tc\KeepAliveSrv.h" />
     <ClInclude Include="Include\tc\KeepAliveClient.h" />
-    <ClInclude Include="Include\tc\PacketClient.h" />
     <ClInclude Include="Include\tc\TcpLog.h" />
     <ClInclude Include="Include\tc\Packet.h" />
     <ClInclude Include="Include\tc\PacketSrv.h" />
@@ -143,7 +142,6 @@
     <ClCompile Include="KeepAliveClient.cpp" />
     <ClCompile Include="keepAliveServer.cpp" />
     <ClCompile Include="KeepAliveSrv.cpp" />
-    <ClCompile Include="PacketClient.cpp" />
     <ClCompile Include="RecvPeerDataEvt.cpp" />
     <ClCompile Include="TcpLog.cpp" />
     <ClCompile Include="MemoryStream.cpp" />

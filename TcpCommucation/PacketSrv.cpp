@@ -9,7 +9,7 @@
 namespace tc
 {
 	PacketSrv::PacketSrv(void* pObj /*= NULL*/, bool bBigByteOrder /*= true*/) :
-		pObj(pObj),
+		pObjPS(pObj),
 		bBigByteOrder(bBigByteOrder)
 	{
 
@@ -20,50 +20,33 @@ namespace tc
 
 	}
 
-	//void PacketCommuSrv::OnTcpEvent(TcpEvt* pEvt)
-	//{
-	//	ETcpEvtType type = pEvt->GetEvtType();
-	//	if (type == ETcpEvtType::ConnDisconnect)
-	//	{
-	//		OnConnDiconnect(pEvt);
-	//	}
-	//	else if (type == ETcpEvtType::ConnectSrvCpl)
-	//	{
-	//		OnConnectCpl(pEvt);
-	//	}
-	//	else if (type == ETcpEvtType::RecvPeerData)
-	//	{
-	//		OnRecvPeerData(pEvt);
-	//	}
-	//	else if (type == ETcpEvtType::RecvNewConn)
-	//	{
-	//		OnRecvConnection(pEvt);
-	//	}
-	//}
+	string PacketSrv::GetPeerIp(int clientId /*= 0*/)
+	{
+		if (clientId == 0)
+		{
+			return ((TcpClient*)pObjPS)->GetIP();
+		}
+		else
+		{
+			return ((TcpServer*)pObjPS)->GetPeerIp(clientId);
+		}
+	}
 
-	//void PacketCommuSrv::OnConnectCpl(TcpEvt* pEvt)
-	//{
-
-	//}
-
-	//void PacketCommuSrv::OnConnDiconnect(TcpEvt* pEvt)
-	//{
-
-	//}
-
-	//void PacketCommuSrv::OnRecvConnection(TcpEvt* pEvt)
-	//{
-
-	//}
-
-	//void PacketCommuSrv::OnRecvPeerData(TcpEvt* pEvt)
-	//{
-
-	//}
+	int PacketSrv::GetPeerPort(int clientId /*= 0*/)
+	{
+		if (clientId == 0)
+		{
+			return ((TcpClient*)pObjPS)->GetPort();
+		}
+		else
+		{
+			return ((TcpServer*)pObjPS)->GetPeerPort(clientId);
+		}
+	}
 
 	void PacketSrv::AttachTcpServiceObj(void* pObj)
 	{
-		this->pObj = pObj;
+		this->pObjPS = pObj;
 	}
 
 	PacketHead* PacketSrv::GetPacketHead(int cmd, int len)
@@ -127,8 +110,8 @@ namespace tc
 					}
 					else
 					{
-						TcpLog::WriteLine(ETcpLogType::Warn, "parse pck error: pck incorrect, addr: %s:%d, cmd: %d, len: ",
-							"", 12345, cmd, len);
+						TcpLog::WriteLine(ETcpLogType::Warn, "parse pck error, cmd: %d, len: %d, addr: %s:%d ",
+							cmd, len, GetPeerIp().c_str(), GetPeerPort());
 					}
 
 					if (pBuf3 == pBuf4)
@@ -146,8 +129,8 @@ namespace tc
 			{
 				ms.Clear();
 
-				TcpLog::WriteLine(ETcpLogType::Warn, "parse pck error: header incorrect, addr: %s:%d, cmd: %d, len: %d",
-					"", 12345, pHead->GetCmd(), pHead->GetTotalLen());
+				TcpLog::WriteLine(ETcpLogType::Warn, "parse header error, cmd: %d, len: %d, addr: %s:%d ",
+					pHead->GetCmd(), pHead->GetTotalLen(), GetPeerIp().c_str(), GetPeerPort());
 			}
 
 			delete pHead;
@@ -182,7 +165,8 @@ namespace tc
 
 	void PacketSrv::OnProcessPck(PacketData& pd)
 	{
-		TcpLog::WriteLine(ETcpLogType::Debug, "OnProcessPck, cmd: %d, len: %d", pd.pPck->GetCmd(), pd.pPck->GetLen());
+		TcpLog::WriteLine(ETcpLogType::Debug, "OnProcessPck, cmd: %d, len: %d, addr: %s:%d",
+			pd.pPck->GetCmd(), pd.pPck->GetLen(), GetPeerIp().c_str(), GetPeerPort());
 	}
 
 	int PacketSrv::BuildPacketBuf(Packet& pck, BYTE* pBuf, int len,
@@ -230,11 +214,11 @@ namespace tc
 	{
 		if (clientId == 0)
 		{
-			((TcpClient*)pObj)->Send(pBuf, len);
+			((TcpClient*)pObjPS)->Send(pBuf, len);
 		}
 		else
 		{
-			((TcpServer*)pObj)->Send(clientId, pBuf, len);
+			((TcpServer*)pObjPS)->Send(clientId, pBuf, len);
 		}
 	}
 

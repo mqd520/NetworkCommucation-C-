@@ -20,40 +20,23 @@ namespace tc
 
 	protected:
 		MemoryStream ms;			// 内存流对象
-		void* pObj;					// 关联的tcp服务对象
+		void* pObjPS;				// 关联的tcp服务对象
 		bool bBigByteOrder;			// 是否采用大端字节序
 
+	private:
+		//************************************
+		// Method:    获取对端ip
+		// Parameter: int clientId
+		//************************************
+		string GetPeerIp(int clientId = 0);
+
+		//************************************
+		// Method:    获取对端port
+		// Parameter: int clientId
+		//************************************
+		int GetPeerPort(int clientId = 0);
+
 	protected:
-		//************************************
-		// Method:    收到tcp事件处理
-		// Parameter: tcp事件
-		//************************************
-		//virtual void OnTcpEvent(TcpEvt* pEvt);
-
-		//************************************
-		// Method:    连接服务端完成事件处理
-		// Parameter: tcp事件
-		//************************************
-		//virtual void OnConnectCpl(TcpEvt* pEvt);
-
-		//************************************
-		// Method:    连接断开事件处理
-		// Parameter: tcp事件
-		//************************************
-		//virtual void OnConnDiconnect(TcpEvt* pEvt);
-
-		//************************************
-		// Method:    收到新连接事件处理
-		// Parameter: tcp事件
-		//************************************
-		//virtual void OnRecvConnection(TcpEvt* pEvt);
-
-		//************************************
-		// Method:    收到对端数据事件处理
-		// Parameter: tcp事件
-		//************************************
-		//virtual void OnRecvPeerData(TcpEvt* pEvt);
-
 		//************************************
 		// Method:    附加TcpServce对象
 		// Parameter: void pObj
