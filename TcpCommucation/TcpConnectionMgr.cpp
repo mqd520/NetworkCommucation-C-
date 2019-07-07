@@ -33,6 +33,22 @@ namespace tc
 		return NULL;
 	}
 
+	vector<TcpConnection*> TcpConnectionMgr::GetByTcpService(TcpService* pTcpService)
+	{
+		vector<TcpConnection*> vec;
+
+		for (vector<TcpConnection*>::iterator it = vecTcpConn.begin(); it != vecTcpConn.end(); it++)
+		{
+			if ((*it)->GetTcpService() == pTcpService)
+			{
+				vec.push_back(*it);
+				break;
+			}
+		}
+
+		return vec;
+	}
+
 	void TcpConnectionMgr::RemoveBySendRecvSocket(SOCKET socket)
 	{
 		for (vector<TcpConnection*>::iterator it = vecTcpConn.begin(); it != vecTcpConn.end(); it++)

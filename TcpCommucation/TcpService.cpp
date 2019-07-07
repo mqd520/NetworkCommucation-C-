@@ -34,10 +34,14 @@ namespace tc
 		ETcpEvtType type = pEvt->GetEvtType();
 		if (type == ETcpEvtType::RecvNewConn)
 		{
+			pSessionMgr->Add(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId());
+
 			OnRecvNewConnection((RecvNewConnEvt*)pEvt);
 		}
 		else if (type == ETcpEvtType::ConnDisconnect)
 		{
+			pSessionMgr->Remove(pEvt->GetSendRecvSocketId());
+
 			OnConnDisconnect((ConnDisconnectEvt*)pEvt);
 		}
 		else if (type == ETcpEvtType::RecvPeerData)
@@ -46,40 +50,38 @@ namespace tc
 		}
 		else if (type == ETcpEvtType::ConnectSrvCpl)
 		{
-			OnConnectSrvCpl((ConnectSrvCplEvt*)pEvt);
+			ConnectSrvCplEvt* pEvt1 = (ConnectSrvCplEvt*)pEvt;
+
+			if (pEvt1->GetConnectResult())
+			{
+				pSessionMgr->Add(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId());
+			}
+
+			OnConnectSrvCpl(pEvt1);
 		}
 	}
 
 	void TcpService::OnRecvNewConnection(RecvNewConnEvt* pEvt)
 	{
-		pSessionMgr->Add(TcpSession(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId()));
-
 		TcpLog::WriteLine(ETcpLogType::Debug, "recv new connection: %s:%d",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 	}
 
 	void TcpService::OnConnDisconnect(ConnDisconnectEvt* pEvt)
 	{
-		pSessionMgr->Remove(pEvt->GetSendRecvSocketId());
-
 		TcpLog::WriteLine(ETcpLogType::Error, "lose connection from %s:%d",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 	}
 
 	void TcpService::OnRecvPeerData(RecvPeerDataEvt* pEvt)
 	{
-		TcpLog::WriteLine(ETcpLogType::Debug, "recv data from %s:%d, len: %d",
-			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort(), pEvt->GetBufLen());
+		//TcpLog::WriteLine(ETcpLogType::Debug, "recv data from %s:%d, len: %d",
+		//	pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort(), pEvt->GetBufLen());
 	}
 
 	void TcpService::OnConnectSrvCpl(ConnectSrvCplEvt* pEvt)
 	{
 		bool b = pEvt->GetConnectResult();
-		if (b)
-		{
-			pSessionMgr->Add(TcpSession(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId()));
-		}
-
 		TcpLog::WriteLine(b ? ETcpLogType::Info : ETcpLogType::Error, "connect to %s:%d %s",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort(), b ? "success" : "fail");
 	}
@@ -173,5 +175,10 @@ namespace tc
 	void TcpService::Exit()
 	{
 
+	}
+
+	SessionMgr* TcpService::GetSessionMgr()
+	{
+		return pSessionMgr;
 	}
 }

@@ -1,5 +1,7 @@
 #pragma once
 #include "Def.h"
+
+#include <string>
 using namespace std;
 
 namespace tc

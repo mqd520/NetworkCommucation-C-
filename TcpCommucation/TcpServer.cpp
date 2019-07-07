@@ -52,7 +52,7 @@ namespace tc
 
 		if (bListening)
 		{
-			TcpLog::WriteLine(ETcpLogType::Info, "listen success: %s:%d", strIP.c_str(), nPort);
+			TcpLog::WriteLine(ETcpLogType::Debug, "listen success: %s:%d", strIP.c_str(), nPort);
 		}
 		else
 		{
@@ -76,9 +76,29 @@ namespace tc
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
 		if (data.socket > 0)
 		{
-			pSessionMgr->Remove(clientId);
+			if (!b)
+			{
+				pSessionMgr->Remove(clientId);
+			}
+
 			__super::CloseConnection(data.socket, b);
 		}
+	}
+
+	void TcpServer::CloseListen()
+	{
+		TcpCommu::GetSocketDataMgr()->Remove(socket);
+		SocketTool::ShutDown(socket);
+		SocketTool::CloseSocket(socket);
+
+		vector<TcpConnection*> vec = TcpCommu::GetTcpConnectionMgr()->GetByTcpService(this);
+		for (vector<TcpConnection*>::iterator it = vec.begin(); it != vec.end(); it++)
+		{
+			(*it)->Close(false);
+		}
+
+		bListening = false;
+		socket = INVALID_SOCKET;
 	}
 
 	string TcpServer::GetPeerIp(int clientId)

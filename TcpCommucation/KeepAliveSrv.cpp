@@ -75,7 +75,7 @@ namespace tc
 
 	void KeepAliveSrv::SendKeepAlive(int clientId /*= 0*/)
 	{
-		TcpLog::WriteLine(ETcpLogType::Debug, "send keepAlive to %s:%d", GetPeerIp().c_str(), GetPeerPort());
+		//TcpLog::WriteLine(ETcpLogType::Debug, "send keepAlive to %s:%d", GetPeerIp().c_str(), GetPeerPort());
 	}
 
 	void KeepAliveSrv::OnKeepAlive()
@@ -83,7 +83,7 @@ namespace tc
 		tTimeout.Reset();
 		nMissCount = 0;
 
-		TcpLog::WriteLine(ETcpLogType::Debug, "recv keepAlive from %s:%d", GetPeerIp().c_str(), GetPeerPort());
+		//TcpLog::WriteLine(ETcpLogType::Debug, "recv keepAlive from %s:%d", GetPeerIp().c_str(), GetPeerPort());
 	}
 
 	void KeepAliveSrv::OnTimerTimeout(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)

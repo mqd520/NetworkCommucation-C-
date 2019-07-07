@@ -14,19 +14,19 @@ namespace tc
 		SessionMgr();
 		virtual ~SessionMgr();
 
-	private:
-		vector<TcpSession> vecSessionDatas;	// session data list
+	protected:
+		vector<TcpSession*> vecSessions;	// session list
 
 	public:
-		virtual bool IsEqual(const TcpSession& obj1, const TcpSession& obj2);
+		virtual TcpSession* CreateSession();
 
-		virtual void Add(TcpSession& data);
+		virtual void Add(TcpSession* pData);
+
+		virtual TcpSession* Add(string peerIp = "", int peerPort = 0, int clientId = 0, string localIp = "", int localPort = 0);
 
 		virtual TcpSession Remove(int clientId);
 
 		virtual TcpSession Remove(string peerIp, int peerPort);
-
-		virtual void Remove(TcpSession& data);
 
 		virtual void Remove();
 
@@ -34,6 +34,10 @@ namespace tc
 
 		virtual TcpSession Get(string peerIp, int peerPort);
 
-		virtual void Get(vector<TcpSession>& vec);
+		virtual TcpSession* Get1(int clientId);
+
+		virtual TcpSession* Get1(string peerIp, int peerPort);
+
+		virtual void GetAllClientId(vector<int>& vec);
 	};
 }

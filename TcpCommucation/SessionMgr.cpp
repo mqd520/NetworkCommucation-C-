@@ -3,7 +3,7 @@
 
 namespace tc
 {
-	typedef vector<TcpSession>::iterator	ITTcpSession;
+	typedef vector<TcpSession*>::iterator	ITTcpSession;
 
 	SessionMgr::SessionMgr()
 	{
@@ -12,25 +12,20 @@ namespace tc
 
 	SessionMgr::~SessionMgr()
 	{
-
+		Remove();
 	}
 
-	bool SessionMgr::IsEqual(const TcpSession& obj1, const TcpSession& obj2)
+	TcpSession* SessionMgr::CreateSession()
 	{
-		if (obj1.strPeerIp == obj2.strPeerIp && obj1.nPeerPort == obj2.nPeerPort)
-		{
-			return true;
-		}
-
-		return false;
+		return new TcpSession();
 	}
 
-	void SessionMgr::Add(TcpSession& data)
+	void SessionMgr::Add(TcpSession* pData)
 	{
 		bool b = false;
-		for (ITTcpSession it = vecSessionDatas.begin(); it != vecSessionDatas.end(); it++)
+		for (ITTcpSession it = vecSessions.begin(); it != vecSessions.end(); it++)
 		{
-			if (IsEqual(*it, data))
+			if ((*it)->strPeerIp == pData->strPeerIp && (*it)->nPeerPort == pData->nPeerPort)
 			{
 				b = true;
 				break;
@@ -39,20 +34,34 @@ namespace tc
 
 		if (!b)
 		{
-			vecSessionDatas.push_back(data);
+			vecSessions.push_back(pData);
 		}
+	}
+
+	TcpSession* SessionMgr::Add(string peerIp /*= ""*/, int peerPort /*= 0*/, int clientId /*= 0*/, string localIp /*= ""*/, int localPort /*= 0*/)
+	{
+		TcpSession* pSession = CreateSession();
+		pSession->strPeerIp = peerIp;
+		pSession->nPeerPort = peerPort;
+		pSession->nClientId = clientId;
+		pSession->strLocalIp = localIp;
+		pSession->nLocalPort = localPort;
+
+		Add(pSession);
+
+		return pSession;
 	}
 
 	TcpSession SessionMgr::Remove(int clientId)
 	{
 		TcpSession data;
 
-		for (ITTcpSession it = vecSessionDatas.begin(); it != vecSessionDatas.end(); it++)
+		for (ITTcpSession it = vecSessions.begin(); it != vecSessions.end(); it++)
 		{
-			if (it->nClientId == clientId)
+			if ((*it)->nClientId == clientId)
 			{
-				data = *it;
-				vecSessionDatas.erase(it);
+				data = *(*it);
+				vecSessions.erase(it);
 				break;
 			}
 		}
@@ -64,12 +73,12 @@ namespace tc
 	{
 		TcpSession data;
 
-		for (ITTcpSession it = vecSessionDatas.begin(); it != vecSessionDatas.end(); it++)
+		for (ITTcpSession it = vecSessions.begin(); it != vecSessions.end(); it++)
 		{
-			if (it->strPeerIp == peerIp && it->nPeerPort == peerPort)
+			if ((*it)->strPeerIp == peerIp && (*it)->nPeerPort == peerPort)
 			{
-				data = *it;
-				vecSessionDatas.erase(it);
+				data = *(*it);
+				vecSessions.erase(it);
 				break;
 			}
 		}
@@ -77,32 +86,25 @@ namespace tc
 		return data;
 	}
 
-	void SessionMgr::Remove(TcpSession& data)
-	{
-		for (ITTcpSession it = vecSessionDatas.begin(); it != vecSessionDatas.end(); it++)
-		{
-			if (IsEqual(*it, data))
-			{
-				vecSessionDatas.erase(it);
-				break;
-			}
-		}
-	}
-
 	void SessionMgr::Remove()
 	{
-		vecSessionDatas.clear();
+		for (ITTcpSession it = vecSessions.begin(); it != vecSessions.end(); it++)
+		{
+			delete *it;
+		}
+
+		vecSessions.clear();
 	}
 
 	TcpSession SessionMgr::Get(int clientId)
 	{
 		TcpSession data;
 
-		for (ITTcpSession it = vecSessionDatas.begin(); it != vecSessionDatas.end(); it++)
+		for (ITTcpSession it = vecSessions.begin(); it != vecSessions.end(); it++)
 		{
-			if (it->nClientId == clientId)
+			if ((*it)->nClientId == clientId)
 			{
-				data = *it;
+				data = *(*it);
 				break;
 			}
 		}
@@ -114,11 +116,11 @@ namespace tc
 	{
 		TcpSession data;
 
-		for (ITTcpSession it = vecSessionDatas.begin(); it != vecSessionDatas.end(); it++)
+		for (ITTcpSession it = vecSessions.begin(); it != vecSessions.end(); it++)
 		{
-			if (it->strPeerIp == peerIp && it->nPeerPort == peerPort)
+			if ((*it)->strPeerIp == peerIp && (*it)->nPeerPort == peerPort)
 			{
-				data = *it;
+				data = *(*it);
 				break;
 			}
 		}
@@ -126,11 +128,43 @@ namespace tc
 		return data;
 	}
 
-	void SessionMgr::Get(vector<TcpSession>& vec)
+	TcpSession* SessionMgr::Get1(int clientId)
 	{
-		for (ITTcpSession it = vecSessionDatas.begin(); it != vecSessionDatas.end(); it++)
+		TcpSession* p = NULL;
+
+		for (ITTcpSession it = vecSessions.begin(); it != vecSessions.end(); it++)
 		{
-			vec.push_back(*it);
+			if ((*it)->nClientId == clientId)
+			{
+				p = (*it);
+				break;
+			}
+		}
+
+		return p;
+	}
+
+	TcpSession* SessionMgr::Get1(string peerIp, int peerPort)
+	{
+		TcpSession* p = NULL;
+
+		for (ITTcpSession it = vecSessions.begin(); it != vecSessions.end(); it++)
+		{
+			if ((*it)->strPeerIp == peerIp && (*it)->nPeerPort == peerPort)
+			{
+				p = (*it);
+				break;
+			}
+		}
+
+		return p;
+	}
+
+	void SessionMgr::GetAllClientId(vector<int>& vec)
+	{
+		for (ITTcpSession it = vecSessions.begin(); it != vecSessions.end(); it++)
+		{
+			vec.push_back((*it)->nClientId);
 		}
 	}
 }

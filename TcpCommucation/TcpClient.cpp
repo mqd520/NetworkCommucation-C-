@@ -117,6 +117,11 @@ namespace tc
 
 		if (bIsConnected)
 		{
+			if (!b)
+			{
+
+			}
+
 			__super::CloseConnection(socket, b);
 		}
 

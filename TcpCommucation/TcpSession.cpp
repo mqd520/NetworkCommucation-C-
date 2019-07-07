@@ -17,14 +17,4 @@ namespace tc
 	{
 
 	}
-
-	//bool operator SessionData::== (const SessionData& obj)
-	//{
-	//	if (this->strPeerIp == obj.strPeerIp && this->nPeerPort == obj.nPeerPort)
-	//	{
-	//		return true;
-	//	}
-
-	//	return false;
-	//}
 }

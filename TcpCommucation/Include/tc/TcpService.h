@@ -125,5 +125,10 @@ namespace tc
 		// Parameter: pParam1:		附加参数2
 		//************************************
 		virtual void RegTcpEventCallback(Fun2 fun, void* pParam1 = NULL, void* pParam2 = NULL);
+
+		//************************************
+		// Method:    获取SessionMgr
+		//************************************
+		virtual SessionMgr* GetSessionMgr();
 	};
 }

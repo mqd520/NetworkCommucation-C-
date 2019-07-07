@@ -28,16 +28,5 @@ namespace tc
 		int nLocalPort;			// local port
 
 		int nClientId;			// client id
-
-	public:
-		bool operator ==(const TcpSession& obj)
-		{
-			if (this->strPeerIp == obj.strPeerIp && this->nPeerPort == obj.nPeerPort)
-			{
-				return true;
-			}
-
-			return false;
-		}
 	};
 }

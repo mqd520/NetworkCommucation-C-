@@ -39,6 +39,8 @@ namespace tc
 		//************************************
 		TcpConnection* GetBySendRecvSocket(SOCKET sendrecv);
 
+		vector<TcpConnection*> GetByTcpService(TcpService* pTcpService);
+
 		//************************************
 		// Method:    清除所有连接对象
 		//************************************

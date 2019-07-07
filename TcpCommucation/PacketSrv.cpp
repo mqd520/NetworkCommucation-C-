@@ -165,7 +165,7 @@ namespace tc
 
 	void PacketSrv::OnProcessPck(PacketData& pd)
 	{
-		TcpLog::WriteLine(ETcpLogType::Debug, "OnProcessPck, cmd: %d, len: %d, addr: %s:%d",
+		TcpLog::WriteLine(ETcpLogType::Warn, "OnProcessPck, cmd: %d, len: %d, addr: %s:%d",
 			pd.pPck->GetCmd(), pd.pPck->GetLen(), GetPeerIp().c_str(), GetPeerPort());
 	}
 

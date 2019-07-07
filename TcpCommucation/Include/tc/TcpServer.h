@@ -52,6 +52,11 @@ namespace tc
 		virtual void CloseClient(int clientId, bool b = true);
 
 		//************************************
+		// Method:    关闭Lisetn
+		//************************************
+		virtual void CloseListen();
+
+		//************************************
 		// Method:    获取对端ip
 		// Parameter: client id
 		//************************************
