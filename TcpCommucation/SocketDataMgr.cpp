@@ -3,6 +3,7 @@
 #include "Include/tc/SocketTool.h"
 #include "Include/tc/TcpService.h"
 #include "Include/tc/TcpCommuMgr.h"
+#include <assert.h>
 
 namespace tc
 {
@@ -70,6 +71,8 @@ namespace tc
 
 		lock1.Unlock();
 
+		quRemovedSockets.push(data.socket);
+
 		return data;
 	}
 
@@ -91,6 +94,8 @@ namespace tc
 
 		lock1.Unlock();
 
+		quRemovedSockets.push(data.socket);
+
 		return data;
 	}
 
@@ -100,8 +105,7 @@ namespace tc
 
 		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
 		{
-			SocketTool::ShutDown(it->socket, false);
-			SocketTool::CloseSocket(it->socket, false);
+			quRemovedSockets.push(it->socket);
 		}
 		vecSocketData.clear();
 
@@ -196,5 +200,19 @@ namespace tc
 		lock1.Unlock();
 
 		return type;
+	}
+
+	void SocketDataMgr::ProcessRemovedSocket()
+	{
+		while (!quRemovedSockets.empty())
+		{
+			SOCKET el = quRemovedSockets.front();
+
+			assert(!quRemovedSockets.empty());
+			quRemovedSockets.pop();
+
+			SocketTool::ShutDown(el, 2, false);
+			SocketTool::CloseSocket(el, false);
+		}
 	}
 }

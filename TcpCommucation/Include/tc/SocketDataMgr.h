@@ -2,6 +2,7 @@
 
 #include <WinSock2.h>
 #include <vector>
+#include <queue>
 #include "Def.h"
 #include "ThreadLock.h"
 
@@ -19,6 +20,8 @@ namespace tc
 	private:
 		vector<SocketInfoData> vecSocketData;	// socket数据集合
 		CThreadLock lock1;						// 线程锁, 针对: vecSocketData
+
+		queue<SOCKET> quRemovedSockets;			// removed sockets
 
 	private:
 		//************************************
@@ -78,5 +81,7 @@ namespace tc
 		// Parameter: SOCKET socket:	socket
 		//************************************
 		ESocketType GetSocketType(SOCKET socket);
+
+		void ProcessRemovedSocket();
 	};
 }

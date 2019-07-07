@@ -48,9 +48,7 @@ namespace tc
 		{
 			TcpCommu::GetTcpEvtMgr()->PushTcpEvent(new ConnDisconnectEvt(pTcpSrv, sendrecvSocket, reason));
 		}
-		SocketInfoData data = TcpCommu::GetSocketDataMgr()->Remove(sendrecvSocket);
-		SocketTool::ShutDown(sendrecvSocket, false);
-		SocketTool::CloseSocket(sendrecvSocket, false);
+		TcpCommu::GetSocketDataMgr()->Remove(sendrecvSocket);
 
 		TcpCommu::GetTcpConnectionMgr()->RemoveBySendRecvSocket(sendrecvSocket);
 	}

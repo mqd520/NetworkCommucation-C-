@@ -57,6 +57,11 @@ namespace tc
 		virtual void CloseListen();
 
 		//************************************
+		// Method:    退出
+		//************************************
+		virtual void Exit() override;
+
+		//************************************
 		// Method:    获取对端ip
 		// Parameter: client id
 		//************************************

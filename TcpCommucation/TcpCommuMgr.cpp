@@ -15,8 +15,13 @@
 #include "Include/tc/TimerMoudleMgr.h"
 #include "Include/tc/TcpLog.h"
 
+
 namespace tc
 {
+	void OnSocketToolError(string err, void* lpParam);
+	void OnTimer(Timer* pTimer, int count, void* pParam1, void* pParam2);
+
+
 	SelectThread TcpCommu::selectThread;
 	RecvThread TcpCommu::recvThread;
 	SendThread TcpCommu::sendThread;
@@ -31,8 +36,8 @@ namespace tc
 	TcpServiceMgr TcpCommu::tcpServiceMgr;
 	TcpEvtMgr TcpCommu::tcpEvtMgr;
 
+	Timer TcpCommu::t;
 
-	void OnSocketToolError(string err, void* lpParam);
 
 	void TcpCommu::Init()
 	{
@@ -40,6 +45,9 @@ namespace tc
 		SocketTool::RegErrorCallback(OnSocketToolError, NULL);
 
 		TimerMoudleMgr::Init();
+
+		t.SetTimeout(300);
+		t.SetCallback(OnTimer, NULL, NULL);
 
 		GetSelectThread()->Run();		// 启动select线程
 		GetRecvThread()->Run();			// 启动收数据线程
@@ -49,6 +57,8 @@ namespace tc
 
 	void TcpCommu::Exit()
 	{
+		t.Stop();
+
 		socketDataMgr.Clear();
 		recvHandler.Clear();
 		sendHandler.Clear();
@@ -64,6 +74,8 @@ namespace tc
 		GetTcpEvtThread()->Exit();
 
 		Sleep(1 * 1000);
+
+		TcpCommu::GetSocketDataMgr()->ProcessRemovedSocket();
 	}
 
 	SelectThread* TcpCommu::GetSelectThread()
@@ -124,5 +136,10 @@ namespace tc
 	void OnSocketToolError(string err, void* lpParam)
 	{
 		TcpLog::WriteLine(ETcpLogType::Error, "%s", err.c_str());
+	}
+
+	void OnTimer(Timer* pTimer, int count, void* pParam1, void* pParam2)
+	{
+		TcpCommu::GetSocketDataMgr()->ProcessRemovedSocket();
 	}
 }

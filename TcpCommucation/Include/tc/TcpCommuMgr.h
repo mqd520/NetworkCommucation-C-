@@ -13,6 +13,8 @@
 #include "TcpEvtMgr.h"
 #include "SocketDataMgr.h"
 
+#include "Timer.h"
+
 
 namespace tc
 {
@@ -36,6 +38,8 @@ namespace tc
 		static TcpConnectionMgr tcpConnMgr;			// tcp连接管理对象
 		static TcpServiceMgr tcpServiceMgr;			// tcp服务管理对象
 		static TcpEvtMgr tcpEvtMgr;					// tcp事件管理对象
+
+		static Timer t;								// timer for close socket
 
 	public:
 		~TcpCommu();

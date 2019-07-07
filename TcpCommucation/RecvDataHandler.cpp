@@ -50,10 +50,10 @@ namespace tc
 		{
 			for (vector<SOCKET>::iterator it = clients.begin(); it != clients.end(); it++)
 			{
-				//TcpCommu::GetTcpConnectionMgr()->CreateTcpConnection(*it, pEvt1->GetServerSocket());
+				TcpCommu::GetTcpConnectionMgr()->CreateTcpConnection(*it, pEvt1->GetServerSocket());
 
-				//RecvNewConnEvt* pEvt2 = new RecvNewConnEvt(pSrv, *it);
-				//TcpCommu::GetTcpEvtMgr()->PushTcpEvent(pEvt2);
+				RecvNewConnEvt* pEvt2 = new RecvNewConnEvt(pSrv, *it);
+				TcpCommu::GetTcpEvtMgr()->PushTcpEvent(pEvt2);
 			}
 		}
 		else

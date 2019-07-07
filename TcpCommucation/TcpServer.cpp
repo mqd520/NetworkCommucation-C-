@@ -88,8 +88,6 @@ namespace tc
 	void TcpServer::CloseListen()
 	{
 		TcpCommu::GetSocketDataMgr()->Remove(socket);
-		SocketTool::ShutDown(socket);
-		SocketTool::CloseSocket(socket);
 
 		vector<TcpConnection*> vec = TcpCommu::GetTcpConnectionMgr()->GetByTcpService(this);
 		for (vector<TcpConnection*>::iterator it = vec.begin(); it != vec.end(); it++)
@@ -99,6 +97,11 @@ namespace tc
 
 		bListening = false;
 		socket = INVALID_SOCKET;
+	}
+
+	void TcpServer::Exit()
+	{
+		CloseListen();
 	}
 
 	string TcpServer::GetPeerIp(int clientId)
