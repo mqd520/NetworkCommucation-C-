@@ -26,6 +26,12 @@ namespace tc
 		//************************************
 		bool IsAllow(string ip);
 
+		//************************************
+		// Method:    收到新连接事件处理
+		// Parameter: pEvt: tcp事件
+		//************************************
+		virtual void OnRecvNewConnection(RecvNewConnEvt* pEvt) override;
+
 	public:
 		//************************************
 		// Method:    设置监听信息

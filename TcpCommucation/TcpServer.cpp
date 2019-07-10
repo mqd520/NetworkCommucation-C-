@@ -19,6 +19,20 @@ namespace tc
 
 	}
 
+	void TcpServer::OnRecvNewConnection(RecvNewConnEvt* pEvt)
+	{
+		__super::OnRecvNewConnection(pEvt);
+
+		bool b = IsAllow(pEvt->GetPeerIp());
+		if (!b)
+		{
+			CloseClient(pEvt->GetSendRecvSocketId(), false);
+
+			TcpLog::WriteLine(ETcpLogType::Warn, "The server refuse the client connection: %s:%d",
+				pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
+		}
+	}
+
 	void TcpServer::SetListenInfo(string ip, int port)
 	{
 		if (!bListening)
