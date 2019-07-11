@@ -69,6 +69,8 @@ namespace tc
 		for (vector<PacketData>::iterator it = vec.begin(); it != vec.end(); it++)
 		{
 			(*it).clientId = clientId;
+			(*it).peerIp = GetPeerIp(clientId);
+			(*it).peerPort = GetPeerPort(clientId);
 			PreProcessPck(*it);
 
 			delete it->pPck;

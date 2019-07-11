@@ -161,6 +161,8 @@ namespace tc
 		Packet* pPck;		// 包数据
 		int cmd;			// 包命令
 		int clientId;		// socket id
+		string peerIp;		// peer ip
+		int peerPort;		// peer port
 	}PacketData;
 }
 

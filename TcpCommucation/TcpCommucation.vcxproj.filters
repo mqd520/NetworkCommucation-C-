@@ -73,11 +73,11 @@
     <Filter Include="08 基于包的通信">
       <UniqueIdentifier>{b7d5b197-139f-4864-9d54-3f19ea75f152}</UniqueIdentifier>
     </Filter>
-    <Filter Include="08 基于包的通信\00心跳包服务">
-      <UniqueIdentifier>{808cdbc0-bdb0-450d-a386-143236f3f4f1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="08 基于包的通信\01 包处理">
       <UniqueIdentifier>{e91db0c6-7780-42f1-b0c8-4d5e2b01204c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08 基于包的通信\00 心跳包服务">
+      <UniqueIdentifier>{808cdbc0-bdb0-450d-a386-143236f3f4f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -228,13 +228,13 @@
       <Filter>08 基于包的通信</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\KeepAliveClient.h">
-      <Filter>08 基于包的通信\00心跳包服务</Filter>
+      <Filter>08 基于包的通信\00 心跳包服务</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\KeepAliveSrv.h">
-      <Filter>08 基于包的通信\00心跳包服务</Filter>
+      <Filter>08 基于包的通信\00 心跳包服务</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\KeepAliveServer.h">
-      <Filter>08 基于包的通信\00心跳包服务</Filter>
+      <Filter>08 基于包的通信\00 心跳包服务</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\TcpSession.h">
       <Filter>06 Tcp通信管理\10 Session</Filter>
@@ -417,13 +417,13 @@
       <Filter>08 基于包的通信</Filter>
     </ClCompile>
     <ClCompile Include="KeepAliveSrv.cpp">
-      <Filter>08 基于包的通信\00心跳包服务</Filter>
+      <Filter>08 基于包的通信\00 心跳包服务</Filter>
     </ClCompile>
     <ClCompile Include="KeepAliveClient.cpp">
-      <Filter>08 基于包的通信\00心跳包服务</Filter>
+      <Filter>08 基于包的通信\00 心跳包服务</Filter>
     </ClCompile>
     <ClCompile Include="keepAliveServer.cpp">
-      <Filter>08 基于包的通信\00心跳包服务</Filter>
+      <Filter>08 基于包的通信\00 心跳包服务</Filter>
     </ClCompile>
     <ClCompile Include="TcpSession.cpp">
       <Filter>06 Tcp通信管理\10 Session</Filter>
