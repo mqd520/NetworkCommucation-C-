@@ -124,14 +124,12 @@ namespace tc
 
 	string TcpServer::GetPeerIp(int clientId)
 	{
-		//pSessionMgr->Get(clientId)
-
-		return TcpCommu::GetSocketDataMgr()->GetSocketData(clientId).peerIp;
+		return pSessionMgr->Get(clientId).strPeerIp;
 	}
 
 	int TcpServer::GetPeerPort(int clientId)
 	{
-		return TcpCommu::GetSocketDataMgr()->GetSocketData(clientId).peerPort;
+		return pSessionMgr->Get(clientId).nPeerPort;
 	}
 
 	void TcpServer::AddAllowIP(string ip)
