@@ -15,8 +15,9 @@ namespace tc
 		// Method:    构造函数
 		// Parameter: tcp服务对象
 		// Parameter: 用于发送(接收)数据的socket
+		// Parameter: 是否立即加入select
 		//************************************
-		TcpConnection(TcpService* pSrv, SOCKET sendrecv);
+		TcpConnection(TcpService* pSrv, SOCKET sendrecv, bool bEnable = true);
 		~TcpConnection();
 
 	protected:

@@ -9,12 +9,12 @@
 
 namespace tc
 {
-	TcpConnection::TcpConnection(TcpService* pSrv, SOCKET sendrecv) :
+	TcpConnection::TcpConnection(TcpService* pSrv, SOCKET sendrecv, bool bEnable /*= true*/) :
 		pTcpSrv(pSrv),
 		sendrecvSocket(sendrecv)
 	{
 		SocketTool::SetNonBlock(sendrecv);
-		TcpCommu::GetSocketDataMgr()->Add(sendrecv, ESocketType::SendRecvData);
+		TcpCommu::GetSocketDataMgr()->Add(sendrecv, ESocketType::SendRecvData, bEnable);
 	}
 
 	TcpConnection::~TcpConnection()

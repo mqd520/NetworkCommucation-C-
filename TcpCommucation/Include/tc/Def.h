@@ -151,6 +151,7 @@ namespace tc
 		string localIP;		// 关联的本地ip
 		int localPort;		// 关联的本地端口
 		int socketId;		// socket id, 关联一个socket
+		bool bEnable;		// 是否启用
 	}SocketInfoData;
 
 	class Packet;

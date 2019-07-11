@@ -22,7 +22,7 @@ namespace tc
 		return ((int)(socket << 16)) | socket;
 	}
 
-	void SocketDataMgr::Add(SOCKET socket, ESocketType type)
+	void SocketDataMgr::Add(SOCKET socket, ESocketType type, bool bEnable /*= true*/)
 	{
 		lock1.Lock();
 
@@ -47,7 +47,7 @@ namespace tc
 				peerIp = SocketTool::GetPeerIpAndPort(socket, &peerPort);
 			}
 
-			vecSocketData.push_back({ socket, type, peerIp, peerPort, "", 0, socketId });
+			vecSocketData.push_back({ socket, type, peerIp, peerPort, "", 0, socketId, bEnable });
 		}
 
 		lock1.Unlock();
@@ -200,6 +200,18 @@ namespace tc
 		lock1.Unlock();
 
 		return type;
+	}
+
+	void SocketDataMgr::EnableSocket(SOCKET socket, bool bEnable /*= true*/)
+	{
+		for (vector<SocketInfoData>::iterator it = vecSocketData.begin(); it != vecSocketData.end(); it++)
+		{
+			if (it->socket == socket)
+			{
+				it->bEnable = bEnable;
+				break;
+			}
+		}
 	}
 
 	void SocketDataMgr::ProcessRemovedSocket()

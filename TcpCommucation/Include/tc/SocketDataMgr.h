@@ -34,8 +34,9 @@ namespace tc
 		// Method:    添加一个socket
 		// Parameter: SOCKET socket:	socket
 		// Parameter: ESocketType type:	socket类型
+		// Parameter: bEnable: 是否立即启用
 		//************************************
-		void Add(SOCKET socket, ESocketType type);
+		void Add(SOCKET socket, ESocketType type, bool bEnable = true);
 
 		//************************************
 		// Method:    移除一个socket
@@ -81,6 +82,13 @@ namespace tc
 		// Parameter: SOCKET socket:	socket
 		//************************************
 		ESocketType GetSocketType(SOCKET socket);
+
+		//************************************
+		// Method:    Enable Socket
+		// Parameter: SOCKET socket
+		// Parameter: bool bEnable
+		//************************************
+		void EnableSocket(SOCKET socket, bool bEnable = true);
 
 		void ProcessRemovedSocket();
 	};

@@ -49,7 +49,7 @@ namespace tc
 		//************************************
 		// Method:    创建一个tcp连接对象
 		//************************************
-		void CreateTcpConnection(SOCKET socket, SOCKET accept = NULL);
+		void CreateTcpConnection(SOCKET socket, SOCKET accept = NULL, bool bEnable = true);
 
 		//************************************
 		// Method:    获取连接总数

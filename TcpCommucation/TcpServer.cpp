@@ -26,11 +26,11 @@ namespace tc
 		bool b = IsAllow(pEvt->GetPeerIp());
 		if (b)
 		{
-			TcpCommu::GetTcpConnectionMgr()->CreateTcpConnection(pEvt->GetSendRecvSocket(), socket);
+			TcpCommu::GetSocketDataMgr()->EnableSocket(pEvt->GetSendRecvSocket(), true);
 		}
 		else
 		{
-			SocketTool::ShutDown(pEvt->GetSendRecvSocket(), 2, false);
+			CloseClient(pEvt->GetSendRecvSocketId(), false);
 
 			TcpLog::WriteLine(ETcpLogType::Warn, "The server refuse the client connection: %s:%d",
 				pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
@@ -124,6 +124,8 @@ namespace tc
 
 	string TcpServer::GetPeerIp(int clientId)
 	{
+		//pSessionMgr->Get(clientId)
+
 		return TcpCommu::GetSocketDataMgr()->GetSocketData(clientId).peerIp;
 	}
 

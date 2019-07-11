@@ -29,19 +29,13 @@ namespace tc
 
 	void TcpService::OnTcpEvt(TcpEvt* pEvt)
 	{
-		DispatchTcpEvt(pEvt);
-
 		ETcpEvtType type = pEvt->GetEvtType();
 		if (type == ETcpEvtType::RecvNewConn)
 		{
-			pSessionMgr->Add(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId());
-
 			OnRecvNewConnection((RecvNewConnEvt*)pEvt);
 		}
 		else if (type == ETcpEvtType::ConnDisconnect)
 		{
-			pSessionMgr->Remove(pEvt->GetSendRecvSocketId());
-
 			OnConnDisconnect((ConnDisconnectEvt*)pEvt);
 		}
 		else if (type == ETcpEvtType::RecvPeerData)
@@ -50,25 +44,24 @@ namespace tc
 		}
 		else if (type == ETcpEvtType::ConnectSrvCpl)
 		{
-			ConnectSrvCplEvt* pEvt1 = (ConnectSrvCplEvt*)pEvt;
-
-			if (pEvt1->GetConnectResult())
-			{
-				pSessionMgr->Add(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId());
-			}
-
-			OnConnectSrvCpl(pEvt1);
+			OnConnectSrvCpl((ConnectSrvCplEvt*)pEvt);
 		}
+
+		DispatchTcpEvt(pEvt);
 	}
 
 	void TcpService::OnRecvNewConnection(RecvNewConnEvt* pEvt)
 	{
+		pSessionMgr->Add(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId());
+
 		TcpLog::WriteLine(ETcpLogType::Debug, "recv new connection: %s:%d",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 	}
 
 	void TcpService::OnConnDisconnect(ConnDisconnectEvt* pEvt)
 	{
+		pSessionMgr->Remove(pEvt->GetSendRecvSocketId());
+
 		TcpLog::WriteLine(ETcpLogType::Error, "lose connection from %s:%d",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 	}
@@ -82,6 +75,12 @@ namespace tc
 	void TcpService::OnConnectSrvCpl(ConnectSrvCplEvt* pEvt)
 	{
 		bool b = pEvt->GetConnectResult();
+
+		if (b)
+		{
+			pSessionMgr->Add(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId());
+		}
+
 		TcpLog::WriteLine(b ? ETcpLogType::Info : ETcpLogType::Error, "connect to %s:%d %s",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort(), b ? "success" : "fail");
 	}

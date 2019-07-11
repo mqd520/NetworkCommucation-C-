@@ -76,7 +76,7 @@ namespace tc
 		}
 	}
 
-	void TcpConnectionMgr::CreateTcpConnection(SOCKET sendrecv, SOCKET accept /*= NULL*/)
+	void TcpConnectionMgr::CreateTcpConnection(SOCKET sendrecv, SOCKET accept /*= NULL*/, bool bEnable /*= true*/)
 	{
 		TcpService* pSrv = NULL;
 		if (accept != NULL)
@@ -90,7 +90,7 @@ namespace tc
 
 		if (pSrv)
 		{
-			TcpConnection* pConn = new TcpConnection(pSrv, sendrecv);
+			TcpConnection* pConn = new TcpConnection(pSrv, sendrecv, bEnable);
 			vecTcpConn.push_back(pConn);
 		}
 	}
