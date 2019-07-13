@@ -3,7 +3,7 @@
 #include "Include/tc/TcpConnectionMgr.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvNewConnEvt.h"
-#include "Include/tc/TcpLog.h"
+#include "Include/tc/Log.h"
 
 namespace tc
 {
@@ -32,7 +32,7 @@ namespace tc
 		{
 			CloseClient(pEvt->GetSendRecvSocketId(), false);
 
-			TcpLog::WriteLine(ETcpLogType::Warn, "The server refuse the client connection: %s:%d",
+			TcpLog::WriteLine(ETcpLogType::Warn, true, "The server refuse the client connection: %s:%d",
 				pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 		}
 	}
@@ -70,11 +70,11 @@ namespace tc
 
 		if (bListening)
 		{
-			TcpLog::WriteLine(ETcpLogType::Debug, "listen success: %s:%d", strIP.c_str(), nPort);
+			TcpLog::WriteLine(ETcpLogType::Debug, true, "listen success: %s:%d", strIP.c_str(), nPort);
 		}
 		else
 		{
-			TcpLog::WriteLine(ETcpLogType::Error, "listen fail: %s:%d", strIP.c_str(), nPort);
+			TcpLog::WriteLine(ETcpLogType::Error, true, "listen fail: %s:%d", strIP.c_str(), nPort);
 		}
 
 		return bListening;

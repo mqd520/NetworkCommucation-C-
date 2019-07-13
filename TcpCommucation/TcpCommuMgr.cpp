@@ -13,7 +13,7 @@
 #include "Include/tc/SocketDataMgr.h"
 #include "Include/tc/SocketTool.h"
 #include "Include/tc/TimerMoudleMgr.h"
-#include "Include/tc/TcpLog.h"
+#include "Include/tc/Log.h"
 
 
 namespace tc
@@ -135,7 +135,7 @@ namespace tc
 
 	void OnSocketToolError(string err, void* lpParam)
 	{
-		TcpLog::WriteLine(ETcpLogType::Error, "%s", err.c_str());
+		TcpLog::WriteLine(ETcpLogType::Error, true, "%s", err.c_str());
 	}
 
 	void OnTimer(Timer* pTimer, int count, void* pParam1, void* pParam2)

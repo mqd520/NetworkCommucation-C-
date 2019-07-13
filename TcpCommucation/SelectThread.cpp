@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Include/tc/SelectThread.h"
 #include "Include/tc/TcpCommuMgr.h"
-#include "Include/tc/TcpLog.h"
+#include "Include/tc/Log.h"
 
 namespace tc
 {
@@ -20,7 +20,7 @@ namespace tc
 		if (!m_bRun)
 		{
 			__super::Run();
-			TcpLog::WriteLine(ETcpLogType::Debug, "select thread run.");
+			TcpLog::WriteLine(ETcpLogType::Debug, true, "select thread run.");
 		}
 	}
 

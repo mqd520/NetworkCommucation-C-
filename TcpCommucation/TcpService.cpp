@@ -2,7 +2,7 @@
 #include "Include/tc/TcpService.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/RecvNewConnEvt.h"
-#include "Include/tc/TcpLog.h"
+#include "Include/tc/Log.h"
 
 namespace tc
 {
@@ -54,7 +54,7 @@ namespace tc
 	{
 		pSessionMgr->Add(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId());
 
-		TcpLog::WriteLine(ETcpLogType::Debug, "recv new connection: %s:%d",
+		TcpLog::WriteLine(ETcpLogType::Debug, true, "recv new connection: %s:%d",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 	}
 
@@ -62,13 +62,13 @@ namespace tc
 	{
 		pSessionMgr->Remove(pEvt->GetSendRecvSocketId());
 
-		TcpLog::WriteLine(ETcpLogType::Error, "lose connection from %s:%d",
+		TcpLog::WriteLine(ETcpLogType::Error, true, "lose connection from %s:%d",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
 	}
 
 	void TcpService::OnRecvPeerData(RecvPeerDataEvt* pEvt)
 	{
-		//TcpLog::WriteLine(ETcpLogType::Debug, "recv data from %s:%d, len: %d",
+		//TcpLog::WriteLine(ETcpLogType::Debug, true, "recv data from %s:%d, len: %d",
 		//	pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort(), pEvt->GetBufLen());
 	}
 
@@ -81,7 +81,7 @@ namespace tc
 			pSessionMgr->Add(pEvt->GetPeerIp(), pEvt->GetPeerPort(), pEvt->GetSendRecvSocketId());
 		}
 
-		TcpLog::WriteLine(b ? ETcpLogType::Info : ETcpLogType::Error, "connect to %s:%d %s",
+		TcpLog::WriteLine(b ? ETcpLogType::Info : ETcpLogType::Error, true, "connect to %s:%d %s",
 			pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort(), b ? "success" : "fail");
 	}
 
@@ -95,8 +95,7 @@ namespace tc
 			}
 			__except (EXCEPTION_EXECUTE_HANDLER)
 			{
-				//TcpLog::WriteLine(ETcpLogType::Exception, "TcpEvt: %d, client: %s:%d",
-				//	pEvt->GetEvtType(), pEvt->GetPeerIp().c_str(), pEvt->GetPeerPort());
+
 			}
 		}
 	}
@@ -162,7 +161,7 @@ namespace tc
 		}
 		else
 		{
-			TcpLog::WriteLine(ETcpLogType::Warn, "send data error, socket invalid: %d", socket);
+			TcpLog::WriteLine(ETcpLogType::Warn, true, "send data error, socket invalid: %d", socket);
 		}
 	}
 

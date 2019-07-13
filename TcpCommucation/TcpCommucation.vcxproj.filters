@@ -206,12 +206,6 @@
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
     <ClInclude Include="Include\tc\Def.h" />
-    <ClInclude Include="Include\tc\TcpLog.h">
-      <Filter>10 日志处理</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\tc\TcpLogMgr.h">
-      <Filter>10 日志处理</Filter>
-    </ClInclude>
     <ClInclude Include="Include\tc\ConnectSrvCplEvt.h">
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClInclude>
@@ -241,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="Include\tc\SessionMgr.h">
       <Filter>06 Tcp通信管理\10 Session</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\tc\Log.h">
+      <Filter>10 日志处理</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -395,12 +392,6 @@
     <ClCompile Include="TimeThread2.cpp">
       <Filter>05 定时器管理\01 线程处理</Filter>
     </ClCompile>
-    <ClCompile Include="TcpLog.cpp">
-      <Filter>10 日志处理</Filter>
-    </ClCompile>
-    <ClCompile Include="TcpLogMgr.cpp">
-      <Filter>10 日志处理</Filter>
-    </ClCompile>
     <ClCompile Include="ConnectSrvCplEvt.cpp">
       <Filter>06 Tcp通信管理\09 Tcp事件</Filter>
     </ClCompile>
@@ -430,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="SessionMgr.cpp">
       <Filter>06 Tcp通信管理\10 Session</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>10 日志处理</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

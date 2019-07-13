@@ -2,7 +2,7 @@
 #include "Include/tc/PacketSrv.h"
 #include "Include/tc/Def.h"
 #include "Include/tc/NetworkStreamRead.h"
-#include "Include/tc/TcpLog.h"
+#include "Include/tc/Log.h"
 #include "Include/tc/TcpClient.h"
 #include "Include/tc/TcpServer.h"
 
@@ -112,7 +112,7 @@ namespace tc
 					}
 					else
 					{
-						TcpLog::WriteLine(ETcpLogType::Warn, "parse pck error, cmd: %d, len: %d, addr: %s:%d ",
+						TcpLog::WriteLine(ETcpLogType::Warn, true, "parse pck error, cmd: %d, len: %d, addr: %s:%d ",
 							cmd, len, GetPeerIp().c_str(), GetPeerPort());
 					}
 
@@ -131,7 +131,7 @@ namespace tc
 			{
 				ms.Clear();
 
-				TcpLog::WriteLine(ETcpLogType::Warn, "parse header error, cmd: %d, len: %d, addr: %s:%d ",
+				TcpLog::WriteLine(ETcpLogType::Warn, true, "parse header error, cmd: %d, len: %d, addr: %s:%d ",
 					pHead->GetCmd(), pHead->GetTotalLen(), GetPeerIp().c_str(), GetPeerPort());
 			}
 
@@ -167,7 +167,7 @@ namespace tc
 
 	void PacketSrv::OnProcessPck(PacketData& pd)
 	{
-		TcpLog::WriteLine(ETcpLogType::Warn, "OnProcessPck, cmd: %d, len: %d, addr: %s:%d",
+		TcpLog::WriteLine(ETcpLogType::Warn, true, "OnProcessPck, cmd: %d, len: %d, addr: %s:%d",
 			pd.pPck->GetCmd(), pd.pPck->GetLen(), GetPeerIp().c_str(), GetPeerPort());
 	}
 

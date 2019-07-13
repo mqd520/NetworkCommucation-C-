@@ -4,7 +4,7 @@
 #include "Include/tc/TcpEvt.h"
 #include "Include/tc/ConnectSrvCplEvt.h"
 #include "Include/tc/TimerMoudleMgr.h"
-#include "Include/tc/TcpLog.h"
+#include "Include/tc/Log.h"
 
 namespace tc
 {
@@ -51,7 +51,7 @@ namespace tc
 			{
 				SocketTool::SetNonBlock(this->socket);
 				TcpCommu::GetSocketDataMgr()->Add(this->socket, ESocketType::Connect);
-				TcpLog::WriteLine(ETcpLogType::Info, "connecting to %s:%d", this->strIP.c_str(), this->nPort);
+				TcpLog::WriteLine(ETcpLogType::Info, true, "connecting to %s:%d", this->strIP.c_str(), this->nPort);
 				SocketTool::Connect(this->socket, this->strIP, this->nPort, false);
 			}
 		}

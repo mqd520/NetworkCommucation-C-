@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Include/tc/KeepAliveSrv.h"
-#include "Include/tc/TcpLog.h"
+#include "Include/tc/Log.h"
 #include "Include/tc/TimerMoudleMgr.h"
 #include "Include/tc/TcpClient.h"
 #include "Include/tc/TcpServer.h"
@@ -75,7 +75,7 @@ namespace tc
 
 	void KeepAliveSrv::SendKeepAlive(int clientId /*= 0*/)
 	{
-		//TcpLog::WriteLine(ETcpLogType::Debug, "send keepAlive to %s:%d", GetPeerIp().c_str(), GetPeerPort());
+		//TcpLog::WriteLine(ETcpLogType::Debug, true, "send keepAlive to %s:%d", GetPeerIp().c_str(), GetPeerPort());
 	}
 
 	void KeepAliveSrv::OnKeepAlive()
@@ -83,7 +83,7 @@ namespace tc
 		tTimeout.Reset();
 		nMissCount = 0;
 
-		//TcpLog::WriteLine(ETcpLogType::Debug, "recv keepAlive from %s:%d", GetPeerIp().c_str(), GetPeerPort());
+		//TcpLog::WriteLine(ETcpLogType::Debug, true, "recv keepAlive from %s:%d", GetPeerIp().c_str(), GetPeerPort());
 	}
 
 	void KeepAliveSrv::OnTimerTimeout(Timer* pTimer, int count, void* pParam1 /*= NULL*/, void* pParam2 /*= NULL*/)
@@ -99,7 +99,7 @@ namespace tc
 
 	void KeepAliveSrv::OnMissKeepAlive(int count, bool b /*= true*/)
 	{
-		TcpLog::WriteLine(ETcpLogType::Warn, "lose keepAlive from %s:%d, count: %d", GetPeerIp().c_str(), GetPeerPort(), count);
+		TcpLog::WriteLine(ETcpLogType::Warn, true, "lose keepAlive from %s:%d, count: %d", GetPeerIp().c_str(), GetPeerPort(), count);
 	}
 
 	void KeepAliveSrv::StartKeepAlive()

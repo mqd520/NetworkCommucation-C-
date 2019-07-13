@@ -5,7 +5,7 @@
 #include "Include/tc/ConnDisconnectEvt.h"
 #include "Include/tc/SocketTool.h"
 #include "Include/tc/SendPeerDataSocEvt.h"
-#include "Include/tc/TcpLog.h"
+#include "Include/tc/Log.h"
 
 namespace tc
 {

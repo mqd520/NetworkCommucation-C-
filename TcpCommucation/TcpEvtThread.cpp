@@ -2,7 +2,7 @@
 #include "Include/tc/TcpEvtThread.h"
 #include "Include/tc/TcpCommuMgr.h"
 #include "Include/tc/TcpEvtMgr.h"
-#include "Include/tc/TcpLog.h"
+#include "Include/tc/Log.h"
 
 namespace tc
 {
@@ -21,7 +21,7 @@ namespace tc
 		if (!m_bRun)
 		{
 			__super::Run();
-			TcpLog::WriteLine(ETcpLogType::Debug, "tcp evt thread run.");
+			TcpLog::WriteLine(ETcpLogType::Debug, true, "tcp evt thread run.");
 		}
 	}
 

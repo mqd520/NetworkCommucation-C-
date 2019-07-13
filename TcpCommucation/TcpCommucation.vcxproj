@@ -90,7 +90,7 @@
     <ClInclude Include="Include\tc\KeepAliveClient.h" />
     <ClInclude Include="Include\tc\TcpSession.h" />
     <ClInclude Include="Include\tc\SessionMgr.h" />
-    <ClInclude Include="Include\tc\TcpLog.h" />
+    <ClInclude Include="Include\tc\Log.h" />
     <ClInclude Include="Include\tc\Packet.h" />
     <ClInclude Include="Include\tc\PacketSrv.h" />
     <ClInclude Include="Include\tc\PacketHead.h" />
@@ -111,7 +111,6 @@
     <ClInclude Include="Include\tc\TcpConnectionMgr.h" />
     <ClInclude Include="Include\tc\TcpEvtMgr.h" />
     <ClInclude Include="Include\tc\TcpEvtThread.h" />
-    <ClInclude Include="Include\tc\TcpLogMgr.h" />
     <ClInclude Include="Include\tc\TcpService.h" />
     <ClInclude Include="Include\tc\TcpServiceMgr.h" />
     <ClInclude Include="Include\tc\ThreadEntry.h" />
@@ -147,7 +146,7 @@
     <ClCompile Include="RecvPeerDataEvt.cpp" />
     <ClCompile Include="TcpSession.cpp" />
     <ClCompile Include="SessionMgr.cpp" />
-    <ClCompile Include="TcpLog.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="MemoryStream.cpp" />
     <ClCompile Include="GB2312Str.cpp" />
     <ClCompile Include="NetworkStreamRead.cpp" />
@@ -186,7 +185,6 @@
     <ClCompile Include="TcpEvt.cpp" />
     <ClCompile Include="TcpEvtMgr.cpp" />
     <ClCompile Include="TcpEvtThread.cpp" />
-    <ClCompile Include="TcpLogMgr.cpp" />
     <ClCompile Include="TcpServer.cpp" />
     <ClCompile Include="TcpService.cpp" />
     <ClCompile Include="TcpServiceMgr.cpp" />
