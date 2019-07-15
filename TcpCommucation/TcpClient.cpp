@@ -122,7 +122,7 @@ namespace tc
 
 			}
 
-			__super::CloseConnection(socket, b);
+			CloseConnection(socket, b);
 		}
 
 		bIsConnecting = false;
@@ -139,7 +139,7 @@ namespace tc
 	{
 		if (bIsConnected)
 		{
-			__super::SendData(socket, pBuf, len);
+			SendData(socket, pBuf, len);
 		}
 	}
 }

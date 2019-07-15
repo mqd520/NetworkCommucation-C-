@@ -3,40 +3,53 @@
 
 namespace tc
 {
-	// 收到对端数据事件
+	// Recv peer data evt
 	class RecvPeerDataEvt : public TcpEvt
 	{
 	public:
 		//************************************
-		// Method:    构造函数
-		// Parameter: 关联的tcp服务对象
-		// Parameter: 对端socket
-		// Parameter: BYTE * pBuf:	缓冲区
-		// Parameter: int len:		缓冲区长度
+		// Method:    constructor
+		// Parameter: Associated TcpService obj
+		// Parameter: peer socket
+		// Parameter: BYTE * buf:	buf
+		// Parameter: int len:		buf length
 		//************************************
 		RecvPeerDataEvt(TcpService* pSrv, SOCKET recv, BYTE* pBuf, int len);
 		~RecvPeerDataEvt();
 
 	private:
-		BYTE* pBuf;		// 收到的数据缓冲区指针
-		int nLen;		// 数据缓冲区长度
+		BYTE* pBuf;		// recv buf pointer
+		int nLen;		// recv buf length
 
 	public:
 		//************************************
-		// Method:    获取接收缓冲区
+		// Method:    Get recv buf
 		//************************************
 		BYTE* GetRecvBuf();
 
 		//************************************
-		// Method:    获取接收缓冲区长度
+		// Method:    Get recv buf length
 		//************************************
 		int GetBufLen();
 
 		//************************************
-		// Method:    读取缓冲区
-		// Parameter: BYTE * buf:	缓冲区
-		// Parameter: int len:		缓冲区长度
-		//************************************
+		// Method:    Read to buf
+		// Parameter: BYTE * buf:	buf
+		// Parameter: int len:		buf length
 		int Read(BYTE* buf, int len);
+
+		//************************************
+		// Method:    Write to buf
+		// Parameter: BYTE * buf:	buf
+		// Parameter: int len:		buf length
+		//************************************
+		void Write(BYTE* buf, int len);
+
+		//************************************
+		// Method:    Reset buf 
+		// Parameter: BYTE * buf:	buf
+		// Parameter: int len:		buf length
+		//************************************
+		void ResetBuf(BYTE* buf, int len);
 	};
 }

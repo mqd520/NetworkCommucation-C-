@@ -85,7 +85,7 @@ namespace tc
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
 		if (data.socket > 0)
 		{
-			__super::SendData(data.socket, pBuf, len);
+			SendData(data.socket, pBuf, len);
 		}
 	}
 
@@ -99,7 +99,7 @@ namespace tc
 				pSessionMgr->Remove(clientId);
 			}
 
-			__super::CloseConnection(data.socket, b);
+			CloseConnection(data.socket, b);
 		}
 	}
 

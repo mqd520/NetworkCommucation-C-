@@ -32,17 +32,17 @@ namespace tc
 
 	int RecvPeerDataEvt::Read(BYTE* buf, int len)
 	{
-		int len1 = len > nLen ? nLen : len;	// 实际读取长度
+		int len1 = len > nLen ? nLen : len;	// Actual read length
 		memcpy(buf, pBuf, len1);
 
-		int len2 = nLen - len1;		// 剩余长度
+		int len2 = nLen - len1;		// left length
 		if (len2 > 0)
 		{
 			BYTE* pBufTmp = new BYTE[len2];
 			memcpy(pBufTmp, pBuf + len1, len2);
 
 			delete pBuf;
-			pBuf = pBufTmp;		// 指向剩余缓冲区
+			pBuf = pBufTmp;		// point to left buf
 			nLen = len2;
 		}
 		else
@@ -53,5 +53,28 @@ namespace tc
 		}
 
 		return len1;
+	}
+
+	void RecvPeerDataEvt::Write(BYTE* buf, int len)
+	{
+		BYTE* pTmpBuf = new BYTE[nLen + len];
+		if (pBuf && nLen > 0)
+		{
+			memcpy(pTmpBuf, pBuf, nLen);
+		}
+		memcpy(pTmpBuf + nLen, buf, len);
+	}
+
+	void RecvPeerDataEvt::ResetBuf(BYTE* buf, int len)
+	{
+		if (pBuf)
+		{
+			delete pBuf;
+			pBuf = NULL;
+			nLen = 0;
+		}
+
+		pBuf = buf;
+		nLen = len;
 	}
 }
