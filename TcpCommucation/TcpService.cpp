@@ -102,9 +102,9 @@ namespace tc
 
 	void TcpService::CloseConnection(SOCKET socket, bool b /*= true*/)
 	{
-		if (this->socket != INVALID_SOCKET)
+		if (socket != INVALID_SOCKET)
 		{
-			TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(this->socket);
+			TcpConnection* pConn = TcpCommu::GetTcpConnectionMgr()->GetBySendRecvSocket(socket);
 			if (pConn)
 			{
 				pConn->Close(b);

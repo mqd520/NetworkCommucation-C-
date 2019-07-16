@@ -48,6 +48,7 @@ namespace tc
 
 		t.SetTimeout(300);
 		t.SetCallback(OnTimer, NULL, NULL);
+		t.Run();
 
 		GetSelectThread()->Run();		// 启动select线程
 		GetRecvThread()->Run();			// 启动收数据线程
@@ -57,7 +58,9 @@ namespace tc
 
 	void TcpCommu::Exit()
 	{
+		TimerMoudleMgr::Exit();
 		t.Stop();
+		TimerMoudleMgr::GetTimerMgr()->Remove(&t);
 
 		socketDataMgr.Clear();
 		recvHandler.Clear();
@@ -65,8 +68,6 @@ namespace tc
 		tcpEvtMgr.Clear();
 		tcpConnMgr.Clear();
 		tcpServiceMgr.Clear();
-
-		TimerMoudleMgr::Exit();
 
 		GetSelectThread()->Exit();
 		GetRecvThread()->Exit();

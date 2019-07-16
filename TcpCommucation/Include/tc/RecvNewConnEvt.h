@@ -16,5 +16,19 @@ namespace tc
 		// Parameter: ¿Í»§¶Ësocket
 		//************************************
 		RecvNewConnEvt(TcpService* pSrv, SOCKET client);
+
+	private:
+		bool bIsAllow;		// whether allow by the server
+
+	public:
+		//************************************
+		// Method:    Is Allow
+		//************************************
+		bool IsAllow();
+
+		//************************************
+		// Method:    Allow the new connection
+		//************************************
+		void Allow();
 	};
 }

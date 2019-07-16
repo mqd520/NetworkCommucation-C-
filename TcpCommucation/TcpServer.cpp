@@ -26,7 +26,7 @@ namespace tc
 		bool b = IsAllow(pEvt->GetPeerIp());
 		if (b)
 		{
-			TcpCommu::GetSocketDataMgr()->EnableSocket(pEvt->GetSendRecvSocket(), true);
+			pEvt->Allow();
 		}
 		else
 		{
@@ -94,10 +94,7 @@ namespace tc
 		SocketInfoData data = TcpCommu::GetSocketDataMgr()->GetSocketData(clientId);
 		if (data.socket > 0)
 		{
-			if (!b)
-			{
-				pSessionMgr->Remove(clientId);
-			}
+			pSessionMgr->Remove(clientId);
 
 			CloseConnection(data.socket, b);
 		}
